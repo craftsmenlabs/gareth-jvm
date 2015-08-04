@@ -1,0 +1,9 @@
+Experiment: Reduce failed logins (multiple assumptions)
+
+Baseline: Failed logins are read from log1
+Assumption: By showing a caps-lock warning the failed logins are reduced by 5%1
+Time: 5 days1
+
+Baseline: Failed logins are read from log2
+Assumption: By showing a caps-lock warning the failed logins are reduced by 5%2
+Time: 5 days2

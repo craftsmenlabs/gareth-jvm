@@ -1,0 +1,6 @@
+Experiment: Reduce failed logins (with success)
+
+Baseline: Failed logins are read from log
+Assumption: By showing a caps-lock warning the failed logins are reduced by 5%
+Time: 5 days
+Success: this is a success
