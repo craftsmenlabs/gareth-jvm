@@ -29,7 +29,7 @@ public class ExperimentFactoryTest {
         final AssumptionBlock expectedAssumptionBlock =  new AssumptionBlock();
         expectedAssumptionBlock.setBaseline("Failed logins are read from log");
         expectedAssumptionBlock.setAssumption("By showing a caps-lock warning the failed logins are reduced by 5%");
-        expectedAssumptionBlock.setAssumption("5 days");
+        expectedAssumptionBlock.setTime("5 days");
 
         validateAssumptionBlock(assumptionBlock,expectedAssumptionBlock);
 
@@ -50,7 +50,7 @@ public class ExperimentFactoryTest {
         expectedAssumptionBlock1.setAssumption("By showing a caps-lock warning the failed logins are reduced by 5%1");
         expectedAssumptionBlock1.setTime("5 days1");
 
-        validateAssumptionBlock(assumptionBlock1,expectedAssumptionBlock1);
+        validateAssumptionBlock(assumptionBlock1, expectedAssumptionBlock1);
 
         // Validate assumptionblock2
         final AssumptionBlock assumptionBlock2 = experiment.getAssumptionBlockList().get(1);
@@ -61,6 +61,26 @@ public class ExperimentFactoryTest {
 
         validateAssumptionBlock(assumptionBlock2,expectedAssumptionBlock12);
 
+
+    }
+
+    @Test
+    public void testExperiment3() {
+        final Experiment experiment = parseTestExperiment("experiment-0003.experiment");
+
+
+        assertNotNull(experiment);
+        assertEquals("Reduce failed logins (with failure)", experiment.getExperimentName());
+        assertEquals(1, experiment.getAssumptionBlockList().size());
+        // Validate assumption block
+        final AssumptionBlock assumptionBlock = experiment.getAssumptionBlockList().get(0);
+        final AssumptionBlock expectedAssumptionBlock =  new AssumptionBlock();
+        expectedAssumptionBlock.setBaseline("Failed logins are read from log");
+        expectedAssumptionBlock.setAssumption("By showing a caps-lock warning the failed logins are reduced by 5%");
+        expectedAssumptionBlock.setTime("5 days");
+        expectedAssumptionBlock.setFailure("this is a failure");
+
+        validateAssumptionBlock(assumptionBlock, expectedAssumptionBlock);
 
     }
 
