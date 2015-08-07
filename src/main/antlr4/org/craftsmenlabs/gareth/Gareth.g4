@@ -14,12 +14,14 @@ experimentBlock:
     (assumptionBlock)+
     EOF;
 
+successOrFailure:
+    ((NL success NL failure) | (NL failure NL success) | (NL success) | (NL failure));
+
 assumptionBlock:
     (NL baseline)
     (NL assumption)
     (NL time)
-    (NL success)?
-    (NL failure)?
+    (successOrFailure)?
     (NL)*;
 
 GlueLine: ('A'..'Z' | 'a'..'z' | ' ' | '0'..'9' | '%' | '-' | '(' | ')' )+;
