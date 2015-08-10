@@ -146,6 +146,25 @@ public class ExperimentFactoryTest {
 
     }
 
+    @Test
+    public void testExperiment7() {
+        final Experiment experiment = parseTestExperiment("experiment-0007.experiment");
+
+
+        assertNotNull(experiment);
+        assertEquals("Reduce failed logins (A lot of new lines)", experiment.getExperimentName());
+        assertEquals(1, experiment.getAssumptionBlockList().size());
+        // Validate assumption block
+        final AssumptionBlock assumptionBlock = experiment.getAssumptionBlockList().get(0);
+        final AssumptionBlock expectedAssumptionBlock =  new AssumptionBlock();
+        expectedAssumptionBlock.setBaseline("Failed logins are read from log");
+        expectedAssumptionBlock.setAssumption("By showing a caps-lock warning the failed logins are reduced by 5%");
+        expectedAssumptionBlock.setTime("5 days");
+
+        validateAssumptionBlock(assumptionBlock, expectedAssumptionBlock);
+
+    }
+
     private Experiment parseTestExperiment(final String fileName) {
         final InputStream fileInputStream = getClass().getResourceAsStream("/experiments/" + fileName);
 
