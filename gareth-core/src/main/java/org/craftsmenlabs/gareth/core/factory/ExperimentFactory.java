@@ -1,10 +1,12 @@
-package org.craftsmenlabs.gareth;
+package org.craftsmenlabs.gareth.core.factory;
 
 import org.antlr.v4.runtime.*;
 import org.apache.commons.io.IOUtils;
+import org.craftsmenlabs.gareth.GarethLexer;
+import org.craftsmenlabs.gareth.GarethParser;
 import org.craftsmenlabs.gareth.api.model.Experiment;
-import org.craftsmenlabs.gareth.exception.GarethExperimentParseException;
-import org.craftsmenlabs.gareth.listener.ExperimentBaseListener;
+import org.craftsmenlabs.gareth.api.exception.GarethExperimentParseException;
+import org.craftsmenlabs.gareth.core.listener.ExperimentBaseListener;
 
 import java.io.InputStream;
 

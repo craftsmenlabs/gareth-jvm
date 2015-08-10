@@ -1,4 +1,4 @@
-package org.craftsmenlabs.gareth.listener;
+package org.craftsmenlabs.gareth.core.listener;
 
 import lombok.Getter;
 import org.craftsmenlabs.gareth.GarethBaseListener;

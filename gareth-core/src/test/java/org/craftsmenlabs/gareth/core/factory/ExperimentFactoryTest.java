@@ -1,4 +1,4 @@
-package org.craftsmenlabs.gareth;
+package org.craftsmenlabs.gareth.core.factory;
 
 import org.apache.commons.io.IOUtils;
 import org.craftsmenlabs.gareth.api.model.AssumptionBlock;
@@ -26,12 +26,12 @@ public class ExperimentFactoryTest {
         assertEquals(1, experiment.getAssumptionBlockList().size());
         // Validate assumption block
         final AssumptionBlock assumptionBlock = experiment.getAssumptionBlockList().get(0);
-        final AssumptionBlock expectedAssumptionBlock =  new AssumptionBlock();
+        final AssumptionBlock expectedAssumptionBlock = new AssumptionBlock();
         expectedAssumptionBlock.setBaseline("Failed logins are read from log");
         expectedAssumptionBlock.setAssumption("By showing a caps-lock warning the failed logins are reduced by 5%");
         expectedAssumptionBlock.setTime("5 days");
 
-        validateAssumptionBlock(assumptionBlock,expectedAssumptionBlock);
+        validateAssumptionBlock(assumptionBlock, expectedAssumptionBlock);
 
     }
 
@@ -45,7 +45,7 @@ public class ExperimentFactoryTest {
         assertEquals(2, experiment.getAssumptionBlockList().size());
         // Validate assumption block 1
         final AssumptionBlock assumptionBlock1 = experiment.getAssumptionBlockList().get(0);
-        final AssumptionBlock expectedAssumptionBlock1 =  new AssumptionBlock();
+        final AssumptionBlock expectedAssumptionBlock1 = new AssumptionBlock();
         expectedAssumptionBlock1.setBaseline("Failed logins are read from log1");
         expectedAssumptionBlock1.setAssumption("By showing a caps-lock warning the failed logins are reduced by 5%1");
         expectedAssumptionBlock1.setTime("5 days1");
@@ -54,12 +54,12 @@ public class ExperimentFactoryTest {
 
         // Validate assumptionblock2
         final AssumptionBlock assumptionBlock2 = experiment.getAssumptionBlockList().get(1);
-        final AssumptionBlock expectedAssumptionBlock12 =  new AssumptionBlock();
+        final AssumptionBlock expectedAssumptionBlock12 = new AssumptionBlock();
         expectedAssumptionBlock12.setBaseline("Failed logins are read from log2");
         expectedAssumptionBlock12.setAssumption("By showing a caps-lock warning the failed logins are reduced by 5%2");
         expectedAssumptionBlock12.setTime("5 days2");
 
-        validateAssumptionBlock(assumptionBlock2,expectedAssumptionBlock12);
+        validateAssumptionBlock(assumptionBlock2, expectedAssumptionBlock12);
 
 
     }
@@ -74,7 +74,7 @@ public class ExperimentFactoryTest {
         assertEquals(1, experiment.getAssumptionBlockList().size());
         // Validate assumption block
         final AssumptionBlock assumptionBlock = experiment.getAssumptionBlockList().get(0);
-        final AssumptionBlock expectedAssumptionBlock =  new AssumptionBlock();
+        final AssumptionBlock expectedAssumptionBlock = new AssumptionBlock();
         expectedAssumptionBlock.setBaseline("Failed logins are read from log");
         expectedAssumptionBlock.setAssumption("By showing a caps-lock warning the failed logins are reduced by 5%");
         expectedAssumptionBlock.setTime("5 days");
@@ -94,7 +94,7 @@ public class ExperimentFactoryTest {
         assertEquals(1, experiment.getAssumptionBlockList().size());
         // Validate assumption block
         final AssumptionBlock assumptionBlock = experiment.getAssumptionBlockList().get(0);
-        final AssumptionBlock expectedAssumptionBlock =  new AssumptionBlock();
+        final AssumptionBlock expectedAssumptionBlock = new AssumptionBlock();
         expectedAssumptionBlock.setBaseline("Failed logins are read from log");
         expectedAssumptionBlock.setAssumption("By showing a caps-lock warning the failed logins are reduced by 5%");
         expectedAssumptionBlock.setTime("5 days");
@@ -114,7 +114,7 @@ public class ExperimentFactoryTest {
         assertEquals(1, experiment.getAssumptionBlockList().size());
         // Validate assumption block
         final AssumptionBlock assumptionBlock = experiment.getAssumptionBlockList().get(0);
-        final AssumptionBlock expectedAssumptionBlock =  new AssumptionBlock();
+        final AssumptionBlock expectedAssumptionBlock = new AssumptionBlock();
         expectedAssumptionBlock.setBaseline("Failed logins are read from log");
         expectedAssumptionBlock.setAssumption("By showing a caps-lock warning the failed logins are reduced by 5%");
         expectedAssumptionBlock.setTime("5 days");
@@ -135,7 +135,7 @@ public class ExperimentFactoryTest {
         assertEquals(1, experiment.getAssumptionBlockList().size());
         // Validate assumption block
         final AssumptionBlock assumptionBlock = experiment.getAssumptionBlockList().get(0);
-        final AssumptionBlock expectedAssumptionBlock =  new AssumptionBlock();
+        final AssumptionBlock expectedAssumptionBlock = new AssumptionBlock();
         expectedAssumptionBlock.setBaseline("Failed logins are read from log");
         expectedAssumptionBlock.setAssumption("By showing a caps-lock warning the failed logins are reduced by 5%");
         expectedAssumptionBlock.setTime("5 days");
@@ -156,7 +156,7 @@ public class ExperimentFactoryTest {
         assertEquals(1, experiment.getAssumptionBlockList().size());
         // Validate assumption block
         final AssumptionBlock assumptionBlock = experiment.getAssumptionBlockList().get(0);
-        final AssumptionBlock expectedAssumptionBlock =  new AssumptionBlock();
+        final AssumptionBlock expectedAssumptionBlock = new AssumptionBlock();
         expectedAssumptionBlock.setBaseline("Failed logins are read from log");
         expectedAssumptionBlock.setAssumption("By showing a caps-lock warning the failed logins are reduced by 5%");
         expectedAssumptionBlock.setTime("5 days");
@@ -182,7 +182,7 @@ public class ExperimentFactoryTest {
         throw new IllegalStateException("Should not reach this point");
     }
 
-    private void validateAssumptionBlock(final AssumptionBlock assumptionBlock,final AssumptionBlock expectedAssumptionBlock) {
+    private void validateAssumptionBlock(final AssumptionBlock assumptionBlock, final AssumptionBlock expectedAssumptionBlock) {
 
         assertEquals(expectedAssumptionBlock.getBaseline(), assumptionBlock.getBaseline());
         assertEquals(expectedAssumptionBlock.getAssumption(), assumptionBlock.getAssumption());

@@ -1,4 +1,4 @@
-package org.craftsmenlabs.gareth.exception;
+package org.craftsmenlabs.gareth.api.exception;
 
 /**
  * Created by hylke on 04/08/15.
