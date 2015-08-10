@@ -13,12 +13,13 @@
     <!-- Properties -->
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <jdk.version>1.6</jdk.version>
+        <jdk.version>1.8</jdk.version>
         <junit.version>4.12</junit.version>
         <antlr.plugin.version>4.5</antlr.plugin.version>
         <antlr.version>4.5.1</antlr.version>
         <commons.io.version>2.4</commons.io.version>
         <lombok.version>1.16.4</lombok.version>
+        <akka.version>2.3.12</akka.version>
     </properties>
 
     <dependencyManagement>
@@ -56,6 +57,13 @@
                 <groupId>commons-io</groupId>
                 <artifactId>commons-io</artifactId>
                 <version>${commons.io.version}</version>
+            </dependency>
+
+            <!-- AKKA -->
+            <dependency>
+                <groupId>com.typesafe.akka</groupId>
+                <artifactId>akka-actor_2.11</artifactId>
+                <version>${akka.version}</version>
             </dependency>
 
             <!-- Test depedencies -->
