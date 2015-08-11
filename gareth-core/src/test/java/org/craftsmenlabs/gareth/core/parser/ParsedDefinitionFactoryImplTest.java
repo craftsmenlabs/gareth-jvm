@@ -144,8 +144,7 @@ public class ParsedDefinitionFactoryImplTest {
             parsedParsedDefinitionFactory.parse(WithIncorrectReturnType.class);
             fail("should not reach this point");
         } catch (final IllegalStateException e) {
-            assertEquals("java.lang.IllegalStateException: Method baselineDefinition with glue line 'Baseline glueline' is not a valid method (no void return type)"
-                    , e.getMessage());
+            assertTrue(e.getMessage().contains("Method baselineDefinition with glue line 'Baseline glueline' is not a valid method (no void return type)"));
         }
     }
 

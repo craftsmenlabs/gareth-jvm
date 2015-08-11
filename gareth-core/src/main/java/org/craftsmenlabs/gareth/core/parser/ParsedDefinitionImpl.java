@@ -14,11 +14,11 @@ import java.util.Map;
 @Getter
 public class ParsedDefinitionImpl implements ParsedDefinition {
 
-    private Map<String, Method> baselineDefinitions = new HashMap<>();
-    private Map<String, Method> assumeDefinitions = new HashMap<>();
-    private Map<String, Method> successDefinitions = new HashMap<>();
-    private Map<String, Method> failureDefinitions = new HashMap<>();
-    private Map<String, Duration> timeDefinitions = new HashMap<>();
+    private final Map<String, Method> baselineDefinitions = new HashMap<>();
+    private final Map<String, Method> assumeDefinitions = new HashMap<>();
+    private final Map<String, Method> successDefinitions = new HashMap<>();
+    private final Map<String, Method> failureDefinitions = new HashMap<>();
+    private final Map<String, Duration> timeDefinitions = new HashMap<>();
 
 
 

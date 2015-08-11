@@ -4,6 +4,7 @@ import org.antlr.v4.runtime.*;
 import org.apache.commons.io.IOUtils;
 import org.craftsmenlabs.gareth.GarethLexer;
 import org.craftsmenlabs.gareth.GarethParser;
+import org.craftsmenlabs.gareth.api.factory.ExperimentFactory;
 import org.craftsmenlabs.gareth.api.model.Experiment;
 import org.craftsmenlabs.gareth.api.exception.GarethExperimentParseException;
 import org.craftsmenlabs.gareth.core.listener.ExperimentBaseListener;
@@ -13,8 +14,9 @@ import java.io.InputStream;
 /**
  * Created by hylke on 04/08/15.
  */
-public class ExperimentFactory {
+public class ExperimentFactoryImpl implements ExperimentFactory {
 
+    @Override
     public Experiment buildExperiment(final InputStream inputStream) throws GarethExperimentParseException {
         try {
             final ANTLRInputStream antlrInputStream = new ANTLRInputStream(inputStream);

@@ -21,5 +21,5 @@ public interface ExperimentEngine {
      *
      * @param inputStream
      */
-    void registerExperiment(final InputStream inputStream);
+    void registerExperiment(final InputStream inputStream) throws GarethExperimentParseException;
 }

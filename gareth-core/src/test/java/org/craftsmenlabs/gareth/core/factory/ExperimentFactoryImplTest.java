@@ -1,20 +1,20 @@
 package org.craftsmenlabs.gareth.core.factory;
 
 import org.apache.commons.io.IOUtils;
+import org.craftsmenlabs.gareth.api.exception.GarethExperimentParseException;
+import org.craftsmenlabs.gareth.api.factory.ExperimentFactory;
 import org.craftsmenlabs.gareth.api.model.AssumptionBlock;
 import org.craftsmenlabs.gareth.api.model.Experiment;
 import org.junit.Test;
 
 import java.io.InputStream;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.fail;
+import static org.junit.Assert.*;
 
 /**
  * Created by hylke on 04/08/15.
  */
-public class ExperimentFactoryTest {
+public class ExperimentFactoryImplTest {
 
     @Test
     public void testExperiment1() {
@@ -165,13 +165,43 @@ public class ExperimentFactoryTest {
 
     }
 
+    @Test
+    public void testEmptyExperiment() {
+        try {
+            parseFailureExperiment("experiment-failure-0001.experiment");
+        } catch (final Exception e) {
+            assertTrue(e instanceof GarethExperimentParseException);
+        }
+    }
+
+    @Test
+    public void testNullInputStreamExperiment() {
+        try {
+            new ExperimentFactoryImpl().buildExperiment(null);
+        } catch (final Exception e) {
+            assertTrue(e instanceof GarethExperimentParseException);
+        }
+    }
+
+    private void parseFailureExperiment(final String fileName) throws Exception {
+        final InputStream fileInputStream = getClass().getResourceAsStream("/experiments/" + fileName);
+
+        try {
+            new ExperimentFactoryImpl().buildExperiment(fileInputStream);
+        } catch (Exception e) {
+            throw e;
+        } finally {
+            IOUtils.closeQuietly(fileInputStream);
+        }
+    }
+
     private Experiment parseTestExperiment(final String fileName) {
         final InputStream fileInputStream = getClass().getResourceAsStream("/experiments/" + fileName);
 
         try {
 
 
-            return new ExperimentFactory().buildExperiment(fileInputStream);
+            return new ExperimentFactoryImpl().buildExperiment(fileInputStream);
 
 
         } catch (Exception e) {

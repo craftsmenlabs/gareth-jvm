@@ -4,9 +4,14 @@ import org.craftsmenlabs.gareth.api.ExperimentEngine;
 import org.craftsmenlabs.gareth.api.definition.ParsedDefinition;
 import org.craftsmenlabs.gareth.api.definition.ParsedDefinitionFactory;
 import org.craftsmenlabs.gareth.api.exception.GarethExperimentParseException;
+import org.craftsmenlabs.gareth.api.factory.ExperimentFactory;
+import org.craftsmenlabs.gareth.api.model.Experiment;
 import org.craftsmenlabs.gareth.api.registry.DefinitionRegistry;
+import org.craftsmenlabs.gareth.api.registry.ExperimentRegistry;
+import org.craftsmenlabs.gareth.core.factory.ExperimentFactoryImpl;
 import org.craftsmenlabs.gareth.core.parser.ParsedDefinitionFactoryImpl;
 import org.craftsmenlabs.gareth.core.registry.DefinitionRegistryImpl;
+import org.craftsmenlabs.gareth.core.registry.ExperimentRegistryImpl;
 
 import java.io.InputStream;
 
@@ -19,42 +24,77 @@ public class ExperimentEngineImpl implements ExperimentEngine {
 
     private final ParsedDefinitionFactory parsedDefinitionFactory;
 
+    private final ExperimentFactory experimentFactory;
+
+    private final ExperimentRegistry experimentRegistry;
+
     private ExperimentEngineImpl(final Builder builder) {
         this.definitionRegistry = builder.definitionRegistry;
         this.parsedDefinitionFactory = builder.parsedDefinitionFactory;
+        this.experimentFactory = builder.experimentFactory;
+        this.experimentRegistry = builder.experimentRegistry;
     }
 
     @Override
     public void registerDefinition(final Class clazz) throws GarethExperimentParseException {
         final ParsedDefinition parsedDefinition = parsedDefinitionFactory.parse(clazz);
+        addParsedDefinitionToRegistry(parsedDefinition);
     }
 
     @Override
-    public void registerExperiment(final InputStream inputStream) {
-
+    public void registerExperiment(final InputStream inputStream) throws GarethExperimentParseException {
+        final Experiment experiment = experimentFactory.buildExperiment(inputStream);
+        experimentRegistry.addExperiment(experiment.getExperimentName(), experiment);
     }
 
+    private void addParsedDefinitionToRegistry(final ParsedDefinition parsedDefinition) {
+        parsedDefinition.getBaselineDefinitions().forEach((k, v) -> definitionRegistry.addMethodForBaseline(k, v));
+        parsedDefinition.getAssumeDefinitions().forEach((k, v) -> definitionRegistry.addMethodForAssume(k, v));
+        parsedDefinition.getFailureDefinitions().forEach((k, v) -> definitionRegistry.addMethodForFailure(k, v));
+        parsedDefinition.getSuccessDefinitions().forEach((k, v) -> definitionRegistry.addMethodForSuccess(k, v));
+        parsedDefinition.getTimeDefinitions().forEach((k, v) -> definitionRegistry.addDurationForTime(k, v));
+    }
+
+    /**
+     * Experiment engine builder class
+     */
     public static class Builder {
+
+        public Builder() {
+
+        }
 
         private DefinitionRegistry definitionRegistry = new DefinitionRegistryImpl();
 
         private ParsedDefinitionFactory parsedDefinitionFactory = new ParsedDefinitionFactoryImpl();
 
-        public void setDefinitionRegistry(final DefinitionRegistry definitionRegistry) {
+        private ExperimentFactory experimentFactory = new ExperimentFactoryImpl();
+
+        private ExperimentRegistry experimentRegistry = new ExperimentRegistryImpl();
+
+        public Builder setDefinitionRegistry(final DefinitionRegistry definitionRegistry) {
             this.definitionRegistry = definitionRegistry;
+            return this;
         }
 
-        public void setParsedDefinitionFactory(final ParsedDefinitionFactory parsedDefinitionFactory) {
+        public Builder setParsedDefinitionFactory(final ParsedDefinitionFactory parsedDefinitionFactory) {
             this.parsedDefinitionFactory = parsedDefinitionFactory;
+            return this;
+        }
+
+        public Builder setExperimentRegistry(final ExperimentRegistry experimentRegistry) {
+            this.experimentRegistry = experimentRegistry;
+            return this;
+        }
+
+        public Builder setExperimentFactory(final ExperimentFactory experimentFactory) {
+            this.experimentFactory = experimentFactory;
+            return this;
         }
 
         public ExperimentEngine build() {
             return new ExperimentEngineImpl(this);
         }
-    }
-
-    private void addParsedDefinitionInRegistery(final ParsedDefinition parsedDefinition){
-
     }
 
 
