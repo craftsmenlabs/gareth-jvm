@@ -2,7 +2,7 @@ package org.craftsmenlabs.gareth.core.parser;
 
 import org.craftsmenlabs.gareth.api.annotation.*;
 import org.craftsmenlabs.gareth.api.definition.ParsedDefinition;
-import org.craftsmenlabs.gareth.api.exception.GarethDefinitionParseExecption;
+import org.craftsmenlabs.gareth.api.exception.GarethDefinitionParseException;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -50,7 +50,7 @@ public class ParsedDefinitionFactoryImplTest {
         try {
             parsedParsedDefinitionFactory.parse(TimeIncorrectConstructorDefinition.class);
             fail("Should not reach this point");
-        } catch (final GarethDefinitionParseExecption e) {
+        } catch (final GarethDefinitionParseException e) {
             assertTrue(e.getMessage().contains("TimeIncorrectConstructorDefinition has no zero argument argument constructor"));
         }
     }

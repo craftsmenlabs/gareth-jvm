@@ -1,8 +1,11 @@
 package org.craftsmenlabs.gareth.core;
 
+import org.apache.commons.io.IOUtils;
 import org.craftsmenlabs.gareth.api.ExperimentEngine;
+import org.craftsmenlabs.gareth.api.ExperimentEngineConfig;
 import org.craftsmenlabs.gareth.api.definition.ParsedDefinition;
 import org.craftsmenlabs.gareth.api.definition.ParsedDefinitionFactory;
+import org.craftsmenlabs.gareth.api.exception.GarethDefinitionParseException;
 import org.craftsmenlabs.gareth.api.exception.GarethExperimentParseException;
 import org.craftsmenlabs.gareth.api.factory.ExperimentFactory;
 import org.craftsmenlabs.gareth.api.model.Experiment;
@@ -28,23 +31,60 @@ public class ExperimentEngineImpl implements ExperimentEngine {
 
     private final ExperimentRegistry experimentRegistry;
 
+    private final ExperimentEngineConfig experimentEngineConfig;
+
     private ExperimentEngineImpl(final Builder builder) {
+        this.experimentEngineConfig = builder.experimentEngineConfig;
         this.definitionRegistry = builder.definitionRegistry;
         this.parsedDefinitionFactory = builder.parsedDefinitionFactory;
         this.experimentFactory = builder.experimentFactory;
         this.experimentRegistry = builder.experimentRegistry;
     }
 
-    @Override
-    public void registerDefinition(final Class clazz) throws GarethExperimentParseException {
+    private void registerDefinition(final Class clazz) throws GarethDefinitionParseException {
         final ParsedDefinition parsedDefinition = parsedDefinitionFactory.parse(clazz);
         addParsedDefinitionToRegistry(parsedDefinition);
     }
 
-    @Override
-    public void registerExperiment(final InputStream inputStream) throws GarethExperimentParseException {
+    private void registerExperiment(final InputStream inputStream) {
         final Experiment experiment = experimentFactory.buildExperiment(inputStream);
         experimentRegistry.addExperiment(experiment.getExperimentName(), experiment);
+    }
+
+    @Override
+    public void start() {
+        init();
+    }
+
+    private void init() {
+        initDefinitions();
+        initExperiments();
+    }
+
+    private void initExperiments() throws GarethExperimentParseException {
+        for (final InputStream inputStream : experimentEngineConfig.getInputStreams()) {
+            try {
+                registerExperiment(inputStream);
+            } catch (GarethExperimentParseException e) {
+                if (!experimentEngineConfig.isIgnoreInvalidExperiments()) {
+                    throw e;
+                }
+            } finally {
+                IOUtils.closeQuietly(inputStream);
+            }
+        }
+    }
+
+    private void initDefinitions() {
+        for (final Class clazz : experimentEngineConfig.getDefinitionClasses()) {
+            try {
+                registerDefinition(clazz);
+            } catch (final GarethDefinitionParseException e) {
+                if (!experimentEngineConfig.isIgnoreInvalidDefinitions()) {
+                    throw e;
+                }
+            }
+        }
     }
 
     private void addParsedDefinitionToRegistry(final ParsedDefinition parsedDefinition) {
@@ -60,8 +100,10 @@ public class ExperimentEngineImpl implements ExperimentEngine {
      */
     public static class Builder {
 
-        public Builder() {
+        private final ExperimentEngineConfig experimentEngineConfig;
 
+        public Builder(final ExperimentEngineConfig experimentEngineConfig) {
+            this.experimentEngineConfig = experimentEngineConfig;
         }
 
         private DefinitionRegistry definitionRegistry = new DefinitionRegistryImpl();

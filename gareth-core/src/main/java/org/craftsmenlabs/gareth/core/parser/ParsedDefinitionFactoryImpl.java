@@ -3,7 +3,7 @@ package org.craftsmenlabs.gareth.core.parser;
 import org.craftsmenlabs.gareth.api.annotation.*;
 import org.craftsmenlabs.gareth.api.definition.ParsedDefinition;
 import org.craftsmenlabs.gareth.api.definition.ParsedDefinitionFactory;
-import org.craftsmenlabs.gareth.api.exception.GarethDefinitionParseExecption;
+import org.craftsmenlabs.gareth.api.exception.GarethDefinitionParseException;
 import org.craftsmenlabs.gareth.api.exception.GarethExperimentParseException;
 
 import java.lang.reflect.Constructor;
@@ -83,13 +83,13 @@ public class ParsedDefinitionFactoryImpl implements ParsedDefinitionFactory {
      * @param glueLine
      * @param durationMap
      */
-    private void registerDuration(final Method method, final String glueLine, final Map<String, Duration> durationMap) throws GarethDefinitionParseExecption {
+    private void registerDuration(final Method method, final String glueLine, final Map<String, Duration> durationMap) throws GarethDefinitionParseException {
         if (isValidateTimeMethod(method)) {
             try {
                 final Object tmpDefinition = getInstanceForClass(method.getDeclaringClass());
                 durationMap.put(glueLine, (Duration) method.invoke(tmpDefinition));
             } catch (final IllegalAccessException | InstantiationException | InvocationTargetException e) {
-                throw new GarethDefinitionParseExecption(e);
+                throw new GarethDefinitionParseException(e);
             }
         } else {
             throw new IllegalStateException(String.format("Method %s with glue line '%s' is not a valid method (no duration return type)", method.getName(), glueLine));

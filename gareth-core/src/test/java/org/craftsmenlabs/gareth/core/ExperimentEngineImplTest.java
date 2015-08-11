@@ -1,6 +1,7 @@
 package org.craftsmenlabs.gareth.core;
 
 import org.craftsmenlabs.gareth.api.ExperimentEngine;
+import org.craftsmenlabs.gareth.api.ExperimentEngineConfig;
 import org.craftsmenlabs.gareth.api.definition.ParsedDefinition;
 import org.craftsmenlabs.gareth.api.definition.ParsedDefinitionFactory;
 import org.craftsmenlabs.gareth.api.factory.ExperimentFactory;
@@ -13,8 +14,9 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
 import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.List;
 
-import static org.junit.Assert.*;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -42,11 +44,16 @@ public class ExperimentEngineImplTest {
     @Mock
     private ParsedDefinition mockParsedDefinition;
 
+    @Mock
+    private ExperimentEngineConfig mockExperimentEngineConfig;
+
     @Before
     public void setUp() throws Exception {
         MockitoAnnotations.initMocks(this);
+        when(mockExperimentEngineConfig.getDefinitionClasses()).thenReturn(new Class[]{});
+        when(mockExperimentEngineConfig.getInputStreams()).thenReturn(new InputStream[]{});
         experimentEngine = new ExperimentEngineImpl
-                .Builder()
+                .Builder(mockExperimentEngineConfig)
                 .setDefinitionRegistry(mockDefinitionRegistry)
                 .setParsedDefinitionFactory(mockParsedDefinitionFactory)
                 .setExperimentFactory(mockExperimentFactory)
@@ -55,25 +62,30 @@ public class ExperimentEngineImplTest {
     }
 
     @Test
-    public void testRegisterDefinition() throws Exception {
+    public void testStartValidateParseDefinition() throws Exception {
         final Class clazz = Object.class;
+        final Class[] definitionClasses = new Class[]{clazz};
+
+        when(mockExperimentEngineConfig.getDefinitionClasses()).thenReturn(definitionClasses);
+
         when(mockParsedDefinitionFactory.parse(clazz)).thenReturn(mockParsedDefinition);
 
-        experimentEngine.registerDefinition(clazz);
+        experimentEngine.start();
         verify(mockParsedDefinitionFactory).parse(clazz);
     }
 
     @Test
-    public void testRegisterExperiment() throws Exception {
-        final InputStream mockInputStream = mock(InputStream.class);
+    public void testStartValidateParseExperiment() throws Exception {
         final Experiment mockExperiment = mock(Experiment.class);
+        when(mockExperiment.getExperimentName()).thenReturn("experiment");
+        final InputStream mockInputStream = mock(InputStream.class);
+        final InputStream[] inputStreams = new InputStream[]{mockInputStream};
 
-        when(mockExperiment.getExperimentName()).thenReturn("mock experiment");
+        when(mockExperimentEngineConfig.getInputStreams()).thenReturn(inputStreams);
+
         when(mockExperimentFactory.buildExperiment(mockInputStream)).thenReturn(mockExperiment);
 
-        experimentEngine.registerExperiment(mockInputStream);
-
-        verify(mockExperimentRegistry).addExperiment("mock experiment", mockExperiment);
-
+        experimentEngine.start();
+        verify(mockExperimentRegistry).addExperiment("experiment", mockExperiment);
     }
 }
