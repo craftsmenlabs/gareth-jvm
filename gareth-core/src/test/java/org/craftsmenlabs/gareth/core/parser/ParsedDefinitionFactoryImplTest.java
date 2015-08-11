@@ -2,6 +2,7 @@ package org.craftsmenlabs.gareth.core.parser;
 
 import org.craftsmenlabs.gareth.api.annotation.*;
 import org.craftsmenlabs.gareth.api.definition.ParsedDefinition;
+import org.craftsmenlabs.gareth.api.exception.GarethDefinitionParseExecption;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -12,15 +13,15 @@ import static org.junit.Assert.*;
 /**
  * Created by hylke on 10/08/15.
  */
-public class ParsedParsedDefinitionFactoryImplTest {
+public class ParsedDefinitionFactoryImplTest {
 
 
-    private ParsedParsedDefinitionFactoryImpl parsedParsedDefinitionFactory;
+    private ParsedDefinitionFactoryImpl parsedParsedDefinitionFactory;
 
     @Before
     public void setUp() throws Exception {
 
-        parsedParsedDefinitionFactory = new ParsedParsedDefinitionFactoryImpl();
+        parsedParsedDefinitionFactory = new ParsedDefinitionFactoryImpl();
 
     }
 
@@ -31,6 +32,26 @@ public class ParsedParsedDefinitionFactoryImplTest {
             fail("Should not reach this point");
         } catch (final IllegalArgumentException e) {
             assertEquals(e.getMessage(), "Class cannot be null");
+        }
+    }
+
+    @Test
+    public void testParseTimeWithIncorrectReturnType() throws Exception {
+        try {
+            parsedParsedDefinitionFactory.parse(TimeIncorrectReturnTypeDefinition.class);
+            fail("Should not reach this point");
+        } catch (final IllegalStateException e) {
+            assertEquals(e.getMessage(), "java.lang.IllegalStateException: Method timeDefinition with glue line 'Time glueline' is not a valid method (no duration return type)");
+        }
+    }
+
+    @Test
+    public void testParseTimeWithIncorrectConstructor() throws Exception {
+        try {
+            parsedParsedDefinitionFactory.parse(TimeIncorrectConstructorDefinition.class);
+            fail("Should not reach this point");
+        } catch (final GarethDefinitionParseExecption e) {
+            assertTrue(e.getMessage().contains("TimeIncorrectConstructorDefinition has no zero argument argument constructor"));
         }
     }
 
@@ -161,13 +182,32 @@ public class ParsedParsedDefinitionFactoryImplTest {
         }
     }
 
-    public class TimeDefinition {
+    class TimeDefinition {
 
         public TimeDefinition() {
         }
 
         @Time(glueLine = "Time glueline")
         public Duration timeDefinition() {
+            return null;
+        }
+    }
+
+    class TimeIncorrectConstructorDefinition {
+        public TimeIncorrectConstructorDefinition(final String message) {
+
+        }
+
+        @Time(glueLine = "Time glueline")
+        public Duration timeDefinition() {
+            return null;
+        }
+    }
+
+    class TimeIncorrectReturnTypeDefinition {
+
+        @Time(glueLine = "Time glueline")
+        public String timeDefinition() {
             return null;
         }
     }

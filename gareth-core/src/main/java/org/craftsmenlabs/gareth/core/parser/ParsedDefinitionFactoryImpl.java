@@ -1,26 +1,23 @@
 package org.craftsmenlabs.gareth.core.parser;
 
 import org.craftsmenlabs.gareth.api.annotation.*;
-import org.craftsmenlabs.gareth.api.definition.DefinitionType;
-import org.craftsmenlabs.gareth.api.definition.ParsedDefinitionFactory;
 import org.craftsmenlabs.gareth.api.definition.ParsedDefinition;
+import org.craftsmenlabs.gareth.api.definition.ParsedDefinitionFactory;
+import org.craftsmenlabs.gareth.api.exception.GarethDefinitionParseExecption;
 import org.craftsmenlabs.gareth.api.exception.GarethExperimentParseException;
 
-import java.lang.annotation.Annotation;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.time.Duration;
-import java.util.*;
+import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Stream;
 
 /**
  * Created by hylke on 10/08/15.
  */
-public class ParsedParsedDefinitionFactoryImpl implements ParsedDefinitionFactory {
-
-    private final static Set<Class> allowedAnnotations = new HashSet<>(Arrays.asList(Baseline.class, Assume.class, Time.class, Success.class, Failure.class));
-
+public class ParsedDefinitionFactoryImpl implements ParsedDefinitionFactory {
 
     @Override
     public ParsedDefinition parse(final Class clazz) throws GarethExperimentParseException {
@@ -81,23 +78,18 @@ public class ParsedParsedDefinitionFactoryImpl implements ParsedDefinitionFactor
 
     /**
      * Register duration based on method outcome
-     * 
+     *
      * @param method
      * @param glueLine
      * @param durationMap
      */
-    private void registerDuration(final Method method, final String glueLine, final Map<String, Duration> durationMap) {
+    private void registerDuration(final Method method, final String glueLine, final Map<String, Duration> durationMap) throws GarethDefinitionParseExecption {
         if (isValidateTimeMethod(method)) {
             try {
-                method.setAccessible(true);
                 final Object tmpDefinition = getInstanceForClass(method.getDeclaringClass());
                 durationMap.put(glueLine, (Duration) method.invoke(tmpDefinition));
-            } catch (final IllegalAccessException e) {
-
-            } catch (InstantiationException e) {
-                e.printStackTrace();
-            } catch (InvocationTargetException e) {
-                e.printStackTrace();
+            } catch (final IllegalAccessException | InstantiationException | InvocationTargetException e) {
+                throw new GarethDefinitionParseExecption(e);
             }
         } else {
             throw new IllegalStateException(String.format("Method %s with glue line '%s' is not a valid method (no duration return type)", method.getName(), glueLine));

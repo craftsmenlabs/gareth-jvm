@@ -1,5 +1,7 @@
 package org.craftsmenlabs.gareth.api;
 
+import org.craftsmenlabs.gareth.api.exception.GarethExperimentParseException;
+
 import java.io.InputStream;
 
 /**
@@ -12,12 +14,12 @@ public interface ExperimentEngine {
      *
      * @param clazz
      */
-    void loadDefinition(final Class clazz);
+    void registerDefinition(final Class clazz) throws GarethExperimentParseException;
 
     /**
      * Load a experiment from input stream
      *
      * @param inputStream
      */
-    void loadExperiment(final InputStream inputStream);
+    void registerExperiment(final InputStream inputStream);
 }
