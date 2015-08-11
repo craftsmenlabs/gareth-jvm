@@ -47,7 +47,7 @@ public class ExperimentEngineConfigImpl implements ExperimentEngineConfig {
     /**
      * Experiment engine config builder
      */
-    private static class Builder {
+    public static class Builder {
 
         private boolean ignoreInvalidDefinitions, ignoreInvalidExperiments;
 
@@ -55,12 +55,12 @@ public class ExperimentEngineConfigImpl implements ExperimentEngineConfig {
 
         private final List<InputStream> inputStreams = new ArrayList<>();
 
-        public Builder addInputStream(final InputStream inputStream) {
+        public Builder addInputStreams(final InputStream inputStream) {
             this.inputStreams.add(inputStream);
             return this;
         }
 
-        public Builder addInputStream(final Collection<InputStream> inputStreams) {
+        public Builder addInputStreams(final Collection<InputStream> inputStreams) {
             this.inputStreams.addAll(inputStreams);
             return this;
         }
@@ -70,8 +70,8 @@ public class ExperimentEngineConfigImpl implements ExperimentEngineConfig {
             return this;
         }
 
-        public Builder addDefinitionClasses(final Set<Class> definitionClasses) {
-            definitionClasses.addAll(definitionClasses);
+        public Builder addDefinitionClasses(final Collection<Class> definitionClasses) {
+            this.definitionClasses.addAll(definitionClasses);
             return this;
         }
 
