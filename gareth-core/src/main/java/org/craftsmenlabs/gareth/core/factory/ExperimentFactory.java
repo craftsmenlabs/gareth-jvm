@@ -23,7 +23,7 @@ public class ExperimentFactory {
             final GarethParser garethParser = new GarethParser(new CommonTokenStream(garethLexer));
             garethParser.addErrorListener(new BaseErrorListener() {
                 @Override
-                public void syntaxError(Recognizer<?, ?> recognizer, Object offendingSymbol, int line, int charPositionInLine, String msg, RecognitionException e) {
+                public void syntaxError(final Recognizer<?, ?> recognizer, Object offendingSymbol, int line, int charPositionInLine, String msg, RecognitionException e) {
                     throw new IllegalStateException("failed to parse at line " + line + " due to " + msg, e);
                 }
             });

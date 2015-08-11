@@ -1,12 +1,11 @@
 package org.craftsmenlabs.gareth.core.parser;
 
-import org.craftsmenlabs.gareth.api.annotation.Assume;
-import org.craftsmenlabs.gareth.api.annotation.Baseline;
-import org.craftsmenlabs.gareth.api.annotation.Failure;
-import org.craftsmenlabs.gareth.api.annotation.Success;
+import org.craftsmenlabs.gareth.api.annotation.*;
 import org.craftsmenlabs.gareth.api.definition.ParsedDefinition;
 import org.junit.Before;
 import org.junit.Test;
+
+import java.time.Duration;
 
 import static org.junit.Assert.*;
 
@@ -105,6 +104,20 @@ public class ParsedParsedDefinitionFactoryImplTest {
     }
 
     @Test
+    public void testParseClassWithTime() throws Exception {
+        final ParsedDefinition parsedDefinition = parsedParsedDefinitionFactory.parse(TimeDefinition.class);
+        assertNotNull(parsedDefinition);
+
+        assertTrue(parsedDefinition.getAssumeDefinitions().isEmpty());
+        assertTrue(parsedDefinition.getBaselineDefinitions().isEmpty());
+        assertTrue(parsedDefinition.getFailureDefinitions().isEmpty());
+        assertTrue(parsedDefinition.getSuccessDefinitions().isEmpty());
+
+        assertEquals(1, parsedDefinition.getTimeDefinitions().size());
+        assertTrue(parsedDefinition.getTimeDefinitions().containsKey("Time glueline"));
+    }
+
+    @Test
     public void testParseClassWithIncorrectReturnType() throws Exception {
         try {
             parsedParsedDefinitionFactory.parse(WithIncorrectReturnType.class);
@@ -145,6 +158,17 @@ public class ParsedParsedDefinitionFactoryImplTest {
         @Failure(glueLine = "Failure glueline")
         public void failureDefinition() {
 
+        }
+    }
+
+    public class TimeDefinition {
+
+        public TimeDefinition() {
+        }
+
+        @Time(glueLine = "Time glueline")
+        public Duration timeDefinition() {
+            return null;
         }
     }
 
