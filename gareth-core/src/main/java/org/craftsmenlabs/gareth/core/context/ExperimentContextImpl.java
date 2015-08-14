@@ -1,11 +1,13 @@
 package org.craftsmenlabs.gareth.core.context;
 
 import lombok.Getter;
+import lombok.Setter;
 import org.craftsmenlabs.gareth.api.context.ExperimentContext;
 import org.craftsmenlabs.gareth.api.model.AssumptionBlock;
 
 import java.lang.reflect.Method;
 import java.time.Duration;
+import java.time.LocalDateTime;
 
 /**
  * Created by hylke on 10/08/15.
@@ -22,6 +24,9 @@ public class ExperimentContextImpl implements ExperimentContext {
     private String baselineGlueLine, assumeGlueLine, successGlueLine, failureGlueLine, timeGlueLine;
 
     private boolean finished;
+
+    @Setter
+    private LocalDateTime baselineRun, assumeRun, successRun, failureRun;
 
     private ExperimentContextImpl(final Builder builder) {
         this.experimentName = builder.experimentName;

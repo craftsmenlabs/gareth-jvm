@@ -3,16 +3,18 @@ package org.craftsmenlabs.gareth.core;
 import org.craftsmenlabs.gareth.api.ExperimentEngine;
 import org.craftsmenlabs.gareth.api.ExperimentEngineConfig;
 import org.craftsmenlabs.gareth.api.annotation.*;
+import org.craftsmenlabs.gareth.api.context.ExperimentContext;
 import org.junit.Before;
 import org.junit.Test;
 
 import java.time.Duration;
 import java.time.temporal.ChronoUnit;
-import java.time.temporal.Temporal;
 import java.util.ArrayList;
 import java.util.List;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 
 /**
  * Experiment engine integration test
@@ -47,6 +49,15 @@ public class ExperimentEngineImplIT {
 
         assertEquals(2, logItems.size());
         assertEquals("assume", logItems.get(1));
+
+        final List<ExperimentContext> experimentContexts = experimentEngine.getExperimentContexts();
+        assertEquals(1, experimentContexts.size());
+
+        final ExperimentContext experimentContext = experimentContexts.get(0);
+        assertNotNull(experimentContext.getBaselineRun());
+        assertNotNull(experimentContext.getAssumeRun());
+        assertNull(experimentContext.getSuccessRun());
+        assertNull(experimentContext.getFailureRun());
     }
 
     @Test
@@ -66,6 +77,15 @@ public class ExperimentEngineImplIT {
         assertEquals(3, logItems.size());
         assertEquals("assume", logItems.get(1));
         assertEquals("success", logItems.get(2));
+
+        final List<ExperimentContext> experimentContexts = experimentEngine.getExperimentContexts();
+        assertEquals(1, experimentContexts.size());
+
+        final ExperimentContext experimentContext = experimentContexts.get(0);
+        assertNotNull(experimentContext.getBaselineRun());
+        assertNotNull(experimentContext.getAssumeRun());
+        assertNotNull(experimentContext.getSuccessRun());
+        assertNull(experimentContext.getFailureRun());
     }
 
     @Test
@@ -84,6 +104,15 @@ public class ExperimentEngineImplIT {
 
         assertEquals(2, logItems.size());
         assertEquals("failure", logItems.get(1));
+
+        final List<ExperimentContext> experimentContexts = experimentEngine.getExperimentContexts();
+        assertEquals(1, experimentContexts.size());
+
+        final ExperimentContext experimentContext = experimentContexts.get(0);
+        assertNotNull(experimentContext.getBaselineRun());
+        assertNull(experimentContext.getAssumeRun());
+        assertNull(experimentContext.getSuccessRun());
+        assertNotNull(experimentContext.getFailureRun());
     }
 
     private ExperimentEngineConfig getConfiguration(final String fileName) {

@@ -2,6 +2,7 @@ package org.craftsmenlabs.gareth.api.context;
 
 import java.lang.reflect.Method;
 import java.time.Duration;
+import java.time.LocalDateTime;
 
 /**
  * Experiment context definition
@@ -39,5 +40,21 @@ public interface ExperimentContext {
     boolean isRunning();
 
     boolean isFinished();
+
+    LocalDateTime getBaselineRun();
+
+    LocalDateTime getAssumeRun();
+
+    LocalDateTime getSuccessRun();
+
+    LocalDateTime getFailureRun();
+
+    void setBaselineRun(final LocalDateTime localDateTime);
+
+    void setAssumeRun(final LocalDateTime localDateTime);
+
+    void setSuccessRun(final LocalDateTime localDateTime);
+
+    void setFailureRun(final LocalDateTime localDateTime);
 
 }

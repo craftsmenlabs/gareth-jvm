@@ -31,6 +31,7 @@ import org.slf4j.LoggerFactory;
 import java.io.InputStream;
 import java.lang.reflect.Method;
 import java.time.Duration;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -118,6 +119,7 @@ public class ExperimentEngineImpl implements ExperimentEngine {
         for (final ExperimentContext experimentContext : experimentContexts) {
             if (experimentContext.isValid()) {
                 invokeBaseline(experimentContext.getBaseline());
+                experimentContext.setBaselineRun(LocalDateTime.now());
                 scheduleInvokeAssume(experimentContext);
             }
         }
@@ -236,6 +238,12 @@ public class ExperimentEngineImpl implements ExperimentEngine {
         parsedDefinition.getFailureDefinitions().forEach((k, v) -> definitionRegistry.addMethodForFailure(k, v));
         parsedDefinition.getSuccessDefinitions().forEach((k, v) -> definitionRegistry.addMethodForSuccess(k, v));
         parsedDefinition.getTimeDefinitions().forEach((k, v) -> definitionRegistry.addDurationForTime(k, v));
+    }
+
+
+    @Override
+    public List<ExperimentContext> getExperimentContexts() {
+        return experimentContexts;
     }
 
     /**

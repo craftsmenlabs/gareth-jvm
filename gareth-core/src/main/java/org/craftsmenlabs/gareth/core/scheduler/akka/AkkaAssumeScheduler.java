@@ -11,8 +11,8 @@ import org.craftsmenlabs.gareth.core.reflection.ReflectionHelper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.lang.reflect.Method;
 import java.time.Duration;
+import java.time.LocalDateTime;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -43,15 +43,17 @@ public class AkkaAssumeScheduler implements AssumeScheduler {
                 try {
                     logger.debug("Invoking assumption");
                     methodInvoker.invoke(experimentContext.getAssume());
-
+                    experimentContext.setAssumeRun(LocalDateTime.now());
                     if (null != experimentContext.getSuccess()) {
                         logger.debug("Invoking success");
                         methodInvoker.invoke(experimentContext.getSuccess());
+                        experimentContext.setSuccessRun(LocalDateTime.now());
                     }
                 } catch (final Exception e) {
                     if (null != experimentContext.getFailure()) {
                         logger.debug("Invoking failure");
                         methodInvoker.invoke(experimentContext.getFailure());
+                        experimentContext.setFailureRun(LocalDateTime.now());
                     }
                 }
             }, actorSystem.dispatcher());
