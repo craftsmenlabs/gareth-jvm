@@ -16,6 +16,6 @@ import java.lang.annotation.Target;
 @Target(ElementType.METHOD)
 public @interface Baseline {
 
-    public String glueLine() default "";
+    public String glueLine();
 
 }

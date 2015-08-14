@@ -10,3 +10,4 @@ The following functionality is planned for next releases:
 - REST interface
 - Maintain state after restart
 - Store values thru experiments
+- Replace AKKA with lightweight scheduler

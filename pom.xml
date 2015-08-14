@@ -71,6 +71,11 @@
                 <artifactId>gareth-api</artifactId>
                 <version>${project.version}</version>
             </dependency>
+            <dependency>
+                <groupId>org.craftsmenlabs.gareth</groupId>
+                <artifactId>gareth-core</artifactId>
+                <version>${project.version}</version>
+            </dependency>
 
             <!-- ANTLR -->
             <dependency>
@@ -190,7 +195,8 @@
         <module>gareth-antlr</module>
         <module>gareth-api</module>
         <module>gareth-core</module>
-    </modules>
+    <module>gareth-example</module>
+  </modules>
 
 
     <!-- Profiles -->
