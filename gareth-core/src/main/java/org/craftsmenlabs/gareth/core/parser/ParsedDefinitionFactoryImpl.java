@@ -5,6 +5,7 @@ import org.craftsmenlabs.gareth.api.definition.ParsedDefinition;
 import org.craftsmenlabs.gareth.api.definition.ParsedDefinitionFactory;
 import org.craftsmenlabs.gareth.api.exception.GarethDefinitionParseException;
 import org.craftsmenlabs.gareth.api.exception.GarethExperimentParseException;
+import org.craftsmenlabs.gareth.core.reflection.ReflectionHelper;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
@@ -18,6 +19,12 @@ import java.util.stream.Stream;
  * Created by hylke on 10/08/15.
  */
 public class ParsedDefinitionFactoryImpl implements ParsedDefinitionFactory {
+
+    private final ReflectionHelper reflectionHelper;
+
+    public ParsedDefinitionFactoryImpl(final ReflectionHelper reflectionHelper) {
+        this.reflectionHelper = reflectionHelper;
+    }
 
     @Override
     public ParsedDefinition parse(final Class clazz) throws GarethExperimentParseException {
@@ -86,7 +93,7 @@ public class ParsedDefinitionFactoryImpl implements ParsedDefinitionFactory {
     private void registerDuration(final Method method, final String glueLine, final Map<String, Duration> durationMap) throws GarethDefinitionParseException {
         if (isValidateTimeMethod(method)) {
             try {
-                final Object tmpDefinition = getInstanceForClass(method.getDeclaringClass());
+                final Object tmpDefinition = reflectionHelper.getInstanceForClass(method.getDeclaringClass());
                 durationMap.put(glueLine, (Duration) method.invoke(tmpDefinition));
             } catch (final IllegalAccessException | InstantiationException | InvocationTargetException e) {
                 throw new GarethDefinitionParseException(e);
@@ -94,45 +101,6 @@ public class ParsedDefinitionFactoryImpl implements ParsedDefinitionFactory {
         } else {
             throw new IllegalStateException(String.format("Method %s with glue line '%s' is not a valid method (no duration return type)", method.getName(), glueLine));
         }
-    }
-
-    /**
-     * Create a instance for particular class (only zero argument constructors supported)
-     *
-     * @param clazz
-     * @return
-     * @throws IllegalAccessException
-     * @throws InvocationTargetException
-     * @throws InstantiationException
-     */
-    private Object getInstanceForClass(final Class clazz) throws IllegalAccessException, InvocationTargetException, InstantiationException {
-        Constructor constructor = null;
-        Object declaringClassInstance = null;
-
-        final boolean memberClass = clazz.isMemberClass();
-        final int requiredConstructorArguments = memberClass ? 1 : 0; //
-
-        if (memberClass) {
-            declaringClassInstance = getInstanceForClass(clazz.getDeclaringClass());
-        }
-        for (final Constructor declaredConstructor : clazz.getDeclaredConstructors()) {
-            if (declaredConstructor.getGenericParameterTypes().length == requiredConstructorArguments) {
-                constructor = declaredConstructor;
-                break;
-            }
-        }
-        // If a valid constructor is available
-        if (null != constructor) {
-            final Object instance;
-            constructor.setAccessible(true);
-            if (memberClass) {
-                instance = constructor.newInstance(declaringClassInstance);
-            } else {
-                instance = constructor.newInstance();
-            }
-            return instance;
-        }
-        throw new InstantiationException(String.format("Class %s has no zero argument argument constructor", clazz));
     }
 
     private boolean isValidMethod(final Method method) {

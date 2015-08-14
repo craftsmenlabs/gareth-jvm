@@ -6,9 +6,7 @@ import org.craftsmenlabs.gareth.api.exception.GarethUnknownExperimentException;
 import org.craftsmenlabs.gareth.api.model.Experiment;
 import org.craftsmenlabs.gareth.api.registry.ExperimentRegistry;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 /**
  * Created by hylke on 11/08/15.
@@ -32,5 +30,10 @@ public class ExperimentRegistryImpl implements ExperimentRegistry {
         return Optional
                 .ofNullable(experiments.get(experimentName))
                 .orElseThrow(() -> new GarethUnknownExperimentException(String.format("Experiment '%s' unknown", experimentName)));
+    }
+
+    @Override
+    public List<Experiment> getAllExperiments() {
+        return new ArrayList<>(experiments.values());
     }
 }

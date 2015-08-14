@@ -65,7 +65,7 @@ public class DefinitionRegistryImpl implements DefinitionRegistry {
 
 
     @Override
-    public Duration getDurationForTime(String glueLine) {
+    public Duration getDurationForTime(final String glueLine) {
         return getDefinition(getTimeDefinitions(), glueLine);
     }
 

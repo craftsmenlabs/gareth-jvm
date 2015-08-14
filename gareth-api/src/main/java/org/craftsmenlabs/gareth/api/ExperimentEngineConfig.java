@@ -35,4 +35,11 @@ public interface ExperimentEngineConfig {
      */
     boolean isIgnoreInvalidExperiments();
 
+    /**
+     * Whether baseline invocation are ignored
+     *
+     * @return
+     */
+    boolean isIgnoreInvocationExceptions();
+
 }

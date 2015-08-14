@@ -3,6 +3,7 @@ package org.craftsmenlabs.gareth.core.parser;
 import org.craftsmenlabs.gareth.api.annotation.*;
 import org.craftsmenlabs.gareth.api.definition.ParsedDefinition;
 import org.craftsmenlabs.gareth.api.exception.GarethDefinitionParseException;
+import org.craftsmenlabs.gareth.core.reflection.ReflectionHelper;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -21,7 +22,7 @@ public class ParsedDefinitionFactoryImplTest {
     @Before
     public void setUp() throws Exception {
 
-        parsedParsedDefinitionFactory = new ParsedDefinitionFactoryImpl();
+        parsedParsedDefinitionFactory = new ParsedDefinitionFactoryImpl(new ReflectionHelper());
 
     }
 

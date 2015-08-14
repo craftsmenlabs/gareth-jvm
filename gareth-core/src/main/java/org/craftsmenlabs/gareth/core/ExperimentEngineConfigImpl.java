@@ -15,13 +15,14 @@ public class ExperimentEngineConfigImpl implements ExperimentEngineConfig {
 
     private final List<InputStream> inputStreamList;
 
-    private final boolean ignoreInvalidDefinitions, ignoreInvalidExperiments;
+    private final boolean ignoreInvalidDefinitions, ignoreInvalidExperiments, ignoreInvocationExceptions;
 
     private ExperimentEngineConfigImpl(final Builder builder) {
         this.definitionClasses = builder.definitionClasses;
         this.inputStreamList = builder.inputStreams;
         this.ignoreInvalidDefinitions = builder.ignoreInvalidDefinitions;
         this.ignoreInvalidExperiments = builder.ignoreInvalidExperiments;
+        this.ignoreInvocationExceptions = builder.ignoreInvocationExceptions;
     }
 
     @Override
@@ -44,12 +45,17 @@ public class ExperimentEngineConfigImpl implements ExperimentEngineConfig {
         return ignoreInvalidExperiments;
     }
 
+    @Override
+    public boolean isIgnoreInvocationExceptions() {
+        return ignoreInvocationExceptions;
+    }
+
     /**
      * Experiment engine config builder
      */
     public static class Builder {
 
-        private boolean ignoreInvalidDefinitions, ignoreInvalidExperiments;
+        private boolean ignoreInvalidDefinitions, ignoreInvalidExperiments, ignoreInvocationExceptions;
 
         private final Set<Class> definitionClasses = new HashSet<>();
 
@@ -82,6 +88,11 @@ public class ExperimentEngineConfigImpl implements ExperimentEngineConfig {
 
         public Builder setIgnoreInvalidExperiments(boolean ignoreInvalidExperiments) {
             this.ignoreInvalidExperiments = ignoreInvalidExperiments;
+            return this;
+        }
+
+        public Builder setIgnoreInvocationExceptions(boolean ignoreInvocationExceptions) {
+            this.ignoreInvocationExceptions = ignoreInvocationExceptions;
             return this;
         }
 
