@@ -7,6 +7,8 @@ import org.craftsmenlabs.gareth.api.invoker.MethodInvoker;
 import org.craftsmenlabs.gareth.api.scheduler.AssumeScheduler;
 import org.craftsmenlabs.gareth.core.invoker.MethodInvokerImpl;
 import org.craftsmenlabs.gareth.core.reflection.ReflectionHelper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.lang.reflect.Method;
 import java.time.Duration;
@@ -16,6 +18,8 @@ import java.util.concurrent.TimeUnit;
  * Created by hylke on 14/08/15.
  */
 public class AkkaAssumeScheduler implements AssumeScheduler {
+
+    private static final Logger logger = LoggerFactory.getLogger(AkkaAssumeScheduler.class);
 
 
     private final ActorSystem actorSystem;
@@ -32,22 +36,26 @@ public class AkkaAssumeScheduler implements AssumeScheduler {
 
     @Override
     public void schedule(final Method assumeMethod, final Duration duration, final Method successMethod, final Method failureMethod) {
-
         try {
             actorSystem.scheduler().scheduleOnce(scala.concurrent.duration.Duration.create(duration.toMillis(), TimeUnit.MILLISECONDS), () -> {
                 try {
+                    logger.debug("Invoking assumption");
                     methodInvoker.invoke(assumeMethod);
+
                     if (null != successMethod) {
+                        logger.debug("Invoking success");
                         methodInvoker.invoke(successMethod);
                     }
                 } catch (final Exception e) {
                     if (null != failureMethod) {
+                        logger.debug("Invoking failure");
                         methodInvoker.invoke(failureMethod);
                     }
                 }
             }, actorSystem.dispatcher());
 
         } catch (final GarethUnknownDefinitionException | GarethInvocationException e) {
+            logger.error("Problem during assumption invocation", e);
             if (!ignoreInvocationExceptions) {
                 throw e;
             }

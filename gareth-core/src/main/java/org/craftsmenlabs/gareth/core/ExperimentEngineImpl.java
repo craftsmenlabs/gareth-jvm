@@ -23,6 +23,8 @@ import org.craftsmenlabs.gareth.core.reflection.ReflectionHelper;
 import org.craftsmenlabs.gareth.core.registry.DefinitionRegistryImpl;
 import org.craftsmenlabs.gareth.core.registry.ExperimentRegistryImpl;
 import org.craftsmenlabs.gareth.core.scheduler.akka.AkkaAssumeScheduler;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.InputStream;
 import java.lang.reflect.Method;
@@ -32,6 +34,8 @@ import java.time.Duration;
  * Created by hylke on 10/08/15.
  */
 public class ExperimentEngineImpl implements ExperimentEngine {
+
+    private final static Logger logger = LoggerFactory.getLogger(ExperimentEngineImpl.class);
 
     private final DefinitionRegistry definitionRegistry;
 
@@ -69,16 +73,20 @@ public class ExperimentEngineImpl implements ExperimentEngine {
 
     @Override
     public void start() {
+        logger.info("Starting experiment engine");
         init();
-    }
-
-    private void init() {
-        initDefinitions();
-        initExperiments();
         runExperiments();
     }
 
+    private void init() {
+        logger.info("Initializing experiment engine");
+        initDefinitions();
+        initExperiments();
+
+    }
+
     private void runExperiments() {
+        logger.info("Run and schedule experiments");
         for (final Experiment experiment : experimentRegistry.getAllExperiments()) {
             for (final AssumptionBlock assumptionBlock : experiment.getAssumptionBlockList()) {
                 invokeBaseline(assumptionBlock.getBaseline());
