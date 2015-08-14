@@ -2,13 +2,13 @@ package org.craftsmenlabs.gareth.core;
 
 import org.craftsmenlabs.gareth.api.ExperimentEngine;
 import org.craftsmenlabs.gareth.api.ExperimentEngineConfig;
-import org.craftsmenlabs.gareth.api.annotation.Assume;
-import org.craftsmenlabs.gareth.api.annotation.Baseline;
-import org.craftsmenlabs.gareth.api.annotation.Failure;
-import org.craftsmenlabs.gareth.api.annotation.Success;
+import org.craftsmenlabs.gareth.api.annotation.*;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.time.Duration;
+import java.time.temporal.ChronoUnit;
+import java.time.temporal.Temporal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -43,7 +43,7 @@ public class ExperimentEngineImplIT {
         assertEquals(1, logItems.size());
         assertEquals("baseline", logItems.get(0));
 
-        Thread.sleep(3000L);
+        Thread.sleep(50L);
 
         assertEquals(2, logItems.size());
         assertEquals("assume", logItems.get(1));
@@ -61,7 +61,7 @@ public class ExperimentEngineImplIT {
         assertEquals(1, logItems.size());
         assertEquals("baseline", logItems.get(0));
 
-        Thread.sleep(3000L);
+        Thread.sleep(50L);
 
         assertEquals(3, logItems.size());
         assertEquals("assume", logItems.get(1));
@@ -80,7 +80,7 @@ public class ExperimentEngineImplIT {
         assertEquals(1, logItems.size());
         assertEquals("baseline", logItems.get(0));
 
-        Thread.sleep(3000L);
+        Thread.sleep(50L);
 
         assertEquals(2, logItems.size());
         assertEquals("failure", logItems.get(1));
@@ -107,6 +107,11 @@ public class ExperimentEngineImplIT {
         @Assume(glueLine = "A assumption")
         public void assume() {
             logItems.add("assume");
+        }
+
+        @Time(glueLine = "1 day")
+        public Duration oneDay(){
+            return Duration.of(10, ChronoUnit.MILLIS);
         }
 
         @Assume(glueLine = "A assumption with failure")

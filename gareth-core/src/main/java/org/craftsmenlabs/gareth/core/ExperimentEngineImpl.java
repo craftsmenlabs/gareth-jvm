@@ -95,9 +95,7 @@ public class ExperimentEngineImpl implements ExperimentEngine {
         try {
             duration = definitionRegistry.getDurationForTime(timeGlueLine);
         } catch (final GarethUnknownDefinitionException e) {
-            if (!experimentEngineConfig.isIgnoreInvocationExceptions()) {
-                throw e;
-            }
+            throw new GarethInvocationException(e);
         }
         return duration;
     }

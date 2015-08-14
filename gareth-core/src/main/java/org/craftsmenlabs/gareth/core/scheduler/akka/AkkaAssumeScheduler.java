@@ -10,6 +10,8 @@ import org.craftsmenlabs.gareth.core.reflection.ReflectionHelper;
 
 import java.lang.reflect.Method;
 import java.time.Duration;
+import java.time.temporal.ChronoUnit;
+import java.time.temporal.TemporalUnit;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -34,7 +36,7 @@ public class AkkaAssumeScheduler implements AssumeScheduler {
     public void schedule(final Method assumeMethod, final Duration duration, final Method successMethod, final Method failureMethod) {
 
         try {
-            actorSystem.scheduler().scheduleOnce(scala.concurrent.duration.Duration.create(2, TimeUnit.SECONDS), () -> {
+            actorSystem.scheduler().scheduleOnce(scala.concurrent.duration.Duration.create(duration.toMillis(), TimeUnit.MILLISECONDS), () -> {
                 try {
                     methodInvoker.invoke(assumeMethod);
                     if (null != successMethod) {
