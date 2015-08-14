@@ -3,6 +3,7 @@ package org.craftsmenlabs.gareth.core;
 import org.apache.commons.io.IOUtils;
 import org.craftsmenlabs.gareth.api.ExperimentEngine;
 import org.craftsmenlabs.gareth.api.ExperimentEngineConfig;
+import org.craftsmenlabs.gareth.api.context.ExperimentContext;
 import org.craftsmenlabs.gareth.api.definition.ParsedDefinition;
 import org.craftsmenlabs.gareth.api.definition.ParsedDefinitionFactory;
 import org.craftsmenlabs.gareth.api.exception.GarethDefinitionParseException;
@@ -16,6 +17,7 @@ import org.craftsmenlabs.gareth.api.model.Experiment;
 import org.craftsmenlabs.gareth.api.registry.DefinitionRegistry;
 import org.craftsmenlabs.gareth.api.registry.ExperimentRegistry;
 import org.craftsmenlabs.gareth.api.scheduler.AssumeScheduler;
+import org.craftsmenlabs.gareth.core.context.ExperimentContextImpl;
 import org.craftsmenlabs.gareth.core.factory.ExperimentFactoryImpl;
 import org.craftsmenlabs.gareth.core.invoker.MethodInvokerImpl;
 import org.craftsmenlabs.gareth.core.parser.ParsedDefinitionFactoryImpl;
@@ -29,6 +31,8 @@ import org.slf4j.LoggerFactory;
 import java.io.InputStream;
 import java.lang.reflect.Method;
 import java.time.Duration;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by hylke on 10/08/15.
@@ -50,6 +54,9 @@ public class ExperimentEngineImpl implements ExperimentEngine {
     private final MethodInvoker methodInvoker;
 
     private final AssumeScheduler assumeScheduler;
+
+    private final List<ExperimentContext> experimentContexts = new ArrayList<>();
+
 
     private ExperimentEngineImpl(final Builder builder) {
         this.experimentEngineConfig = builder.experimentEngineConfig;
@@ -78,22 +85,40 @@ public class ExperimentEngineImpl implements ExperimentEngine {
         runExperiments();
     }
 
+    private void populateExperimentContexts() {
+        logger.info("Populating experiment contexts");
+        for (final Experiment experiment : experimentRegistry.getAllExperiments()) {
+            for (final AssumptionBlock assumptionBlock : experiment.getAssumptionBlockList()) {
+
+                final ExperimentContext experimentContext = new ExperimentContextImpl
+                        .Builder(experiment.getExperimentName(), assumptionBlock)
+                        .setBaseline(getBaseline(assumptionBlock.getBaseline()))
+                        .setAssume(getAssume(assumptionBlock.getAssumption()))
+                        .setTime(getDuration(assumptionBlock.getTime()))
+                        .setFailure(getFailure(assumptionBlock.getFailure()))
+                        .setSuccess(getSuccess(assumptionBlock.getSuccess()))
+                        .build();
+
+                experimentContexts.add(experimentContext);
+            }
+        }
+        logger.info(String.format("Added %d different experiments", experimentContexts.size()));
+    }
+
     private void init() {
         logger.info("Initializing experiment engine");
         initDefinitions();
         initExperiments();
+        populateExperimentContexts();
 
     }
 
     private void runExperiments() {
         logger.info("Run and schedule experiments");
-        for (final Experiment experiment : experimentRegistry.getAllExperiments()) {
-            for (final AssumptionBlock assumptionBlock : experiment.getAssumptionBlockList()) {
-                invokeBaseline(assumptionBlock.getBaseline());
-                scheduleInvokeAssume(assumptionBlock.getAssumption()
-                        , getDuration(assumptionBlock.getTime())
-                        , getSuccess(assumptionBlock.getSuccess())
-                        , getFailure(assumptionBlock.getFailure()));
+        for (final ExperimentContext experimentContext : experimentContexts) {
+            if (experimentContext.isValid()) {
+                invokeBaseline(experimentContext.getBaseline());
+                scheduleInvokeAssume(experimentContext);
             }
         }
     }
@@ -108,9 +133,8 @@ public class ExperimentEngineImpl implements ExperimentEngine {
         return duration;
     }
 
-    private void invokeBaseline(final String baselineGlueLine) {
+    private void invokeBaseline(final Method baselineMethod) {
         try {
-            final Method baselineMethod = definitionRegistry.getMethodForBaseline(baselineGlueLine);
             methodInvoker.invoke(baselineMethod);
         } catch (final GarethUnknownDefinitionException | GarethInvocationException e) {
             if (!experimentEngineConfig.isIgnoreInvocationExceptions()) {
@@ -119,9 +143,9 @@ public class ExperimentEngineImpl implements ExperimentEngine {
         }
     }
 
-    private void scheduleInvokeAssume(final String assumeGlueLine, final Duration duration, final Method successMethod, final Method failureMethod) {
+    private void scheduleInvokeAssume(final ExperimentContext experimentContext) {
         try {
-            assumeScheduler.schedule(getAssume(assumeGlueLine), duration, successMethod, failureMethod);
+            assumeScheduler.schedule(experimentContext);
 
         } catch (final GarethUnknownDefinitionException | GarethInvocationException e) {
             if (!experimentEngineConfig.isIgnoreInvocationExceptions()) {
@@ -147,6 +171,19 @@ public class ExperimentEngineImpl implements ExperimentEngine {
         Method method = null;
         try {
             method = definitionRegistry.getMethodForAssume(glueLine);
+        } catch (final GarethUnknownDefinitionException e) {
+            if (experimentEngineConfig.isIgnoreInvalidDefinitions()) {
+                throw e;
+            }
+        }
+        return method;
+    }
+
+
+    private Method getBaseline(final String glueLine) {
+        Method method = null;
+        try {
+            method = definitionRegistry.getMethodForBaseline(glueLine);
         } catch (final GarethUnknownDefinitionException e) {
             if (experimentEngineConfig.isIgnoreInvalidDefinitions()) {
                 throw e;

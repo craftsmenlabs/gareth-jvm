@@ -43,7 +43,7 @@ public class ExperimentEngineImplIT {
         assertEquals(1, logItems.size());
         assertEquals("baseline", logItems.get(0));
 
-        Thread.sleep(50L);
+        Thread.sleep(100L);
 
         assertEquals(2, logItems.size());
         assertEquals("assume", logItems.get(1));

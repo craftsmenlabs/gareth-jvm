@@ -1,5 +1,7 @@
 package org.craftsmenlabs.gareth.api.scheduler;
 
+import org.craftsmenlabs.gareth.api.context.ExperimentContext;
+
 import java.lang.reflect.Method;
 import java.time.Duration;
 
@@ -11,11 +13,8 @@ public interface AssumeScheduler {
     /**
      * Schedule a assumption
      *
-     * @param assumeMethod
-     * @param duration
-     * @param successMethod
-     * @param failureMethod
+     * @param experimentContext
      */
-    void schedule(final Method assumeMethod, final Duration duration, final Method successMethod, final Method failureMethod);
+    void schedule(final ExperimentContext experimentContext);
 
 }

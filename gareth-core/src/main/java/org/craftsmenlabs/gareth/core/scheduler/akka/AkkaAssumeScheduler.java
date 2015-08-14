@@ -1,6 +1,7 @@
 package org.craftsmenlabs.gareth.core.scheduler.akka;
 
 import akka.actor.ActorSystem;
+import org.craftsmenlabs.gareth.api.context.ExperimentContext;
 import org.craftsmenlabs.gareth.api.exception.GarethInvocationException;
 import org.craftsmenlabs.gareth.api.exception.GarethUnknownDefinitionException;
 import org.craftsmenlabs.gareth.api.invoker.MethodInvoker;
@@ -35,21 +36,22 @@ public class AkkaAssumeScheduler implements AssumeScheduler {
     }
 
     @Override
-    public void schedule(final Method assumeMethod, final Duration duration, final Method successMethod, final Method failureMethod) {
+    public void schedule(final ExperimentContext experimentContext) {
+        final Duration time = experimentContext.getTime();
         try {
-            actorSystem.scheduler().scheduleOnce(scala.concurrent.duration.Duration.create(duration.toMillis(), TimeUnit.MILLISECONDS), () -> {
+            actorSystem.scheduler().scheduleOnce(scala.concurrent.duration.Duration.create(time.toMillis(), TimeUnit.MILLISECONDS), () -> {
                 try {
                     logger.debug("Invoking assumption");
-                    methodInvoker.invoke(assumeMethod);
+                    methodInvoker.invoke(experimentContext.getAssume());
 
-                    if (null != successMethod) {
+                    if (null != experimentContext.getSuccess()) {
                         logger.debug("Invoking success");
-                        methodInvoker.invoke(successMethod);
+                        methodInvoker.invoke(experimentContext.getSuccess());
                     }
                 } catch (final Exception e) {
-                    if (null != failureMethod) {
+                    if (null != experimentContext.getFailure()) {
                         logger.debug("Invoking failure");
-                        methodInvoker.invoke(failureMethod);
+                        methodInvoker.invoke(experimentContext.getFailure());
                     }
                 }
             }, actorSystem.dispatcher());
