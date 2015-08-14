@@ -121,6 +121,7 @@ public class ExperimentEngineImpl implements ExperimentEngine {
                 invokeBaseline(experimentContext.getBaseline());
                 experimentContext.setBaselineRun(LocalDateTime.now());
                 scheduleInvokeAssume(experimentContext);
+                experimentContext.setFinished(true);
             }
         }
     }

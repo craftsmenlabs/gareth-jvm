@@ -57,4 +57,6 @@ public interface ExperimentContext {
 
     void setFailureRun(final LocalDateTime localDateTime);
 
+    void setFinished(final boolean finished);
+
 }

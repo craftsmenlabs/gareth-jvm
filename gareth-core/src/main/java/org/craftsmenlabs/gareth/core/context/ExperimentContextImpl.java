@@ -69,6 +69,11 @@ public class ExperimentContextImpl implements ExperimentContext {
         return finished;
     }
 
+    @Override
+    public void setFinished(boolean finished) {
+        this.finished = finished;
+    }
+
     public static class Builder {
 
         private final String experimentName;

@@ -12,9 +12,7 @@ import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
+import static org.junit.Assert.*;
 
 /**
  * Experiment engine integration test
@@ -54,6 +52,7 @@ public class ExperimentEngineImplIT {
         assertEquals(1, experimentContexts.size());
 
         final ExperimentContext experimentContext = experimentContexts.get(0);
+        assertTrue(experimentContext.isFinished());
         assertNotNull(experimentContext.getBaselineRun());
         assertNotNull(experimentContext.getAssumeRun());
         assertNull(experimentContext.getSuccessRun());
@@ -82,6 +81,7 @@ public class ExperimentEngineImplIT {
         assertEquals(1, experimentContexts.size());
 
         final ExperimentContext experimentContext = experimentContexts.get(0);
+        assertTrue(experimentContext.isFinished());
         assertNotNull(experimentContext.getBaselineRun());
         assertNotNull(experimentContext.getAssumeRun());
         assertNotNull(experimentContext.getSuccessRun());
@@ -105,10 +105,13 @@ public class ExperimentEngineImplIT {
         assertEquals(2, logItems.size());
         assertEquals("failure", logItems.get(1));
 
+
+
         final List<ExperimentContext> experimentContexts = experimentEngine.getExperimentContexts();
         assertEquals(1, experimentContexts.size());
 
         final ExperimentContext experimentContext = experimentContexts.get(0);
+        assertTrue(experimentContext.isFinished());
         assertNotNull(experimentContext.getBaselineRun());
         assertNull(experimentContext.getAssumeRun());
         assertNull(experimentContext.getSuccessRun());
