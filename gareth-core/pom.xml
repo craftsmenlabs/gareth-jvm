@@ -22,9 +22,10 @@
             <artifactId>gareth-api</artifactId>
         </dependency>
 
+        <!-- Sundial -->
         <dependency>
-            <groupId>com.typesafe.akka</groupId>
-            <artifactId>akka-actor_2.11</artifactId>
+            <groupId>com.xeiam</groupId>
+            <artifactId>sundial</artifactId>
         </dependency>
 
         <dependency>

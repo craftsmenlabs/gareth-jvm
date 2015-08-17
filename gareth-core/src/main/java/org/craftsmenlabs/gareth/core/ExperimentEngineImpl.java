@@ -24,7 +24,7 @@ import org.craftsmenlabs.gareth.core.parser.ParsedDefinitionFactoryImpl;
 import org.craftsmenlabs.gareth.core.reflection.ReflectionHelper;
 import org.craftsmenlabs.gareth.core.registry.DefinitionRegistryImpl;
 import org.craftsmenlabs.gareth.core.registry.ExperimentRegistryImpl;
-import org.craftsmenlabs.gareth.core.scheduler.akka.AkkaAssumeScheduler;
+import org.craftsmenlabs.gareth.core.scheduler.DefaultAssumeScheduler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -300,7 +300,7 @@ public class ExperimentEngineImpl implements ExperimentEngine {
 
         private void buildDefaultAssumeScheduler() {
             if (assumeScheduler == null) {
-                assumeScheduler = new AkkaAssumeScheduler
+                assumeScheduler = new DefaultAssumeScheduler
                         .Builder()
                         .setIgnoreInvocationExceptions(experimentEngineConfig.isIgnoreInvocationExceptions())
                         .build();

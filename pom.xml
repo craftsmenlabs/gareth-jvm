@@ -106,6 +106,13 @@
                 <version>${akka.version}</version>
             </dependency>
 
+            <!-- Sundial -->
+            <dependency>
+                <groupId>com.xeiam</groupId>
+                <artifactId>sundial</artifactId>
+                <version>2.0.1</version>
+            </dependency>
+
 
             <!-- Logback -->
             <dependency>
@@ -196,6 +203,7 @@
         <module>gareth-api</module>
         <module>gareth-core</module>
     <module>gareth-example</module>
+    <module>gareth-scheduler-akka</module>
   </modules>
 
 
