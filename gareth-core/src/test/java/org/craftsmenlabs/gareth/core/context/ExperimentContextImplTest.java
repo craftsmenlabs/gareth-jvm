@@ -127,13 +127,14 @@ public class ExperimentContextImplTest {
     }
 
     @Test
-    public void testIsFinished() throws Exception {
-
+    public void testIsFinishedDefault() throws Exception {
+        assertFalse(experimentContext.isFinished());
     }
 
     @Test
-    public void testSetFinished() throws Exception {
-
+    public void testIsFinished() {
+        experimentContext.setFinished(true);
+        assertTrue(experimentContext.isFinished());
     }
 
     @Test
