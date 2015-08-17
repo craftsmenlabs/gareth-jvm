@@ -41,16 +41,20 @@ public class DefaultAssumeScheduler implements AssumeScheduler {
         now.add(Calendar.MILLISECOND, new Long(time.toMillis()).intValue());
         try {
 
-            final String jobName = experimentContext.getExperimentName() + "-" + new Random().nextInt();
-            final String triggerName = jobName + "-trigger";
-            SundialJobScheduler.addJob(jobName, DefaultInvocationJob.class.getName());
-            SundialJobScheduler.addSimpleTrigger(triggerName, jobName, 1, 1, now.getTime(), null);
-
-            // Start the job
+            // Job params
             final Map<String, Object> jobParams = new HashMap<>();
             jobParams.put("experimentContext", experimentContext);
             jobParams.put("methodInvoker", methodInvoker);
-            SundialJobScheduler.startJob(jobName, jobParams);
+
+            final String jobName = experimentContext.getExperimentName() + "-" + new Random().nextInt();
+            final String triggerName = jobName + "-trigger";
+
+            SundialJobScheduler.addJob(jobName, DefaultInvocationJob.class.getName(), jobParams, false);
+            SundialJobScheduler.addSimpleTrigger(triggerName, jobName, 0, 1, now.getTime(), null);
+
+            // Start the job
+
+            //SundialJobScheduler.startJob(jobName, jobParams);
 
 
         } catch (final GarethUnknownDefinitionException | GarethInvocationException e) {
