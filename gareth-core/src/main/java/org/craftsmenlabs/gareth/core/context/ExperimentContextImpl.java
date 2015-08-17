@@ -56,12 +56,13 @@ public class ExperimentContextImpl implements ExperimentContext {
 
     @Override
     public boolean hasFailures() {
-        return false;
+        return null != failureRun;
     }
 
     @Override
     public boolean isRunning() {
-        return false;
+        return (null != baselineRun || null != assumeRun)
+                && !(null != successRun || null != failureRun);
     }
 
     @Override
