@@ -92,8 +92,9 @@ You can contribute to this repository the by following these steps.
 
 The following functionality is planned for next releases:
 
-- [] Build examples
-- [] REST interface
-- [] Maintain state after restart
-- [] Store values thru experiments
+- [ ] Re-run experiments
+- [ ] Build examples
+- [ ] REST interface
+- [ ] Maintain state after restart
+- [ ] Store values thru experiments
 - [x] Replace AKKA with lightweight scheduler

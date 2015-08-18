@@ -5,6 +5,7 @@ import lombok.Setter;
 import org.craftsmenlabs.gareth.api.context.ExperimentContext;
 import org.craftsmenlabs.gareth.api.model.AssumptionBlock;
 
+import javax.xml.bind.annotation.XmlRootElement;
 import java.lang.reflect.Method;
 import java.time.Duration;
 import java.time.LocalDateTime;
@@ -12,6 +13,7 @@ import java.time.LocalDateTime;
 /**
  * Created by hylke on 10/08/15.
  */
+@XmlRootElement
 @Getter
 public class ExperimentContextImpl implements ExperimentContext {
 
