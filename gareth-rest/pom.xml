@@ -11,7 +11,6 @@
     <groupId>org.craftsmenlabs.gareth.rest</groupId>
     <artifactId>gareth-rest</artifactId>
     <name>gareth-rest</name>
-    <packaging>war</packaging>
 
     <dependencies>
 
@@ -22,7 +21,7 @@
 
         <dependency>
             <groupId>org.glassfish.jersey.containers</groupId>
-            <artifactId>jersey-container-grizzly2-servlet</artifactId>
+            <artifactId>jersey-container-grizzly2-http</artifactId>
         </dependency>
 
         <dependency>
@@ -30,13 +29,5 @@
             <artifactId>jersey-media-json-jackson</artifactId>
         </dependency>
 
-        <dependency>
-            <groupId>org.eclipse.jetty</groupId>
-            <artifactId>jetty-server</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.eclipse.jetty</groupId>
-            <artifactId>jetty-servlet</artifactId>
-        </dependency>
     </dependencies>
 </project>

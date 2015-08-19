@@ -1,8 +1,8 @@
 package org.craftsmenlabs.gareth.rest.resource;
 
 import org.craftsmenlabs.gareth.api.ExperimentEngine;
-import org.craftsmenlabs.gareth.rest.listener.GarethServletContextListener;
 
+import javax.inject.Inject;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
@@ -15,10 +15,12 @@ import javax.ws.rs.core.Response;
 @Path("/experiments")
 public class ExperimentResource {
 
+    @Inject
+    private ExperimentEngine experimentEngine;
+
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     public Response get() {
-        final ExperimentEngine experimentEngine = GarethServletContextListener.getExperimentEngine();
         return Response.status(200).entity(experimentEngine.getExperimentContexts()).build();
     }
 }

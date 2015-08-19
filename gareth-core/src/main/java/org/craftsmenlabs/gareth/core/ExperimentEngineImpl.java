@@ -16,6 +16,8 @@ import org.craftsmenlabs.gareth.api.model.AssumptionBlock;
 import org.craftsmenlabs.gareth.api.model.Experiment;
 import org.craftsmenlabs.gareth.api.registry.DefinitionRegistry;
 import org.craftsmenlabs.gareth.api.registry.ExperimentRegistry;
+import org.craftsmenlabs.gareth.api.rest.RestService;
+import org.craftsmenlabs.gareth.api.rest.RestServiceFactory;
 import org.craftsmenlabs.gareth.api.scheduler.AssumeScheduler;
 import org.craftsmenlabs.gareth.core.context.ExperimentContextImpl;
 import org.craftsmenlabs.gareth.core.factory.ExperimentFactoryImpl;
@@ -58,6 +60,8 @@ public class ExperimentEngineImpl implements ExperimentEngine {
 
     private final List<ExperimentContext> experimentContexts = new ArrayList<>();
 
+    private final RestServiceFactory restServiceFactory;
+
 
     private ExperimentEngineImpl(final Builder builder) {
         this.experimentEngineConfig = builder.experimentEngineConfig;
@@ -67,6 +71,7 @@ public class ExperimentEngineImpl implements ExperimentEngine {
         this.experimentRegistry = builder.experimentRegistry;
         this.methodInvoker = builder.methodInvoker;
         this.assumeScheduler = builder.assumeScheduler;
+        this.restServiceFactory = builder.restServiceFactory;
     }
 
     private void registerDefinition(final Class clazz) throws GarethDefinitionParseException {
@@ -83,6 +88,7 @@ public class ExperimentEngineImpl implements ExperimentEngine {
     public void start() {
         logger.info("Starting experiment engine");
         init();
+        startRestService();
         runExperiments();
     }
 
@@ -111,7 +117,19 @@ public class ExperimentEngineImpl implements ExperimentEngine {
         initDefinitions();
         initExperiments();
         populateExperimentContexts();
+    }
 
+    private void startRestService() {
+        if (null != restServiceFactory) {
+            try {
+                logger.info("Starting REST service");
+                final RestService restService = restServiceFactory.create(this, 8888);
+                restService.start();
+
+            } catch (final Exception e) {
+                logger.error("REST service cannot be started", e);
+            }
+        }
     }
 
     private void runExperiments() {
@@ -272,6 +290,8 @@ public class ExperimentEngineImpl implements ExperimentEngine {
 
         private AssumeScheduler assumeScheduler = null;
 
+        private RestServiceFactory restServiceFactory;
+
         public Builder setDefinitionRegistry(final DefinitionRegistry definitionRegistry) {
             this.definitionRegistry = definitionRegistry;
             return this;
@@ -295,6 +315,11 @@ public class ExperimentEngineImpl implements ExperimentEngine {
 
         public Builder setExperimentFactory(final ExperimentFactory experimentFactory) {
             this.experimentFactory = experimentFactory;
+            return this;
+        }
+
+        public Builder setRestServiceFactory(final RestServiceFactory restServiceFactory) {
+            this.restServiceFactory = restServiceFactory;
             return this;
         }
 
