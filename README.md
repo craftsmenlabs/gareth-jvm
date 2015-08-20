@@ -15,7 +15,7 @@ dependency:
 <dependency>
     <groupId>org.craftsmenlabs.gareth</groupId>
     <artifactId>gareth-core</artifactId>
-    <version>0.2.0</version>
+    <version>0.3.0</version>
 </dependency>
 ```
 
@@ -79,6 +79,83 @@ After doing a ```maven clean package``` you now can run the Gareth platform with
 ```shell
 java -jar /path/to/project.jar
 ```
+
+### Running Gareth (with REST interface)
+
+Running Gareth with a REST interface can be done by creating a maven project that depends on the following maven
+dependency:
+
+```xml
+<dependency>
+    <groupId>org.craftsmenlabs.gareth</groupId>
+    <artifactId>gareth-core</artifactId>
+    <version>0.3.0</version>
+</dependency>
+<dependency>
+    <groupId>org.craftsmenlabs.gareth</groupId>
+    <artifactId>gareth-rest</artifactId>
+    <version>0.3.0</version>
+</dependency>
+```
+
+Create a java application that starts the Gareth framework:
+
+```java
+import org.craftsmenlabs.gareth.api.ExperimentEngine;
+import org.craftsmenlabs.gareth.api.ExperimentEngineConfig;
+import org.craftsmenlabs.gareth.api.rest.RestServiceFactory;
+import org.craftsmenlabs.gareth.core.ExperimentEngineConfigImpl;
+import org.craftsmenlabs.gareth.core.ExperimentEngineImpl;
+
+/**
+ * Created by hylke on 17/08/15.
+ */
+public class GarethContext {
+
+    public static void main(final String[] args) throws Exception {
+        final RestServiceFactory restServiceFactory = new RestServiceFactoryImpl(); // Create a new rest service factory
+        final ExperimentEngineConfig config = new ExperimentEngineConfigImpl.Builder().build();
+        final ExperimentEngine engine = new ExperimentEngineImpl.Builder(config).setRestServiceFactory(restServiceFactory).build(); // And just include it in the engine
+        engine.start();
+    }
+}
+```
+
+For building the standalone application, you can use the maven-shade-plugin to create a single jar containing all the
+necessary classes. You can add this your project pom.xml.
+
+```xml
+<build>
+    <plugins>
+        <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-shade-plugin</artifactId>
+            <version>2.4.1</version>
+            <configuration>
+                <transformers>
+                    <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
+                        <mainClass>org.craftsmenlabs.gareth.examples.ExampleApplication</mainClass>
+                    </transformer>
+                </transformers>
+            </configuration>
+            <executions>
+                <execution>
+                    <phase>package</phase>
+                    <goals>
+                        <goal>shade</goal>
+                    </goals>
+                </execution>
+            </executions>
+        </plugin>
+    </plugins>
+</build>
+```
+
+After doing a ```maven clean package``` you now can run the Gareth platform with your own definitions and experiments.
+
+```shell
+java -jar /path/to/project.jar
+```
 ## Contribute
 
 You can contribute to this repository the by following these steps.
@@ -93,8 +170,8 @@ You can contribute to this repository the by following these steps.
 The following functionality is planned for next releases:
 
 - [ ] Re-run experiments
-- [ ] Build examples
-- [ ] REST interface
+- [x] Build examples
+- [x] REST interface
 - [ ] Maintain state after restart
 - [ ] Store values thru experiments
 - [x] Replace AKKA with lightweight scheduler
