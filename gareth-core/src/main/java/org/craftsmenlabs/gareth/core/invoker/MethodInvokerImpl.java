@@ -3,7 +3,9 @@ package org.craftsmenlabs.gareth.core.invoker;
 import org.craftsmenlabs.gareth.api.exception.GarethInvocationException;
 import org.craftsmenlabs.gareth.api.invoker.MethodDescriptor;
 import org.craftsmenlabs.gareth.api.invoker.MethodInvoker;
+import org.craftsmenlabs.gareth.api.storage.Storage;
 import org.craftsmenlabs.gareth.core.reflection.ReflectionHelper;
+import org.craftsmenlabs.gareth.core.storage.DefaultStorage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -26,10 +28,19 @@ public class MethodInvokerImpl implements MethodInvoker {
 
     @Override
     public void invoke(final MethodDescriptor methodDescriptor) throws GarethInvocationException {
+        invoke(methodDescriptor, null);
+    }
+
+    @Override
+    public void invoke(final MethodDescriptor methodDescriptor, final Storage storage) throws GarethInvocationException {
         try {
             logger.trace("Invoking method %s", methodDescriptor.getMethod().getName());
             final Object declaringClassInstance = reflectionHelper.getInstanceForClass(methodDescriptor.getMethod().getDeclaringClass());
-            methodDescriptor.getMethod().invoke(declaringClassInstance);
+            if (methodDescriptor.hasStorage()) {
+                methodDescriptor.getMethod().invoke(declaringClassInstance, storage);
+            } else {
+                methodDescriptor.getMethod().invoke(declaringClassInstance);
+            }
         } catch (final IllegalAccessException | InvocationTargetException | InstantiationException e) {
             throw new GarethInvocationException(e);
         }

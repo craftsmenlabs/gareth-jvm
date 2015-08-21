@@ -4,6 +4,7 @@ import org.craftsmenlabs.gareth.api.ExperimentEngine;
 import org.craftsmenlabs.gareth.api.ExperimentEngineConfig;
 import org.craftsmenlabs.gareth.api.annotation.*;
 import org.craftsmenlabs.gareth.api.context.ExperimentContext;
+import org.craftsmenlabs.gareth.api.storage.Storage;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -106,7 +107,6 @@ public class ExperimentEngineImplIT {
         assertEquals("failure", logItems.get(1));
 
 
-
         final List<ExperimentContext> experimentContexts = experimentEngine.getExperimentContexts();
         assertEquals(1, experimentContexts.size());
 
@@ -116,6 +116,35 @@ public class ExperimentEngineImplIT {
         assertNull(experimentContext.getAssumeRun());
         assertNull(experimentContext.getSuccessRun());
         assertNotNull(experimentContext.getFailureRun());
+    }
+
+    @Test
+    public void testRunExperimentWithStorage() throws Exception {
+        experimentEngine = new ExperimentEngineImpl
+                .Builder(getConfiguration("it-experiment-04.experiment"))
+                .build();
+
+
+        experimentEngine.start();
+
+        assertEquals(1, logItems.size());
+        assertEquals("baseline storage", logItems.get(0));
+
+        Thread.sleep(500L);
+
+        assertEquals(2, logItems.size());
+        assertEquals("assume storage", logItems.get(1));
+
+
+        final List<ExperimentContext> experimentContexts = experimentEngine.getExperimentContexts();
+        assertEquals(1, experimentContexts.size());
+
+        final ExperimentContext experimentContext = experimentContexts.get(0);
+        assertTrue(experimentContext.isFinished());
+        assertNotNull(experimentContext.getBaselineRun());
+        assertNotNull(experimentContext.getAssumeRun());
+        assertNull(experimentContext.getSuccessRun());
+        assertNull(experimentContext.getFailureRun());
     }
 
     private ExperimentEngineConfig getConfiguration(final String fileName) {
@@ -142,7 +171,7 @@ public class ExperimentEngineImplIT {
         }
 
         @Time(glueLine = "1 day")
-        public Duration oneDay(){
+        public Duration oneDay() {
             return Duration.of(10, ChronoUnit.MILLIS);
         }
 
@@ -159,6 +188,16 @@ public class ExperimentEngineImplIT {
         @Failure(glueLine = "A failure")
         public void failure() {
             logItems.add("failure");
+        }
+
+        @Baseline(glueLine = "A baseline with storage")
+        public void baseline(final Storage storage) {
+            logItems.add("baseline storage");
+        }
+
+        @Assume(glueLine = "A assumption with storage")
+        public void assume(final Storage storage) {
+            logItems.add("assume storage");
         }
 
     }
