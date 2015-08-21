@@ -5,6 +5,7 @@ import org.craftsmenlabs.gareth.api.invoker.MethodDescriptor;
 import org.craftsmenlabs.gareth.api.model.AssumptionBlock;
 import org.craftsmenlabs.gareth.api.model.Experiment;
 import org.craftsmenlabs.gareth.core.invoker.MethodDescriptorImpl;
+import org.craftsmenlabs.gareth.core.storage.DefaultStorage;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
@@ -240,6 +241,84 @@ public class ExperimentContextImplTest {
         final LocalDateTime runTime = LocalDateTime.now();
         experimentContext.setFailureRun(runTime);
         assertEquals(runTime, experimentContext.getFailureRun());
+    }
+
+    @Test
+    public void testHasStorageNoStorageMethods() {
+        assertFalse(experimentContext.hasStorage());
+    }
+
+    @Test
+    public void testGetDefaultStorage() {
+        assertNull(experimentContext.getStorage());
+    }
+
+    @Test
+    public void testGetWithStorage() {
+        final DefaultStorage storage = new DefaultStorage();
+        experimentContext = new ExperimentContextImpl
+                .Builder("experiment name", assumptionBlock)
+                .setBaseline(stubMethodDescriptor)
+                .setAssume(stubMethodDescriptor)
+                .setFailure(stubMethodDescriptor)
+                .setSuccess(stubMethodDescriptor)
+                .setTime(mockDuration)
+                .setStorage(storage)
+                .build();
+        assertNotNull(experimentContext.getStorage());
+        assertSame(storage, experimentContext.getStorage());
+    }
+
+    @Test
+    public void testHasStorageOnBaseline() {
+        experimentContext = new ExperimentContextImpl
+                .Builder("experiment name", assumptionBlock)
+                .setBaseline(new MethodDescriptorImpl(null, 0, true))
+                .setAssume(stubMethodDescriptor)
+                .setFailure(stubMethodDescriptor)
+                .setSuccess(stubMethodDescriptor)
+                .setTime(mockDuration)
+                .build();
+        assertTrue(experimentContext.hasStorage());
+    }
+
+    @Test
+    public void testHasStorageOnAssume() {
+        experimentContext = new ExperimentContextImpl
+                .Builder("experiment name", assumptionBlock)
+                .setBaseline(stubMethodDescriptor)
+                .setAssume(new MethodDescriptorImpl(null, 0, true))
+                .setFailure(stubMethodDescriptor)
+                .setSuccess(stubMethodDescriptor)
+                .setTime(mockDuration)
+                .build();
+        assertTrue(experimentContext.hasStorage());
+    }
+
+    @Test
+    public void testHasStorageOnFailure() {
+        experimentContext = new ExperimentContextImpl
+                .Builder("experiment name", assumptionBlock)
+                .setBaseline(stubMethodDescriptor)
+                .setAssume(stubMethodDescriptor)
+                .setFailure(new MethodDescriptorImpl(null, 0, true))
+                .setSuccess(stubMethodDescriptor)
+                .setTime(mockDuration)
+                .build();
+        assertTrue(experimentContext.hasStorage());
+    }
+
+    @Test
+    public void testHasStorageOnSuccess() {
+        experimentContext = new ExperimentContextImpl
+                .Builder("experiment name", assumptionBlock)
+                .setBaseline(stubMethodDescriptor)
+                .setAssume(stubMethodDescriptor)
+                .setFailure(stubMethodDescriptor)
+                .setSuccess(new MethodDescriptorImpl(null, 0, true))
+                .setTime(mockDuration)
+                .build();
+        assertTrue(experimentContext.hasStorage());
     }
 
     private MethodDescriptor stubMethodDescriptor() {

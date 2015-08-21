@@ -3,10 +3,13 @@ package org.craftsmenlabs.gareth.core.scheduler;
 import com.xeiam.sundial.Job;
 import com.xeiam.sundial.exceptions.JobInterruptException;
 import org.craftsmenlabs.gareth.api.context.ExperimentContext;
+import org.craftsmenlabs.gareth.api.invoker.MethodDescriptor;
 import org.craftsmenlabs.gareth.api.invoker.MethodInvoker;
+import org.craftsmenlabs.gareth.api.storage.Storage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.lang.reflect.Method;
 import java.time.LocalDateTime;
 
 /**
@@ -23,19 +26,28 @@ public class DefaultInvocationJob extends Job {
 
         try {
             logger.debug("Invoking assumption");
-            methodInvoker.invoke(experimentContext.getAssume());
+
+            invoke(methodInvoker, experimentContext.hasStorage(), experimentContext.getAssume(), experimentContext.getStorage());
             experimentContext.setAssumeRun(LocalDateTime.now());
             if (null != experimentContext.getSuccess()) {
                 logger.debug("Invoking success");
-                methodInvoker.invoke(experimentContext.getSuccess());
+                invoke(methodInvoker, experimentContext.hasStorage(), experimentContext.getSuccess(), experimentContext.getStorage());
                 experimentContext.setSuccessRun(LocalDateTime.now());
             }
         } catch (final Exception e) {
             if (null != experimentContext.getFailure()) {
                 logger.debug("Invoking failure");
-                methodInvoker.invoke(experimentContext.getFailure());
+                invoke(methodInvoker, experimentContext.hasStorage(), experimentContext.getFailure(), experimentContext.getStorage());
                 experimentContext.setFailureRun(LocalDateTime.now());
             }
+        }
+    }
+
+    private void invoke(final MethodInvoker methodInvoker, final boolean storageRequired, final MethodDescriptor methodDescriptor, final Storage storage) {
+        if (storageRequired) {
+            methodInvoker.invoke(methodDescriptor, storage);
+        } else {
+            methodInvoker.invoke(methodDescriptor);
         }
     }
 }

@@ -20,6 +20,7 @@ import org.craftsmenlabs.gareth.api.registry.ExperimentRegistry;
 import org.craftsmenlabs.gareth.api.rest.RestService;
 import org.craftsmenlabs.gareth.api.rest.RestServiceFactory;
 import org.craftsmenlabs.gareth.api.scheduler.AssumeScheduler;
+import org.craftsmenlabs.gareth.api.storage.StorageFactory;
 import org.craftsmenlabs.gareth.core.context.ExperimentContextImpl;
 import org.craftsmenlabs.gareth.core.factory.ExperimentFactoryImpl;
 import org.craftsmenlabs.gareth.core.invoker.MethodInvokerImpl;
@@ -28,6 +29,7 @@ import org.craftsmenlabs.gareth.core.reflection.ReflectionHelper;
 import org.craftsmenlabs.gareth.core.registry.DefinitionRegistryImpl;
 import org.craftsmenlabs.gareth.core.registry.ExperimentRegistryImpl;
 import org.craftsmenlabs.gareth.core.scheduler.DefaultAssumeScheduler;
+import org.craftsmenlabs.gareth.core.storage.DefaultStorageFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -62,6 +64,8 @@ public class ExperimentEngineImpl implements ExperimentEngine {
 
     private final RestServiceFactory restServiceFactory;
 
+    private final StorageFactory storageFactory;
+
 
     private ExperimentEngineImpl(final Builder builder) {
         this.experimentEngineConfig = builder.experimentEngineConfig;
@@ -72,6 +76,7 @@ public class ExperimentEngineImpl implements ExperimentEngine {
         this.methodInvoker = builder.methodInvoker;
         this.assumeScheduler = builder.assumeScheduler;
         this.restServiceFactory = builder.restServiceFactory;
+        this.storageFactory = builder.storageFactory;
     }
 
     private void registerDefinition(final Class clazz) throws GarethDefinitionParseException {
@@ -104,6 +109,7 @@ public class ExperimentEngineImpl implements ExperimentEngine {
                         .setTime(getDuration(assumptionBlock.getTime()))
                         .setFailure(getFailure(assumptionBlock.getFailure()))
                         .setSuccess(getSuccess(assumptionBlock.getSuccess()))
+                        .setStorage(storageFactory.createStorage())
                         .build();
 
                 experimentContexts.add(experimentContext);
@@ -136,7 +142,7 @@ public class ExperimentEngineImpl implements ExperimentEngine {
         logger.info("Run and schedule experiments");
         for (final ExperimentContext experimentContext : experimentContexts) {
             if (experimentContext.isValid()) {
-                invokeBaseline(experimentContext.getBaseline());
+                invokeBaseline(experimentContext);
                 experimentContext.setBaselineRun(LocalDateTime.now());
                 scheduleInvokeAssume(experimentContext);
                 experimentContext.setFinished(true);
@@ -154,9 +160,13 @@ public class ExperimentEngineImpl implements ExperimentEngine {
         return duration;
     }
 
-    private void invokeBaseline(final MethodDescriptor baselineMethod) {
+    private void invokeBaseline(final ExperimentContext experimentContext) {
         try {
-            methodInvoker.invoke(baselineMethod);
+            if (experimentContext.hasStorage()) {
+                methodInvoker.invoke(experimentContext.getBaseline(), experimentContext.getStorage());
+            } else {
+                methodInvoker.invoke(experimentContext.getBaseline());
+            }
         } catch (final GarethUnknownDefinitionException | GarethInvocationException e) {
             if (!experimentEngineConfig.isIgnoreInvocationExceptions()) {
                 throw e;
@@ -292,6 +302,8 @@ public class ExperimentEngineImpl implements ExperimentEngine {
 
         private RestServiceFactory restServiceFactory;
 
+        private StorageFactory storageFactory = new DefaultStorageFactory();
+
         public Builder setDefinitionRegistry(final DefinitionRegistry definitionRegistry) {
             this.definitionRegistry = definitionRegistry;
             return this;
@@ -315,6 +327,11 @@ public class ExperimentEngineImpl implements ExperimentEngine {
 
         public Builder setExperimentFactory(final ExperimentFactory experimentFactory) {
             this.experimentFactory = experimentFactory;
+            return this;
+        }
+
+        public Builder setStorageFactory(final StorageFactory storageFactory) {
+            this.storageFactory = storageFactory;
             return this;
         }
 

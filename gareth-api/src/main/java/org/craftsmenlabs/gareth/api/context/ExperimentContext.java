@@ -1,6 +1,7 @@
 package org.craftsmenlabs.gareth.api.context;
 
 import org.craftsmenlabs.gareth.api.invoker.MethodDescriptor;
+import org.craftsmenlabs.gareth.api.storage.Storage;
 
 import java.lang.reflect.Method;
 import java.time.Duration;
@@ -60,5 +61,9 @@ public interface ExperimentContext {
     void setFailureRun(final LocalDateTime localDateTime);
 
     void setFinished(final boolean finished);
+
+    boolean hasStorage();
+
+    Storage getStorage();
 
 }

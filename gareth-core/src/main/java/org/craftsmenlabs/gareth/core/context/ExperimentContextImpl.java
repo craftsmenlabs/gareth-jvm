@@ -5,6 +5,7 @@ import lombok.Setter;
 import org.craftsmenlabs.gareth.api.context.ExperimentContext;
 import org.craftsmenlabs.gareth.api.invoker.MethodDescriptor;
 import org.craftsmenlabs.gareth.api.model.AssumptionBlock;
+import org.craftsmenlabs.gareth.api.storage.Storage;
 
 import javax.xml.bind.annotation.XmlRootElement;
 import java.lang.reflect.Method;
@@ -20,13 +21,16 @@ public class ExperimentContextImpl implements ExperimentContext {
 
     private final String experimentName;
 
-    private MethodDescriptor baseline, assume, success, failure;
+    private final MethodDescriptor baseline, assume, success, failure;
 
-    private Duration time;
+    private final Duration time;
 
-    private String baselineGlueLine, assumeGlueLine, successGlueLine, failureGlueLine, timeGlueLine;
+    private final String baselineGlueLine, assumeGlueLine, successGlueLine, failureGlueLine, timeGlueLine;
 
     private boolean finished;
+
+    private final Storage storage;
+
 
     @Setter
     private LocalDateTime baselineRun, assumeRun, successRun, failureRun;
@@ -46,6 +50,8 @@ public class ExperimentContextImpl implements ExperimentContext {
         this.failure = builder.failure;
         // Time
         this.time = builder.time;
+        // Storage
+        this.storage = builder.storage;
 
     }
 
@@ -74,6 +80,14 @@ public class ExperimentContextImpl implements ExperimentContext {
     }
 
     @Override
+    public boolean hasStorage() {
+        return getAssume().hasStorage()
+                || getBaseline().hasStorage()
+                || (null != getFailure() && getFailure().hasStorage())
+                || (null != getSuccess() && getSuccess().hasStorage());
+    }
+
+    @Override
     public void setFinished(boolean finished) {
         this.finished = finished;
     }
@@ -87,6 +101,8 @@ public class ExperimentContextImpl implements ExperimentContext {
         private MethodDescriptor baseline, assume, success, failure;
 
         private Duration time;
+
+        private Storage storage = null;
 
         public Builder(final String experimentName, final AssumptionBlock assumptionBlock) {
             this.experimentName = experimentName;
@@ -115,6 +131,11 @@ public class ExperimentContextImpl implements ExperimentContext {
 
         public Builder setTime(final Duration time) {
             this.time = time;
+            return this;
+        }
+
+        public Builder setStorage(final Storage storage) {
+            this.storage = storage;
             return this;
         }
 
