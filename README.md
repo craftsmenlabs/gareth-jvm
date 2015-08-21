@@ -6,6 +6,106 @@ Gareth is platform that allows you to make business goal validation part of your
 
 Gareth can be run in two different manners, can be run with or without a REST interface.
 
+### Feeding Gareth
+
+The Gareth framework must be fed with two pieces of information, the 'experiment' and the 'definitions'.
+
+#### Experiment
+
+The experiments describes the assumptions somebody has when they have certain functionality build. For example a certain
+functionality is build is build to reduce failed logins. (The why) Within a experiment you can describe this in a
+structured manner.
+
+```
+Experiment: reduce failed logins
+
+Baseline: Get current failed logins
+Assume: Failed login are reduced by 500
+Time: 1 week
+
+Baseline: Get current failed logins
+Assume: Failed login are reduced by 1000
+Time: 1 month
+
+Baseline: Get current failed logins
+Assume: Failed login are reduced by 2000
+Time: 1 months
+Success: Sent cake to the developers
+Failure: Remove functionality
+```
+
+#### Definitions
+
+Definitions is the code that is glued to the experiments structured language, by allowing this aproach there is no
+limitation how you can validate your assumptions.
+
+```java
+import org.craftsmenlabs.gareth.api.annotation.Assume;
+import org.craftsmenlabs.gareth.api.annotation.Baseline;
+import org.craftsmenlabs.gareth.api.annotation.Failure;
+import org.craftsmenlabs.gareth.api.annotation.Time;
+import org.craftsmenlabs.gareth.api.storage.Storage;
+
+import java.time.Duration;
+import java.time.temporal.ChronoUnit;
+
+public class LoginFailuresDefinitions {
+
+    @Baseline(glueLine = "Get current failed logins")
+    public void baseline(final Storage storage) {
+        // Code to get failed logins
+        storage.store("failedLogins", 1);
+    }
+
+    @Assume(glueLine = "Failed login are reduced by 500")
+    public void assume500(final Storage storage) {
+        // Code to get failed logins
+        int failedLoginBefore = storage.get("failedLogins");
+        // Code to get failed logins
+    }
+
+    @Assume(glueLine = "Failed login are reduced by 1000")
+    public void assume1000(final Storage storage) {
+        // Code to get failed logins
+        int failedLoginBefore = storage.get("failedLogins");
+        // Code to get failed logins
+    }
+
+    @Assume(glueLine = "Failed login are reduced by 2000")
+    public void assume2000(final Storage storage) {
+        // Code to get failed logins
+        int failedLoginBefore = storage.get("failedLogins");
+        // Code to get failed logins
+    }
+
+    @Success(glueLine = "Sent cake to the developers")
+    public void success(){
+        // Code to sent cake to the developers
+    }
+
+    @Failure(glueLine = "Remove functionality")
+    public void failure(){
+        // Code to remove functionality
+    }
+
+    @Time(glueLine = "1 week")
+    public Duration getOneWeek(){
+        return Duration.of(1, ChronoUnit.WEEKS);
+    }
+
+    @Time(glueLine = "1 month")
+    public Duration getOneMonth(){
+        return Duration.of(1, ChronoUnit.MONTHS);
+    }
+
+    @Time(glueLine = "2 months")
+    public Duration getTwoMonths(){
+        return Duration.of(2, ChronoUnit.MONTHS);
+    }
+}
+```
+
+
 ### Running Gareth (without REST interface)
 
 Running Gareth without a REST interface can be done by creating a maven project that depends on the following maven
@@ -15,7 +115,7 @@ dependency:
 <dependency>
     <groupId>org.craftsmenlabs.gareth</groupId>
     <artifactId>gareth-core</artifactId>
-    <version>0.3.0</version>
+    <version>0.4.0</version>
 </dependency>
 ```
 
@@ -89,12 +189,12 @@ dependency:
 <dependency>
     <groupId>org.craftsmenlabs.gareth</groupId>
     <artifactId>gareth-core</artifactId>
-    <version>0.3.0</version>
+    <version>0.4.0</version>
 </dependency>
 <dependency>
     <groupId>org.craftsmenlabs.gareth</groupId>
     <artifactId>gareth-rest</artifactId>
-    <version>0.3.0</version>
+    <version>0.4.0</version>
 </dependency>
 ```
 
@@ -169,11 +269,12 @@ You can contribute to this repository the by following these steps.
 
 The following functionality is planned for next releases:
 
-- [ ] Add experiment examples
+- [x] Add experiment examples
 - [ ] Re-run experiments
 - [x] Build examples
 - [x] REST interface
 - [ ] Maintain state after restart
-- [ ] Store values thru experiments
+- [x] Store values thru experiments
 - [x] Replace AKKA with lightweight scheduler
 - [ ] Add additional unit-tests
+- [ ] Allow for regex glue lines
