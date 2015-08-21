@@ -1,8 +1,10 @@
 package org.craftsmenlabs.gareth.core.context;
 
 import org.craftsmenlabs.gareth.api.context.ExperimentContext;
+import org.craftsmenlabs.gareth.api.invoker.MethodDescriptor;
 import org.craftsmenlabs.gareth.api.model.AssumptionBlock;
 import org.craftsmenlabs.gareth.api.model.Experiment;
+import org.craftsmenlabs.gareth.core.invoker.MethodDescriptorImpl;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
@@ -23,7 +25,7 @@ public class ExperimentContextImplTest {
     private ExperimentContext experimentContext;
     private AssumptionBlock assumptionBlock;
     private Duration mockDuration;
-    private Method stubMethod;
+    private MethodDescriptor stubMethodDescriptor;
 
     @Before
     public void setUp() throws Exception {
@@ -39,13 +41,13 @@ public class ExperimentContextImplTest {
         assumptionBlock.setSuccess("success");
         assumptionBlock.setTime("time");
 
-        stubMethod = stubMethod();
+        stubMethodDescriptor = stubMethodDescriptor();
         experimentContext = new ExperimentContextImpl
                 .Builder("experiment name", assumptionBlock)
-                .setBaseline(stubMethod)
-                .setAssume(stubMethod)
-                .setFailure(stubMethod)
-                .setSuccess(stubMethod)
+                .setBaseline(stubMethodDescriptor)
+                .setAssume(stubMethodDescriptor)
+                .setFailure(stubMethodDescriptor)
+                .setSuccess(stubMethodDescriptor)
                 .setTime(mockDuration)
                 .build();
 
@@ -60,8 +62,8 @@ public class ExperimentContextImplTest {
     public void testIsValidTimeMissing() throws Exception {
         experimentContext = new ExperimentContextImpl
                 .Builder("experiment name", assumptionBlock)
-                .setBaseline(stubMethod)
-                .setAssume(stubMethod)
+                .setBaseline(stubMethodDescriptor)
+                .setAssume(stubMethodDescriptor)
                 .build();
         assertFalse(experimentContext.isValid());
     }
@@ -70,7 +72,7 @@ public class ExperimentContextImplTest {
     public void testIsValidBaselineMissing() throws Exception {
         experimentContext = new ExperimentContextImpl
                 .Builder("experiment name", assumptionBlock)
-                .setAssume(stubMethod)
+                .setAssume(stubMethodDescriptor)
                 .setTime(mockDuration)
                 .build();
         assertFalse(experimentContext.isValid());
@@ -80,7 +82,7 @@ public class ExperimentContextImplTest {
     public void testIsValidAssumeMissing() throws Exception {
         experimentContext = new ExperimentContextImpl
                 .Builder("experiment name", assumptionBlock)
-                .setBaseline(stubMethod)
+                .setBaseline(stubMethodDescriptor)
                 .setTime(mockDuration)
                 .build();
         assertFalse(experimentContext.isValid());
@@ -144,22 +146,22 @@ public class ExperimentContextImplTest {
 
     @Test
     public void testGetBaseline() throws Exception {
-        assertEquals(stubMethod, experimentContext.getBaseline());
+        assertEquals(stubMethodDescriptor, experimentContext.getBaseline());
     }
 
     @Test
     public void testGetAssume() throws Exception {
-        assertEquals(stubMethod, experimentContext.getAssume());
+        assertEquals(stubMethodDescriptor, experimentContext.getAssume());
     }
 
     @Test
     public void testGetSuccess() throws Exception {
-        assertEquals(stubMethod, experimentContext.getSuccess());
+        assertEquals(stubMethodDescriptor, experimentContext.getSuccess());
     }
 
     @Test
     public void testGetFailure() throws Exception {
-        assertEquals(stubMethod, experimentContext.getFailure());
+        assertEquals(stubMethodDescriptor, experimentContext.getFailure());
     }
 
     @Test
@@ -240,7 +242,7 @@ public class ExperimentContextImplTest {
         assertEquals(runTime, experimentContext.getFailureRun());
     }
 
-    private Method stubMethod() {
-        return this.getClass().getMethods()[0];
+    private MethodDescriptor stubMethodDescriptor() {
+        return new MethodDescriptorImpl(this.getClass().getMethods()[0], 0, false);
     }
 }

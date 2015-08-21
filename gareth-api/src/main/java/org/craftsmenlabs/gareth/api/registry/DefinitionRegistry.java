@@ -1,5 +1,7 @@
 package org.craftsmenlabs.gareth.api.registry;
 
+import org.craftsmenlabs.gareth.api.invoker.MethodDescriptor;
+
 import java.lang.reflect.Method;
 import java.time.Duration;
 
@@ -13,21 +15,21 @@ public interface DefinitionRegistry {
      * @param glueLine
      * @return
      */
-    Method getMethodForBaseline(final String glueLine);
+    MethodDescriptor getMethodDescriptorForBaseline(final String glueLine);
 
     /**
      * Get method assume
      * @param glueLine
      * @return
      */
-    Method getMethodForAssume(final String glueLine);
+    MethodDescriptor getMethodDescriptorForAssume(final String glueLine);
 
     /**
      * Get method for success
      * @param glueLine
      * @return
      */
-    Method getMethodForSuccess(final String glueLine);
+    MethodDescriptor getMethodDescriptorForSuccess(final String glueLine);
 
 
     /**
@@ -35,7 +37,7 @@ public interface DefinitionRegistry {
      * @param glueLine
      * @return
      */
-    Method getMethodForFailure(final String glueLine);
+    MethodDescriptor getMethodDescriptorForFailure(final String glueLine);
 
     /**
      * Get duration for time
@@ -48,30 +50,30 @@ public interface DefinitionRegistry {
     /**
      * Add method for baseline
      * @param glueLine
-     * @param method
+     * @param methodDescriptor
      */
-    void addMethodForBaseline(final String glueLine, final Method method);
+    void addMethodDescriptorForBaseline(final String glueLine, final MethodDescriptor methodDescriptor);
 
     /**
      * Add method for assume
      * @param glueLine
-     * @param method
+     * @param methodDescriptor
      */
-    void addMethodForAssume(final String glueLine, final Method method);
+    void addMethodDescriptorForAssume(final String glueLine, final MethodDescriptor methodDescriptor);
 
     /**
      * Add method for success
      * @param glueLine
-     * @param method
+     * @param methodDescriptor
      */
-    void addMethodForSuccess(final String glueLine, final Method method);
+    void addMethodDescriptorForSuccess(final String glueLine, final MethodDescriptor methodDescriptor);
 
     /**
      * Add method for failure
      * @param glueLine
-     * @param method
+     * @param methodDescriptor
      */
-    void addMethodForFailure(final String glueLine, final Method method);
+    void addMethodDescriptorForFailure(final String glueLine, final MethodDescriptor methodDescriptor);
 
     /**
      * Add duration for time

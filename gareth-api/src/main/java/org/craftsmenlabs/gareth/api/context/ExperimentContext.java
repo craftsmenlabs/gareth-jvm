@@ -1,5 +1,7 @@
 package org.craftsmenlabs.gareth.api.context;
 
+import org.craftsmenlabs.gareth.api.invoker.MethodDescriptor;
+
 import java.lang.reflect.Method;
 import java.time.Duration;
 import java.time.LocalDateTime;
@@ -23,15 +25,15 @@ public interface ExperimentContext {
 
     String getFailureGlueLine();
 
-    Method getAssume();
+    MethodDescriptor getAssume();
 
-    Method getBaseline();
+    MethodDescriptor getBaseline();
 
     Duration getTime();
 
-    Method getSuccess();
+    MethodDescriptor getSuccess();
 
-    Method getFailure();
+    MethodDescriptor getFailure();
 
     boolean isValid();
 

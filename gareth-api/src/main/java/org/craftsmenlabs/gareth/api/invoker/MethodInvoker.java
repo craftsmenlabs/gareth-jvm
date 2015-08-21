@@ -9,6 +9,6 @@ import java.lang.reflect.Method;
  */
 public interface MethodInvoker {
 
-    void invoke(final Method method) throws GarethInvocationException;
+    void invoke(final MethodDescriptor methodDescriptor) throws GarethInvocationException;
 
 }

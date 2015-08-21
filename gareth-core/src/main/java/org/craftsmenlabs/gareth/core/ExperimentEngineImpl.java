@@ -11,6 +11,7 @@ import org.craftsmenlabs.gareth.api.exception.GarethExperimentParseException;
 import org.craftsmenlabs.gareth.api.exception.GarethInvocationException;
 import org.craftsmenlabs.gareth.api.exception.GarethUnknownDefinitionException;
 import org.craftsmenlabs.gareth.api.factory.ExperimentFactory;
+import org.craftsmenlabs.gareth.api.invoker.MethodDescriptor;
 import org.craftsmenlabs.gareth.api.invoker.MethodInvoker;
 import org.craftsmenlabs.gareth.api.model.AssumptionBlock;
 import org.craftsmenlabs.gareth.api.model.Experiment;
@@ -31,7 +32,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.InputStream;
-import java.lang.reflect.Method;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -154,7 +154,7 @@ public class ExperimentEngineImpl implements ExperimentEngine {
         return duration;
     }
 
-    private void invokeBaseline(final Method baselineMethod) {
+    private void invokeBaseline(final MethodDescriptor baselineMethod) {
         try {
             methodInvoker.invoke(baselineMethod);
         } catch (final GarethUnknownDefinitionException | GarethInvocationException e) {
@@ -176,10 +176,10 @@ public class ExperimentEngineImpl implements ExperimentEngine {
 
     }
 
-    private Method getSuccess(final String glueLine) {
-        Method method = null;
+    private MethodDescriptor getSuccess(final String glueLine) {
+        MethodDescriptor method = null;
         try {
-            method = definitionRegistry.getMethodForSuccess(glueLine);
+            method = definitionRegistry.getMethodDescriptorForSuccess(glueLine);
         } catch (final GarethUnknownDefinitionException e) {
             if (experimentEngineConfig.isIgnoreInvalidDefinitions()) {
                 throw e;
@@ -188,10 +188,10 @@ public class ExperimentEngineImpl implements ExperimentEngine {
         return method;
     }
 
-    private Method getAssume(final String glueLine) {
-        Method method = null;
+    private MethodDescriptor getAssume(final String glueLine) {
+        MethodDescriptor method = null;
         try {
-            method = definitionRegistry.getMethodForAssume(glueLine);
+            method = definitionRegistry.getMethodDescriptorForAssume(glueLine);
         } catch (final GarethUnknownDefinitionException e) {
             if (experimentEngineConfig.isIgnoreInvalidDefinitions()) {
                 throw e;
@@ -201,10 +201,10 @@ public class ExperimentEngineImpl implements ExperimentEngine {
     }
 
 
-    private Method getBaseline(final String glueLine) {
-        Method method = null;
+    private MethodDescriptor getBaseline(final String glueLine) {
+        MethodDescriptor method = null;
         try {
-            method = definitionRegistry.getMethodForBaseline(glueLine);
+            method = definitionRegistry.getMethodDescriptorForBaseline(glueLine);
         } catch (final GarethUnknownDefinitionException e) {
             if (experimentEngineConfig.isIgnoreInvalidDefinitions()) {
                 throw e;
@@ -213,10 +213,10 @@ public class ExperimentEngineImpl implements ExperimentEngine {
         return method;
     }
 
-    private Method getFailure(final String glueLine) {
-        Method method = null;
+    private MethodDescriptor getFailure(final String glueLine) {
+        MethodDescriptor method = null;
         try {
-            method = definitionRegistry.getMethodForFailure(glueLine);
+            method = definitionRegistry.getMethodDescriptorForFailure(glueLine);
         } catch (final GarethUnknownDefinitionException e) {
             if (experimentEngineConfig.isIgnoreInvalidDefinitions()) {
                 throw e;
@@ -252,10 +252,10 @@ public class ExperimentEngineImpl implements ExperimentEngine {
     }
 
     private void addParsedDefinitionToRegistry(final ParsedDefinition parsedDefinition) {
-        parsedDefinition.getBaselineDefinitions().forEach((k, v) -> definitionRegistry.addMethodForBaseline(k, v));
-        parsedDefinition.getAssumeDefinitions().forEach((k, v) -> definitionRegistry.addMethodForAssume(k, v));
-        parsedDefinition.getFailureDefinitions().forEach((k, v) -> definitionRegistry.addMethodForFailure(k, v));
-        parsedDefinition.getSuccessDefinitions().forEach((k, v) -> definitionRegistry.addMethodForSuccess(k, v));
+        parsedDefinition.getBaselineDefinitions().forEach((k, v) -> definitionRegistry.addMethodDescriptorForBaseline(k, v));
+        parsedDefinition.getAssumeDefinitions().forEach((k, v) -> definitionRegistry.addMethodDescriptorForAssume(k, v));
+        parsedDefinition.getFailureDefinitions().forEach((k, v) -> definitionRegistry.addMethodDescriptorForFailure(k, v));
+        parsedDefinition.getSuccessDefinitions().forEach((k, v) -> definitionRegistry.addMethodDescriptorForSuccess(k, v));
         parsedDefinition.getTimeDefinitions().forEach((k, v) -> definitionRegistry.addDurationForTime(k, v));
     }
 

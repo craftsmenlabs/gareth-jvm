@@ -5,6 +5,9 @@ import org.craftsmenlabs.gareth.api.definition.ParsedDefinition;
 import org.craftsmenlabs.gareth.api.definition.ParsedDefinitionFactory;
 import org.craftsmenlabs.gareth.api.exception.GarethDefinitionParseException;
 import org.craftsmenlabs.gareth.api.exception.GarethExperimentParseException;
+import org.craftsmenlabs.gareth.api.invoker.MethodDescriptor;
+import org.craftsmenlabs.gareth.api.storage.Storage;
+import org.craftsmenlabs.gareth.core.invoker.MethodDescriptorImpl;
 import org.craftsmenlabs.gareth.core.reflection.ReflectionHelper;
 
 import java.lang.reflect.Constructor;
@@ -75,9 +78,9 @@ public class ParsedDefinitionFactoryImpl implements ParsedDefinitionFactory {
         });
     }
 
-    private void registerUnitOfWork(final Method method, final String glueLine, final Map<String, Method> unitOfWorkMap) {
+    private void registerUnitOfWork(final Method method, final String glueLine, final Map<String, MethodDescriptor> unitOfWorkMap) {
         if (isValidMethod(method)) {
-            unitOfWorkMap.put(glueLine, method);
+            unitOfWorkMap.put(glueLine, new MethodDescriptorImpl(method, 0, hasStorageParameter(method)));
         } else {
             throw new IllegalStateException(String.format("Method %s with glue line '%s' is not a valid method (no void return type)", method.getName(), glueLine));
         }
@@ -104,8 +107,18 @@ public class ParsedDefinitionFactoryImpl implements ParsedDefinitionFactory {
     }
 
     private boolean isValidMethod(final Method method) {
+
         return method.getReturnType().equals(Void.class)
                 || method.getReturnType().equals(Void.TYPE);
+    }
+
+    private boolean hasValidParameters(final Method method) {
+        return method.getParameterCount() == 0
+                || hasStorageParameter(method);
+    }
+
+    private boolean hasStorageParameter(Method method) {
+        return method.getParameterCount() == 1 && method.getParameters()[0].getParameterizedType() == Storage.class;
     }
 
     private boolean isValidateTimeMethod(final Method method) {

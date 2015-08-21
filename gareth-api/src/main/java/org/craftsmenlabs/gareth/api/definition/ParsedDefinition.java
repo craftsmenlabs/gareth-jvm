@@ -1,5 +1,7 @@
 package org.craftsmenlabs.gareth.api.definition;
 
+import org.craftsmenlabs.gareth.api.invoker.MethodDescriptor;
+
 import java.lang.reflect.Method;
 import java.time.Duration;
 import java.util.Map;
@@ -14,27 +16,27 @@ public interface ParsedDefinition {
      *
      * @return
      */
-    Map<String, Method> getBaselineDefinitions();
+    Map<String, MethodDescriptor> getBaselineDefinitions();
 
     /**
      * Get assumption definitions
      * @return
      */
-    Map<String, Method> getAssumeDefinitions();
+    Map<String, MethodDescriptor> getAssumeDefinitions();
 
     /**
      * Get success definitions
      *
      * @return
      */
-    Map<String, Method> getSuccessDefinitions();
+    Map<String, MethodDescriptor> getSuccessDefinitions();
 
     /**
      * Get failure definitions
      *
      * @return
      */
-    Map<String, Method> getFailureDefinitions();
+    Map<String, MethodDescriptor> getFailureDefinitions();
 
     /**
      * Get time definitions

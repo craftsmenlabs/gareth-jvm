@@ -1,6 +1,7 @@
 package org.craftsmenlabs.gareth.core.invoker;
 
 import org.craftsmenlabs.gareth.api.exception.GarethInvocationException;
+import org.craftsmenlabs.gareth.api.invoker.MethodDescriptor;
 import org.craftsmenlabs.gareth.api.invoker.MethodInvoker;
 import org.craftsmenlabs.gareth.core.reflection.ReflectionHelper;
 import org.slf4j.Logger;
@@ -24,11 +25,11 @@ public class MethodInvokerImpl implements MethodInvoker {
     }
 
     @Override
-    public void invoke(final Method method) throws GarethInvocationException {
+    public void invoke(final MethodDescriptor methodDescriptor) throws GarethInvocationException {
         try {
-            logger.trace("Invoking method %s", method.getName());
-            final Object declaringClassInstance = reflectionHelper.getInstanceForClass(method.getDeclaringClass());
-            method.invoke(declaringClassInstance);
+            logger.trace("Invoking method %s", methodDescriptor.getMethod().getName());
+            final Object declaringClassInstance = reflectionHelper.getInstanceForClass(methodDescriptor.getMethod().getDeclaringClass());
+            methodDescriptor.getMethod().invoke(declaringClassInstance);
         } catch (final IllegalAccessException | InvocationTargetException | InstantiationException e) {
             throw new GarethInvocationException(e);
         }

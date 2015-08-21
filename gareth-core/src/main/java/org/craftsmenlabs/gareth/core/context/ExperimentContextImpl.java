@@ -3,6 +3,7 @@ package org.craftsmenlabs.gareth.core.context;
 import lombok.Getter;
 import lombok.Setter;
 import org.craftsmenlabs.gareth.api.context.ExperimentContext;
+import org.craftsmenlabs.gareth.api.invoker.MethodDescriptor;
 import org.craftsmenlabs.gareth.api.model.AssumptionBlock;
 
 import javax.xml.bind.annotation.XmlRootElement;
@@ -19,7 +20,7 @@ public class ExperimentContextImpl implements ExperimentContext {
 
     private final String experimentName;
 
-    private Method baseline, assume, success, failure;
+    private MethodDescriptor baseline, assume, success, failure;
 
     private Duration time;
 
@@ -83,7 +84,7 @@ public class ExperimentContextImpl implements ExperimentContext {
 
         private final AssumptionBlock assumptionBlock;
 
-        private Method baseline, assume, success, failure;
+        private MethodDescriptor baseline, assume, success, failure;
 
         private Duration time;
 
@@ -92,22 +93,22 @@ public class ExperimentContextImpl implements ExperimentContext {
             this.assumptionBlock = assumptionBlock;
         }
 
-        public Builder setBaseline(final Method baseline) {
+        public Builder setBaseline(final MethodDescriptor baseline) {
             this.baseline = baseline;
             return this;
         }
 
-        public Builder setAssume(final Method assume) {
+        public Builder setAssume(final MethodDescriptor assume) {
             this.assume = assume;
             return this;
         }
 
-        public Builder setSuccess(final Method success) {
+        public Builder setSuccess(final MethodDescriptor success) {
             this.success = success;
             return this;
         }
 
-        public Builder setFailure(final Method failure) {
+        public Builder setFailure(final MethodDescriptor failure) {
             this.failure = failure;
             return this;
         }

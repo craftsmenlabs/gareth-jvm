@@ -176,3 +176,4 @@ The following functionality is planned for next releases:
 - [ ] Maintain state after restart
 - [ ] Store values thru experiments
 - [x] Replace AKKA with lightweight scheduler
+- [ ] Add additional unit-tests

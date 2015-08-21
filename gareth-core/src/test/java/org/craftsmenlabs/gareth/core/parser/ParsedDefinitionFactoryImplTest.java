@@ -3,6 +3,8 @@ package org.craftsmenlabs.gareth.core.parser;
 import org.craftsmenlabs.gareth.api.annotation.*;
 import org.craftsmenlabs.gareth.api.definition.ParsedDefinition;
 import org.craftsmenlabs.gareth.api.exception.GarethDefinitionParseException;
+import org.craftsmenlabs.gareth.api.invoker.MethodDescriptor;
+import org.craftsmenlabs.gareth.api.storage.Storage;
 import org.craftsmenlabs.gareth.core.reflection.ReflectionHelper;
 import org.junit.Before;
 import org.junit.Test;
@@ -42,7 +44,7 @@ public class ParsedDefinitionFactoryImplTest {
             parsedParsedDefinitionFactory.parse(TimeIncorrectReturnTypeDefinition.class);
             fail("Should not reach this point");
         } catch (final IllegalStateException e) {
-            assertEquals(e.getMessage(), "java.lang.IllegalStateException: Method timeDefinition with glue line 'Time glueline' is not a valid method (no duration return type)");
+            assertTrue(e.getMessage().contains("Method timeDefinition with glue line 'Time glueline' is not a valid method (no duration return type)"));
         }
     }
 
@@ -67,6 +69,8 @@ public class ParsedDefinitionFactoryImplTest {
         assertTrue(parsedDefinition.getTimeDefinitions().isEmpty());
         assertTrue(parsedDefinition.getFailureDefinitions().isEmpty());
         assertTrue(parsedDefinition.getSuccessDefinitions().isEmpty());
+
+
     }
 
     @Test
@@ -81,6 +85,9 @@ public class ParsedDefinitionFactoryImplTest {
 
         assertEquals(1, parsedDefinition.getAssumeDefinitions().size());
         assertTrue(parsedDefinition.getAssumeDefinitions().containsKey("Assume glueline"));
+
+        final MethodDescriptor methodDescriptor = parsedDefinition.getAssumeDefinitions().get("Assume glueline");
+        assertFalse(methodDescriptor.hasStorage());
     }
 
     @Test
@@ -137,6 +144,20 @@ public class ParsedDefinitionFactoryImplTest {
 
         assertEquals(1, parsedDefinition.getTimeDefinitions().size());
         assertTrue(parsedDefinition.getTimeDefinitions().containsKey("Time glueline"));
+    }
+
+    @Test
+    public void testParseClassWithBaselineAndStorage() throws Exception {
+        final ParsedDefinition parsedDefinition = parsedParsedDefinitionFactory.parse(WithStorageParameter.class);
+        assertNotNull(parsedDefinition);
+
+        assertTrue(parsedDefinition.getAssumeDefinitions().isEmpty());
+        assertTrue(parsedDefinition.getTimeDefinitions().isEmpty());
+        assertTrue(parsedDefinition.getFailureDefinitions().isEmpty());
+        assertTrue(parsedDefinition.getSuccessDefinitions().isEmpty());
+
+        assertEquals(1, parsedDefinition.getBaselineDefinitions().size());
+        assertTrue(parsedDefinition.getBaselineDefinitions().containsKey("Baseline glueline with storage"));
     }
 
     @Test
@@ -217,6 +238,14 @@ public class ParsedDefinitionFactoryImplTest {
         @Baseline(glueLine = "Baseline glueline")
         public Object baselineDefinition() {
             return null;
+        }
+    }
+
+    class WithStorageParameter {
+
+        @Baseline(glueLine = "Baseline glueline with storage")
+        public void baselineWithStorageParameter(final Storage storage) {
+
         }
     }
 
