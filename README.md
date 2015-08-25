@@ -2,6 +2,8 @@
 
 Gareth is platform that allows you to make business goal validation part of your development process.
 
+For extra information visit our lean startup [site](http://gareth.craftsmenlabs.org) 
+
 ## Running Gareth
 
 Gareth can be run in two different manners, can be run with or without a REST interface.
@@ -115,7 +117,7 @@ dependency:
 <dependency>
     <groupId>org.craftsmenlabs.gareth</groupId>
     <artifactId>gareth-core</artifactId>
-    <version>0.4.0</version>
+    <version>0.5.0</version>
 </dependency>
 ```
 
@@ -189,12 +191,12 @@ dependency:
 <dependency>
     <groupId>org.craftsmenlabs.gareth</groupId>
     <artifactId>gareth-core</artifactId>
-    <version>0.4.0</version>
+    <version>0.5.0</version>
 </dependency>
 <dependency>
     <groupId>org.craftsmenlabs.gareth</groupId>
     <artifactId>gareth-rest</artifactId>
-    <version>0.4.0</version>
+    <version>0.5.0</version>
 </dependency>
 ```
 
