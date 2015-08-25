@@ -4,7 +4,7 @@
     <parent>
         <groupId>org.craftsmenlabs.gareth</groupId>
         <artifactId>gareth-jvm</artifactId>
-        <version>0.5.0</version>
+        <version>0.6.0-SNAPSHOT</version>
     </parent>
     <groupId>org.craftsmenlabs.gareth.rest</groupId>
     <artifactId>gareth-rest</artifactId>
