@@ -270,7 +270,7 @@ You can contribute to this repository the by following these steps.
 The following functionality is planned for next releases:
 
 - [x] Add experiment examples
-- [ ] Re-run experiments
+- [x] Re-run experiments
 - [x] Build examples
 - [x] REST interface
 - [ ] Maintain state after restart
