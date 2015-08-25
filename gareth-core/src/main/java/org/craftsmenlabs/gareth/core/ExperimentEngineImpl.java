@@ -1,5 +1,6 @@
 package org.craftsmenlabs.gareth.core;
 
+import lombok.Getter;
 import org.apache.commons.io.IOUtils;
 import org.craftsmenlabs.gareth.api.ExperimentEngine;
 import org.craftsmenlabs.gareth.api.ExperimentEngineConfig;
@@ -66,6 +67,9 @@ public class ExperimentEngineImpl implements ExperimentEngine {
 
     private final StorageFactory storageFactory;
 
+    @Getter
+    private boolean started;
+
 
     private ExperimentEngineImpl(final Builder builder) {
         this.experimentEngineConfig = builder.experimentEngineConfig;
@@ -91,6 +95,10 @@ public class ExperimentEngineImpl implements ExperimentEngine {
 
     @Override
     public void start() {
+        if(isStarted()){
+            throw new IllegalStateException("Experiment engine already started");
+        }
+        started = true;
         logger.info("Starting experiment engine");
         init();
         startRestService();
@@ -141,12 +149,18 @@ public class ExperimentEngineImpl implements ExperimentEngine {
     private void runExperiments() {
         logger.info("Run and schedule experiments");
         for (final ExperimentContext experimentContext : experimentContexts) {
-            if (experimentContext.isValid()) {
-                invokeBaseline(experimentContext);
-                experimentContext.setBaselineRun(LocalDateTime.now());
-                scheduleInvokeAssume(experimentContext);
-                experimentContext.setFinished(true);
-            }
+            planExperimentContext(experimentContext);
+        }
+    }
+
+    @Override
+    public void planExperimentContext(final ExperimentContext experimentContext) {
+        if (!isStarted()) throw new IllegalStateException("Cannot plan experiment context when engine is not started");
+        if (experimentContext.isValid()) {
+            invokeBaseline(experimentContext);
+            experimentContext.setBaselineRun(LocalDateTime.now());
+            scheduleInvokeAssume(experimentContext);
+            experimentContext.setFinished(true);
         }
     }
 
@@ -337,6 +351,11 @@ public class ExperimentEngineImpl implements ExperimentEngine {
 
         public Builder setRestServiceFactory(final RestServiceFactory restServiceFactory) {
             this.restServiceFactory = restServiceFactory;
+            return this;
+        }
+
+        public Builder setAssumeScheduler(final AssumeScheduler assumeScheduler){
+            this.assumeScheduler = assumeScheduler;
             return this;
         }
 

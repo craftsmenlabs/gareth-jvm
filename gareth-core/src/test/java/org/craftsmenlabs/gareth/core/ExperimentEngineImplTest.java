@@ -2,12 +2,15 @@ package org.craftsmenlabs.gareth.core;
 
 import org.craftsmenlabs.gareth.api.ExperimentEngine;
 import org.craftsmenlabs.gareth.api.ExperimentEngineConfig;
+import org.craftsmenlabs.gareth.api.context.ExperimentContext;
 import org.craftsmenlabs.gareth.api.definition.ParsedDefinition;
 import org.craftsmenlabs.gareth.api.definition.ParsedDefinitionFactory;
 import org.craftsmenlabs.gareth.api.factory.ExperimentFactory;
+import org.craftsmenlabs.gareth.api.invoker.MethodInvoker;
 import org.craftsmenlabs.gareth.api.model.Experiment;
 import org.craftsmenlabs.gareth.api.registry.DefinitionRegistry;
 import org.craftsmenlabs.gareth.api.registry.ExperimentRegistry;
+import org.craftsmenlabs.gareth.api.scheduler.AssumeScheduler;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
@@ -17,9 +20,9 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
+import static org.mockito.Mockito.*;
 
 /**
  * Created by hylke on 11/08/15.
@@ -47,6 +50,12 @@ public class ExperimentEngineImplTest {
     @Mock
     private ExperimentEngineConfig mockExperimentEngineConfig;
 
+    @Mock
+    private AssumeScheduler mockAssumeScheduler;
+
+    @Mock
+    private MethodInvoker mockMethodInvoker;
+
     @Before
     public void setUp() throws Exception {
         MockitoAnnotations.initMocks(this);
@@ -58,6 +67,8 @@ public class ExperimentEngineImplTest {
                 .setParsedDefinitionFactory(mockParsedDefinitionFactory)
                 .setExperimentFactory(mockExperimentFactory)
                 .setExperimentRegistry(mockExperimentRegistry)
+                .setAssumeScheduler(mockAssumeScheduler)
+                .setMethodInvoker(mockMethodInvoker)
                 .build();
     }
 
@@ -87,5 +98,46 @@ public class ExperimentEngineImplTest {
 
         experimentEngine.start();
         verify(mockExperimentRegistry).addExperiment("experiment", mockExperiment);
+    }
+
+
+    @Test
+    public void testPlanExperimentContextInvalidExperimentContext() {
+        experimentEngine.start();
+        final ExperimentContext mockExperimentContext = mock(ExperimentContext.class);
+        when(mockExperimentContext.isValid()).thenReturn(false);
+        experimentEngine.planExperimentContext(mockExperimentContext);
+        verify(mockAssumeScheduler,never()).schedule(mockExperimentContext);
+    }
+
+    @Test
+    public void testPlanExperimentContext() {
+        experimentEngine.start();
+        final ExperimentContext mockExperimentContext = mock(ExperimentContext.class);
+        when(mockExperimentContext.isValid()).thenReturn(true);
+        experimentEngine.planExperimentContext(mockExperimentContext);
+        verify(mockAssumeScheduler).schedule(mockExperimentContext);
+    }
+
+    @Test
+    public void testPlanExperimentContextWithStoppedEngine() {
+        try {
+            final ExperimentContext mockExperimentContext = mock(ExperimentContext.class);
+            experimentEngine.planExperimentContext(mockExperimentContext);
+            fail("Should not reach this point");
+        } catch (final IllegalStateException e) {
+            assertTrue(e.getMessage().contains("Cannot plan experiment context when engine is not started"));
+        }
+    }
+
+    @Test
+    public void testStartTwice() {
+        try {
+            experimentEngine.start();
+            experimentEngine.start();
+            fail("Should not reach this point");
+        } catch (final IllegalStateException e) {
+            assertTrue(e.getMessage().contains("Experiment engine already started"));
+        }
     }
 }

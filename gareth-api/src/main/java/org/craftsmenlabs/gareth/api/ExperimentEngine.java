@@ -24,4 +24,19 @@ public interface ExperimentEngine {
      * @return list of loaded experiment contexts
      */
     List<ExperimentContext> getExperimentContexts();
+
+    /**
+     * (re-)plan a experiment based on experiment context.
+     *
+     * @param experimentContext
+     */
+    void planExperimentContext(final ExperimentContext experimentContext);
+
+
+    /**
+     * Returns if the engine is started
+     *
+     * @return
+     */
+    boolean isStarted();
 }
