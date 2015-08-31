@@ -17,16 +17,19 @@ public class RestServiceImpl implements RestService {
 
     private final int portNumber;
 
+    private final String uri;
+
     private final ExperimentEngine experimentEngine;
 
     private RestServiceImpl(final Builder builder) {
         this.portNumber = builder.portNumber;
+        this.uri = builder.uri;
         this.experimentEngine = builder.experimentEngine;
     }
 
     @Override
     public void start() throws Exception {
-        final URI baseUri = UriBuilder.fromUri("http://localhost/").port(portNumber).build();
+        final URI baseUri = UriBuilder.fromUri(uri).port(portNumber).build();
         final HttpServer server = GrizzlyHttpServerFactory.createHttpServer(baseUri, new GarethApplication(experimentEngine));
         server.start();
     }
@@ -34,10 +37,22 @@ public class RestServiceImpl implements RestService {
     public static class Builder {
         private int portNumber = 8080;
 
+        private String uri = "http://localhost/";
+
         private ExperimentEngine experimentEngine;
 
         public Builder setExperimentEngine(final ExperimentEngine experimentEngine) {
             this.experimentEngine = experimentEngine;
+            return this;
+        }
+
+        public Builder setPortNumber(final int portNumber) {
+            this.portNumber = portNumber;
+            return this;
+        }
+
+        public Builder setURI(final String uri) {
+            this.uri = uri;
             return this;
         }
 
