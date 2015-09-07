@@ -275,6 +275,7 @@ The following functionality is planned for next releases:
 - [x] Re-run experiments
 - [x] Build examples
 - [x] REST interface
+- [ ] Add Gareth based asserts
 - [ ] Maintain state after restart
 - [x] Store values thru experiments
 - [x] Replace AKKA with lightweight scheduler
