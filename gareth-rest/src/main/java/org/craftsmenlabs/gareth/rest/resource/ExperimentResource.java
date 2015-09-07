@@ -1,14 +1,22 @@
 package org.craftsmenlabs.gareth.rest.resource;
 
 import org.craftsmenlabs.gareth.api.ExperimentEngine;
-import org.craftsmenlabs.gareth.rest.media.GarethMediaType;
+import org.craftsmenlabs.gareth.api.context.ExperimentContext;
+import org.craftsmenlabs.gareth.rest.assembler.Assembler;
+import org.craftsmenlabs.gareth.rest.v1.assembler.ExperimentAssembler;
+import org.craftsmenlabs.gareth.rest.v1.entity.Experiment;
+import org.craftsmenlabs.gareth.rest.v1.media.GarethMediaType;
 
 import javax.inject.Inject;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
+import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Request;
 import javax.ws.rs.core.Response;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by hylke on 17/08/15.
@@ -21,7 +29,16 @@ public class ExperimentResource {
 
     @GET
     @Produces({GarethMediaType.APPLICATION_JSON_EXPERIMENTS_V1, MediaType.APPLICATION_JSON})
-    public Response get() {
-        return Response.status(200).entity(experimentEngine.getExperimentContexts()).build();
+    public Response get(@Context Request request) {
+        return Response.status(200).entity(assembleExperiments(experimentEngine.getExperimentContexts())).build();
+    }
+
+    private List<Experiment> assembleExperiments(final List<ExperimentContext> experimentContexts) {
+        final Assembler<ExperimentContext, Experiment> assembler = new ExperimentAssembler();
+        final List<Experiment> experiments = new ArrayList<>();
+        for (final ExperimentContext experimentContext : experimentContexts) {
+            experiments.add(assembler.assembleOutbound(experimentContext));
+        }
+        return experiments;
     }
 }

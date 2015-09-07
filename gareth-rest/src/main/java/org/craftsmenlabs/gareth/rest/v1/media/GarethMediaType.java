@@ -1,4 +1,4 @@
-package org.craftsmenlabs.gareth.rest.media;
+package org.craftsmenlabs.gareth.rest.v1.media;
 
 import javax.ws.rs.core.MediaType;
 
