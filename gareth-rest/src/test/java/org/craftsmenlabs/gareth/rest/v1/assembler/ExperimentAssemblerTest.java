@@ -5,7 +5,10 @@ import org.craftsmenlabs.gareth.rest.v1.entity.Experiment;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.time.LocalDateTime;
+
 import static org.junit.Assert.*;
+import static org.mockito.Mockito.after;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -23,12 +26,19 @@ public class ExperimentAssemblerTest {
 
     @Test
     public void testAssembleOutbound() throws Exception {
+
         final ExperimentContext experimentContext = mock(ExperimentContext.class);
         when(experimentContext.getBaselineGlueLine()).thenReturn("baseline");
         when(experimentContext.getAssumeGlueLine()).thenReturn("assume");
         when(experimentContext.getTimeGlueLine()).thenReturn("time");
         when(experimentContext.getSuccessGlueLine()).thenReturn("success");
         when(experimentContext.getFailureGlueLine()).thenReturn("failure");
+        // Set execution runs
+        final LocalDateTime localDateTime = LocalDateTime.now();
+        when(experimentContext.getBaselineRun()).thenReturn(localDateTime);
+        when(experimentContext.getAssumeRun()).thenReturn(localDateTime);
+        when(experimentContext.getSuccessRun()).thenReturn(localDateTime);
+        when(experimentContext.getFailureRun()).thenReturn(localDateTime);
 
         final Experiment experiment = experimentAssembler.assembleOutbound(experimentContext);
         assertNotNull(experiment);
@@ -37,6 +47,10 @@ public class ExperimentAssemblerTest {
         assertEquals("time", experiment.getTimeGlueLine());
         assertEquals("success", experiment.getSuccessGlueLine());
         assertEquals("failure", experiment.getFailureGlueLine());
+        assertEquals(localDateTime, experiment.getBaselineExecution());
+        assertEquals(localDateTime, experiment.getAssumeExecution());
+        assertEquals(localDateTime, experiment.getSuccessExecution());
+        assertEquals(localDateTime, experiment.getFailureExecution());
     }
 
     @Test
