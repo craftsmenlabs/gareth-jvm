@@ -5,6 +5,7 @@ import org.apache.commons.io.IOUtils;
 import org.craftsmenlabs.gareth.api.ExperimentEngine;
 import org.craftsmenlabs.gareth.api.ExperimentEngineConfig;
 import org.craftsmenlabs.gareth.api.context.ExperimentContext;
+import org.craftsmenlabs.gareth.api.context.ExperimentPartState;
 import org.craftsmenlabs.gareth.api.definition.ParsedDefinition;
 import org.craftsmenlabs.gareth.api.definition.ParsedDefinitionFactory;
 import org.craftsmenlabs.gareth.api.exception.GarethDefinitionParseException;
@@ -39,6 +40,7 @@ import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * Created by hylke on 10/08/15.
@@ -95,7 +97,7 @@ public class ExperimentEngineImpl implements ExperimentEngine {
 
     @Override
     public void start() {
-        if(isStarted()){
+        if (isStarted()) {
             throw new IllegalStateException("Experiment engine already started");
         }
         started = true;
@@ -112,11 +114,11 @@ public class ExperimentEngineImpl implements ExperimentEngine {
 
                 final ExperimentContext experimentContext = new ExperimentContextImpl
                         .Builder(experiment.getExperimentName(), assumptionBlock)
-                        .setBaseline(getBaseline(assumptionBlock.getBaseline()))
-                        .setAssume(getAssume(assumptionBlock.getAssumption()))
+                        .setBaseline(Optional.ofNullable(getBaseline(assumptionBlock.getBaseline())))
+                        .setAssume(Optional.ofNullable(getAssume(assumptionBlock.getAssumption())))
                         .setTime(getDuration(assumptionBlock.getTime()))
-                        .setFailure(getFailure(assumptionBlock.getFailure()))
-                        .setSuccess(getSuccess(assumptionBlock.getSuccess()))
+                        .setFailure(Optional.ofNullable(getFailure(assumptionBlock.getFailure())))
+                        .setSuccess(Optional.ofNullable(getSuccess(assumptionBlock.getSuccess())))
                         .setStorage(storageFactory.createStorage())
                         .build();
 
@@ -176,12 +178,15 @@ public class ExperimentEngineImpl implements ExperimentEngine {
 
     private void invokeBaseline(final ExperimentContext experimentContext) {
         try {
+            experimentContext.setBaselineState(ExperimentPartState.RUNNING);
             if (experimentContext.hasStorage()) {
                 methodInvoker.invoke(experimentContext.getBaseline(), experimentContext.getStorage());
             } else {
                 methodInvoker.invoke(experimentContext.getBaseline());
             }
+            experimentContext.setBaselineState(ExperimentPartState.FINISHED);
         } catch (final GarethUnknownDefinitionException | GarethInvocationException e) {
+            experimentContext.setBaselineState(ExperimentPartState.ERROR);
             if (!experimentEngineConfig.isIgnoreInvocationExceptions()) {
                 throw e;
             }
@@ -354,7 +359,7 @@ public class ExperimentEngineImpl implements ExperimentEngine {
             return this;
         }
 
-        public Builder setAssumeScheduler(final AssumeScheduler assumeScheduler){
+        public Builder setAssumeScheduler(final AssumeScheduler assumeScheduler) {
             this.assumeScheduler = assumeScheduler;
             return this;
         }

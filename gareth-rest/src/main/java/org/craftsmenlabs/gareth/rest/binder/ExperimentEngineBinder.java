@@ -10,7 +10,7 @@ public class ExperimentEngineBinder extends AbstractBinder {
 
     private final ExperimentEngine experimentEngine;
 
-    public ExperimentEngineBinder(ExperimentEngine experimentEngine) {
+    public ExperimentEngineBinder(final ExperimentEngine experimentEngine) {
         this.experimentEngine = experimentEngine;
     }
 

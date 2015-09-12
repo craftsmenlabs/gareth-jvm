@@ -12,7 +12,7 @@ public class ExperimentEngineFeature implements Feature {
 
     private final ExperimentEngine experimentEngine;
 
-    public ExperimentEngineFeature(ExperimentEngine experimentEngine) {
+    public ExperimentEngineFeature(final ExperimentEngine experimentEngine) {
         this.experimentEngine = experimentEngine;
     }
 

@@ -3,6 +3,7 @@ package org.craftsmenlabs.gareth.core.context;
 import lombok.Getter;
 import lombok.Setter;
 import org.craftsmenlabs.gareth.api.context.ExperimentContext;
+import org.craftsmenlabs.gareth.api.context.ExperimentPartState;
 import org.craftsmenlabs.gareth.api.invoker.MethodDescriptor;
 import org.craftsmenlabs.gareth.api.model.AssumptionBlock;
 import org.craftsmenlabs.gareth.api.storage.Storage;
@@ -11,6 +12,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 import java.lang.reflect.Method;
 import java.time.Duration;
 import java.time.LocalDateTime;
+import java.util.Optional;
 
 /**
  * Created by hylke on 10/08/15.
@@ -31,6 +33,9 @@ public class ExperimentContextImpl implements ExperimentContext {
 
     private final Storage storage;
 
+    @Setter
+    private ExperimentPartState baselineState, assumeState, successState, failureState;
+
 
     @Setter
     private LocalDateTime baselineRun, assumeRun, successRun, failureRun;
@@ -48,6 +53,11 @@ public class ExperimentContextImpl implements ExperimentContext {
         this.baseline = builder.baseline;
         this.success = builder.success;
         this.failure = builder.failure;
+        // State
+        this.baselineState = builder.baselineState;
+        this.assumeState = builder.assumeState;
+        this.successState = builder.successState;
+        this.failureState = builder.failureState;
         // Time
         this.time = builder.time;
         // Storage
@@ -104,28 +114,48 @@ public class ExperimentContextImpl implements ExperimentContext {
 
         private Storage storage = null;
 
+        private ExperimentPartState baselineState = ExperimentPartState.NON_EXISTENT;
+
+        private ExperimentPartState assumeState = ExperimentPartState.NON_EXISTENT;
+
+        private ExperimentPartState successState = ExperimentPartState.NON_EXISTENT;
+
+        private ExperimentPartState failureState = ExperimentPartState.NON_EXISTENT;
+
         public Builder(final String experimentName, final AssumptionBlock assumptionBlock) {
             this.experimentName = experimentName;
             this.assumptionBlock = assumptionBlock;
         }
 
-        public Builder setBaseline(final MethodDescriptor baseline) {
-            this.baseline = baseline;
+        public Builder setBaseline(final Optional<MethodDescriptor> baseline) {
+            if (baseline.isPresent()) {
+                this.baseline = baseline.get();
+                this.baselineState = ExperimentPartState.OPEN;
+            }
             return this;
         }
 
-        public Builder setAssume(final MethodDescriptor assume) {
-            this.assume = assume;
+        public Builder setAssume(final Optional<MethodDescriptor> assume) {
+            if (assume.isPresent()) {
+                this.assume = assume.get();
+                this.assumeState = ExperimentPartState.OPEN;
+            }
             return this;
         }
 
-        public Builder setSuccess(final MethodDescriptor success) {
-            this.success = success;
+        public Builder setSuccess(final Optional<MethodDescriptor> success) {
+            if (success.isPresent()) {
+                this.success = success.get();
+                this.successState = ExperimentPartState.OPEN;
+            }
             return this;
         }
 
-        public Builder setFailure(final MethodDescriptor failure) {
-            this.failure = failure;
+        public Builder setFailure(final Optional<MethodDescriptor> failure) {
+            if (failure.isPresent()) {
+                this.failure = failure.get();
+                this.failureState = ExperimentPartState.OPEN;
+            }
             return this;
         }
 

@@ -66,4 +66,20 @@ public interface ExperimentContext {
 
     Storage getStorage();
 
+    ExperimentPartState getBaselineState();
+
+    ExperimentPartState getAssumeState();
+
+    ExperimentPartState getSuccessState();
+
+    ExperimentPartState getFailureState();
+
+    void setBaselineState(final ExperimentPartState baselineState);
+
+    void setAssumeState(final ExperimentPartState assumeState);
+
+    void setSuccessState(final ExperimentPartState successState);
+
+    void setFailureState(final ExperimentPartState failureState);
+
 }
