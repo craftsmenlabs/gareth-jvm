@@ -3,6 +3,7 @@ package org.craftsmenlabs.gareth.core.scheduler;
 import com.xeiam.sundial.Job;
 import com.xeiam.sundial.exceptions.JobInterruptException;
 import org.craftsmenlabs.gareth.api.context.ExperimentContext;
+import org.craftsmenlabs.gareth.api.context.ExperimentPartState;
 import org.craftsmenlabs.gareth.api.invoker.MethodDescriptor;
 import org.craftsmenlabs.gareth.api.invoker.MethodInvoker;
 import org.craftsmenlabs.gareth.api.storage.Storage;
@@ -26,19 +27,25 @@ public class DefaultInvocationJob extends Job {
 
         try {
             logger.debug("Invoking assumption");
-
+            experimentContext.setAssumeState(ExperimentPartState.RUNNING);
             invoke(methodInvoker, experimentContext.hasStorage(), experimentContext.getAssume(), experimentContext.getStorage());
             experimentContext.setAssumeRun(LocalDateTime.now());
+            experimentContext.setAssumeState(ExperimentPartState.FINISHED);
             if (null != experimentContext.getSuccess()) {
                 logger.debug("Invoking success");
+                experimentContext.setSuccessState(ExperimentPartState.RUNNING);
                 invoke(methodInvoker, experimentContext.hasStorage(), experimentContext.getSuccess(), experimentContext.getStorage());
                 experimentContext.setSuccessRun(LocalDateTime.now());
+                experimentContext.setSuccessState(ExperimentPartState.FINISHED);
             }
         } catch (final Exception e) {
+            experimentContext.setAssumeState(ExperimentPartState.ERROR);
             if (null != experimentContext.getFailure()) {
                 logger.debug("Invoking failure");
+                experimentContext.setFailureState(ExperimentPartState.RUNNING);
                 invoke(methodInvoker, experimentContext.hasStorage(), experimentContext.getFailure(), experimentContext.getStorage());
                 experimentContext.setFailureRun(LocalDateTime.now());
+                experimentContext.setFailureState(ExperimentPartState.FINISHED);
             }
         }
     }

@@ -15,6 +15,7 @@ import java.lang.reflect.Method;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
+import java.util.Optional;
 
 import static org.junit.Assert.*;
 
@@ -26,7 +27,7 @@ public class ExperimentContextImplTest {
     private ExperimentContext experimentContext;
     private AssumptionBlock assumptionBlock;
     private Duration mockDuration;
-    private MethodDescriptor stubMethodDescriptor;
+    private Optional<MethodDescriptor> stubMethodDescriptor;
 
     @Before
     public void setUp() throws Exception {
@@ -147,22 +148,22 @@ public class ExperimentContextImplTest {
 
     @Test
     public void testGetBaseline() throws Exception {
-        assertEquals(stubMethodDescriptor, experimentContext.getBaseline());
+        assertEquals(stubMethodDescriptor.get(), experimentContext.getBaseline());
     }
 
     @Test
     public void testGetAssume() throws Exception {
-        assertEquals(stubMethodDescriptor, experimentContext.getAssume());
+        assertEquals(stubMethodDescriptor.get(), experimentContext.getAssume());
     }
 
     @Test
     public void testGetSuccess() throws Exception {
-        assertEquals(stubMethodDescriptor, experimentContext.getSuccess());
+        assertEquals(stubMethodDescriptor.get(), experimentContext.getSuccess());
     }
 
     @Test
     public void testGetFailure() throws Exception {
-        assertEquals(stubMethodDescriptor, experimentContext.getFailure());
+        assertEquals(stubMethodDescriptor.get(), experimentContext.getFailure());
     }
 
     @Test
@@ -273,7 +274,7 @@ public class ExperimentContextImplTest {
     public void testHasStorageOnBaseline() {
         experimentContext = new ExperimentContextImpl
                 .Builder("experiment name", assumptionBlock)
-                .setBaseline(new MethodDescriptorImpl(null, 0, true))
+                .setBaseline(Optional.of(new MethodDescriptorImpl(null, 0, true)))
                 .setAssume(stubMethodDescriptor)
                 .setFailure(stubMethodDescriptor)
                 .setSuccess(stubMethodDescriptor)
@@ -287,7 +288,7 @@ public class ExperimentContextImplTest {
         experimentContext = new ExperimentContextImpl
                 .Builder("experiment name", assumptionBlock)
                 .setBaseline(stubMethodDescriptor)
-                .setAssume(new MethodDescriptorImpl(null, 0, true))
+                .setAssume(Optional.of(new MethodDescriptorImpl(null, 0, true)))
                 .setFailure(stubMethodDescriptor)
                 .setSuccess(stubMethodDescriptor)
                 .setTime(mockDuration)
@@ -301,7 +302,7 @@ public class ExperimentContextImplTest {
                 .Builder("experiment name", assumptionBlock)
                 .setBaseline(stubMethodDescriptor)
                 .setAssume(stubMethodDescriptor)
-                .setFailure(new MethodDescriptorImpl(null, 0, true))
+                .setFailure(Optional.of(new MethodDescriptorImpl(null, 0, true)))
                 .setSuccess(stubMethodDescriptor)
                 .setTime(mockDuration)
                 .build();
@@ -315,13 +316,13 @@ public class ExperimentContextImplTest {
                 .setBaseline(stubMethodDescriptor)
                 .setAssume(stubMethodDescriptor)
                 .setFailure(stubMethodDescriptor)
-                .setSuccess(new MethodDescriptorImpl(null, 0, true))
+                .setSuccess(Optional.of(new MethodDescriptorImpl(null, 0, true)))
                 .setTime(mockDuration)
                 .build();
         assertTrue(experimentContext.hasStorage());
     }
 
-    private MethodDescriptor stubMethodDescriptor() {
-        return new MethodDescriptorImpl(this.getClass().getMethods()[0], 0, false);
+    private Optional<MethodDescriptor> stubMethodDescriptor() {
+        return Optional.ofNullable(new MethodDescriptorImpl(this.getClass().getMethods()[0], 0, false));
     }
 }

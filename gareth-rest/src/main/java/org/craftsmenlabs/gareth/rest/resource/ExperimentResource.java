@@ -11,10 +11,7 @@ import javax.inject.Inject;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
-import javax.ws.rs.core.Context;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Request;
-import javax.ws.rs.core.Response;
+import javax.ws.rs.core.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -30,7 +27,11 @@ public class ExperimentResource {
     @GET
     @Produces({GarethMediaType.APPLICATION_JSON_EXPERIMENTS_V1, MediaType.APPLICATION_JSON})
     public Response get(@Context Request request) {
-        return Response.status(200).entity(assembleExperiments(experimentEngine.getExperimentContexts())).build();
+        return Response
+                .status(200)
+                .entity(new GenericEntity<List<Experiment>>(assembleExperiments(experimentEngine.getExperimentContexts())) {
+                })
+                .build();
     }
 
     private List<Experiment> assembleExperiments(final List<ExperimentContext> experimentContexts) {

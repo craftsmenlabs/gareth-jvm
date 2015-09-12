@@ -11,27 +11,37 @@ import java.time.temporal.ChronoUnit;
 public class SampleDefinition {
 
     @Baseline(glueLine = "Sample baseline")
-    public void sampleBaseline(){
+    public void sampleBaseline() {
         System.out.println("Baseline was executed");
     }
 
     @Assume(glueLine = "Sample assume")
-    public void sampleAssume(){
+    public void sampleAssume() {
         System.out.println("Assume was executed");
     }
 
     @Time(glueLine = "1 minute")
-    public Duration sampleTime(){
+    public Duration sampleTime() {
         return Duration.of(1L, ChronoUnit.MINUTES);
     }
 
+    @Time(glueLine = "1 month")
+    public Duration sampleTimeOneMonth() {
+        return Duration.of(2L, ChronoUnit.MINUTES);
+    }
+
+    @Time(glueLine = "1 year")
+    public Duration sampleTimeOneYear() {
+        return Duration.of(3L, ChronoUnit.MINUTES);
+    }
+
     @Success(glueLine = "Sample success")
-    public void sampleSuccess(){
+    public void sampleSuccess() {
         System.out.println("Success was executed");
     }
 
     @Failure(glueLine = "Sample failure")
-    public void sampleFailure(){
+    public void sampleFailure() {
         System.out.println("Failure was executed");
     }
 }

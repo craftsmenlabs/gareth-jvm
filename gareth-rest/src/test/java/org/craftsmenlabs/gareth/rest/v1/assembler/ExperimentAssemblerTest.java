@@ -1,6 +1,7 @@
 package org.craftsmenlabs.gareth.rest.v1.assembler;
 
 import org.craftsmenlabs.gareth.api.context.ExperimentContext;
+import org.craftsmenlabs.gareth.api.context.ExperimentPartState;
 import org.craftsmenlabs.gareth.rest.v1.entity.Experiment;
 import org.junit.Before;
 import org.junit.Test;
@@ -28,11 +29,17 @@ public class ExperimentAssemblerTest {
     public void testAssembleOutbound() throws Exception {
 
         final ExperimentContext experimentContext = mock(ExperimentContext.class);
+        when(experimentContext.getExperimentName()).thenReturn("experiment");
         when(experimentContext.getBaselineGlueLine()).thenReturn("baseline");
         when(experimentContext.getAssumeGlueLine()).thenReturn("assume");
         when(experimentContext.getTimeGlueLine()).thenReturn("time");
         when(experimentContext.getSuccessGlueLine()).thenReturn("success");
         when(experimentContext.getFailureGlueLine()).thenReturn("failure");
+        // Set time
+        when(experimentContext.getBaselineState()).thenReturn(ExperimentPartState.OPEN);
+        when(experimentContext.getAssumeState()).thenReturn(ExperimentPartState.OPEN);
+        when(experimentContext.getSuccessState()).thenReturn(ExperimentPartState.OPEN);
+        when(experimentContext.getFailureState()).thenReturn(ExperimentPartState.OPEN);
         // Set execution runs
         final LocalDateTime localDateTime = LocalDateTime.now();
         when(experimentContext.getBaselineRun()).thenReturn(localDateTime);
@@ -42,6 +49,7 @@ public class ExperimentAssemblerTest {
 
         final Experiment experiment = experimentAssembler.assembleOutbound(experimentContext);
         assertNotNull(experiment);
+        assertEquals("experiment", experiment.getExperimentName());
         assertEquals("baseline", experiment.getBaselineGlueLine());
         assertEquals("assume", experiment.getAssumeGlueLine());
         assertEquals("time", experiment.getTimeGlueLine());
@@ -51,6 +59,10 @@ public class ExperimentAssemblerTest {
         assertEquals(localDateTime, experiment.getAssumeExecution());
         assertEquals(localDateTime, experiment.getSuccessExecution());
         assertEquals(localDateTime, experiment.getFailureExecution());
+        assertEquals("open", experiment.getBaselineState());
+        assertEquals("open", experiment.getAssumeState());
+        assertEquals("open", experiment.getSuccessState());
+        assertEquals("open", experiment.getFailureState());
     }
 
     @Test

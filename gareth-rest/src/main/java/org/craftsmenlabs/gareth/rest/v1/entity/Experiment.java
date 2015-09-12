@@ -13,6 +13,8 @@ import java.time.LocalDateTime;
 @XmlRootElement
 public class Experiment {
 
+    @XmlElement(name = "experiment_name")
+    private String experimentName;
     @XmlElement(name = "baseline_glueline")
     private String baselineGlueLine;
     @XmlElement(name = "assume_glueline")
@@ -33,5 +35,13 @@ public class Experiment {
     private LocalDateTime failureExecution;
     @XmlElement(name = "experiment_state")
     private ExperimentState experimentState;
+    @XmlElement(name = "baseline_state")
+    private String baselineState;
+    @XmlElement(name = "assume_state")
+    private String assumeState;
+    @XmlElement(name = "success_state")
+    private String successState;
+    @XmlElement(name = "failure_state")
+    private String failureState;
 
 }

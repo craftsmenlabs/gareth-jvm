@@ -16,6 +16,7 @@ public class ExperimentAssembler implements Assembler<ExperimentContext, Experim
         Experiment experiment = null;
         if (Optional.ofNullable(inbound).isPresent()) {
             experiment = new Experiment();
+            experiment.setExperimentName(inbound.getExperimentName());
             experiment.setBaselineGlueLine(inbound.getBaselineGlueLine());
             experiment.setAssumeGlueLine(inbound.getAssumeGlueLine());
             experiment.setTimeGlueLine(inbound.getTimeGlueLine());
@@ -25,6 +26,10 @@ public class ExperimentAssembler implements Assembler<ExperimentContext, Experim
             experiment.setAssumeExecution(inbound.getAssumeRun());
             experiment.setSuccessExecution(inbound.getSuccessRun());
             experiment.setFailureExecution(inbound.getFailureRun());
+            experiment.setBaselineState(inbound.getBaselineState().getName());
+            experiment.setAssumeState(inbound.getAssumeState().getName());
+            experiment.setSuccessState(inbound.getSuccessState().getName());
+            experiment.setFailureState(inbound.getFailureState().getName());
 
         }
         return experiment;
