@@ -5,7 +5,7 @@ package org.craftsmenlabs.gareth.api.exception;
  */
 public class GarethInvocationException extends RuntimeException {
 
-    public GarethInvocationException(Throwable cause) {
+    public GarethInvocationException(final Throwable cause) {
         super(cause);
     }
 }
