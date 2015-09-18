@@ -5,18 +5,6 @@ package org.craftsmenlabs.gareth.api.exception;
  */
 public class GarethDefinitionParseException extends RuntimeException {
 
-    public GarethDefinitionParseException() {
-        super();
-    }
-
-    public GarethDefinitionParseException(String message) {
-        super(message);
-    }
-
-    public GarethDefinitionParseException(String message, Throwable cause) {
-        super(message, cause);
-    }
-
     public GarethDefinitionParseException(final Throwable cause) {
         super(cause);
     }

@@ -8,16 +8,4 @@ public class GarethExperimentParseException extends RuntimeException {
     public GarethExperimentParseException() {
         super();
     }
-
-    public GarethExperimentParseException(String message) {
-        super(message);
-    }
-
-    public GarethExperimentParseException(String message, Throwable cause) {
-        super(message, cause);
-    }
-
-    public GarethExperimentParseException(Throwable cause) {
-        super(cause);
-    }
 }

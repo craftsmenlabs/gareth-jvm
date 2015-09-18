@@ -26,7 +26,7 @@ public class ExperimentResource {
 
     @GET
     @Produces({GarethMediaType.APPLICATION_JSON_EXPERIMENTS_V1, MediaType.APPLICATION_JSON})
-    public Response get(@Context Request request) {
+    public Response get() {
         return Response
                 .status(200)
                 .entity(new GenericEntity<List<Experiment>>(assembleExperiments(experimentEngine.getExperimentContexts())) {
