@@ -25,6 +25,8 @@
         <jetty.version>9.3.2.v20150730</jetty.version>
         <slf4j.version>1.7.12</slf4j.version>
         <jackson.version>2.6.1</jackson.version>
+        <jacoco-maven-plugin.version>0.7.5.201505241946</jacoco-maven-plugin.version>
+        <coveralls-maven-plugin.version>4.0.0</coveralls-maven-plugin.version>
     </properties>
 
     <organization>
@@ -225,6 +227,42 @@
             <plugin>
                 <artifactId>maven-release-plugin</artifactId>
                 <version>2.1</version>
+            </plugin>
+
+            <!-- Coverage report  -->
+            <plugin>
+                <groupId>org.jacoco</groupId>
+                <artifactId>jacoco-maven-plugin</artifactId>
+                <version>${jacoco-maven-plugin.version}</version>
+                <executions>
+                    <!-- Prepares the property pointing to the JaCoCo
+                    runtime agent which is passed as VM argument when Maven the Surefire plugin
+                    is executed. -->
+                    <execution>
+                        <id>pre-unit-test</id>
+                        <goals>
+                            <goal>prepare-agent</goal>
+                        </goals>
+                    </execution>
+
+                    <!-- Ensures that the code coverage report for
+                    unit tests is created after unit tests have been run. -->
+                    <execution>
+                        <id>post-unit-test</id>
+                        <phase>test</phase>
+                        <goals>
+                            <goal>report</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.eluder.coveralls</groupId>
+                <artifactId>coveralls-maven-plugin</artifactId>
+                <version>${coveralls-maven-plugin.version}</version>
+                <configuration>
+                    <repoToken>ZqEBXtnjWZTL55tnf5byahr8uSNwUobig</repoToken>
+                </configuration>
             </plugin>
         </plugins>
     </build>
