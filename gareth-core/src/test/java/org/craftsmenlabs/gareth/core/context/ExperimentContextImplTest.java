@@ -1,6 +1,7 @@
 package org.craftsmenlabs.gareth.core.context;
 
 import org.craftsmenlabs.gareth.api.context.ExperimentContext;
+import org.craftsmenlabs.gareth.api.context.ExperimentPartState;
 import org.craftsmenlabs.gareth.api.invoker.MethodDescriptor;
 import org.craftsmenlabs.gareth.api.model.AssumptionBlock;
 import org.craftsmenlabs.gareth.api.model.Experiment;
@@ -202,6 +203,50 @@ public class ExperimentContextImplTest {
     }
 
     @Test
+    public void testBaselineState() {
+        assertEquals(ExperimentPartState.OPEN, experimentContext.getBaselineState());
+    }
+
+    @Test
+    public void testAssumeState() {
+        assertEquals(ExperimentPartState.OPEN, experimentContext.getAssumeState());
+    }
+
+    @Test
+    public void testSuccessState() {
+        assertEquals(ExperimentPartState.OPEN, experimentContext.getSuccessState());
+    }
+
+    @Test
+    public void testFailureState() {
+        assertEquals(ExperimentPartState.OPEN, experimentContext.getFailureState());
+    }
+
+    @Test
+    public void testSetBaselineState() {
+        experimentContext.setBaselineState(ExperimentPartState.FINISHED);
+        assertEquals(ExperimentPartState.FINISHED, experimentContext.getBaselineState());
+    }
+
+    @Test
+    public void testSetAssumeState() {
+        experimentContext.setAssumeState(ExperimentPartState.FINISHED);
+        assertEquals(ExperimentPartState.FINISHED, experimentContext.getAssumeState());
+    }
+
+    @Test
+    public void testSetSuccessState() {
+        experimentContext.setSuccessState(ExperimentPartState.FINISHED);
+        assertEquals(ExperimentPartState.FINISHED, experimentContext.getSuccessState());
+    }
+
+    @Test
+    public void testSetFailureState() {
+        experimentContext.setFailureState(ExperimentPartState.FINISHED);
+        assertEquals(ExperimentPartState.FINISHED, experimentContext.getFailureState());
+    }
+
+    @Test
     public void testGetBaselineRun() throws Exception {
         final LocalDateTime runTime = LocalDateTime.now();
         experimentContext.setBaselineRun(runTime);
@@ -321,6 +366,17 @@ public class ExperimentContextImplTest {
                 .build();
         assertTrue(experimentContext.hasStorage());
     }
+
+    @Test
+    public void testBuildWithoutMethodDescriptorsAndValidateState() {
+        experimentContext = new ExperimentContextImpl
+                .Builder("experiment name", assumptionBlock).build();
+        assertEquals(ExperimentPartState.NON_EXISTENT, experimentContext.getBaselineState());
+        assertEquals(ExperimentPartState.NON_EXISTENT, experimentContext.getAssumeState());
+        assertEquals(ExperimentPartState.NON_EXISTENT, experimentContext.getSuccessState());
+        assertEquals(ExperimentPartState.NON_EXISTENT, experimentContext.getFailureState());
+    }
+
 
     private Optional<MethodDescriptor> stubMethodDescriptor() {
         return Optional.ofNullable(new MethodDescriptorImpl(this.getClass().getMethods()[0], 0, false));
