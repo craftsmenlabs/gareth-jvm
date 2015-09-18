@@ -1,7 +1,11 @@
 package org.craftsmenlabs.gareth.core.scheduler;
 
 import com.xeiam.sundial.Job;
+import com.xeiam.sundial.JobContext;
 import com.xeiam.sundial.exceptions.JobInterruptException;
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.Setter;
 import org.craftsmenlabs.gareth.api.context.ExperimentContext;
 import org.craftsmenlabs.gareth.api.context.ExperimentPartState;
 import org.craftsmenlabs.gareth.api.invoker.MethodDescriptor;
@@ -19,6 +23,9 @@ import java.time.LocalDateTime;
 public class DefaultInvocationJob extends Job {
 
     private static final Logger logger = LoggerFactory.getLogger(DefaultInvocationJob.class);
+
+    @Setter(AccessLevel.PROTECTED) // Setter for testing purposes (Adding this method for test is more important)
+    private JobContext jobContext;
 
     @Override
     public void doRun() throws JobInterruptException {
@@ -56,5 +63,16 @@ public class DefaultInvocationJob extends Job {
         } else {
             methodInvoker.invoke(methodDescriptor);
         }
+    }
+
+    @Override
+    protected JobContext getJobContext() {
+        JobContext returnJobContext;
+        if (null != this.jobContext) {
+            returnJobContext = this.jobContext;
+        } else {
+            returnJobContext = super.getJobContext();
+        }
+        return returnJobContext;
     }
 }

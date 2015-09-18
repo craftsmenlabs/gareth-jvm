@@ -377,6 +377,20 @@ public class ExperimentContextImplTest {
         assertEquals(ExperimentPartState.NON_EXISTENT, experimentContext.getFailureState());
     }
 
+    @Test
+    public void testBuildWithNullMethodDescriptorsAndValidateState() {
+        experimentContext = new ExperimentContextImpl
+                .Builder("experiment name", assumptionBlock)
+                .setBaseline(Optional.ofNullable(null))
+                .setFailure(Optional.ofNullable(null))
+                .setSuccess(Optional.ofNullable(null))
+                .setAssume(Optional.ofNullable(null)).build();
+        assertEquals(ExperimentPartState.NON_EXISTENT, experimentContext.getBaselineState());
+        assertEquals(ExperimentPartState.NON_EXISTENT, experimentContext.getAssumeState());
+        assertEquals(ExperimentPartState.NON_EXISTENT, experimentContext.getSuccessState());
+        assertEquals(ExperimentPartState.NON_EXISTENT, experimentContext.getFailureState());
+    }
+
 
     private Optional<MethodDescriptor> stubMethodDescriptor() {
         return Optional.ofNullable(new MethodDescriptorImpl(this.getClass().getMethods()[0], 0, false));
