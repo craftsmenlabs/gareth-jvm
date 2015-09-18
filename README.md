@@ -1,4 +1,5 @@
 # Gareth
+[![Build Status](https://travis-ci.org/craftsmenlabs/gareth-jvm.svg)](https://travis-ci.org/craftsmenlabs/gareth-jvm)
 
 Gareth is platform that allows you to make business goal validation part of your development process.
 
