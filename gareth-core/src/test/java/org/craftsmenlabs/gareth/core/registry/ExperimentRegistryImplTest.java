@@ -8,6 +8,9 @@ import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import static org.junit.Assert.*;
 
 /**
@@ -62,5 +65,12 @@ public class ExperimentRegistryImplTest {
         } catch (final GarethUnknownExperimentException e) {
             assertEquals("Experiment 'unknown' unknown", e.getMessage());
         }
+    }
+
+    @Test
+    public void testGetAllExperiments() {
+        final List<Experiment> experimentList = experimentRegistry.getAllExperiments();
+        assertTrue(experimentList instanceof ArrayList);
+        assertEquals(1, experimentList.size());
     }
 }

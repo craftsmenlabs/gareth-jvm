@@ -108,8 +108,9 @@ public class ParsedDefinitionFactoryImpl implements ParsedDefinitionFactory {
 
     private boolean isValidMethod(final Method method) {
 
-        return method.getReturnType().equals(Void.class)
-                || method.getReturnType().equals(Void.TYPE);
+        return (method.getReturnType().equals(Void.class)
+                || method.getReturnType().equals(Void.TYPE))
+                && hasValidParameters(method);
     }
 
     private boolean hasValidParameters(final Method method) {

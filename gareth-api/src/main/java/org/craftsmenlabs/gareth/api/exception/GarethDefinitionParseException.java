@@ -17,7 +17,7 @@ public class GarethDefinitionParseException extends RuntimeException {
         super(message, cause);
     }
 
-    public GarethDefinitionParseException(Throwable cause) {
+    public GarethDefinitionParseException(final Throwable cause) {
         super(cause);
     }
 }

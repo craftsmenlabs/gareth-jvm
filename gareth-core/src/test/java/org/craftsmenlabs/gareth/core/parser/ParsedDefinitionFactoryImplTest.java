@@ -49,6 +49,16 @@ public class ParsedDefinitionFactoryImplTest {
     }
 
     @Test
+    public void testParseTimeWithIncorrectMethodArguments() throws Exception {
+        try {
+            parsedParsedDefinitionFactory.parse(WithIncorrectMethodArgumentCount.class);
+            fail("Should not reach this point");
+        } catch (final IllegalStateException e) {
+            assertTrue(e.getMessage().contains("Method baselineDefinition with glue line 'Baseline glueline' is not a valid method (no void return type)"));
+        }
+    }
+
+    @Test
     public void testParseTimeWithIncorrectConstructor() throws Exception {
         try {
             parsedParsedDefinitionFactory.parse(TimeIncorrectConstructorDefinition.class);
@@ -237,6 +247,13 @@ public class ParsedDefinitionFactoryImplTest {
 
         @Baseline(glueLine = "Baseline glueline")
         public Object baselineDefinition() {
+            return null;
+        }
+    }
+
+    class WithIncorrectMethodArgumentCount {
+        @Baseline(glueLine = "Baseline glueline")
+        public Object baselineDefinition(final String invalidCount) {
             return null;
         }
     }

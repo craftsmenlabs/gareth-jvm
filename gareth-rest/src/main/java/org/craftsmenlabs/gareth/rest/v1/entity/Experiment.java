@@ -33,8 +33,6 @@ public class Experiment {
     private LocalDateTime successExecution;
     @XmlElement(name = "failure_execution")
     private LocalDateTime failureExecution;
-    @XmlElement(name = "experiment_state")
-    private ExperimentState experimentState;
     @XmlElement(name = "baseline_state")
     private String baselineState;
     @XmlElement(name = "assume_state")

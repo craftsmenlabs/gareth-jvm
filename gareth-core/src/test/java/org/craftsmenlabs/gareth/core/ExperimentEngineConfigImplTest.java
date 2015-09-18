@@ -112,6 +112,19 @@ public class ExperimentEngineConfigImplTest {
     }
 
     @Test
+    public void testSetIgnoreInvocationExceptions() throws Exception {
+        final ExperimentEngineConfig experimentEngineConfig = new ExperimentEngineConfigImpl
+                .Builder()
+                .setIgnoreInvocationExceptions(true)
+                .build();
+
+        assertFalse(experimentEngineConfig.isIgnoreInvalidDefinitions());
+        assertTrue(experimentEngineConfig.isIgnoreInvocationExceptions());
+        assertEquals(0, experimentEngineConfig.getDefinitionClasses().length);
+        assertEquals(0, experimentEngineConfig.getInputStreams().length);
+    }
+
+    @Test
     public void testIsIgnoreInvalidExperiments() throws Exception {
 
     }
