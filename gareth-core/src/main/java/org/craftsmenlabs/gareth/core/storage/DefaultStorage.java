@@ -2,6 +2,7 @@ package org.craftsmenlabs.gareth.core.storage;
 
 import org.craftsmenlabs.gareth.api.storage.Storage;
 
+import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
@@ -11,15 +12,15 @@ import java.util.Optional;
  */
 public class DefaultStorage implements Storage {
 
-    private final Map<String, Object> keyValueMap = new HashMap<>();
+    private final Map<String, Serializable> keyValueMap = new HashMap<>();
 
     @Override
-    public Optional<? extends Object> get(final String name) {
+    public Optional<? extends Serializable> get(final String name) {
         return Optional.ofNullable(keyValueMap.get(name));
     }
 
     @Override
-    public void store(final String name, final Object object) {
+    public void store(final String name, final Serializable object) {
         keyValueMap.put(name, object);
     }
 }

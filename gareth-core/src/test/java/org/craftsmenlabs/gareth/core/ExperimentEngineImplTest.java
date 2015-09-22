@@ -10,6 +10,7 @@ import org.craftsmenlabs.gareth.api.invoker.MethodInvoker;
 import org.craftsmenlabs.gareth.api.model.Experiment;
 import org.craftsmenlabs.gareth.api.registry.DefinitionRegistry;
 import org.craftsmenlabs.gareth.api.registry.ExperimentRegistry;
+import org.craftsmenlabs.gareth.api.rest.RestServiceFactory;
 import org.craftsmenlabs.gareth.api.scheduler.AssumeScheduler;
 import org.junit.Before;
 import org.junit.Test;
@@ -55,6 +56,9 @@ public class ExperimentEngineImplTest {
 
     @Mock
     private MethodInvoker mockMethodInvoker;
+
+    @Mock
+    private RestServiceFactory mockRestServiceFactory;
 
     @Before
     public void setUp() throws Exception {

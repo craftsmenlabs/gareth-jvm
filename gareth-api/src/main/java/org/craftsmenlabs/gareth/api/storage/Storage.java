@@ -1,5 +1,6 @@
 package org.craftsmenlabs.gareth.api.storage;
 
+import java.io.Serializable;
 import java.util.Optional;
 
 /**
@@ -13,7 +14,7 @@ public interface Storage {
      * @param name
      * @return
      */
-    <T extends Object> Optional<Object> get(final String name);
+    <T extends Serializable> Optional<? extends Serializable> get(final String name);
 
     /**
      * Store object for name
@@ -21,5 +22,5 @@ public interface Storage {
      * @param name
      * @param object
      */
-    void store(final String name, final Object object);
+    void store(final String name, final Serializable object);
 }
