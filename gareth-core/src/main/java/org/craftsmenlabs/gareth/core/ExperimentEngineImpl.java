@@ -8,15 +8,13 @@ import org.craftsmenlabs.gareth.api.context.ExperimentContext;
 import org.craftsmenlabs.gareth.api.context.ExperimentPartState;
 import org.craftsmenlabs.gareth.api.definition.ParsedDefinition;
 import org.craftsmenlabs.gareth.api.definition.ParsedDefinitionFactory;
-import org.craftsmenlabs.gareth.api.exception.GarethDefinitionParseException;
-import org.craftsmenlabs.gareth.api.exception.GarethExperimentParseException;
-import org.craftsmenlabs.gareth.api.exception.GarethInvocationException;
-import org.craftsmenlabs.gareth.api.exception.GarethUnknownDefinitionException;
+import org.craftsmenlabs.gareth.api.exception.*;
 import org.craftsmenlabs.gareth.api.factory.ExperimentFactory;
 import org.craftsmenlabs.gareth.api.invoker.MethodDescriptor;
 import org.craftsmenlabs.gareth.api.invoker.MethodInvoker;
 import org.craftsmenlabs.gareth.api.model.AssumptionBlock;
 import org.craftsmenlabs.gareth.api.model.Experiment;
+import org.craftsmenlabs.gareth.api.persist.ExperimentEnginePersistence;
 import org.craftsmenlabs.gareth.api.registry.DefinitionRegistry;
 import org.craftsmenlabs.gareth.api.registry.ExperimentRegistry;
 import org.craftsmenlabs.gareth.api.rest.RestService;
@@ -69,6 +67,8 @@ public class ExperimentEngineImpl implements ExperimentEngine {
 
     private final StorageFactory storageFactory;
 
+    private final ExperimentEnginePersistence experimentEnginePersistence;
+
     @Getter
     private boolean started;
 
@@ -83,6 +83,7 @@ public class ExperimentEngineImpl implements ExperimentEngine {
         this.assumeScheduler = builder.assumeScheduler;
         this.restServiceFactory = builder.restServiceFactory;
         this.storageFactory = builder.storageFactory;
+        this.experimentEnginePersistence = builder.experimentEnginePersistence;
     }
 
     private void registerDefinition(final Class clazz) throws GarethDefinitionParseException {
@@ -133,6 +134,17 @@ public class ExperimentEngineImpl implements ExperimentEngine {
         initDefinitions();
         initExperiments();
         populateExperimentContexts();
+        loadStateFromPersistence();
+    }
+
+    private void loadStateFromPersistence() {
+        if (null != experimentEnginePersistence) {
+            try {
+                experimentEnginePersistence.restore(this);
+            } catch (final GarethStateReadException e) {
+
+            }
+        }
     }
 
     private void startRestService() {
@@ -177,32 +189,35 @@ public class ExperimentEngineImpl implements ExperimentEngine {
     }
 
     private void invokeBaseline(final ExperimentContext experimentContext) {
-        try {
-            experimentContext.setBaselineState(ExperimentPartState.RUNNING);
-            if (experimentContext.hasStorage()) {
-                methodInvoker.invoke(experimentContext.getBaseline(), experimentContext.getStorage());
-            } else {
-                methodInvoker.invoke(experimentContext.getBaseline());
-            }
-            experimentContext.setBaselineState(ExperimentPartState.FINISHED);
-        } catch (final GarethUnknownDefinitionException | GarethInvocationException e) {
-            experimentContext.setBaselineState(ExperimentPartState.ERROR);
-            if (!experimentEngineConfig.isIgnoreInvocationExceptions()) {
-                throw e;
+        if (ExperimentPartState.OPEN == experimentContext.getBaselineState()) {
+            try {
+                experimentContext.setBaselineState(ExperimentPartState.RUNNING);
+                if (experimentContext.hasStorage()) {
+                    methodInvoker.invoke(experimentContext.getBaseline(), experimentContext.getStorage());
+                } else {
+                    methodInvoker.invoke(experimentContext.getBaseline());
+                }
+                experimentContext.setBaselineState(ExperimentPartState.FINISHED);
+            } catch (final GarethUnknownDefinitionException | GarethInvocationException e) {
+                experimentContext.setBaselineState(ExperimentPartState.ERROR);
+                if (!experimentEngineConfig.isIgnoreInvocationExceptions()) {
+                    throw e;
+                }
             }
         }
     }
 
     private void scheduleInvokeAssume(final ExperimentContext experimentContext) {
-        try {
-            assumeScheduler.schedule(experimentContext);
+        if(ExperimentPartState.OPEN == experimentContext.getAssumeState()) {
+            try {
+                assumeScheduler.schedule(experimentContext);
 
-        } catch (final GarethUnknownDefinitionException | GarethInvocationException e) {
-            if (!experimentEngineConfig.isIgnoreInvocationExceptions()) {
-                throw e;
+            } catch (final GarethUnknownDefinitionException | GarethInvocationException e) {
+                if (!experimentEngineConfig.isIgnoreInvocationExceptions()) {
+                    throw e;
+                }
             }
         }
-
     }
 
     private MethodDescriptor getSuccess(final String glueLine) {
@@ -323,6 +338,8 @@ public class ExperimentEngineImpl implements ExperimentEngine {
 
         private StorageFactory storageFactory = new DefaultStorageFactory();
 
+        private ExperimentEnginePersistence experimentEnginePersistence = null;
+
         public Builder setDefinitionRegistry(final DefinitionRegistry definitionRegistry) {
             this.definitionRegistry = definitionRegistry;
             return this;
@@ -356,6 +373,11 @@ public class ExperimentEngineImpl implements ExperimentEngine {
 
         public Builder setRestServiceFactory(final RestServiceFactory restServiceFactory) {
             this.restServiceFactory = restServiceFactory;
+            return this;
+        }
+
+        public Builder setExperimentEnginePersistence(final ExperimentEnginePersistence experimentEnginePersistence) {
+            this.experimentEnginePersistence = experimentEnginePersistence;
             return this;
         }
 

@@ -3,6 +3,7 @@ package org.craftsmenlabs.gareth.core;
 import org.craftsmenlabs.gareth.api.ExperimentEngine;
 import org.craftsmenlabs.gareth.api.ExperimentEngineConfig;
 import org.craftsmenlabs.gareth.api.context.ExperimentContext;
+import org.craftsmenlabs.gareth.api.context.ExperimentPartState;
 import org.craftsmenlabs.gareth.api.definition.ParsedDefinition;
 import org.craftsmenlabs.gareth.api.definition.ParsedDefinitionFactory;
 import org.craftsmenlabs.gareth.api.factory.ExperimentFactory;
@@ -111,7 +112,7 @@ public class ExperimentEngineImplTest {
         final ExperimentContext mockExperimentContext = mock(ExperimentContext.class);
         when(mockExperimentContext.isValid()).thenReturn(false);
         experimentEngine.planExperimentContext(mockExperimentContext);
-        verify(mockAssumeScheduler,never()).schedule(mockExperimentContext);
+        verify(mockAssumeScheduler, never()).schedule(mockExperimentContext);
     }
 
     @Test
@@ -119,6 +120,8 @@ public class ExperimentEngineImplTest {
         experimentEngine.start();
         final ExperimentContext mockExperimentContext = mock(ExperimentContext.class);
         when(mockExperimentContext.isValid()).thenReturn(true);
+        when(mockExperimentContext.getBaselineState()).thenReturn(ExperimentPartState.OPEN);
+        when(mockExperimentContext.getAssumeState()).thenReturn(ExperimentPartState.OPEN);
         experimentEngine.planExperimentContext(mockExperimentContext);
         verify(mockAssumeScheduler).schedule(mockExperimentContext);
     }
