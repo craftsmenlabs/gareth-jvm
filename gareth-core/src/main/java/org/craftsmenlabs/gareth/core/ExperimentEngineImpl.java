@@ -25,6 +25,7 @@ import org.craftsmenlabs.gareth.core.context.ExperimentContextImpl;
 import org.craftsmenlabs.gareth.core.factory.ExperimentFactoryImpl;
 import org.craftsmenlabs.gareth.core.invoker.MethodInvokerImpl;
 import org.craftsmenlabs.gareth.core.parser.ParsedDefinitionFactoryImpl;
+import org.craftsmenlabs.gareth.core.persist.FileSystemExperimentEnginePersistence;
 import org.craftsmenlabs.gareth.core.reflection.ReflectionHelper;
 import org.craftsmenlabs.gareth.core.registry.DefinitionRegistryImpl;
 import org.craftsmenlabs.gareth.core.registry.ExperimentRegistryImpl;
@@ -356,7 +357,7 @@ public class ExperimentEngineImpl implements ExperimentEngine {
 
         private StorageFactory storageFactory = new DefaultStorageFactory();
 
-        private ExperimentEnginePersistence experimentEnginePersistence = null;
+        private ExperimentEnginePersistence experimentEnginePersistence = new FileSystemExperimentEnginePersistence.Builder().build();
 
         public Builder setDefinitionRegistry(final DefinitionRegistry definitionRegistry) {
             this.definitionRegistry = definitionRegistry;

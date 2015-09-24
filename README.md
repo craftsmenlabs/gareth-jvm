@@ -133,17 +133,40 @@ import org.craftsmenlabs.gareth.core.ExperimentEngineImpl;
 import org.craftsmenlabs.gareth.examples.definition.SampleDefinition;
 
 public class ExampleApplication {
+
+
     public static void main(final String[] args) {
+        final ExperimentEnginePersistence experimentEnginePersistence = new FileSystemExperimentEnginePersistence.Builder().build();
         final ExperimentEngineConfig experimentEngineConfig = new ExperimentEngineConfigImpl
                 .Builder()
-                .addDefinitionClass(SampleDefinition.class) // Load the classes with your definitions
-                .addInputStreams(ExampleApplication.class.getClass().getResourceAsStream("/experiments/businessgoal-01.experiment")) // Load the inputstreams with your experiments
+                .addDefinitionClass(SampleDefinition.class)
+                .addInputStreams(ExampleApplication.class.getClass().getResourceAsStream("/experiments/businessgoal-01.experiment"))
                 .setIgnoreInvocationExceptions(true)
                 .build();
         final ExperimentEngine experimentEngine = new ExperimentEngineImpl
                 .Builder(experimentEngineConfig)
+                .setExperimentEnginePersistence(experimentEnginePersistence)
                 .build();
         experimentEngine.start();
+
+        Runtime.getRuntime().addShutdownHook(new ShutdownHook(experimentEngine));
+    }
+
+    /**
+     * Shutdown hook when application is stopped then also stop the experiment engine.
+     */
+    static class ShutdownHook extends Thread {
+
+        private final ExperimentEngine experimentEngine;
+
+        private ShutdownHook(final ExperimentEngine experimentEngine) {
+            this.experimentEngine = experimentEngine;
+        }
+
+        @Override
+        public void run() {
+            experimentEngine.stop();
+        }
     }
 }
 ```
@@ -278,8 +301,7 @@ The following functionality is planned for next releases:
 - [x] Build examples
 - [x] REST interface
 - [ ] Add Gareth based asserts
-- [ ] Maintain state after restart
+- [x] Maintain state after restart
 - [x] Store values thru experiments
 - [x] Replace AKKA with lightweight scheduler
-- [ ] Add additional unit-tests
 - [ ] Allow for regex glue lines

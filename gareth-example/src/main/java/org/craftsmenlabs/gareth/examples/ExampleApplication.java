@@ -9,9 +9,11 @@ import org.craftsmenlabs.gareth.core.persist.FileSystemExperimentEnginePersisten
 import org.craftsmenlabs.gareth.examples.definition.SampleDefinition;
 
 /**
- * Hello world!
+ * Example Gareth application
  */
 public class ExampleApplication {
+
+
     public static void main(final String[] args) {
         final ExperimentEnginePersistence experimentEnginePersistence = new FileSystemExperimentEnginePersistence.Builder().build();
         final ExperimentEngineConfig experimentEngineConfig = new ExperimentEngineConfigImpl
@@ -22,7 +24,27 @@ public class ExampleApplication {
                 .build();
         final ExperimentEngine experimentEngine = new ExperimentEngineImpl
                 .Builder(experimentEngineConfig)
+                .setExperimentEnginePersistence(experimentEnginePersistence)
                 .build();
         experimentEngine.start();
+
+        Runtime.getRuntime().addShutdownHook(new ShutdownHook(experimentEngine));
+    }
+
+    /**
+     * Shutdown hook when application is stopped then also stop the experiment engine.
+     */
+    static class ShutdownHook extends Thread {
+
+        private final ExperimentEngine experimentEngine;
+
+        private ShutdownHook(final ExperimentEngine experimentEngine) {
+            this.experimentEngine = experimentEngine;
+        }
+
+        @Override
+        public void run() {
+            experimentEngine.stop();
+        }
     }
 }

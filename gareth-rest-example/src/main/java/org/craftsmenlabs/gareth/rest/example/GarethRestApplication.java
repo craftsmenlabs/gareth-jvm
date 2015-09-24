@@ -14,7 +14,7 @@ import org.craftsmenlabs.gareth.rest.example.definition.SampleDefinition;
  */
 public class GarethRestApplication
 {
-    public static void main( String[] args )
+    public static void main(final String[] args )
     {
         final RestServiceFactory restServiceFactory = new RestServiceFactoryImpl(); // Create a new rest service factory
 
@@ -29,5 +29,25 @@ public class GarethRestApplication
                 .setRestServiceFactory(restServiceFactory)
                 .build();
         experimentEngine.start();
+        Runtime.getRuntime().addShutdownHook(new ShutdownHook(experimentEngine));
+    }
+
+
+
+    /**
+     * Shutdown hook when application is stopped then also stop the experiment engine.
+     */
+    static class ShutdownHook extends Thread {
+
+        private final ExperimentEngine experimentEngine;
+
+        private ShutdownHook(final ExperimentEngine experimentEngine) {
+            this.experimentEngine = experimentEngine;
+        }
+
+        @Override
+        public void run() {
+            experimentEngine.stop();
+        }
     }
 }
