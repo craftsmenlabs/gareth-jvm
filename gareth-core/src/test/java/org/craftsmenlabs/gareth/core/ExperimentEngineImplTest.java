@@ -9,6 +9,7 @@ import org.craftsmenlabs.gareth.api.definition.ParsedDefinitionFactory;
 import org.craftsmenlabs.gareth.api.factory.ExperimentFactory;
 import org.craftsmenlabs.gareth.api.invoker.MethodInvoker;
 import org.craftsmenlabs.gareth.api.model.Experiment;
+import org.craftsmenlabs.gareth.api.persist.ExperimentEnginePersistence;
 import org.craftsmenlabs.gareth.api.registry.DefinitionRegistry;
 import org.craftsmenlabs.gareth.api.registry.ExperimentRegistry;
 import org.craftsmenlabs.gareth.api.rest.RestServiceFactory;
@@ -61,6 +62,9 @@ public class ExperimentEngineImplTest {
     @Mock
     private RestServiceFactory mockRestServiceFactory;
 
+    @Mock
+    private ExperimentEnginePersistence mockExperimentEnginePersistence;
+
     @Before
     public void setUp() throws Exception {
         MockitoAnnotations.initMocks(this);
@@ -74,6 +78,7 @@ public class ExperimentEngineImplTest {
                 .setExperimentRegistry(mockExperimentRegistry)
                 .setAssumeScheduler(mockAssumeScheduler)
                 .setMethodInvoker(mockMethodInvoker)
+                .setExperimentEnginePersistence(mockExperimentEnginePersistence)
                 .build();
     }
 
@@ -147,4 +152,23 @@ public class ExperimentEngineImplTest {
             assertTrue(e.getMessage().contains("Experiment engine already started"));
         }
     }
+
+    @Test
+    public void testStopExperimentEngineWhenNotStarted() {
+        try {
+            experimentEngine.stop();
+            fail("Should not reach this point");
+        } catch (final IllegalStateException e) {
+            assertTrue(e.getMessage().contains("Experiment engine is not started"));
+        }
+    }
+
+    @Test
+    public void testStopWithoutPersistence() throws Exception {
+        experimentEngine.start();
+        experimentEngine.stop();
+        verify(mockExperimentEnginePersistence).persist(experimentEngine);
+    }
+
+
 }

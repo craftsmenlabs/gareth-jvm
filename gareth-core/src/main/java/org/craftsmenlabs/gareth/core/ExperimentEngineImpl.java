@@ -108,6 +108,24 @@ public class ExperimentEngineImpl implements ExperimentEngine {
         runExperiments();
     }
 
+    @Override
+    public void stop() {
+        if (!isStarted()) {
+            throw new IllegalStateException("Experiment engine is not started");
+        }
+        persistExperimentEngineState();
+    }
+
+    private void persistExperimentEngineState() {
+        Optional.ofNullable(experimentEnginePersistence).ifPresent(eep -> {
+            try {
+                experimentEnginePersistence.persist(this);
+            } catch (final GarethStateWriteException e) {
+                logger.error("Cannot write experiment engine state", e);
+            }
+        });
+    }
+
     private void populateExperimentContexts() {
         logger.info("Populating experiment contexts");
         for (final Experiment experiment : experimentRegistry.getAllExperiments()) {
@@ -208,7 +226,7 @@ public class ExperimentEngineImpl implements ExperimentEngine {
     }
 
     private void scheduleInvokeAssume(final ExperimentContext experimentContext) {
-        if(ExperimentPartState.OPEN == experimentContext.getAssumeState()) {
+        if (ExperimentPartState.OPEN == experimentContext.getAssumeState()) {
             try {
                 assumeScheduler.schedule(experimentContext);
 

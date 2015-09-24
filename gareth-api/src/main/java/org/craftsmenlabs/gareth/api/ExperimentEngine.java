@@ -17,6 +17,11 @@ public interface ExperimentEngine {
      */
     void start();
 
+    /**
+     * Stop experiments and if necessary persist the engine state
+     */
+    void stop();
+
 
     /**
      * Get list of experiment context
