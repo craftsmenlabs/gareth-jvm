@@ -191,7 +191,6 @@ public class ExperimentEngineImpl implements ExperimentEngine {
         if (!isStarted()) throw new IllegalStateException("Cannot plan experiment context when engine is not started");
         if (experimentContext.isValid()) {
             invokeBaseline(experimentContext);
-            experimentContext.setBaselineRun(LocalDateTime.now());
             scheduleInvokeAssume(experimentContext);
             experimentContext.setFinished(true);
         }
@@ -208,6 +207,7 @@ public class ExperimentEngineImpl implements ExperimentEngine {
     }
 
     private void invokeBaseline(final ExperimentContext experimentContext) {
+        logger.debug(String.format("Invoking baseline: %s with state %s", experimentContext.getBaselineGlueLine(), experimentContext.getBaselineState().getName()));
         if (ExperimentPartState.OPEN == experimentContext.getBaselineState()) {
             try {
                 experimentContext.setBaselineState(ExperimentPartState.RUNNING);
@@ -217,6 +217,7 @@ public class ExperimentEngineImpl implements ExperimentEngine {
                     methodInvoker.invoke(experimentContext.getBaseline());
                 }
                 experimentContext.setBaselineState(ExperimentPartState.FINISHED);
+                experimentContext.setBaselineRun(LocalDateTime.now());
             } catch (final GarethUnknownDefinitionException | GarethInvocationException e) {
                 experimentContext.setBaselineState(ExperimentPartState.ERROR);
                 if (!experimentEngineConfig.isIgnoreInvocationExceptions()) {
