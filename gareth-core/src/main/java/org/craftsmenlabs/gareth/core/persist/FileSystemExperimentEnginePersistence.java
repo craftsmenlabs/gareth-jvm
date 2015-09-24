@@ -132,6 +132,9 @@ public class FileSystemExperimentEnginePersistence implements ExperimentEnginePe
 
     public static class Builder {
 
+        private final static String STATE_FILENAME = "gareth.state";
+        private final static String TMP_DIR = System.getProperty("java.io.tmpdir");
+
         private File stateFile;
 
         public Builder setStateFile(final File stateFile) {
@@ -140,7 +143,21 @@ public class FileSystemExperimentEnginePersistence implements ExperimentEnginePe
         }
 
         public ExperimentEnginePersistence build() {
+            setupStateFile();
             return new FileSystemExperimentEnginePersistence(this);
+        }
+
+        private void setupStateFile() {
+            if (null == stateFile) {
+                stateFile = new File(TMP_DIR, STATE_FILENAME);
+            }
+            try {
+                if (!stateFile.exists()) {
+                    stateFile.createNewFile();
+                }
+            } catch (final IOException e) {
+                throw new IllegalStateException(String.format("Cannot setup state file %s", stateFile.getPath()), e);
+            }
         }
     }
 }

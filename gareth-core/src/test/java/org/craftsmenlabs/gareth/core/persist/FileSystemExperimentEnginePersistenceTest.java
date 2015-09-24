@@ -66,12 +66,21 @@ public class FileSystemExperimentEnginePersistenceTest {
     @Test
     public void testPersist() throws Exception {
         fileSystemExperimentEnginePersistence.persist(mockExperimentEngine);
-        final List<ExperimentContextData> experimentContextDataList = readContextFromTmpFile();
+        final List<ExperimentContextData> experimentContextDataList = readContextFromTmpFile(tmpFile);
         assertNotNull(experimentContextDataList);
         assertEquals(1, experimentContextDataList.size());
     }
 
-    private List<ExperimentContextData> readContextFromTmpFile() {
+    @Test
+    public void testPersistWithDefaultStateFile() throws Exception {
+        fileSystemExperimentEnginePersistence = new FileSystemExperimentEnginePersistence.Builder().build();
+        fileSystemExperimentEnginePersistence.persist(mockExperimentEngine);
+        final List<ExperimentContextData> experimentContextDataList = readContextFromTmpFile(new File(System.getProperty("java.io.tmpdir"), "gareth.state"));
+        assertNotNull(experimentContextDataList);
+        assertEquals(1, experimentContextDataList.size());
+    }
+
+    private List<ExperimentContextData> readContextFromTmpFile(final File tmpFile) {
         List<ExperimentContextData> experimentContextDataList = null;
         FileInputStream fis = null;
         ObjectInputStream ois = null;
@@ -124,9 +133,8 @@ public class FileSystemExperimentEnginePersistenceTest {
             fileSystemExperimentEnginePersistence = new FileSystemExperimentEnginePersistence.Builder().setStateFile(new File("/not/present/file")).build();
             fileSystemExperimentEnginePersistence.restore(mockExperimentEngine);
             fail("Should not read this point");
-        } catch (final GarethStateReadException e) {
-            assertTrue(e.getCause() instanceof FileNotFoundException);
-            assertTrue(e.getMessage().contains("No such file"));
+        } catch (final IllegalStateException e) {
+            assertTrue(e.getCause() instanceof IOException);
         }
     }
 }
