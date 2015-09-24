@@ -119,7 +119,7 @@ dependency:
 <dependency>
     <groupId>org.craftsmenlabs.gareth</groupId>
     <artifactId>gareth-core</artifactId>
-    <version>0.6.0</version>
+    <version>0.7.0</version>
 </dependency>
 ```
 
@@ -216,12 +216,12 @@ dependency:
 <dependency>
     <groupId>org.craftsmenlabs.gareth</groupId>
     <artifactId>gareth-core</artifactId>
-    <version>0.6.0</version>
+    <version>0.7.0</version>
 </dependency>
 <dependency>
     <groupId>org.craftsmenlabs.gareth</groupId>
     <artifactId>gareth-rest</artifactId>
-    <version>0.6.0</version>
+    <version>0.7.0</version>
 </dependency>
 ```
 
