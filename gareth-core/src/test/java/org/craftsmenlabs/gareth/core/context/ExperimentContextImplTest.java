@@ -25,6 +25,7 @@ import static org.junit.Assert.*;
  */
 public class ExperimentContextImplTest {
 
+    private final String hash = "hash";
     private ExperimentContext experimentContext;
     private AssumptionBlock assumptionBlock;
     private Duration mockDuration;
@@ -52,7 +53,7 @@ public class ExperimentContextImplTest {
                 .setFailure(stubMethodDescriptor)
                 .setSuccess(stubMethodDescriptor)
                 .setTime(mockDuration)
-                .build();
+                .build(hash);
 
     }
 
@@ -67,7 +68,7 @@ public class ExperimentContextImplTest {
                 .Builder("experiment name", assumptionBlock)
                 .setBaseline(stubMethodDescriptor)
                 .setAssume(stubMethodDescriptor)
-                .build();
+                .build(hash);
         assertFalse(experimentContext.isValid());
     }
 
@@ -77,7 +78,7 @@ public class ExperimentContextImplTest {
                 .Builder("experiment name", assumptionBlock)
                 .setAssume(stubMethodDescriptor)
                 .setTime(mockDuration)
-                .build();
+                .build(hash);
         assertFalse(experimentContext.isValid());
     }
 
@@ -87,7 +88,7 @@ public class ExperimentContextImplTest {
                 .Builder("experiment name", assumptionBlock)
                 .setBaseline(stubMethodDescriptor)
                 .setTime(mockDuration)
-                .build();
+                .build(hash);
         assertFalse(experimentContext.isValid());
     }
 
@@ -290,6 +291,11 @@ public class ExperimentContextImplTest {
     }
 
     @Test
+    public void testGetHash() {
+        assertEquals("hash", experimentContext.getHash());
+    }
+
+    @Test
     public void testHasStorageNoStorageMethods() {
         assertFalse(experimentContext.hasStorage());
     }
@@ -310,7 +316,7 @@ public class ExperimentContextImplTest {
                 .setSuccess(stubMethodDescriptor)
                 .setTime(mockDuration)
                 .setStorage(storage)
-                .build();
+                .build(hash);
         assertNotNull(experimentContext.getStorage());
         assertSame(storage, experimentContext.getStorage());
     }
@@ -324,7 +330,7 @@ public class ExperimentContextImplTest {
                 .setFailure(stubMethodDescriptor)
                 .setSuccess(stubMethodDescriptor)
                 .setTime(mockDuration)
-                .build();
+                .build(hash);
         assertTrue(experimentContext.hasStorage());
     }
 
@@ -337,7 +343,7 @@ public class ExperimentContextImplTest {
                 .setFailure(stubMethodDescriptor)
                 .setSuccess(stubMethodDescriptor)
                 .setTime(mockDuration)
-                .build();
+                .build(hash);
         assertTrue(experimentContext.hasStorage());
     }
 
@@ -350,7 +356,7 @@ public class ExperimentContextImplTest {
                 .setFailure(Optional.of(new MethodDescriptorImpl(null, 0, true)))
                 .setSuccess(stubMethodDescriptor)
                 .setTime(mockDuration)
-                .build();
+                .build(hash);
         assertTrue(experimentContext.hasStorage());
     }
 
@@ -363,14 +369,14 @@ public class ExperimentContextImplTest {
                 .setFailure(stubMethodDescriptor)
                 .setSuccess(Optional.of(new MethodDescriptorImpl(null, 0, true)))
                 .setTime(mockDuration)
-                .build();
+                .build(hash);
         assertTrue(experimentContext.hasStorage());
     }
 
     @Test
     public void testBuildWithoutMethodDescriptorsAndValidateState() {
         experimentContext = new ExperimentContextImpl
-                .Builder("experiment name", assumptionBlock).build();
+                .Builder("experiment name", assumptionBlock).build(hash);
         assertEquals(ExperimentPartState.NON_EXISTENT, experimentContext.getBaselineState());
         assertEquals(ExperimentPartState.NON_EXISTENT, experimentContext.getAssumeState());
         assertEquals(ExperimentPartState.NON_EXISTENT, experimentContext.getSuccessState());
@@ -384,11 +390,20 @@ public class ExperimentContextImplTest {
                 .setBaseline(Optional.ofNullable(null))
                 .setFailure(Optional.ofNullable(null))
                 .setSuccess(Optional.ofNullable(null))
-                .setAssume(Optional.ofNullable(null)).build();
+                .setAssume(Optional.ofNullable(null)).build(hash);
         assertEquals(ExperimentPartState.NON_EXISTENT, experimentContext.getBaselineState());
         assertEquals(ExperimentPartState.NON_EXISTENT, experimentContext.getAssumeState());
         assertEquals(ExperimentPartState.NON_EXISTENT, experimentContext.getSuccessState());
         assertEquals(ExperimentPartState.NON_EXISTENT, experimentContext.getFailureState());
+    }
+
+    @Test
+    public void testBuildWithoutHash(){
+        try {
+            new ExperimentContextImpl.Builder("experiment name", assumptionBlock).build(null);
+        }catch (final IllegalStateException e){
+            assertTrue(e.getMessage().contains("ExperimentContext cannot be build without hash"));
+        }
     }
 
 

@@ -47,6 +47,7 @@ public class FileSystemExperimentEnginePersistenceTest {
 
     private ArrayList<ExperimentContext> getExperimentContexts() {
         final ArrayList<ExperimentContext> experimentContexts = new ArrayList<>();
+        when(mockExperimentContext.getHash()).thenReturn("hash");
         when(mockExperimentContext.getBaselineState()).thenReturn(ExperimentPartState.ERROR);
         when(mockExperimentContext.getAssumeState()).thenReturn(ExperimentPartState.FINISHED);
         when(mockExperimentContext.getSuccessState()).thenReturn(ExperimentPartState.NON_EXISTENT);

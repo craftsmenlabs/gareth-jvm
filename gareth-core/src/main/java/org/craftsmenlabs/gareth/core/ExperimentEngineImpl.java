@@ -31,6 +31,7 @@ import org.craftsmenlabs.gareth.core.registry.DefinitionRegistryImpl;
 import org.craftsmenlabs.gareth.core.registry.ExperimentRegistryImpl;
 import org.craftsmenlabs.gareth.core.scheduler.DefaultAssumeScheduler;
 import org.craftsmenlabs.gareth.core.storage.DefaultStorageFactory;
+import org.craftsmenlabs.gareth.core.util.ExperimentContextHashGenerator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -132,6 +133,15 @@ public class ExperimentEngineImpl implements ExperimentEngine {
         for (final Experiment experiment : experimentRegistry.getAllExperiments()) {
             for (final AssumptionBlock assumptionBlock : experiment.getAssumptionBlockList()) {
 
+                final String[] surrogateKey = {experiment.getExperimentName()
+                        , assumptionBlock.getBaseline()
+                        , assumptionBlock.getAssumption()
+                        , assumptionBlock.getTime()
+                        , assumptionBlock.getSuccess()
+                        , assumptionBlock.getFailure()};
+
+                final String hashedSurrogateKey = ExperimentContextHashGenerator.generateSurrogateKey(surrogateKey);
+
                 final ExperimentContext experimentContext = new ExperimentContextImpl
                         .Builder(experiment.getExperimentName(), assumptionBlock)
                         .setBaseline(Optional.ofNullable(getBaseline(assumptionBlock.getBaseline())))
@@ -140,7 +150,7 @@ public class ExperimentEngineImpl implements ExperimentEngine {
                         .setFailure(Optional.ofNullable(getFailure(assumptionBlock.getFailure())))
                         .setSuccess(Optional.ofNullable(getSuccess(assumptionBlock.getSuccess())))
                         .setStorage(storageFactory.createStorage())
-                        .build();
+                        .build(hashedSurrogateKey);
 
                 experimentContexts.add(experimentContext);
             }

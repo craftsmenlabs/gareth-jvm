@@ -6,7 +6,7 @@ import java.util.Optional;
 /**
  * Created by hylke on 21/08/15.
  */
-public interface Storage {
+public interface Storage extends Serializable {
 
     /**
      * Get object optional for name

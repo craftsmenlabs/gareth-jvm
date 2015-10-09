@@ -7,7 +7,9 @@ import org.slf4j.LoggerFactory;
 import java.io.UnsupportedEncodingException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.util.Arrays;
 import java.util.Optional;
+import java.util.stream.Stream;
 
 /**
  * Created by hylke on 23/09/15.
@@ -16,12 +18,12 @@ public class ExperimentContextHashGenerator {
 
     private final static Logger LOG = LoggerFactory.getLogger(ExperimentContextHashGenerator.class);
 
-    public static String generateHash(final ExperimentContext experimentContext) {
+    public static String generateHash(final String[] unhashedSurrogateKey) {
         byte[] digest = {};
         try {
             final MessageDigest md = MessageDigest.getInstance("SHA-256");
 
-            md.update(buildExperimentContextHash(experimentContext).getBytes("UTF-8")); // Change this to "UTF-16" if needed
+            md.update(generateSurrogateKey(unhashedSurrogateKey).getBytes("UTF-8")); // Change this to "UTF-16" if needed
             digest = md.digest();
         } catch (final NoSuchAlgorithmException | UnsupportedEncodingException e) {
             LOG.error("Cannot generate hash for experiment context");
@@ -29,15 +31,25 @@ public class ExperimentContextHashGenerator {
         return String.format("%064x", new java.math.BigInteger(1, digest));
     }
 
-    private static String buildExperimentContextHash(final ExperimentContext experimentContext) {
+    public static String generateSurrogateKey(final String[] unhashedSurrogateKey) {
+        byte[] digest = {};
+        try {
+            final MessageDigest md = MessageDigest.getInstance("SHA-256");
+
+            md.update(buildUnhashedKey(unhashedSurrogateKey).getBytes("UTF-8")); // Change this to "UTF-16" if needed
+            digest = md.digest();
+        } catch (final NoSuchAlgorithmException | UnsupportedEncodingException e) {
+            LOG.error("Cannot generate hash for experiment context");
+        }
+        return String.format("%064x", new java.math.BigInteger(1, digest));
+    }
+
+    private static String buildUnhashedKey(final String[] unhashedSurrogateKey) {
         final StringBuilder stringBuilder = new StringBuilder("");
-        Optional.ofNullable(experimentContext).ifPresent((ec) -> {
-            stringBuilder.append(ec.getExperimentName());
-            stringBuilder.append(ec.getBaselineGlueLine());
-            stringBuilder.append(ec.getAssumeGlueLine());
-            stringBuilder.append(ec.getTimeGlueLine());
-            stringBuilder.append(ec.getSuccessGlueLine());
-            stringBuilder.append(ec.getFailureGlueLine());
+        Optional.ofNullable(unhashedSurrogateKey).ifPresent(key -> {
+            Arrays.stream(unhashedSurrogateKey)
+                    .map(e -> Optional.ofNullable(e).orElse("-"))
+                    .forEach(e -> stringBuilder.append(e));
         });
         return stringBuilder.toString();
     }

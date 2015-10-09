@@ -1,5 +1,6 @@
 package org.craftsmenlabs.gareth.core.context;
 
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 import org.craftsmenlabs.gareth.api.context.ExperimentContext;
@@ -19,7 +20,10 @@ import java.util.Optional;
  */
 @XmlRootElement
 @Getter
+@EqualsAndHashCode(of = {"hash"})
 public class ExperimentContextImpl implements ExperimentContext {
+
+    private final String hash;
 
     private final String experimentName;
 
@@ -40,7 +44,8 @@ public class ExperimentContextImpl implements ExperimentContext {
     @Setter
     private LocalDateTime baselineRun, assumeRun, successRun, failureRun;
 
-    private ExperimentContextImpl(final Builder builder) {
+    private ExperimentContextImpl(final String hash, final Builder builder) {
+        this.hash = hash;
         this.experimentName = builder.experimentName;
         // Gluelines
         this.baselineGlueLine = builder.assumptionBlock.getBaseline();
@@ -169,8 +174,10 @@ public class ExperimentContextImpl implements ExperimentContext {
             return this;
         }
 
-        public ExperimentContext build() {
-            return new ExperimentContextImpl(this);
+        public ExperimentContext build(final String hash) {
+            Optional.ofNullable(hash)
+                    .orElseThrow(() -> new IllegalStateException("ExperimentContext cannot be build without hash"));
+            return new ExperimentContextImpl(hash, this);
         }
     }
 }

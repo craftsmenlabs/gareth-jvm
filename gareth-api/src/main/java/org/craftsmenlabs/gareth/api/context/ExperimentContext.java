@@ -14,6 +14,8 @@ import java.time.LocalDateTime;
  */
 public interface ExperimentContext {
 
+    String getHash();
+
     String getExperimentName();
 
     String getAssumeGlueLine();

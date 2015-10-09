@@ -58,7 +58,7 @@ public class FileSystemExperimentEnginePersistence implements ExperimentEnginePe
         final List<ExperimentContextData> experimentContextDataList = readExperimentContextDataFromFile();
         experimentEngine.getExperimentContexts().forEach(experimentContext -> {
             try {
-                final ExperimentContextData experimentContextData = findExperimentContextDataForHash(experimentContextDataList, ExperimentContextHashGenerator.generateHash(experimentContext));
+                final ExperimentContextData experimentContextData = findExperimentContextDataForHash(experimentContextDataList, experimentContext.getHash());
                 writeExperimentContextState(experimentContext, experimentContextData);
 
             } catch (final UnknownExperimentContextException e) {
@@ -78,6 +78,7 @@ public class FileSystemExperimentEnginePersistence implements ExperimentEnginePe
         experimentContext.setAssumeRun(experimentContextData.getAssumeRun());
         experimentContext.setSuccessRun(experimentContextData.getSuccessRun());
         experimentContext.setFailureRun(experimentContextData.getFailureRun());
+        // Write storage
     }
 
     private ExperimentContextData findExperimentContextDataForHash(final List<ExperimentContextData> experimentContexts, final String hash) {
@@ -115,7 +116,7 @@ public class FileSystemExperimentEnginePersistence implements ExperimentEnginePe
     private ExperimentContextData buildExperimentContextData(final ExperimentContext experimentContext) {
         final ExperimentContextData experimentEngineContextData = new ExperimentContextData();
         // Set hash
-        experimentEngineContextData.setHash(ExperimentContextHashGenerator.generateHash(experimentContext));
+        experimentEngineContextData.setHash(experimentContext.getHash());
         // Set run data
         experimentEngineContextData.setBaselineRun(experimentContext.getBaselineRun());
         experimentEngineContextData.setAssumeRun(experimentContext.getAssumeRun());
@@ -126,6 +127,8 @@ public class FileSystemExperimentEnginePersistence implements ExperimentEnginePe
         experimentEngineContextData.setAssumeState(experimentContext.getAssumeState());
         experimentEngineContextData.setSuccessState(experimentContext.getSuccessState());
         experimentEngineContextData.setFailureState(experimentContext.getFailureState());
+        // Set storage
+        experimentEngineContextData.setStorage(experimentContext.getStorage());
 
         return experimentEngineContextData;
     }
