@@ -29,6 +29,7 @@ public class ExperimentAssemblerTest {
     public void testAssembleOutbound() throws Exception {
 
         final ExperimentContext experimentContext = mock(ExperimentContext.class);
+        when(experimentContext.getHash()).thenReturn("hash");
         when(experimentContext.getExperimentName()).thenReturn("experiment");
         when(experimentContext.getBaselineGlueLine()).thenReturn("baseline");
         when(experimentContext.getAssumeGlueLine()).thenReturn("assume");
@@ -49,6 +50,7 @@ public class ExperimentAssemblerTest {
 
         final Experiment experiment = experimentAssembler.assembleOutbound(experimentContext);
         assertNotNull(experiment);
+        assertEquals("hash", experiment.getHash());
         assertEquals("experiment", experiment.getExperimentName());
         assertEquals("baseline", experiment.getBaselineGlueLine());
         assertEquals("assume", experiment.getAssumeGlueLine());

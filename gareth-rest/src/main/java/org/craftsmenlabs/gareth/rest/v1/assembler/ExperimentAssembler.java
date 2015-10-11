@@ -16,6 +16,7 @@ public class ExperimentAssembler implements Assembler<ExperimentContext, Experim
         Experiment experiment = null;
         if (Optional.ofNullable(inbound).isPresent()) {
             experiment = new Experiment();
+            experiment.setHash(inbound.getHash());
             experiment.setExperimentName(inbound.getExperimentName());
             experiment.setBaselineGlueLine(inbound.getBaselineGlueLine());
             experiment.setAssumeGlueLine(inbound.getAssumeGlueLine());

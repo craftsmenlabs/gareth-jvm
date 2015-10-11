@@ -6,14 +6,17 @@ import org.craftsmenlabs.gareth.api.context.ExperimentContext;
 import org.craftsmenlabs.gareth.api.context.ExperimentPartState;
 import org.craftsmenlabs.gareth.api.definition.ParsedDefinition;
 import org.craftsmenlabs.gareth.api.definition.ParsedDefinitionFactory;
+import org.craftsmenlabs.gareth.api.exception.GarethUnknownExperimentException;
 import org.craftsmenlabs.gareth.api.factory.ExperimentFactory;
 import org.craftsmenlabs.gareth.api.invoker.MethodInvoker;
+import org.craftsmenlabs.gareth.api.model.AssumptionBlock;
 import org.craftsmenlabs.gareth.api.model.Experiment;
 import org.craftsmenlabs.gareth.api.persist.ExperimentEnginePersistence;
 import org.craftsmenlabs.gareth.api.registry.DefinitionRegistry;
 import org.craftsmenlabs.gareth.api.registry.ExperimentRegistry;
 import org.craftsmenlabs.gareth.api.rest.RestServiceFactory;
 import org.craftsmenlabs.gareth.api.scheduler.AssumeScheduler;
+import org.craftsmenlabs.gareth.core.util.ExperimentContextHashGenerator;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
@@ -23,6 +26,7 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 import static org.mockito.Mockito.*;
@@ -159,6 +163,74 @@ public class ExperimentEngineImplTest {
             experimentEngine.stop();
             fail("Should not reach this point");
         } catch (final IllegalStateException e) {
+            assertTrue(e.getMessage().contains("Experiment engine is not started"));
+        }
+    }
+
+    @Test
+    public void testFindExperimentContextForHash() {
+        final Class clazz = Object.class;
+        final Class[] definitionClasses = new Class[]{clazz};
+
+        final Experiment experiment = new Experiment();
+        final AssumptionBlock assumptionBlock = new AssumptionBlock();
+        assumptionBlock.setBaseline("baseline");
+        assumptionBlock.setAssumption("assumption");
+        assumptionBlock.setTime("time");
+        assumptionBlock.setSuccess("success");
+        assumptionBlock.setFailure("failure");
+
+        experiment.getAssumptionBlockList().add(assumptionBlock);
+        experiment.setExperimentName("experiment");
+
+        final List<Experiment> experimentList = new ArrayList<>();
+        experimentList.add(experiment);
+
+        final String[] surrogateKey = {"experiment", "baseline", "assumption", "time", "success", "failure"};
+        final String hash = ExperimentContextHashGenerator.generateHash(surrogateKey);
+
+        when(mockExperimentEngineConfig.getDefinitionClasses()).thenReturn(definitionClasses);
+        when(mockParsedDefinitionFactory.parse(clazz)).thenReturn(mockParsedDefinition);
+        when(mockExperimentRegistry.getAllExperiments()).thenReturn(experimentList);
+
+        experimentEngine.start();
+        final ExperimentContext experimentContext = experimentEngine.findExperimentContextForHash(hash);
+        assertNotNull(experimentContext);
+
+    }
+
+    @Test
+    public void testFindExperimentContextForHashWithNullHash() {
+        try {
+            experimentEngine.start();
+            experimentEngine.findExperimentContextForHash(null);
+            fail("Should not reach this point");
+        } catch (final Exception e) {
+            assertTrue(e instanceof IllegalArgumentException);
+            assertTrue(e.getMessage().contains("Hash cannot be null"));
+        }
+    }
+
+    @Test
+    public void testFindExperimentContextUnknownExperimentContext() {
+        try {
+            experimentEngine.start();
+            experimentEngine.findExperimentContextForHash("unknown-hash");
+            fail("Should not reach this point");
+        } catch (final Exception e) {
+            assertTrue(e instanceof GarethUnknownExperimentException);
+            assertTrue(e.getMessage().contains("Cannot find experiment context for hash"));
+        }
+    }
+
+    @Test
+    public void testFindExperimentContextEngineNotStarted() {
+        try {
+            experimentEngine.stop();
+            experimentEngine.findExperimentContextForHash(null);
+            fail("Should not reach this point");
+        } catch (final Exception e) {
+            assertTrue(e instanceof IllegalStateException);
             assertTrue(e.getMessage().contains("Experiment engine is not started"));
         }
     }

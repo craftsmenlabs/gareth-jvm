@@ -18,25 +18,15 @@ public class ExperimentContextHashGenerator {
 
     private final static Logger LOG = LoggerFactory.getLogger(ExperimentContextHashGenerator.class);
 
+
     public static String generateHash(final String[] unhashedSurrogateKey) {
         byte[] digest = {};
         try {
             final MessageDigest md = MessageDigest.getInstance("SHA-256");
+            md.reset();
 
-            md.update(generateSurrogateKey(unhashedSurrogateKey).getBytes("UTF-8")); // Change this to "UTF-16" if needed
-            digest = md.digest();
-        } catch (final NoSuchAlgorithmException | UnsupportedEncodingException e) {
-            LOG.error("Cannot generate hash for experiment context");
-        }
-        return String.format("%064x", new java.math.BigInteger(1, digest));
-    }
-
-    public static String generateSurrogateKey(final String[] unhashedSurrogateKey) {
-        byte[] digest = {};
-        try {
-            final MessageDigest md = MessageDigest.getInstance("SHA-256");
-
-            md.update(buildUnhashedKey(unhashedSurrogateKey).getBytes("UTF-8")); // Change this to "UTF-16" if needed
+            final String unhashedKey = buildUnhashedKey(unhashedSurrogateKey);
+            md.update(unhashedKey.getBytes("UTF-8")); // Change this to "UTF-16" if needed
             digest = md.digest();
         } catch (final NoSuchAlgorithmException | UnsupportedEncodingException e) {
             LOG.error("Cannot generate hash for experiment context");

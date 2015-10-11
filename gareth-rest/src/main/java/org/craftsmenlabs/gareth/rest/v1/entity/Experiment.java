@@ -13,6 +13,8 @@ import java.time.LocalDateTime;
 @XmlRootElement
 public class Experiment {
 
+    @XmlElement(name = "hash")
+    private String hash;
     @XmlElement(name = "experiment_name")
     private String experimentName;
     @XmlElement(name = "baseline_glueline")

@@ -3,6 +3,7 @@ package org.craftsmenlabs.gareth.api;
 import org.craftsmenlabs.gareth.api.context.ExperimentContext;
 import org.craftsmenlabs.gareth.api.exception.GarethDefinitionParseException;
 import org.craftsmenlabs.gareth.api.exception.GarethExperimentParseException;
+import org.craftsmenlabs.gareth.api.exception.GarethUnknownExperimentException;
 
 import java.io.InputStream;
 import java.util.List;
@@ -36,6 +37,16 @@ public interface ExperimentEngine {
      * @param experimentContext
      */
     void planExperimentContext(final ExperimentContext experimentContext);
+
+
+    /**
+     * Find a experiment based on hash
+     *
+     * @param hash generated hash for experiment context
+     * @return Experiment Context
+     * @throws GarethUnknownExperimentException if experiment for the hash cannot be found
+     */
+    ExperimentContext findExperimentContextForHash(final String hash) throws GarethUnknownExperimentException;
 
 
     /**

@@ -140,7 +140,7 @@ public class ExperimentEngineImpl implements ExperimentEngine {
                         , assumptionBlock.getSuccess()
                         , assumptionBlock.getFailure()};
 
-                final String hashedSurrogateKey = ExperimentContextHashGenerator.generateSurrogateKey(surrogateKey);
+                final String hashedSurrogateKey = ExperimentContextHashGenerator.generateHash(surrogateKey);
 
                 final ExperimentContext experimentContext = new ExperimentContextImpl
                         .Builder(experiment.getExperimentName(), assumptionBlock)
@@ -204,6 +204,18 @@ public class ExperimentEngineImpl implements ExperimentEngine {
             scheduleInvokeAssume(experimentContext);
             experimentContext.setFinished(true);
         }
+    }
+
+    @Override
+    public ExperimentContext findExperimentContextForHash(final String hash) throws GarethUnknownExperimentException {
+        if (!isStarted()) throw new IllegalStateException("Cannot plan experiment context when engine is not started");
+        if (hash == null) throw new IllegalArgumentException("Hash cannot be null");
+        final Optional<ExperimentContext> experimentContext = experimentContexts
+                .stream()
+                .filter(ec -> ec.getHash().equals(hash))
+                .findFirst();
+
+        return experimentContext.orElseThrow(() -> new GarethUnknownExperimentException("Cannot find experiment context for hash"));
     }
 
     private Duration getDuration(final String timeGlueLine) {

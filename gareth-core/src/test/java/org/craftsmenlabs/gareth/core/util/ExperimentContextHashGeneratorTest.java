@@ -31,7 +31,7 @@ public class ExperimentContextHashGeneratorTest {
 
     @Test
     public void testGenerateHashWithNull() throws Exception {
-        final String expectedHash = "cd372fb85148700fa88095e3492d3f9f5beb43e555e5ff26d95f5a6adc36f8e6";
+        final String expectedHash = "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855";
         assertEquals(expectedHash, ExperimentContextHashGenerator.generateHash(null));
         assertEquals(expectedHash, ExperimentContextHashGenerator.generateHash(null));
     }
