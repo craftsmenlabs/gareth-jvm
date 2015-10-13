@@ -23,15 +23,6 @@ public class ExperimentAssembler implements Assembler<ExperimentContext, Experim
             experiment.setTimeGlueLine(inbound.getTimeGlueLine());
             experiment.setSuccessGlueLine(inbound.getSuccessGlueLine());
             experiment.setFailureGlueLine(inbound.getFailureGlueLine());
-            experiment.setBaselineExecution(inbound.getBaselineRun());
-            experiment.setAssumeExecution(inbound.getAssumeRun());
-            experiment.setSuccessExecution(inbound.getSuccessRun());
-            experiment.setFailureExecution(inbound.getFailureRun());
-            experiment.setBaselineState(inbound.getBaselineState().getName());
-            experiment.setAssumeState(inbound.getAssumeState().getName());
-            experiment.setSuccessState(inbound.getSuccessState().getName());
-            experiment.setFailureState(inbound.getFailureState().getName());
-
         }
         return experiment;
     }

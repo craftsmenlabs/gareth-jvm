@@ -92,56 +92,7 @@ public class ExperimentContextImplTest {
         assertFalse(experimentContext.isValid());
     }
 
-    @Test
-    public void testHasFailuresDefault() throws Exception {
-        assertFalse(experimentContext.hasFailures());
-    }
 
-    @Test
-    public void testHasFailuresWithFailure() throws Exception {
-        experimentContext.setFailureRun(LocalDateTime.now());
-        assertTrue(experimentContext.hasFailures());
-    }
-
-    @Test
-    public void testIsRunningDefault() throws Exception {
-        assertFalse(experimentContext.isRunning());
-    }
-
-    @Test
-    public void testIsRunningAfterBaseline() throws Exception {
-        experimentContext.setBaselineRun(LocalDateTime.now());
-        assertTrue(experimentContext.isRunning());
-    }
-
-    @Test
-    public void testIsRunningAfterAssume() throws Exception {
-        experimentContext.setAssumeRun(LocalDateTime.now());
-        assertTrue(experimentContext.isRunning());
-    }
-
-    @Test
-    public void testIsRunningAfterFailure() throws Exception {
-        experimentContext.setFailureRun(LocalDateTime.now());
-        assertFalse(experimentContext.isRunning());
-    }
-
-    @Test
-    public void testIsRunningAfterSuccess() throws Exception {
-        experimentContext.setSuccessRun(LocalDateTime.now());
-        assertFalse(experimentContext.isRunning());
-    }
-
-    @Test
-    public void testIsFinishedDefault() throws Exception {
-        assertFalse(experimentContext.isFinished());
-    }
-
-    @Test
-    public void testIsFinished() {
-        experimentContext.setFinished(true);
-        assertTrue(experimentContext.isFinished());
-    }
 
     @Test
     public void testGetExperimentName() throws Exception {
@@ -198,97 +149,7 @@ public class ExperimentContextImplTest {
         assertEquals("time", experimentContext.getTimeGlueLine());
     }
 
-    @Test
-    public void testGetBaselineRunDefault() throws Exception {
-        assertNull(experimentContext.getBaselineRun());
-    }
 
-    @Test
-    public void testBaselineState() {
-        assertEquals(ExperimentPartState.OPEN, experimentContext.getBaselineState());
-    }
-
-    @Test
-    public void testAssumeState() {
-        assertEquals(ExperimentPartState.OPEN, experimentContext.getAssumeState());
-    }
-
-    @Test
-    public void testSuccessState() {
-        assertEquals(ExperimentPartState.OPEN, experimentContext.getSuccessState());
-    }
-
-    @Test
-    public void testFailureState() {
-        assertEquals(ExperimentPartState.OPEN, experimentContext.getFailureState());
-    }
-
-    @Test
-    public void testSetBaselineState() {
-        experimentContext.setBaselineState(ExperimentPartState.FINISHED);
-        assertEquals(ExperimentPartState.FINISHED, experimentContext.getBaselineState());
-    }
-
-    @Test
-    public void testSetAssumeState() {
-        experimentContext.setAssumeState(ExperimentPartState.FINISHED);
-        assertEquals(ExperimentPartState.FINISHED, experimentContext.getAssumeState());
-    }
-
-    @Test
-    public void testSetSuccessState() {
-        experimentContext.setSuccessState(ExperimentPartState.FINISHED);
-        assertEquals(ExperimentPartState.FINISHED, experimentContext.getSuccessState());
-    }
-
-    @Test
-    public void testSetFailureState() {
-        experimentContext.setFailureState(ExperimentPartState.FINISHED);
-        assertEquals(ExperimentPartState.FINISHED, experimentContext.getFailureState());
-    }
-
-    @Test
-    public void testGetBaselineRun() throws Exception {
-        final LocalDateTime runTime = LocalDateTime.now();
-        experimentContext.setBaselineRun(runTime);
-        assertEquals(runTime, experimentContext.getBaselineRun());
-    }
-
-    @Test
-    public void testGetAssumeRunDefault() throws Exception {
-        assertNull(experimentContext.getAssumeRun());
-    }
-
-    @Test
-    public void testGetAssumeRun() throws Exception {
-        final LocalDateTime runTime = LocalDateTime.now();
-        experimentContext.setAssumeRun(runTime);
-        assertEquals(runTime, experimentContext.getAssumeRun());
-    }
-
-    @Test
-    public void testGetSuccessRunDefault() throws Exception {
-        assertNull(experimentContext.getSuccessRun());
-    }
-
-    @Test
-    public void testGetSuccessRun() throws Exception {
-        final LocalDateTime runTime = LocalDateTime.now();
-        experimentContext.setSuccessRun(runTime);
-        assertEquals(runTime, experimentContext.getSuccessRun());
-    }
-
-    @Test
-    public void testGetFailureRunDefault() throws Exception {
-        assertNull(experimentContext.getFailureRun());
-    }
-
-    @Test
-    public void testGetFailureRun() throws Exception {
-        final LocalDateTime runTime = LocalDateTime.now();
-        experimentContext.setFailureRun(runTime);
-        assertEquals(runTime, experimentContext.getFailureRun());
-    }
 
     @Test
     public void testGetHash() {
@@ -300,26 +161,7 @@ public class ExperimentContextImplTest {
         assertFalse(experimentContext.hasStorage());
     }
 
-    @Test
-    public void testGetDefaultStorage() {
-        assertNull(experimentContext.getStorage());
-    }
 
-    @Test
-    public void testGetWithStorage() {
-        final DefaultStorage storage = new DefaultStorage();
-        experimentContext = new ExperimentContextImpl
-                .Builder("experiment name", assumptionBlock)
-                .setBaseline(stubMethodDescriptor)
-                .setAssume(stubMethodDescriptor)
-                .setFailure(stubMethodDescriptor)
-                .setSuccess(stubMethodDescriptor)
-                .setTime(mockDuration)
-                .setStorage(storage)
-                .build(hash);
-        assertNotNull(experimentContext.getStorage());
-        assertSame(storage, experimentContext.getStorage());
-    }
 
     @Test
     public void testHasStorageOnBaseline() {
@@ -373,29 +215,7 @@ public class ExperimentContextImplTest {
         assertTrue(experimentContext.hasStorage());
     }
 
-    @Test
-    public void testBuildWithoutMethodDescriptorsAndValidateState() {
-        experimentContext = new ExperimentContextImpl
-                .Builder("experiment name", assumptionBlock).build(hash);
-        assertEquals(ExperimentPartState.NON_EXISTENT, experimentContext.getBaselineState());
-        assertEquals(ExperimentPartState.NON_EXISTENT, experimentContext.getAssumeState());
-        assertEquals(ExperimentPartState.NON_EXISTENT, experimentContext.getSuccessState());
-        assertEquals(ExperimentPartState.NON_EXISTENT, experimentContext.getFailureState());
-    }
 
-    @Test
-    public void testBuildWithNullMethodDescriptorsAndValidateState() {
-        experimentContext = new ExperimentContextImpl
-                .Builder("experiment name", assumptionBlock)
-                .setBaseline(Optional.ofNullable(null))
-                .setFailure(Optional.ofNullable(null))
-                .setSuccess(Optional.ofNullable(null))
-                .setAssume(Optional.ofNullable(null)).build(hash);
-        assertEquals(ExperimentPartState.NON_EXISTENT, experimentContext.getBaselineState());
-        assertEquals(ExperimentPartState.NON_EXISTENT, experimentContext.getAssumeState());
-        assertEquals(ExperimentPartState.NON_EXISTENT, experimentContext.getSuccessState());
-        assertEquals(ExperimentPartState.NON_EXISTENT, experimentContext.getFailureState());
-    }
 
     @Test
     public void testBuildWithoutHash(){

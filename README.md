@@ -298,6 +298,7 @@ The following functionality is planned for next releases:
 
 - [x] Add experiment examples
 - [x] Re-run experiments
+- [ ] Have run numbers to have historic information about runs
 - [x] Build examples
 - [x] REST interface
 - [ ] Add Gareth based asserts

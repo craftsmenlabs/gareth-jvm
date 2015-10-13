@@ -20,7 +20,6 @@ import java.util.Optional;
  */
 @XmlRootElement
 @Getter
-@EqualsAndHashCode(of = {"hash"})
 public class ExperimentContextImpl implements ExperimentContext {
 
     private final String hash;
@@ -32,17 +31,6 @@ public class ExperimentContextImpl implements ExperimentContext {
     private final Duration time;
 
     private final String baselineGlueLine, assumeGlueLine, successGlueLine, failureGlueLine, timeGlueLine;
-
-    private boolean finished;
-
-    private final Storage storage;
-
-    @Setter
-    private ExperimentPartState baselineState, assumeState, successState, failureState;
-
-
-    @Setter
-    private LocalDateTime baselineRun, assumeRun, successRun, failureRun;
 
     private ExperimentContextImpl(final String hash, final Builder builder) {
         this.hash = hash;
@@ -58,15 +46,9 @@ public class ExperimentContextImpl implements ExperimentContext {
         this.baseline = builder.baseline;
         this.success = builder.success;
         this.failure = builder.failure;
-        // State
-        this.baselineState = builder.baselineState;
-        this.assumeState = builder.assumeState;
-        this.successState = builder.successState;
-        this.failureState = builder.failureState;
+
         // Time
         this.time = builder.time;
-        // Storage
-        this.storage = builder.storage;
 
     }
 
@@ -78,21 +60,6 @@ public class ExperimentContextImpl implements ExperimentContext {
                 && null != time;
     }
 
-    @Override
-    public boolean hasFailures() {
-        return null != failureRun;
-    }
-
-    @Override
-    public boolean isRunning() {
-        return (null != baselineRun || null != assumeRun)
-                && !(null != successRun || null != failureRun);
-    }
-
-    @Override
-    public boolean isFinished() {
-        return finished;
-    }
 
     @Override
     public boolean hasStorage() {
@@ -100,11 +67,6 @@ public class ExperimentContextImpl implements ExperimentContext {
                 || getBaseline().hasStorage()
                 || (null != getFailure() && getFailure().hasStorage())
                 || (null != getSuccess() && getSuccess().hasStorage());
-    }
-
-    @Override
-    public void setFinished(boolean finished) {
-        this.finished = finished;
     }
 
     public static class Builder {
@@ -117,16 +79,6 @@ public class ExperimentContextImpl implements ExperimentContext {
 
         private Duration time;
 
-        private Storage storage = null;
-
-        private ExperimentPartState baselineState = ExperimentPartState.NON_EXISTENT;
-
-        private ExperimentPartState assumeState = ExperimentPartState.NON_EXISTENT;
-
-        private ExperimentPartState successState = ExperimentPartState.NON_EXISTENT;
-
-        private ExperimentPartState failureState = ExperimentPartState.NON_EXISTENT;
-
         public Builder(final String experimentName, final AssumptionBlock assumptionBlock) {
             this.experimentName = experimentName;
             this.assumptionBlock = assumptionBlock;
@@ -135,7 +87,6 @@ public class ExperimentContextImpl implements ExperimentContext {
         public Builder setBaseline(final Optional<MethodDescriptor> baseline) {
             if (baseline.isPresent()) {
                 this.baseline = baseline.get();
-                this.baselineState = ExperimentPartState.OPEN;
             }
             return this;
         }
@@ -143,7 +94,6 @@ public class ExperimentContextImpl implements ExperimentContext {
         public Builder setAssume(final Optional<MethodDescriptor> assume) {
             if (assume.isPresent()) {
                 this.assume = assume.get();
-                this.assumeState = ExperimentPartState.OPEN;
             }
             return this;
         }
@@ -151,7 +101,6 @@ public class ExperimentContextImpl implements ExperimentContext {
         public Builder setSuccess(final Optional<MethodDescriptor> success) {
             if (success.isPresent()) {
                 this.success = success.get();
-                this.successState = ExperimentPartState.OPEN;
             }
             return this;
         }
@@ -159,18 +108,12 @@ public class ExperimentContextImpl implements ExperimentContext {
         public Builder setFailure(final Optional<MethodDescriptor> failure) {
             if (failure.isPresent()) {
                 this.failure = failure.get();
-                this.failureState = ExperimentPartState.OPEN;
             }
             return this;
         }
 
         public Builder setTime(final Duration time) {
             this.time = time;
-            return this;
-        }
-
-        public Builder setStorage(final Storage storage) {
-            this.storage = storage;
             return this;
         }
 

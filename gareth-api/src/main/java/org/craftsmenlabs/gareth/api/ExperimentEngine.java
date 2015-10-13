@@ -1,6 +1,7 @@
 package org.craftsmenlabs.gareth.api;
 
 import org.craftsmenlabs.gareth.api.context.ExperimentContext;
+import org.craftsmenlabs.gareth.api.context.ExperimentRunContext;
 import org.craftsmenlabs.gareth.api.exception.GarethDefinitionParseException;
 import org.craftsmenlabs.gareth.api.exception.GarethExperimentParseException;
 import org.craftsmenlabs.gareth.api.exception.GarethUnknownExperimentException;
@@ -30,6 +31,20 @@ public interface ExperimentEngine {
      * @return list of loaded experiment contexts
      */
     List<ExperimentContext> getExperimentContexts();
+
+
+    /**
+     * Get a list with experiment runs
+     * @return
+     */
+    List<ExperimentRunContext> getExperimentRunContexts();
+
+    /**
+     * Find experiment run contexts for hash
+     * @param hash
+     * @return
+     */
+    List<ExperimentRunContext> findExperimentRunContextsForHash(final String hash);
 
     /**
      * (re-)plan a experiment based on experiment context.

@@ -3,9 +3,12 @@ package org.craftsmenlabs.gareth.core.persist;
 import org.apache.commons.io.IOUtils;
 import org.craftsmenlabs.gareth.api.ExperimentEngine;
 import org.craftsmenlabs.gareth.api.context.ExperimentContext;
+import org.craftsmenlabs.gareth.api.context.ExperimentRunContext;
 import org.craftsmenlabs.gareth.api.exception.GarethStateReadException;
 import org.craftsmenlabs.gareth.api.exception.GarethStateWriteException;
+import org.craftsmenlabs.gareth.api.exception.GarethUnknownExperimentException;
 import org.craftsmenlabs.gareth.api.persist.ExperimentEnginePersistence;
+import org.craftsmenlabs.gareth.core.context.ExperimentRunContextImpl;
 import org.craftsmenlabs.gareth.core.util.ExperimentContextHashGenerator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -30,8 +33,8 @@ public class FileSystemExperimentEnginePersistence implements ExperimentEnginePe
     @Override
     public void persist(final ExperimentEngine experimentEngine) throws GarethStateWriteException {
         final List<ExperimentContextData> data = new ArrayList<>();
-        experimentEngine.getExperimentContexts().forEach((experimentContext -> {
-            data.add(buildExperimentContextData(experimentContext));
+        experimentEngine.getExperimentRunContexts().forEach((experimentRunContext -> {
+            data.add(buildExperimentContextData(experimentRunContext));
         }));
 
         FileOutputStream fos = null;
@@ -56,29 +59,31 @@ public class FileSystemExperimentEnginePersistence implements ExperimentEnginePe
     @Override
     public void restore(final ExperimentEngine experimentEngine) throws GarethStateReadException {
         final List<ExperimentContextData> experimentContextDataList = readExperimentContextDataFromFile();
-        experimentEngine.getExperimentContexts().forEach(experimentContext -> {
-            try {
-                final ExperimentContextData experimentContextData = findExperimentContextDataForHash(experimentContextDataList, experimentContext.getHash());
-                writeExperimentContextState(experimentContext, experimentContextData);
 
-            } catch (final UnknownExperimentContextException e) {
+        experimentContextDataList.forEach(experimentContextData -> {
+            try {
+                final ExperimentContext experimentContext = experimentEngine.findExperimentContextForHash(experimentContextData.getHash());
+                experimentEngine.getExperimentRunContexts().add(rebuildExperimentRunContext(experimentContextData, experimentContext));
+            } catch (final GarethUnknownExperimentException e) {
                 LOG.debug("No experiment context data found.", e);
             }
         });
     }
 
-    private void writeExperimentContextState(final ExperimentContext experimentContext, final ExperimentContextData experimentContextData) {
-        // Write states
-        experimentContext.setBaselineState(experimentContextData.getBaselineState());
-        experimentContext.setAssumeState(experimentContextData.getAssumeState());
-        experimentContext.setSuccessState(experimentContextData.getSuccessState());
-        experimentContext.setFailureState(experimentContext.getFailureState());
+    private ExperimentRunContext rebuildExperimentRunContext(final ExperimentContextData experimentContextData, final ExperimentContext experimentContext) {
+        final ExperimentRunContext experimentRunContext = new ExperimentRunContextImpl
+                .Builder(experimentContext, experimentContextData.getStorage())
+                .build();
+        experimentRunContext.setBaselineState(experimentContextData.getBaselineState());
+        experimentRunContext.setAssumeState(experimentContextData.getAssumeState());
+        experimentRunContext.setSuccessState(experimentContextData.getSuccessState());
+        experimentRunContext.setFailureState(experimentContextData.getFailureState());
         // Write runs
-        experimentContext.setBaselineRun(experimentContextData.getBaselineRun());
-        experimentContext.setAssumeRun(experimentContextData.getAssumeRun());
-        experimentContext.setSuccessRun(experimentContextData.getSuccessRun());
-        experimentContext.setFailureRun(experimentContextData.getFailureRun());
-        // Write storage
+        experimentRunContext.setBaselineRun(experimentContextData.getBaselineRun());
+        experimentRunContext.setAssumeRun(experimentContextData.getAssumeRun());
+        experimentRunContext.setSuccessRun(experimentContextData.getSuccessRun());
+        experimentRunContext.setFailureRun(experimentContextData.getFailureRun());
+        return experimentRunContext;
     }
 
     private ExperimentContextData findExperimentContextDataForHash(final List<ExperimentContextData> experimentContexts, final String hash) {
@@ -113,7 +118,7 @@ public class FileSystemExperimentEnginePersistence implements ExperimentEnginePe
         return experimentContextDataList;
     }
 
-    private ExperimentContextData buildExperimentContextData(final ExperimentContext experimentContext) {
+    private ExperimentContextData buildExperimentContextData(final ExperimentRunContext experimentContext) {
         final ExperimentContextData experimentEngineContextData = new ExperimentContextData();
         // Set hash
         experimentEngineContextData.setHash(experimentContext.getHash());

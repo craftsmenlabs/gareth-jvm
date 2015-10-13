@@ -6,6 +6,7 @@ import org.craftsmenlabs.gareth.api.ExperimentEngine;
 import org.craftsmenlabs.gareth.api.ExperimentEngineConfig;
 import org.craftsmenlabs.gareth.api.context.ExperimentContext;
 import org.craftsmenlabs.gareth.api.context.ExperimentPartState;
+import org.craftsmenlabs.gareth.api.context.ExperimentRunContext;
 import org.craftsmenlabs.gareth.api.definition.ParsedDefinition;
 import org.craftsmenlabs.gareth.api.definition.ParsedDefinitionFactory;
 import org.craftsmenlabs.gareth.api.exception.*;
@@ -22,6 +23,7 @@ import org.craftsmenlabs.gareth.api.rest.RestServiceFactory;
 import org.craftsmenlabs.gareth.api.scheduler.AssumeScheduler;
 import org.craftsmenlabs.gareth.api.storage.StorageFactory;
 import org.craftsmenlabs.gareth.core.context.ExperimentContextImpl;
+import org.craftsmenlabs.gareth.core.context.ExperimentRunContextImpl;
 import org.craftsmenlabs.gareth.core.factory.ExperimentFactoryImpl;
 import org.craftsmenlabs.gareth.core.invoker.MethodInvokerImpl;
 import org.craftsmenlabs.gareth.core.parser.ParsedDefinitionFactoryImpl;
@@ -41,6 +43,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 /**
  * Created by hylke on 10/08/15.
@@ -63,7 +66,11 @@ public class ExperimentEngineImpl implements ExperimentEngine {
 
     private final AssumeScheduler assumeScheduler;
 
+    @Getter
     private final List<ExperimentContext> experimentContexts = new ArrayList<>();
+
+    @Getter
+    private final List<ExperimentRunContext> experimentRunContexts = new ArrayList<>();
 
     private final RestServiceFactory restServiceFactory;
 
@@ -149,7 +156,6 @@ public class ExperimentEngineImpl implements ExperimentEngine {
                         .setTime(getDuration(assumptionBlock.getTime()))
                         .setFailure(Optional.ofNullable(getFailure(assumptionBlock.getFailure())))
                         .setSuccess(Optional.ofNullable(getSuccess(assumptionBlock.getSuccess())))
-                        .setStorage(storageFactory.createStorage())
                         .build(hashedSurrogateKey);
 
                 experimentContexts.add(experimentContext);
@@ -192,18 +198,49 @@ public class ExperimentEngineImpl implements ExperimentEngine {
     private void runExperiments() {
         logger.info("Run and schedule experiments");
         for (final ExperimentContext experimentContext : experimentContexts) {
-            planExperimentContext(experimentContext);
+            if (isNewExperimentRunContextNeeded(experimentContext.getHash())) {
+                final ExperimentRunContext experimentRunContext = new ExperimentRunContextImpl
+                        .Builder(experimentContext, storageFactory.createStorage())
+                        .build();
+                experimentRunContexts.add(experimentRunContext);
+            }
         }
+        getExperimentRunContexts().forEach(erc -> planExperimentRunContext(erc));
+    }
+
+    private boolean isNewExperimentRunContextNeeded(final String hash) {
+        return getExperimentRunContexts()
+                .stream()
+                .filter(erc -> hash.equals(erc.getHash()))
+                .count() == 0L;
     }
 
     @Override
     public void planExperimentContext(final ExperimentContext experimentContext) {
+        final ExperimentRunContext experimentRunContext = new ExperimentRunContextImpl
+                .Builder(experimentContext, storageFactory.createStorage())
+                .build();
+        experimentRunContexts.add(experimentRunContext);
+        planExperimentRunContext(experimentRunContext);
+    }
+
+    public void planExperimentRunContext(final ExperimentRunContext experimentRunContext) {
         if (!isStarted()) throw new IllegalStateException("Cannot plan experiment context when engine is not started");
-        if (experimentContext.isValid()) {
-            invokeBaseline(experimentContext);
-            scheduleInvokeAssume(experimentContext);
-            experimentContext.setFinished(true);
+        if (experimentRunContext.getExperimentContext().isValid()) {
+            invokeBaseline(experimentRunContext);
+            scheduleInvokeAssume(experimentRunContext);
+            experimentRunContext.setFinished(true);
         }
+    }
+
+    @Override
+    public List<ExperimentRunContext> findExperimentRunContextsForHash(final String hash) {
+        if (hash == null) throw new IllegalArgumentException("Hash cannot be null");
+
+        return getExperimentRunContexts()
+                .stream()
+                .filter(erc -> hash.equals(erc.getHash()))
+                .collect(Collectors.toList());
     }
 
     @Override
@@ -228,15 +265,16 @@ public class ExperimentEngineImpl implements ExperimentEngine {
         return duration;
     }
 
-    private void invokeBaseline(final ExperimentContext experimentContext) {
-        logger.debug(String.format("Invoking baseline: %s with state %s", experimentContext.getBaselineGlueLine(), experimentContext.getBaselineState().getName()));
+    private void invokeBaseline(final ExperimentRunContext experimentContext) {
+        //final MethodDescriptor baselineMethodDescriptor = experimentContext.getExperimentContext().getBaseline();
+        logger.debug(String.format("Invoking baseline: %s with state %s", experimentContext.getExperimentContext().getBaselineGlueLine(), experimentContext.getBaselineState().getName()));
         if (ExperimentPartState.OPEN == experimentContext.getBaselineState()) {
             try {
                 experimentContext.setBaselineState(ExperimentPartState.RUNNING);
-                if (experimentContext.hasStorage()) {
-                    methodInvoker.invoke(experimentContext.getBaseline(), experimentContext.getStorage());
+                if (experimentContext.getExperimentContext().hasStorage()) {
+                    methodInvoker.invoke(experimentContext.getExperimentContext().getBaseline(), experimentContext.getStorage());
                 } else {
-                    methodInvoker.invoke(experimentContext.getBaseline());
+                    methodInvoker.invoke(experimentContext.getExperimentContext().getBaseline());
                 }
                 experimentContext.setBaselineState(ExperimentPartState.FINISHED);
                 experimentContext.setBaselineRun(LocalDateTime.now());
@@ -249,10 +287,10 @@ public class ExperimentEngineImpl implements ExperimentEngine {
         }
     }
 
-    private void scheduleInvokeAssume(final ExperimentContext experimentContext) {
-        if (ExperimentPartState.OPEN == experimentContext.getAssumeState()) {
+    private void scheduleInvokeAssume(final ExperimentRunContext experimentRunContext) {
+        if (ExperimentPartState.OPEN == experimentRunContext.getAssumeState()) {
             try {
-                assumeScheduler.schedule(experimentContext);
+                assumeScheduler.schedule(experimentRunContext);
 
             } catch (final GarethUnknownDefinitionException | GarethInvocationException e) {
                 if (!experimentEngineConfig.isIgnoreInvocationExceptions()) {
@@ -343,12 +381,6 @@ public class ExperimentEngineImpl implements ExperimentEngine {
         parsedDefinition.getFailureDefinitions().forEach((k, v) -> definitionRegistry.addMethodDescriptorForFailure(k, v));
         parsedDefinition.getSuccessDefinitions().forEach((k, v) -> definitionRegistry.addMethodDescriptorForSuccess(k, v));
         parsedDefinition.getTimeDefinitions().forEach((k, v) -> definitionRegistry.addDurationForTime(k, v));
-    }
-
-
-    @Override
-    public List<ExperimentContext> getExperimentContexts() {
-        return experimentContexts;
     }
 
     /**

@@ -4,6 +4,8 @@ import org.craftsmenlabs.gareth.api.ExperimentEngine;
 import org.craftsmenlabs.gareth.api.ExperimentEngineConfig;
 import org.craftsmenlabs.gareth.api.annotation.*;
 import org.craftsmenlabs.gareth.api.context.ExperimentContext;
+import org.craftsmenlabs.gareth.api.context.ExperimentPartState;
+import org.craftsmenlabs.gareth.api.context.ExperimentRunContext;
 import org.craftsmenlabs.gareth.api.storage.Storage;
 import org.junit.Before;
 import org.junit.Test;
@@ -14,6 +16,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static org.junit.Assert.*;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 /**
  * Experiment engine integration test
@@ -49,15 +53,52 @@ public class ExperimentEngineImplIT {
         assertEquals(2, logItems.size());
         assertEquals("assume", logItems.get(1));
 
-        final List<ExperimentContext> experimentContexts = experimentEngine.getExperimentContexts();
-        assertEquals(1, experimentContexts.size());
+        final List<ExperimentRunContext> experimentRunContexts = experimentEngine.getExperimentRunContexts();
+        assertEquals(1, experimentRunContexts.size());
 
-        final ExperimentContext experimentContext = experimentContexts.get(0);
-        assertTrue(experimentContext.isFinished());
-        assertNotNull(experimentContext.getBaselineRun());
-        assertNotNull(experimentContext.getAssumeRun());
-        assertNull(experimentContext.getSuccessRun());
-        assertNull(experimentContext.getFailureRun());
+        final ExperimentRunContext experimentRunContext = experimentRunContexts.get(0);
+        assertTrue(experimentRunContext.isFinished());
+        assertNotNull(experimentRunContext.getBaselineRun());
+        assertNotNull(experimentRunContext.getAssumeRun());
+        assertNull(experimentRunContext.getSuccessRun());
+        assertNull(experimentRunContext.getFailureRun());
+    }
+
+    @Test
+    public void testRunExperimentWithAlreadyHalfRunExperiment() throws Exception {
+        experimentEngine = new ExperimentEngineImpl
+                .Builder(getConfiguration("it-experiment-01.experiment"))
+                .build();
+
+
+        final ExperimentRunContext mockExperimentRunContext = mock(ExperimentRunContext.class);
+        final ExperimentContext mockExperimentContext = mock(ExperimentContext.class);
+        when(mockExperimentContext.isValid()).thenReturn(true);
+        when(mockExperimentRunContext.getHash()).thenReturn("32f5328bb4dada228b7a8a24db729e01cb88425a32cd2f9cfab0ae8953487cda");
+        when(mockExperimentRunContext.getBaselineState()).thenReturn(ExperimentPartState.FINISHED);
+        when(mockExperimentRunContext.getExperimentContext()).thenReturn(mockExperimentContext);
+
+        experimentEngine.getExperimentRunContexts().add(mockExperimentRunContext);
+
+
+        experimentEngine.start();
+
+        assertEquals(0, logItems.size());
+
+        Thread.sleep(200L);
+
+        assertEquals(1, logItems.size());
+        assertEquals("assume", logItems.get(1));
+
+        final List<ExperimentRunContext> experimentRunContexts = experimentEngine.getExperimentRunContexts();
+        assertEquals(1, experimentRunContexts.size());
+
+        final ExperimentRunContext experimentRunContext = experimentRunContexts.get(0);
+        assertTrue(experimentRunContext.isFinished());
+        assertNotNull(experimentRunContext.getBaselineRun());
+        assertNotNull(experimentRunContext.getAssumeRun());
+        assertNull(experimentRunContext.getSuccessRun());
+        assertNull(experimentRunContext.getFailureRun());
     }
 
     @Test
@@ -78,10 +119,10 @@ public class ExperimentEngineImplIT {
         assertEquals("assume", logItems.get(1));
         assertEquals("success", logItems.get(2));
 
-        final List<ExperimentContext> experimentContexts = experimentEngine.getExperimentContexts();
-        assertEquals(1, experimentContexts.size());
+        final List<ExperimentRunContext> experimentRunContexts = experimentEngine.getExperimentRunContexts();
+        assertEquals(1, experimentRunContexts.size());
 
-        final ExperimentContext experimentContext = experimentContexts.get(0);
+        final ExperimentRunContext experimentContext = experimentRunContexts.get(0);
         assertTrue(experimentContext.isFinished());
         assertNotNull(experimentContext.getBaselineRun());
         assertNotNull(experimentContext.getAssumeRun());
@@ -107,10 +148,10 @@ public class ExperimentEngineImplIT {
         assertEquals("failure", logItems.get(1));
 
 
-        final List<ExperimentContext> experimentContexts = experimentEngine.getExperimentContexts();
+        final List<ExperimentRunContext> experimentContexts = experimentEngine.getExperimentRunContexts();
         assertEquals(1, experimentContexts.size());
 
-        final ExperimentContext experimentContext = experimentContexts.get(0);
+        final ExperimentRunContext experimentContext = experimentContexts.get(0);
         assertTrue(experimentContext.isFinished());
         assertNotNull(experimentContext.getBaselineRun());
         assertNull(experimentContext.getAssumeRun());
@@ -136,10 +177,10 @@ public class ExperimentEngineImplIT {
         assertEquals("assume storage", logItems.get(1));
 
 
-        final List<ExperimentContext> experimentContexts = experimentEngine.getExperimentContexts();
+        final List<ExperimentRunContext> experimentContexts = experimentEngine.getExperimentRunContexts();
         assertEquals(1, experimentContexts.size());
 
-        final ExperimentContext experimentContext = experimentContexts.get(0);
+        final ExperimentRunContext experimentContext = experimentContexts.get(0);
         assertTrue(experimentContext.isFinished());
         assertNotNull(experimentContext.getBaselineRun());
         assertNotNull(experimentContext.getAssumeRun());

@@ -27,21 +27,6 @@ public class Experiment {
     private String successGlueLine;
     @XmlElement(name = "failure_glueline")
     private String failureGlueLine;
-    @XmlElement(name = "baseline_execution")
-    private LocalDateTime baselineExecution;
-    @XmlElement(name = "assume_execution")
-    private LocalDateTime assumeExecution;
-    @XmlElement(name = "success_execution")
-    private LocalDateTime successExecution;
-    @XmlElement(name = "failure_execution")
-    private LocalDateTime failureExecution;
-    @XmlElement(name = "baseline_state")
-    private String baselineState;
-    @XmlElement(name = "assume_state")
-    private String assumeState;
-    @XmlElement(name = "success_state")
-    private String successState;
-    @XmlElement(name = "failure_state")
-    private String failureState;
+
 
 }

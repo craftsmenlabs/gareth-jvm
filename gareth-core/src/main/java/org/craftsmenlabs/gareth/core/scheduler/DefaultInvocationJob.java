@@ -8,6 +8,7 @@ import lombok.Getter;
 import lombok.Setter;
 import org.craftsmenlabs.gareth.api.context.ExperimentContext;
 import org.craftsmenlabs.gareth.api.context.ExperimentPartState;
+import org.craftsmenlabs.gareth.api.context.ExperimentRunContext;
 import org.craftsmenlabs.gareth.api.invoker.MethodDescriptor;
 import org.craftsmenlabs.gareth.api.invoker.MethodInvoker;
 import org.craftsmenlabs.gareth.api.storage.Storage;
@@ -30,27 +31,27 @@ public class DefaultInvocationJob extends Job {
     @Override
     public void doRun() throws JobInterruptException {
         final MethodInvoker methodInvoker = getJobContext().getRequiredValue("methodInvoker");
-        final ExperimentContext experimentContext = getJobContext().getRequiredValue("experimentContext");
+        final ExperimentRunContext experimentContext = getJobContext().getRequiredValue("experimentRunContext");
 
         try {
             logger.debug("Invoking assumption");
             experimentContext.setAssumeState(ExperimentPartState.RUNNING);
-            invoke(methodInvoker, experimentContext.hasStorage(), experimentContext.getAssume(), experimentContext.getStorage());
+            invoke(methodInvoker, experimentContext.getExperimentContext().hasStorage(), experimentContext.getExperimentContext().getAssume(), experimentContext.getStorage());
             experimentContext.setAssumeRun(LocalDateTime.now());
             experimentContext.setAssumeState(ExperimentPartState.FINISHED);
-            if (null != experimentContext.getSuccess()) {
+            if (null != experimentContext.getExperimentContext().getSuccess()) {
                 logger.debug("Invoking success");
                 experimentContext.setSuccessState(ExperimentPartState.RUNNING);
-                invoke(methodInvoker, experimentContext.hasStorage(), experimentContext.getSuccess(), experimentContext.getStorage());
+                invoke(methodInvoker, experimentContext.getExperimentContext().hasStorage(), experimentContext.getExperimentContext().getSuccess(), experimentContext.getStorage());
                 experimentContext.setSuccessRun(LocalDateTime.now());
                 experimentContext.setSuccessState(ExperimentPartState.FINISHED);
             }
         } catch (final Exception e) {
             experimentContext.setAssumeState(ExperimentPartState.ERROR);
-            if (null != experimentContext.getFailure()) {
+            if (null != experimentContext.getExperimentContext().getFailure()) {
                 logger.debug("Invoking failure");
                 experimentContext.setFailureState(ExperimentPartState.RUNNING);
-                invoke(methodInvoker, experimentContext.hasStorage(), experimentContext.getFailure(), experimentContext.getStorage());
+                invoke(methodInvoker, experimentContext.getExperimentContext().hasStorage(), experimentContext.getExperimentContext().getFailure(), experimentContext.getStorage());
                 experimentContext.setFailureRun(LocalDateTime.now());
                 experimentContext.setFailureState(ExperimentPartState.FINISHED);
             }

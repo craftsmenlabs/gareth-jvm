@@ -36,17 +36,6 @@ public class ExperimentAssemblerTest {
         when(experimentContext.getTimeGlueLine()).thenReturn("time");
         when(experimentContext.getSuccessGlueLine()).thenReturn("success");
         when(experimentContext.getFailureGlueLine()).thenReturn("failure");
-        // Set time
-        when(experimentContext.getBaselineState()).thenReturn(ExperimentPartState.OPEN);
-        when(experimentContext.getAssumeState()).thenReturn(ExperimentPartState.OPEN);
-        when(experimentContext.getSuccessState()).thenReturn(ExperimentPartState.OPEN);
-        when(experimentContext.getFailureState()).thenReturn(ExperimentPartState.OPEN);
-        // Set execution runs
-        final LocalDateTime localDateTime = LocalDateTime.now();
-        when(experimentContext.getBaselineRun()).thenReturn(localDateTime);
-        when(experimentContext.getAssumeRun()).thenReturn(localDateTime);
-        when(experimentContext.getSuccessRun()).thenReturn(localDateTime);
-        when(experimentContext.getFailureRun()).thenReturn(localDateTime);
 
         final Experiment experiment = experimentAssembler.assembleOutbound(experimentContext);
         assertNotNull(experiment);
@@ -57,14 +46,6 @@ public class ExperimentAssemblerTest {
         assertEquals("time", experiment.getTimeGlueLine());
         assertEquals("success", experiment.getSuccessGlueLine());
         assertEquals("failure", experiment.getFailureGlueLine());
-        assertEquals(localDateTime, experiment.getBaselineExecution());
-        assertEquals(localDateTime, experiment.getAssumeExecution());
-        assertEquals(localDateTime, experiment.getSuccessExecution());
-        assertEquals(localDateTime, experiment.getFailureExecution());
-        assertEquals("open", experiment.getBaselineState());
-        assertEquals("open", experiment.getAssumeState());
-        assertEquals("open", experiment.getSuccessState());
-        assertEquals("open", experiment.getFailureState());
     }
 
     @Test

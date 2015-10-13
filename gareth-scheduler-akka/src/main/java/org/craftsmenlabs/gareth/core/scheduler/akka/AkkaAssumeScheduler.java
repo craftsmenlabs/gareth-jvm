@@ -2,6 +2,7 @@ package org.craftsmenlabs.gareth.core.scheduler.akka;
 
 import akka.actor.ActorSystem;
 import org.craftsmenlabs.gareth.api.context.ExperimentContext;
+import org.craftsmenlabs.gareth.api.context.ExperimentRunContext;
 import org.craftsmenlabs.gareth.api.exception.GarethInvocationException;
 import org.craftsmenlabs.gareth.api.exception.GarethUnknownDefinitionException;
 import org.craftsmenlabs.gareth.api.invoker.MethodInvoker;
@@ -36,24 +37,25 @@ public class AkkaAssumeScheduler implements AssumeScheduler {
     }
 
     @Override
-    public void schedule(final ExperimentContext experimentContext) {
+    public void schedule(final ExperimentRunContext experimentRunContext) {
+        final ExperimentContext experimentContext = experimentRunContext.getExperimentContext();
         final Duration time = experimentContext.getTime();
         try {
             actorSystem.scheduler().scheduleOnce(scala.concurrent.duration.Duration.create(time.toMillis(), TimeUnit.MILLISECONDS), () -> {
                 try {
                     logger.debug("Invoking assumption");
                     methodInvoker.invoke(experimentContext.getAssume());
-                    experimentContext.setAssumeRun(LocalDateTime.now());
+                    experimentRunContext.setAssumeRun(LocalDateTime.now());
                     if (null != experimentContext.getSuccess()) {
                         logger.debug("Invoking success");
                         methodInvoker.invoke(experimentContext.getSuccess());
-                        experimentContext.setSuccessRun(LocalDateTime.now());
+                        experimentRunContext.setSuccessRun(LocalDateTime.now());
                     }
                 } catch (final Exception e) {
                     if (null != experimentContext.getFailure()) {
                         logger.debug("Invoking failure");
                         methodInvoker.invoke(experimentContext.getFailure());
-                        experimentContext.setFailureRun(LocalDateTime.now());
+                        experimentRunContext.setFailureRun(LocalDateTime.now());
                     }
                 }
             }, actorSystem.dispatcher());

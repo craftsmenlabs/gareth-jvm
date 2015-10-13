@@ -3,8 +3,6 @@ package org.craftsmenlabs.gareth.rest.resource;
 import org.craftsmenlabs.gareth.api.ExperimentEngine;
 import org.craftsmenlabs.gareth.api.context.ExperimentContext;
 import org.craftsmenlabs.gareth.api.exception.GarethUnknownExperimentException;
-import org.craftsmenlabs.gareth.rest.v1.assembler.ExperimentAssembler;
-import org.craftsmenlabs.gareth.rest.v1.entity.Experiment;
 
 import javax.inject.Inject;
 import javax.ws.rs.Path;

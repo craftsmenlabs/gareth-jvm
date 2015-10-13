@@ -2,6 +2,7 @@ package org.craftsmenlabs.gareth.core.scheduler;
 
 import com.xeiam.sundial.SundialJobScheduler;
 import org.craftsmenlabs.gareth.api.context.ExperimentContext;
+import org.craftsmenlabs.gareth.api.context.ExperimentRunContext;
 import org.craftsmenlabs.gareth.api.exception.GarethInvocationException;
 import org.craftsmenlabs.gareth.api.exception.GarethUnknownDefinitionException;
 import org.craftsmenlabs.gareth.api.invoker.MethodInvoker;
@@ -35,18 +36,18 @@ public class DefaultAssumeScheduler implements AssumeScheduler {
     }
 
     @Override
-    public void schedule(final ExperimentContext experimentContext) {
-        final Duration time = experimentContext.getTime();
+    public void schedule(final ExperimentRunContext experimentContext) {
+        final Duration time = experimentContext.getExperimentContext().getTime();
         final Calendar now = new GregorianCalendar();
         now.add(Calendar.MILLISECOND, new Long(time.toMillis()).intValue());
         try {
 
             // Job params
             final Map<String, Object> jobParams = new HashMap<>();
-            jobParams.put("experimentContext", experimentContext);
+            jobParams.put("experimentRunContext", experimentContext);
             jobParams.put("methodInvoker", methodInvoker);
 
-            final String jobName = experimentContext.getExperimentName() + "-" + new Random().nextInt();
+            final String jobName = experimentContext.getExperimentContext().getExperimentName() + "-" + new Random().nextInt();
             final String triggerName = jobName + "-trigger";
 
             SundialJobScheduler.addJob(jobName, DefaultInvocationJob.class.getName(), jobParams, false);

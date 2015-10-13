@@ -4,10 +4,12 @@ import org.craftsmenlabs.gareth.api.ExperimentEngine;
 import org.craftsmenlabs.gareth.api.ExperimentEngineConfig;
 import org.craftsmenlabs.gareth.api.context.ExperimentContext;
 import org.craftsmenlabs.gareth.api.context.ExperimentPartState;
+import org.craftsmenlabs.gareth.api.context.ExperimentRunContext;
 import org.craftsmenlabs.gareth.api.definition.ParsedDefinition;
 import org.craftsmenlabs.gareth.api.definition.ParsedDefinitionFactory;
 import org.craftsmenlabs.gareth.api.exception.GarethUnknownExperimentException;
 import org.craftsmenlabs.gareth.api.factory.ExperimentFactory;
+import org.craftsmenlabs.gareth.api.invoker.MethodDescriptor;
 import org.craftsmenlabs.gareth.api.invoker.MethodInvoker;
 import org.craftsmenlabs.gareth.api.model.AssumptionBlock;
 import org.craftsmenlabs.gareth.api.model.Experiment;
@@ -26,9 +28,7 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
 /**
@@ -121,25 +121,28 @@ public class ExperimentEngineImplTest {
         final ExperimentContext mockExperimentContext = mock(ExperimentContext.class);
         when(mockExperimentContext.isValid()).thenReturn(false);
         experimentEngine.planExperimentContext(mockExperimentContext);
-        verify(mockAssumeScheduler, never()).schedule(mockExperimentContext);
+        verify(mockAssumeScheduler, never()).schedule(any(ExperimentRunContext.class));
     }
 
     @Test
     public void testPlanExperimentContext() {
         experimentEngine.start();
         final ExperimentContext mockExperimentContext = mock(ExperimentContext.class);
+        final MethodDescriptor mockMethodDescriptor = mock(MethodDescriptor.class);
+        when(mockExperimentContext.getBaseline()).thenReturn(mockMethodDescriptor);
+        when(mockExperimentContext.getAssume()).thenReturn(mockMethodDescriptor);
+        when(mockExperimentContext.getSuccess()).thenReturn(mockMethodDescriptor);
+        when(mockExperimentContext.getFailure()).thenReturn(mockMethodDescriptor);
         when(mockExperimentContext.isValid()).thenReturn(true);
-        when(mockExperimentContext.getBaselineState()).thenReturn(ExperimentPartState.OPEN);
-        when(mockExperimentContext.getAssumeState()).thenReturn(ExperimentPartState.OPEN);
         experimentEngine.planExperimentContext(mockExperimentContext);
-        verify(mockAssumeScheduler).schedule(mockExperimentContext);
+        verify(mockAssumeScheduler).schedule(any(ExperimentRunContext.class));
     }
 
     @Test
     public void testPlanExperimentContextWithStoppedEngine() {
         try {
-            final ExperimentContext mockExperimentContext = mock(ExperimentContext.class);
-            experimentEngine.planExperimentContext(mockExperimentContext);
+            final ExperimentContext mockExperimentRunContext = mock(ExperimentContext.class);
+            experimentEngine.planExperimentContext(mockExperimentRunContext);
             fail("Should not reach this point");
         } catch (final IllegalStateException e) {
             assertTrue(e.getMessage().contains("Cannot plan experiment context when engine is not started"));
@@ -240,6 +243,35 @@ public class ExperimentEngineImplTest {
         experimentEngine.start();
         experimentEngine.stop();
         verify(mockExperimentEnginePersistence).persist(experimentEngine);
+    }
+
+    @Test
+    public void testFindExperimentRunContextsForHashWithNull() {
+        try {
+            experimentEngine.findExperimentRunContextsForHash(null);
+            fail("Should not reach this point");
+        } catch (final IllegalArgumentException e) {
+            assertTrue(e.getMessage().contains("Hash cannot be null"));
+        }
+    }
+
+    @Test
+    public void testFindExperimentRunContextsForHash() {
+
+        final ExperimentRunContext experimentRunContext1 = mock(ExperimentRunContext.class);
+        final ExperimentRunContext experimentRunContext2 = mock(ExperimentRunContext.class);
+
+        when(experimentRunContext1.getHash()).thenReturn("hash-1");
+        when(experimentRunContext2.getHash()).thenReturn("hash-2");
+
+        experimentEngine.start();
+        experimentEngine.getExperimentRunContexts().add(experimentRunContext1);
+        experimentEngine.getExperimentRunContexts().add(experimentRunContext2);
+
+        final List<ExperimentRunContext> experimentRunContexts = experimentEngine.findExperimentRunContextsForHash("hash-1");
+        assertNotNull(experimentRunContexts);
+        assertEquals(1, experimentRunContexts.size());
+        assertEquals(experimentRunContext1, experimentRunContexts.get(0));
     }
 
 
