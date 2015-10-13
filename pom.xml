@@ -21,12 +21,13 @@
         <lombok.version>1.16.4</lombok.version>
         <akka.version>2.3.12</akka.version>
         <logback.version>1.1.3</logback.version>
-        <jersey2.version>2.21</jersey2.version>
+        <jersey2.version>2.22.1</jersey2.version>
         <jetty.version>9.3.2.v20150730</jetty.version>
         <slf4j.version>1.7.12</slf4j.version>
         <jackson.version>2.6.1</jackson.version>
         <jacoco-maven-plugin.version>0.7.5.201505241946</jacoco-maven-plugin.version>
         <coveralls-maven-plugin.version>4.0.0</coveralls-maven-plugin.version>
+        <el.version>2.2.4</el.version>
     </properties>
 
     <organization>
@@ -141,6 +142,24 @@
                 <groupId>org.glassfish.jersey.media</groupId>
                 <artifactId>jersey-media-json-jackson</artifactId>
                 <version>${jersey2.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.glassfish.jersey.ext</groupId>
+                <artifactId>jersey-declarative-linking</artifactId>
+                <version>${jersey2.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>javax.el</groupId>
+                <artifactId>javax.el-api</artifactId>
+                <version>${el.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.glassfish.web</groupId>
+                <artifactId>javax.el</artifactId>
+                <version>${el.version}</version>
             </dependency>
 
             <!-- Logback -->
