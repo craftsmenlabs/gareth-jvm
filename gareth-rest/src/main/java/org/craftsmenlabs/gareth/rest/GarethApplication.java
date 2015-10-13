@@ -7,6 +7,7 @@ import org.craftsmenlabs.gareth.rest.filter.CORSFilter;
 import org.craftsmenlabs.gareth.rest.resource.ExperimentRerunResource;
 import org.craftsmenlabs.gareth.rest.resource.ExperimentResource;
 import org.craftsmenlabs.gareth.rest.resource.ExperimentRunResource;
+import org.glassfish.jersey.linking.DeclarativeLinkingFeature;
 import org.glassfish.jersey.server.ResourceConfig;
 
 /**
@@ -18,6 +19,7 @@ public class GarethApplication extends ResourceConfig {
     public GarethApplication(final ExperimentEngine experimentEngine) {
         registerInstances(new ExperimentEngineFeature(experimentEngine));
         register(JacksonJaxbJsonProvider.class);
+        register(DeclarativeLinkingFeature.class);
         register(ExperimentResource.class);
         register(ExperimentRunResource.class);
         register(ExperimentRerunResource.class);

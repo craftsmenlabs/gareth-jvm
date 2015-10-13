@@ -5,6 +5,7 @@ import org.craftsmenlabs.gareth.api.context.ExperimentContext;
 import org.craftsmenlabs.gareth.api.exception.GarethUnknownExperimentException;
 
 import javax.inject.Inject;
+import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.core.Response;
@@ -18,6 +19,7 @@ public class ExperimentRerunResource {
     @Inject
     private ExperimentEngine experimentEngine;
 
+    @GET
     @Path("{hash}")
     public Response rerunExperiment(final @PathParam("hash") String hash) {
         Response response = null;
