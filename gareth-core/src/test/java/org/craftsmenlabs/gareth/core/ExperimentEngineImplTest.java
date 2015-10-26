@@ -11,6 +11,7 @@ import org.craftsmenlabs.gareth.api.exception.GarethUnknownExperimentException;
 import org.craftsmenlabs.gareth.api.factory.ExperimentFactory;
 import org.craftsmenlabs.gareth.api.invoker.MethodDescriptor;
 import org.craftsmenlabs.gareth.api.invoker.MethodInvoker;
+import org.craftsmenlabs.gareth.api.listener.ExperimentStateChangeListener;
 import org.craftsmenlabs.gareth.api.model.AssumptionBlock;
 import org.craftsmenlabs.gareth.api.model.Experiment;
 import org.craftsmenlabs.gareth.api.persist.ExperimentEnginePersistence;
@@ -69,11 +70,15 @@ public class ExperimentEngineImplTest {
     @Mock
     private ExperimentEnginePersistence mockExperimentEnginePersistence;
 
+    @Mock
+    private ExperimentStateChangeListener mockExperimentStateChangeListener;
+
     @Before
     public void setUp() throws Exception {
         MockitoAnnotations.initMocks(this);
         when(mockExperimentEngineConfig.getDefinitionClasses()).thenReturn(new Class[]{});
         when(mockExperimentEngineConfig.getInputStreams()).thenReturn(new InputStream[]{});
+        when(mockExperimentEnginePersistence.getExperimentStateChangeListener()).thenReturn(mockExperimentStateChangeListener);
         experimentEngine = new ExperimentEngineImpl
                 .Builder(mockExperimentEngineConfig)
                 .setDefinitionRegistry(mockDefinitionRegistry)
@@ -121,7 +126,7 @@ public class ExperimentEngineImplTest {
         final ExperimentContext mockExperimentContext = mock(ExperimentContext.class);
         when(mockExperimentContext.isValid()).thenReturn(false);
         experimentEngine.planExperimentContext(mockExperimentContext);
-        verify(mockAssumeScheduler, never()).schedule(any(ExperimentRunContext.class));
+        verify(mockAssumeScheduler, never()).schedule(any(ExperimentRunContext.class), any(ExperimentEngine.class));
     }
 
     @Test
@@ -135,7 +140,7 @@ public class ExperimentEngineImplTest {
         when(mockExperimentContext.getFailure()).thenReturn(mockMethodDescriptor);
         when(mockExperimentContext.isValid()).thenReturn(true);
         experimentEngine.planExperimentContext(mockExperimentContext);
-        verify(mockAssumeScheduler).schedule(any(ExperimentRunContext.class));
+        verify(mockAssumeScheduler).schedule(any(ExperimentRunContext.class), any(ExperimentEngine.class));
     }
 
     @Test
@@ -242,7 +247,7 @@ public class ExperimentEngineImplTest {
     public void testStopWithoutPersistence() throws Exception {
         experimentEngine.start();
         experimentEngine.stop();
-        verify(mockExperimentEnginePersistence).persist(experimentEngine);
+        verify(mockExperimentEnginePersistence,never()).persist(experimentEngine);
     }
 
     @Test

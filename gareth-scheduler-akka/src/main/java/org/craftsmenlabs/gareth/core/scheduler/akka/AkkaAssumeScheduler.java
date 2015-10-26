@@ -1,11 +1,13 @@
 package org.craftsmenlabs.gareth.core.scheduler.akka;
 
 import akka.actor.ActorSystem;
+import org.craftsmenlabs.gareth.api.ExperimentEngine;
 import org.craftsmenlabs.gareth.api.context.ExperimentContext;
 import org.craftsmenlabs.gareth.api.context.ExperimentRunContext;
 import org.craftsmenlabs.gareth.api.exception.GarethInvocationException;
 import org.craftsmenlabs.gareth.api.exception.GarethUnknownDefinitionException;
 import org.craftsmenlabs.gareth.api.invoker.MethodInvoker;
+import org.craftsmenlabs.gareth.api.observer.Observer;
 import org.craftsmenlabs.gareth.api.scheduler.AssumeScheduler;
 import org.craftsmenlabs.gareth.core.invoker.MethodInvokerImpl;
 import org.craftsmenlabs.gareth.core.reflection.ReflectionHelper;
@@ -30,14 +32,17 @@ public class AkkaAssumeScheduler implements AssumeScheduler {
 
     private final boolean ignoreInvocationExceptions;
 
+    private final Observer observer;
+
     public AkkaAssumeScheduler(final Builder builder) {
+        this.observer = builder.observer;
         this.methodInvoker = builder.methodInvoker;
         this.actorSystem = builder.actorSystem;
         this.ignoreInvocationExceptions = builder.ignoreInvocationExceptions;
     }
 
     @Override
-    public void schedule(final ExperimentRunContext experimentRunContext) {
+    public void schedule(final ExperimentRunContext experimentRunContext, final ExperimentEngine experimentEngine) {
         final ExperimentContext experimentContext = experimentRunContext.getExperimentContext();
         final Duration time = experimentContext.getTime();
         try {
@@ -58,6 +63,7 @@ public class AkkaAssumeScheduler implements AssumeScheduler {
                         experimentRunContext.setFailureRun(LocalDateTime.now());
                     }
                 }
+                observer.notifyApplicationStateChanged(experimentEngine);
             }, actorSystem.dispatcher());
 
         } catch (final GarethUnknownDefinitionException | GarethInvocationException e) {
@@ -70,6 +76,8 @@ public class AkkaAssumeScheduler implements AssumeScheduler {
 
     public static class Builder {
 
+        private final Observer observer;
+
         private ReflectionHelper reflectionHelper = new ReflectionHelper();
 
         private MethodInvoker methodInvoker = new MethodInvokerImpl(reflectionHelper);
@@ -78,6 +86,9 @@ public class AkkaAssumeScheduler implements AssumeScheduler {
 
         private boolean ignoreInvocationExceptions;
 
+        public Builder(final Observer observer) {
+            this.observer = observer;
+        }
 
         public Builder setActorSystem(final ActorSystem actorSystem) {
             this.actorSystem = actorSystem;
@@ -95,6 +106,9 @@ public class AkkaAssumeScheduler implements AssumeScheduler {
         }
 
         public AssumeScheduler build() {
+            if (null == observer) {
+                throw new IllegalStateException("Observer cannot be null");
+            }
             return new AkkaAssumeScheduler(this);
         }
     }

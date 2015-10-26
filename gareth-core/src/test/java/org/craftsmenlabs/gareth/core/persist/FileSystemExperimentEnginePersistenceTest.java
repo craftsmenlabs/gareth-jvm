@@ -6,6 +6,7 @@ import org.craftsmenlabs.gareth.api.context.ExperimentContext;
 import org.craftsmenlabs.gareth.api.context.ExperimentPartState;
 import org.craftsmenlabs.gareth.api.context.ExperimentRunContext;
 import org.craftsmenlabs.gareth.api.exception.GarethStateReadException;
+import org.craftsmenlabs.gareth.api.listener.ExperimentStateChangeListener;
 import org.craftsmenlabs.gareth.api.persist.ExperimentEnginePersistence;
 import org.junit.After;
 import org.junit.Before;
@@ -65,7 +66,7 @@ public class FileSystemExperimentEnginePersistenceTest {
     }
 
 
-    private List<ExperimentRunContext> getExperimentRunContexts(){
+    private List<ExperimentRunContext> getExperimentRunContexts() {
         final ArrayList<ExperimentRunContext> experimentRunContexts = new ArrayList<>();
         experimentRunContexts.add(mockExperimentRunContext);
         return experimentRunContexts;
@@ -119,6 +120,15 @@ public class FileSystemExperimentEnginePersistenceTest {
         copyDataToTmpFile();
         fileSystemExperimentEnginePersistence.restore(mockExperimentEngine);
         verify(mockExperimentEngine).getExperimentRunContexts();
+    }
+
+    @Test
+    public void testGetExperimentStateChangeListener() {
+        final ExperimentStateChangeListener experimentStateChangeListener1 = fileSystemExperimentEnginePersistence.getExperimentStateChangeListener();
+        final ExperimentStateChangeListener experimentStateChangeListener2 = fileSystemExperimentEnginePersistence.getExperimentStateChangeListener();
+        assertNotNull(experimentStateChangeListener1);
+        assertNotNull(experimentStateChangeListener2);
+        assertSame(experimentStateChangeListener1, experimentStateChangeListener2);
     }
 
     private void copyDataToTmpFile() throws IOException {

@@ -15,6 +15,7 @@ import org.craftsmenlabs.gareth.api.invoker.MethodDescriptor;
 import org.craftsmenlabs.gareth.api.invoker.MethodInvoker;
 import org.craftsmenlabs.gareth.api.model.AssumptionBlock;
 import org.craftsmenlabs.gareth.api.model.Experiment;
+import org.craftsmenlabs.gareth.api.observer.Observer;
 import org.craftsmenlabs.gareth.api.persist.ExperimentEnginePersistence;
 import org.craftsmenlabs.gareth.api.registry.DefinitionRegistry;
 import org.craftsmenlabs.gareth.api.registry.ExperimentRegistry;
@@ -26,6 +27,7 @@ import org.craftsmenlabs.gareth.core.context.ExperimentContextImpl;
 import org.craftsmenlabs.gareth.core.context.ExperimentRunContextImpl;
 import org.craftsmenlabs.gareth.core.factory.ExperimentFactoryImpl;
 import org.craftsmenlabs.gareth.core.invoker.MethodInvokerImpl;
+import org.craftsmenlabs.gareth.core.observer.DefaultObserver;
 import org.craftsmenlabs.gareth.core.parser.ParsedDefinitionFactoryImpl;
 import org.craftsmenlabs.gareth.core.persist.FileSystemExperimentEnginePersistence;
 import org.craftsmenlabs.gareth.core.reflection.ReflectionHelper;
@@ -78,6 +80,8 @@ public class ExperimentEngineImpl implements ExperimentEngine {
 
     private final ExperimentEnginePersistence experimentEnginePersistence;
 
+    private final Observer observer;
+
     @Getter
     private boolean started;
 
@@ -93,6 +97,7 @@ public class ExperimentEngineImpl implements ExperimentEngine {
         this.restServiceFactory = builder.restServiceFactory;
         this.storageFactory = builder.storageFactory;
         this.experimentEnginePersistence = builder.experimentEnginePersistence;
+        this.observer = builder.observer;
     }
 
     private void registerDefinition(final Class clazz) throws GarethDefinitionParseException {
@@ -122,17 +127,7 @@ public class ExperimentEngineImpl implements ExperimentEngine {
         if (!isStarted()) {
             throw new IllegalStateException("Experiment engine is not started");
         }
-        persistExperimentEngineState();
-    }
-
-    private void persistExperimentEngineState() {
-        Optional.ofNullable(experimentEnginePersistence).ifPresent(eep -> {
-            try {
-                experimentEnginePersistence.persist(this);
-            } catch (final GarethStateWriteException e) {
-                logger.error("Cannot write experiment engine state", e);
-            }
-        });
+        observer.notifyApplicationStateChanged(this);
     }
 
     private void populateExperimentContexts() {
@@ -284,13 +279,14 @@ public class ExperimentEngineImpl implements ExperimentEngine {
                     throw e;
                 }
             }
+            observer.notifyApplicationStateChanged(this);
         }
     }
 
     private void scheduleInvokeAssume(final ExperimentRunContext experimentRunContext) {
         if (ExperimentPartState.OPEN == experimentRunContext.getAssumeState()) {
             try {
-                assumeScheduler.schedule(experimentRunContext);
+                assumeScheduler.schedule(experimentRunContext, this);
 
             } catch (final GarethUnknownDefinitionException | GarethInvocationException e) {
                 if (!experimentEngineConfig.isIgnoreInvocationExceptions()) {
@@ -412,6 +408,8 @@ public class ExperimentEngineImpl implements ExperimentEngine {
 
         private StorageFactory storageFactory = new DefaultStorageFactory();
 
+        private Observer observer = new DefaultObserver();
+
         private ExperimentEnginePersistence experimentEnginePersistence = new FileSystemExperimentEnginePersistence.Builder().build();
 
         public Builder setDefinitionRegistry(final DefinitionRegistry definitionRegistry) {
@@ -463,13 +461,20 @@ public class ExperimentEngineImpl implements ExperimentEngine {
         private void buildDefaultAssumeScheduler() {
             if (assumeScheduler == null) {
                 assumeScheduler = new DefaultAssumeScheduler
-                        .Builder()
+                        .Builder(observer)
                         .setIgnoreInvocationExceptions(experimentEngineConfig.isIgnoreInvocationExceptions())
                         .build();
             }
         }
 
+        private void registerObservables() {
+            if (null != experimentEnginePersistence) {
+                observer.registerExperimentStateChangeListener(experimentEnginePersistence.getExperimentStateChangeListener());
+            }
+        }
+
         public ExperimentEngine build() {
+            registerObservables();
             buildDefaultAssumeScheduler();
             return new ExperimentEngineImpl(this);
         }

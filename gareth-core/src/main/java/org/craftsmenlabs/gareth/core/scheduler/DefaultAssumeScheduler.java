@@ -1,11 +1,12 @@
 package org.craftsmenlabs.gareth.core.scheduler;
 
 import com.xeiam.sundial.SundialJobScheduler;
-import org.craftsmenlabs.gareth.api.context.ExperimentContext;
+import org.craftsmenlabs.gareth.api.ExperimentEngine;
 import org.craftsmenlabs.gareth.api.context.ExperimentRunContext;
 import org.craftsmenlabs.gareth.api.exception.GarethInvocationException;
 import org.craftsmenlabs.gareth.api.exception.GarethUnknownDefinitionException;
 import org.craftsmenlabs.gareth.api.invoker.MethodInvoker;
+import org.craftsmenlabs.gareth.api.observer.Observer;
 import org.craftsmenlabs.gareth.api.scheduler.AssumeScheduler;
 import org.craftsmenlabs.gareth.core.invoker.MethodInvokerImpl;
 import org.craftsmenlabs.gareth.core.reflection.ReflectionHelper;
@@ -13,9 +14,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.time.Duration;
-import java.time.temporal.ChronoUnit;
-import java.time.temporal.TemporalAdjusters;
-import java.time.temporal.TemporalUnit;
 import java.util.*;
 
 /**
@@ -27,16 +25,18 @@ public class DefaultAssumeScheduler implements AssumeScheduler {
 
     private final MethodInvoker methodInvoker;
     private final boolean ignoreInvocationExceptions;
+    private final Observer observer;
 
 
     private DefaultAssumeScheduler(final Builder builder) {
         this.methodInvoker = builder.methodInvoker;
         this.ignoreInvocationExceptions = builder.ignoreInvocationExceptions;
+        this.observer = builder.observer;
         SundialJobScheduler.startScheduler();
     }
 
     @Override
-    public void schedule(final ExperimentRunContext experimentContext) {
+    public void schedule(final ExperimentRunContext experimentContext, final ExperimentEngine experimentEngine) {
         final Duration time = experimentContext.getExperimentContext().getTime();
         final Calendar now = new GregorianCalendar();
         now.add(Calendar.MILLISECOND, new Long(time.toMillis()).intValue());
@@ -46,6 +46,8 @@ public class DefaultAssumeScheduler implements AssumeScheduler {
             final Map<String, Object> jobParams = new HashMap<>();
             jobParams.put("experimentRunContext", experimentContext);
             jobParams.put("methodInvoker", methodInvoker);
+            jobParams.put("observer", observer);
+            jobParams.put("experimentEngine", experimentEngine);
 
             final String jobName = experimentContext.getExperimentContext().getExperimentName() + "-" + new Random().nextInt();
             final String triggerName = jobName + "-trigger";
@@ -73,6 +75,12 @@ public class DefaultAssumeScheduler implements AssumeScheduler {
 
         private boolean ignoreInvocationExceptions;
 
+        private final org.craftsmenlabs.gareth.api.observer.Observer observer;
+
+        public Builder(final org.craftsmenlabs.gareth.api.observer.Observer observer) {
+            this.observer = observer;
+        }
+
         public Builder setIgnoreInvocationExceptions(final boolean ignoreInvocationExceptions) {
             this.ignoreInvocationExceptions = ignoreInvocationExceptions;
             return this;
@@ -84,6 +92,9 @@ public class DefaultAssumeScheduler implements AssumeScheduler {
         }
 
         public AssumeScheduler build() {
+            if (null == observer) {
+                throw new IllegalStateException("Observer cannot be null");
+            }
             return new DefaultAssumeScheduler(this);
         }
     }

@@ -6,11 +6,13 @@ import com.xeiam.sundial.exceptions.JobInterruptException;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
+import org.craftsmenlabs.gareth.api.ExperimentEngine;
 import org.craftsmenlabs.gareth.api.context.ExperimentContext;
 import org.craftsmenlabs.gareth.api.context.ExperimentPartState;
 import org.craftsmenlabs.gareth.api.context.ExperimentRunContext;
 import org.craftsmenlabs.gareth.api.invoker.MethodDescriptor;
 import org.craftsmenlabs.gareth.api.invoker.MethodInvoker;
+import org.craftsmenlabs.gareth.api.observer.Observer;
 import org.craftsmenlabs.gareth.api.storage.Storage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -32,6 +34,8 @@ public class DefaultInvocationJob extends Job {
     public void doRun() throws JobInterruptException {
         final MethodInvoker methodInvoker = getJobContext().getRequiredValue("methodInvoker");
         final ExperimentRunContext experimentContext = getJobContext().getRequiredValue("experimentRunContext");
+        final Observer observer = getJobContext().getRequiredValue("observer");
+        final ExperimentEngine experimentEngine = getJobContext().getRequiredValue("experimentEngine");
 
         try {
             logger.debug("Invoking assumption");
@@ -55,6 +59,8 @@ public class DefaultInvocationJob extends Job {
                 experimentContext.setFailureRun(LocalDateTime.now());
                 experimentContext.setFailureState(ExperimentPartState.FINISHED);
             }
+        } finally {
+            observer.notifyApplicationStateChanged(experimentEngine);
         }
     }
 

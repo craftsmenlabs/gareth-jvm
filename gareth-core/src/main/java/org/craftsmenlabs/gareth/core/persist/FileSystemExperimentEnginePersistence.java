@@ -7,8 +7,10 @@ import org.craftsmenlabs.gareth.api.context.ExperimentRunContext;
 import org.craftsmenlabs.gareth.api.exception.GarethStateReadException;
 import org.craftsmenlabs.gareth.api.exception.GarethStateWriteException;
 import org.craftsmenlabs.gareth.api.exception.GarethUnknownExperimentException;
+import org.craftsmenlabs.gareth.api.listener.ExperimentStateChangeListener;
 import org.craftsmenlabs.gareth.api.persist.ExperimentEnginePersistence;
 import org.craftsmenlabs.gareth.core.context.ExperimentRunContextImpl;
+import org.craftsmenlabs.gareth.core.persist.listener.FileSystemExperimentChangeListener;
 import org.craftsmenlabs.gareth.core.util.ExperimentContextHashGenerator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -26,8 +28,11 @@ public class FileSystemExperimentEnginePersistence implements ExperimentEnginePe
 
     private final File stateFile;
 
+    private final FileSystemExperimentChangeListener fileSystemExperimentChangeListener;
+
     private FileSystemExperimentEnginePersistence(final Builder builder) {
         this.stateFile = builder.stateFile;
+        fileSystemExperimentChangeListener = new FileSystemExperimentChangeListener.Builder(this).build();
     }
 
     @Override
@@ -68,6 +73,11 @@ public class FileSystemExperimentEnginePersistence implements ExperimentEnginePe
                 LOG.debug("No experiment context data found.", e);
             }
         });
+    }
+
+    @Override
+    public ExperimentStateChangeListener getExperimentStateChangeListener() {
+        return this.fileSystemExperimentChangeListener;
     }
 
     private ExperimentRunContext rebuildExperimentRunContext(final ExperimentContextData experimentContextData, final ExperimentContext experimentContext) {

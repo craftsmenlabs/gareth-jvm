@@ -1,11 +1,13 @@
 package org.craftsmenlabs.gareth.core.scheduler;
 
 import com.xeiam.sundial.JobContext;
+import org.craftsmenlabs.gareth.api.ExperimentEngine;
 import org.craftsmenlabs.gareth.api.context.ExperimentContext;
 import org.craftsmenlabs.gareth.api.context.ExperimentPartState;
 import org.craftsmenlabs.gareth.api.context.ExperimentRunContext;
 import org.craftsmenlabs.gareth.api.invoker.MethodDescriptor;
 import org.craftsmenlabs.gareth.api.invoker.MethodInvoker;
+import org.craftsmenlabs.gareth.api.observer.Observer;
 import org.craftsmenlabs.gareth.api.storage.Storage;
 import org.junit.Before;
 import org.junit.Test;
@@ -40,6 +42,12 @@ public class DefaultInvocationJobTest {
     @Mock
     private MethodDescriptor mockMethodDescriptor;
 
+    @Mock
+    private Observer mockObserver;
+
+    @Mock
+    private ExperimentEngine mockExperimentEngine;
+
     @Before
     public void before() {
         MockitoAnnotations.initMocks(this);
@@ -48,6 +56,8 @@ public class DefaultInvocationJobTest {
         when(mockExperimentRunContext.getExperimentContext()).thenReturn(mockExperimentContext);
         when(mockJobContext.getRequiredValue("methodInvoker")).thenReturn(mockMethodInvoker);
         when(mockJobContext.getRequiredValue("experimentRunContext")).thenReturn(mockExperimentRunContext);
+        when(mockJobContext.getRequiredValue("observer")).thenReturn(mockObserver);
+        when(mockJobContext.getRequiredValue("experimentEngine")).thenReturn(mockExperimentEngine);
 
 
     }
@@ -61,6 +71,7 @@ public class DefaultInvocationJobTest {
         verify(mockExperimentRunContext).setAssumeRun(any(LocalDateTime.class));
         verify(mockExperimentContext).getAssume();
         verify(mockMethodInvoker).invoke(any(MethodDescriptor.class));
+        verify(mockObserver).notifyApplicationStateChanged(mockExperimentEngine);
     }
 
     @Test
@@ -73,6 +84,7 @@ public class DefaultInvocationJobTest {
         verify(mockExperimentRunContext).setAssumeRun(any(LocalDateTime.class));
         verify(mockExperimentContext).getAssume();
         verify(mockMethodInvoker).invoke(any(MethodDescriptor.class), any(Storage.class));
+        verify(mockObserver).notifyApplicationStateChanged(mockExperimentEngine);
     }
 
     @Test
@@ -89,6 +101,7 @@ public class DefaultInvocationJobTest {
         verify(mockExperimentContext, times(2)).getSuccess();
         verify(mockExperimentContext, never()).getFailure();
         verify(mockMethodInvoker, times(2)).invoke(any(MethodDescriptor.class));
+        verify(mockObserver).notifyApplicationStateChanged(mockExperimentEngine);
     }
 
     @Test
@@ -107,6 +120,7 @@ public class DefaultInvocationJobTest {
         verify(mockExperimentContext, never()).getSuccess();
         verify(mockExperimentContext, times(2)).getFailure();
         verify(mockMethodInvoker, times(2)).invoke(any(MethodDescriptor.class));
+        verify(mockObserver).notifyApplicationStateChanged(mockExperimentEngine);
     }
 
     @Test
@@ -126,5 +140,6 @@ public class DefaultInvocationJobTest {
         verify(mockExperimentContext, never()).getSuccess();
         verify(mockExperimentContext, times(2)).getFailure();
         verify(mockMethodInvoker, times(2)).invoke(any(MethodDescriptor.class));
+        verify(mockObserver).notifyApplicationStateChanged(mockExperimentEngine);
     }
 }
