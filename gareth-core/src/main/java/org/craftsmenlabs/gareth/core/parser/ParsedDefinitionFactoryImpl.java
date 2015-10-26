@@ -50,7 +50,6 @@ public class ParsedDefinitionFactoryImpl implements ParsedDefinitionFactory {
     private void parseClass(final Class clazz, final ParsedDefinition parsedDefinition) {
         Stream
                 .of(clazz.getMethods())
-                .parallel()
                 .forEach(m -> parseMethod(m, parsedDefinition));
     }
 
