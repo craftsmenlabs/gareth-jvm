@@ -4,7 +4,7 @@
 
     <groupId>org.craftsmenlabs.gareth</groupId>
     <artifactId>gareth-jvm</artifactId>
-    <version>0.8.1-SNAPSHOT</version>
+    <version>0.8.1</version>
     <packaging>pom</packaging>
     <name>gareth-jvm</name>
     <url>https://github.com/craftsmenlabs</url>
