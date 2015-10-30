@@ -6,6 +6,12 @@ Gareth is platform that allows you to make business goal validation part of your
 
 For extra information visit our lean startup [site](http://gareth.craftsmenlabs.org) 
 
+## Building Gareth from source
+
+Gareth is built using Apache maven. Download it here: https://maven.apache.org/install.html
+Note: to use the code base in Eclipse or IntelliJ, make sure you install the Lombok plugin and configure the compiler settings accordingly:
+https://github.com/mplushnikov/lombok-intellij-plugin
+
 ## Running Gareth
 
 Gareth can be run in two different manners, can be run with or without a REST interface.
