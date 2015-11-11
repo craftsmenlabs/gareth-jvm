@@ -16,6 +16,11 @@
             <artifactId>gareth-core</artifactId>
         </dependency>
         <dependency>
+            <groupId>org.craftsmenlabs.gareth</groupId>
+            <artifactId>gareth-json-persistence</artifactId>
+            <version>0.8.2-SNAPSHOT</version>
+        </dependency>
+        <dependency>
             <groupId>org.craftsmenlabs.gareth.rest</groupId>
             <artifactId>gareth-rest</artifactId>
         </dependency>

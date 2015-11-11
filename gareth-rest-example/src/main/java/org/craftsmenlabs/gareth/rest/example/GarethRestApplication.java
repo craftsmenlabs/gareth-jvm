@@ -5,6 +5,7 @@ import org.craftsmenlabs.gareth.api.ExperimentEngineConfig;
 import org.craftsmenlabs.gareth.api.rest.RestServiceFactory;
 import org.craftsmenlabs.gareth.core.ExperimentEngineConfigImpl;
 import org.craftsmenlabs.gareth.core.ExperimentEngineImpl;
+import org.craftsmenlabs.gareth.json.persist.JsonExperimentEnginePersistence;
 import org.craftsmenlabs.gareth.rest.RestServiceFactoryImpl;
 import org.craftsmenlabs.gareth.rest.example.definition.SampleDefinition;
 
@@ -27,6 +28,7 @@ public class GarethRestApplication
         final ExperimentEngine experimentEngine = new ExperimentEngineImpl
                 .Builder(experimentEngineConfig)
                 .setRestServiceFactory(restServiceFactory)
+                .setExperimentEnginePersistence(new JsonExperimentEnginePersistence.Builder().build())
                 .build();
         experimentEngine.start();
         Runtime.getRuntime().addShutdownHook(new ShutdownHook(experimentEngine));

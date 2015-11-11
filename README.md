@@ -292,6 +292,13 @@ You can contribute to this repository the by following these steps.
 - Do your coding
 - Create a pull request to integrate the branch
 
+### Help wanted!
+
+We need some help to achieve the following goals:
+
+- [ ] Create plugins for the major IDEs
+- [ ] Have support for other languages than Java
+
 ## Planned
 
 The following functionality is planned for next releases:
