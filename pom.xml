@@ -117,6 +117,11 @@
 				<artifactId>gareth-rest</artifactId>
 				<version>${project.version}</version>
 			</dependency>
+			<dependency>
+				<groupId>org.craftsmenlabs.gareth</groupId>
+				<artifactId>gareth-json-persistence</artifactId>
+				<version>${project.version}</version>
+			</dependency>
 
 			<!-- ANTLR -->
 			<dependency>
@@ -337,6 +342,7 @@
 		<module>gareth-scheduler-akka</module>
 		<module>gareth-rest</module>
 		<module>gareth-json-persistence</module>
+		<module>gareth-http-json-persistence</module>
 		<module>gareth-example</module>
 		<module>gareth-rest-example</module>
 	</modules>
