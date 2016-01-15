@@ -4,7 +4,7 @@
 
 Gareth is platform that allows you to make business goal validation part of your development process.
 
-For extra information visit our lean startup [site](http://gareth.craftsmenlabs.org) 
+For extra information visit our lean startup [site](http://craftsmenlabs.github.io/gareth/)
 
 ## Running Gareth
 

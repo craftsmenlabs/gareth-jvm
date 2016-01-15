@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+				 xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
 	<groupId>org.craftsmenlabs.gareth</groupId>
@@ -7,7 +8,7 @@
 	<version>0.8.4-SNAPSHOT</version>
 	<packaging>pom</packaging>
 	<name>gareth-jvm</name>
-	<url>https://github.com/craftsmenlabs</url>
+	<url>http://craftsmenlabs.github.io/gareth/</url>
 
 	<!-- Properties -->
 	<properties>
@@ -53,6 +54,28 @@
 		<url>https://github.com/craftsmenlabs/gareth-jvm/issues</url>
 	</issueManagement>
 
+	<ciManagement>
+		<url>https://travis-ci.org/craftsmenlabs/gareth-jvm</url>
+		<system>TravisCI</system>
+	</ciManagement>
+
+	<!-- Contributions -->
+	<contributors>
+		<contributor>
+			<name>Hylke Stapersma</name>
+			<email>hylke.stapersma@gmail.com</email>
+			<roles>
+				<role>Lead</role>
+			</roles>
+		</contributor>
+		<contributor>
+			<name>Niels Tales</name>
+			<roles>
+				<role>Product Owner</role>
+			</roles>
+		</contributor>
+	</contributors>
+
 	<!-- Source code management information -->
 	<scm>
 		<connection>scm:git:git://github.com/craftsmenlabs/gareth-jvm.git</connection>
@@ -69,6 +92,7 @@
 		</license>
 	</licenses>
 
+	<!-- Dependency stuff -->
 	<dependencyManagement>
 		<dependencies>
 
@@ -342,4 +366,5 @@
 			</build>
 		</profile>
 	</profiles>
+
 </project>
