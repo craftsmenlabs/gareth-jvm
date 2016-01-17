@@ -1,9 +1,7 @@
 package org.craftsmenlabs.gareth.json.persist.media.file;
 
 import org.apache.commons.io.IOUtils;
-import org.craftsmenlabs.gareth.api.listener.ExperimentStateChangeListener;
 import org.craftsmenlabs.gareth.json.persist.JsonExperimentContextData;
-import org.craftsmenlabs.gareth.json.persist.JsonExperimentEnginePersistence;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -18,8 +16,8 @@ import java.util.List;
 import java.util.Random;
 
 import static org.junit.Assert.*;
-import static org.mockito.Matchers.anyString;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 /**
  * Created by hylke on 14/01/16.

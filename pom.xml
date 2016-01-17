@@ -29,6 +29,8 @@
 		<jacoco-maven-plugin.version>0.7.5.201505241946</jacoco-maven-plugin.version>
 		<coveralls-maven-plugin.version>4.0.0</coveralls-maven-plugin.version>
 		<el.version>2.2.4</el.version>
+		<httpclient.version>4.5.1</httpclient.version>
+		<mockserver-netty.version>3.10.2</mockserver-netty.version>
 	</properties>
 
 	<organization>
@@ -222,6 +224,20 @@
 				<version>${slf4j.version}</version>
 			</dependency>
 
+			<!-- http client -->
+			<dependency>
+				<groupId>org.apache.httpcomponents</groupId>
+				<artifactId>httpclient</artifactId>
+				<version>${httpclient.version}</version>
+			</dependency>
+
+			<dependency>
+				<groupId>org.apache.httpcomponents</groupId>
+				<artifactId>fluent-hc</artifactId>
+				<version>${httpclient.version}</version>
+			</dependency>
+
+
 
 			<!-- Test depedencies -->
 			<dependency>
@@ -237,6 +253,14 @@
 				<version>${mockito.version}</version>
 				<scope>test</scope>
 			</dependency>
+
+			<dependency>
+				<groupId>org.mock-server</groupId>
+				<artifactId>mockserver-netty</artifactId>
+				<version>${mockserver-netty.version}</version>
+				<scope>test</scope>
+			</dependency>
+
 
 
 		</dependencies>

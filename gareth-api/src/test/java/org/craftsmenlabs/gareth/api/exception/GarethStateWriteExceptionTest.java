@@ -16,11 +16,23 @@ public class GarethStateWriteExceptionTest {
         assertSame(wrappedException, garethStateReadException.getCause());
     }
 
+    @Test
+    public void testConstructWithMessage() {
+        final GarethStateWriteException garethStateReadException = new GarethStateWriteException("message");
+        assertSame("message", garethStateReadException.getMessage());
+    }
+
 
     @Test
     public void testConstructWithoutException() {
-        final GarethStateWriteException garethStateReadException = new GarethStateWriteException(null);
+        final GarethStateWriteException garethStateReadException = new GarethStateWriteException((Exception)null);
         assertNull(garethStateReadException.getCause());
+    }
+
+    @Test
+    public void testConstructWithoutString() {
+        final GarethStateWriteException garethStateReadException = new GarethStateWriteException((String)null);
+        assertNull(garethStateReadException.getMessage());
     }
 
 }
