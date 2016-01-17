@@ -4,7 +4,7 @@
     <parent>
         <groupId>org.craftsmenlabs.gareth</groupId>
         <artifactId>gareth-jvm</artifactId>
-        <version>0.8.4</version>
+        <version>0.8.5-SNAPSHOT</version>
     </parent>
     <groupId>org.craftsmenlabs.gareth.rest.example</groupId>
     <artifactId>gareth-rest-example</artifactId>
@@ -18,7 +18,7 @@
         <dependency>
             <groupId>org.craftsmenlabs.gareth</groupId>
             <artifactId>gareth-json-persistence</artifactId>
-            <version>0.8.4</version>
+            <version>0.8.5-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>org.craftsmenlabs.gareth.rest</groupId>
