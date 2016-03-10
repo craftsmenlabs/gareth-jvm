@@ -4,7 +4,7 @@
 
 Gareth is platform that allows you to make business goal validation part of your development process.
 
-For extra information visit our lean startup [site](http://gareth.craftsmenlabs.org) 
+For extra information visit our lean startup [site](http://craftsmenlabs.github.io/gareth/)
 
 ## Building Gareth from source
 
@@ -297,6 +297,13 @@ You can contribute to this repository the by following these steps.
 - Create a branch
 - Do your coding
 - Create a pull request to integrate the branch
+
+### Help wanted!
+
+We need some help to achieve the following goals:
+
+- [ ] Create plugins for the major IDEs
+- [ ] Have support for other languages than Java
 
 ## Planned
 

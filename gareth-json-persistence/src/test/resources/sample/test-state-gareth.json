@@ -1,0 +1,59 @@
+[
+  {
+    "hash": "a231412f32c2f6403ab5a59ab9717399f64788a7ba8391107710eb14104888be",
+    "baselineRun": [
+      2015,
+      11,
+      1,
+      8,
+      0,
+      8,
+      934000000
+    ],
+    "assumeRun": null,
+    "successRun": null,
+    "failureRun": null,
+    "baselineState": "FINISHED",
+    "assumeState": "OPEN",
+    "successState": "NON_EXISTENT",
+    "failureState": "NON_EXISTENT"
+  },
+  {
+    "hash": "a58372d8ddf72e795148f0d50da9a9470f9a362a3f6b82a120d3cc1e1add3f06",
+    "baselineRun": [
+      2015,
+      11,
+      1,
+      8,
+      0,
+      8,
+      974000000
+    ],
+    "assumeRun": null,
+    "successRun": null,
+    "failureRun": null,
+    "baselineState": "FINISHED",
+    "assumeState": "OPEN",
+    "successState": "OPEN",
+    "failureState": "NON_EXISTENT"
+  },
+  {
+    "hash": "8a0336bf836d406ff081cd809fa3c583b6851b2048b07af205f3432216aa1a15",
+    "baselineRun": [
+      2015,
+      11,
+      1,
+      8,
+      0,
+      8,
+      978000000
+    ],
+    "assumeRun": null,
+    "successRun": null,
+    "failureRun": null,
+    "baselineState": "FINISHED",
+    "assumeState": "OPEN",
+    "successState": "NON_EXISTENT",
+    "failureState": "OPEN"
+  }
+]

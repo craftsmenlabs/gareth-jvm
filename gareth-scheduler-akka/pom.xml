@@ -4,7 +4,7 @@
     <parent>
         <groupId>org.craftsmenlabs.gareth</groupId>
         <artifactId>gareth-jvm</artifactId>
-        <version>0.8.2-SNAPSHOT</version>
+        <version>0.8.5-SNAPSHOT</version>
     </parent>
 
     <groupId>org.craftsmenlabs.scheduler.akka</groupId>
