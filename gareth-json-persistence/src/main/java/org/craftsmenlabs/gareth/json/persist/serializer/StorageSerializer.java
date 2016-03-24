@@ -12,7 +12,6 @@ import org.craftsmenlabs.gareth.json.persist.converter.impl.DefaultTypeConverter
 import java.io.IOException;
 import java.io.Serializable;
 import java.util.Optional;
-import java.util.Random;
 
 /**
  * Created by hylke on 04/11/15.

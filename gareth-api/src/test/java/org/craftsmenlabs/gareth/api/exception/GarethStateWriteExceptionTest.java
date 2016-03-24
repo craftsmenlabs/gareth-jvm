@@ -2,7 +2,8 @@ package org.craftsmenlabs.gareth.api.exception;
 
 import org.junit.Test;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertSame;
 
 /**
  * Created by hylke on 24/09/15.

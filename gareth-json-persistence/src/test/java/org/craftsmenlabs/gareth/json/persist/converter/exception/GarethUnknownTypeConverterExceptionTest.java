@@ -3,7 +3,7 @@ package org.craftsmenlabs.gareth.json.persist.converter.exception;
 import org.junit.Before;
 import org.junit.Test;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertTrue;
 
 /**
  * Created by hylke on 04/11/15.
