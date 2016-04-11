@@ -1,6 +1,3 @@
-* auto-gen TOC:
-{:toc}
-
 # Gareth
 [![Build Status](https://travis-ci.org/craftsmenlabs/gareth-jvm.svg)](https://travis-ci.org/craftsmenlabs/gareth-jvm)
 [![Coverage Status](https://coveralls.io/repos/craftsmenlabs/gareth-jvm/badge.svg?branch=master&service=github)](https://coveralls.io/github/craftsmenlabs/gareth-jvm?branch=master)
