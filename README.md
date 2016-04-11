@@ -6,21 +6,6 @@ Gareth is platform that allows you to make business goal validation part of your
 
 For extra information visit our [website](http://craftsmenlabs.github.io/gareth/)
 
-**Table of Contents** 
-
-- [Gareth](#)
-	- [Building Gareth from source](#)
-	- [Running Gareth](#)
-		- [Feeding Gareth](#)
-			- [Experiment](#)
-			- [Definitions](#)
-		- [Running Gareth (without REST interface)](#)
-		- [Running Gareth (with REST interface)](#)
-- [Matching glue lines to definition methods](#)
-- [Specifying duration](#)
-	- [Contribute](#)
-		- [Help wanted!](#)
-
 ## Building Gareth from source
 
 Gareth is built using Apache maven. Download it here: https://maven.apache.org/install.html
