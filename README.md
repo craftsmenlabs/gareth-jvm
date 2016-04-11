@@ -2,9 +2,24 @@
 [![Build Status](https://travis-ci.org/craftsmenlabs/gareth-jvm.svg)](https://travis-ci.org/craftsmenlabs/gareth-jvm)
 [![Coverage Status](https://coveralls.io/repos/craftsmenlabs/gareth-jvm/badge.svg?branch=master&service=github)](https://coveralls.io/github/craftsmenlabs/gareth-jvm?branch=master)
 
-Gareth is platform that allows you to make business goal validation part of your development process.
+Gareth is platform that allows you to make business goal validation part of your development process. For extra information visit our [website](http://craftsmenlabs.github.io/gareth/)
 
-For extra information visit our [website](http://craftsmenlabs.github.io/gareth/)
+<!-- TOC depthFrom:1 depthTo:6 withLinks:1 updateOnSave:1 orderedList:0 -->
+
+- [Gareth](#gareth)
+	- [Building Gareth from source](#building-gareth-from-source)
+	- [Running Gareth](#running-gareth)
+		- [Feeding Gareth](#feeding-gareth)
+			- [Experiment](#experiment)
+			- [Definitions](#definitions)
+		- [Running Gareth (without REST interface)](#running-gareth-without-rest-interface)
+		- [Running Gareth (with REST interface)](#running-gareth-with-rest-interface)
+- [Matching glue lines to definition methods](#matching-glue-lines-to-definition-methods)
+- [Specifying duration](#specifying-duration)
+	- [Contribute](#contribute)
+		- [Help wanted!](#help-wanted)
+
+<!-- /TOC -->
 
 ## Building Gareth from source
 
@@ -344,7 +359,7 @@ The regex mechanism as described above is not available for the Time glue line, 
 * Time: 3 weeks
 * Time: 42 days
 * Time: 1 month
-* Time: 1 year 
+* Time: 1 year
 
 Note that month is always 30 days and year is 365 days. Running the experiment with 1 month duration on the 1st of February will check the assumption on the 3rd of March, ignoring leap years. If you want specific behaviour you can still write your own implementation:
 ```shell
@@ -369,5 +384,3 @@ We need some help to achieve the following goals:
 
 - [ ] Create plugins for the major IDEs
 - [ ] Have support for other languages than Java
-
-
