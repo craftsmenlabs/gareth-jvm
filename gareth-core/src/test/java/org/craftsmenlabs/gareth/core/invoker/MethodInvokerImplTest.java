@@ -11,18 +11,17 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 /**
  * Created by hylke on 21/08/15.
  */
 public class MethodInvokerImplTest {
 
-    private MethodInvokerImpl methodInvoker;
-
-    private MethodDescriptor methodDescriptor;
-
     private static final List<String> invokeMessageList = new ArrayList<>();
+    private MethodInvokerImpl methodInvoker;
+    private MethodDescriptor methodDescriptor;
 
     @Before
     public void setUp() throws Exception {

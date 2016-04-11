@@ -2,14 +2,16 @@ package org.craftsmenlabs.gareth.core.factory;
 
 import org.apache.commons.io.IOUtils;
 import org.craftsmenlabs.gareth.api.exception.GarethExperimentParseException;
-import org.craftsmenlabs.gareth.api.factory.ExperimentFactory;
 import org.craftsmenlabs.gareth.api.model.AssumptionBlock;
 import org.craftsmenlabs.gareth.api.model.Experiment;
 import org.junit.Test;
 
 import java.io.InputStream;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 /**
  * Created by hylke on 04/08/15.

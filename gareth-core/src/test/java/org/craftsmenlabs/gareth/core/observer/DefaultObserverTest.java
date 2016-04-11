@@ -3,16 +3,14 @@ package org.craftsmenlabs.gareth.core.observer;
 import org.craftsmenlabs.gareth.api.ExperimentEngine;
 import org.craftsmenlabs.gareth.api.exception.GarethStateWriteException;
 import org.craftsmenlabs.gareth.api.listener.ExperimentStateChangeListener;
-import org.craftsmenlabs.gareth.core.expect.Expect;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.fail;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
 
 /**
  * Created by hylke on 26/10/15.
@@ -49,7 +47,7 @@ public class DefaultObserverTest {
 
         try {
             defaultObserver.notifyApplicationStateChanged(mockExperimentEngine);
-        }catch (final Exception e){
+        } catch (final Exception e) {
             fail("Should not reach this point");
         }
     }

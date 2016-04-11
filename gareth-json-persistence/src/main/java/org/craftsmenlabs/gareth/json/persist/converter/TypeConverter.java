@@ -18,6 +18,7 @@ public interface TypeConverter<T extends Serializable> {
 
     /**
      * Convert string back to object
+     *
      * @param stringRepresentation
      * @return
      */

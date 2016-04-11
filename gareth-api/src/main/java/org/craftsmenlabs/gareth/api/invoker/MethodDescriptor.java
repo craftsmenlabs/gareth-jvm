@@ -1,10 +1,10 @@
 package org.craftsmenlabs.gareth.api.invoker;
 
+import org.craftsmenlabs.gareth.api.storage.Storage;
+
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
-/**
- * Created by hylke on 21/08/15.
- */
 public interface MethodDescriptor {
 
     /**
@@ -24,9 +24,12 @@ public interface MethodDescriptor {
 
     /**
      * Get the index of the storage parameter
-     * 
+     *
      * @return
      */
     int getStorageIndex();
 
+    String getPattern();
+
+    void invokeWith(String glueLineInExperiment, Object declaringClassInstance, Storage storage) throws InvocationTargetException, IllegalAccessException;
 }

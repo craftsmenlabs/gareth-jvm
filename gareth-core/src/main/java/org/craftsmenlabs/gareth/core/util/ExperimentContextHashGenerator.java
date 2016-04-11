@@ -1,6 +1,5 @@
 package org.craftsmenlabs.gareth.core.util;
 
-import org.craftsmenlabs.gareth.api.context.ExperimentContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -9,7 +8,6 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.Arrays;
 import java.util.Optional;
-import java.util.stream.Stream;
 
 /**
  * Created by hylke on 23/09/15.
@@ -38,8 +36,8 @@ public class ExperimentContextHashGenerator {
         final StringBuilder stringBuilder = new StringBuilder("");
         Optional.ofNullable(unhashedSurrogateKey).ifPresent(key -> {
             Arrays.stream(unhashedSurrogateKey)
-                    .map(e -> Optional.ofNullable(e).orElse("-"))
-                    .forEach(e -> stringBuilder.append(e));
+                  .map(e -> Optional.ofNullable(e).orElse("-"))
+                  .forEach(e -> stringBuilder.append(e));
         });
         return stringBuilder.toString();
     }

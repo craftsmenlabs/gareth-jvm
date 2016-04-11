@@ -1,11 +1,8 @@
 package org.craftsmenlabs.gareth.api.context;
 
 import org.craftsmenlabs.gareth.api.invoker.MethodDescriptor;
-import org.craftsmenlabs.gareth.api.storage.Storage;
 
-import java.lang.reflect.Method;
 import java.time.Duration;
-import java.time.LocalDateTime;
 
 /**
  * Experiment context definition

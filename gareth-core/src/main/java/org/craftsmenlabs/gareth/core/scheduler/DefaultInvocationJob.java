@@ -4,10 +4,8 @@ import com.xeiam.sundial.Job;
 import com.xeiam.sundial.JobContext;
 import com.xeiam.sundial.exceptions.JobInterruptException;
 import lombok.AccessLevel;
-import lombok.Getter;
 import lombok.Setter;
 import org.craftsmenlabs.gareth.api.ExperimentEngine;
-import org.craftsmenlabs.gareth.api.context.ExperimentContext;
 import org.craftsmenlabs.gareth.api.context.ExperimentPartState;
 import org.craftsmenlabs.gareth.api.context.ExperimentRunContext;
 import org.craftsmenlabs.gareth.api.invoker.MethodDescriptor;
@@ -17,7 +15,6 @@ import org.craftsmenlabs.gareth.api.storage.Storage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.lang.reflect.Method;
 import java.time.LocalDateTime;
 
 /**
@@ -33,42 +30,52 @@ public class DefaultInvocationJob extends Job {
     @Override
     public void doRun() throws JobInterruptException {
         final MethodInvoker methodInvoker = getJobContext().getRequiredValue("methodInvoker");
-        final ExperimentRunContext experimentContext = getJobContext().getRequiredValue("experimentRunContext");
+        final ExperimentRunContext runContext = getJobContext().getRequiredValue("experimentRunContext");
         final Observer observer = getJobContext().getRequiredValue("observer");
         final ExperimentEngine experimentEngine = getJobContext().getRequiredValue("experimentEngine");
-
         try {
             logger.debug("Invoking assumption");
-            experimentContext.setAssumeState(ExperimentPartState.RUNNING);
-            invoke(methodInvoker, experimentContext.getExperimentContext().hasStorage(), experimentContext.getExperimentContext().getAssume(), experimentContext.getStorage());
-            experimentContext.setAssumeRun(LocalDateTime.now());
-            experimentContext.setAssumeState(ExperimentPartState.FINISHED);
-            if (null != experimentContext.getExperimentContext().getSuccess()) {
+            runContext.setAssumeState(ExperimentPartState.RUNNING);
+            String assumeGlueLine = runContext.getExperimentContext().getAssumeGlueLine();
+            invoke(assumeGlueLine, methodInvoker, runContext.getExperimentContext().hasStorage(), runContext
+                    .getExperimentContext().getAssume(), runContext.getStorage());
+            runContext.setAssumeRun(LocalDateTime.now());
+            runContext.setAssumeState(ExperimentPartState.FINISHED);
+            if (null != runContext.getExperimentContext().getSuccess()) {
                 logger.debug("Invoking success");
-                experimentContext.setSuccessState(ExperimentPartState.RUNNING);
-                invoke(methodInvoker, experimentContext.getExperimentContext().hasStorage(), experimentContext.getExperimentContext().getSuccess(), experimentContext.getStorage());
-                experimentContext.setSuccessRun(LocalDateTime.now());
-                experimentContext.setSuccessState(ExperimentPartState.FINISHED);
+                runContext.setSuccessState(ExperimentPartState.RUNNING);
+                invoke(runContext.getExperimentContext().getSuccessGlueLine(),
+                        methodInvoker, runContext
+                                .getExperimentContext().hasStorage(), runContext
+                                .getExperimentContext().getSuccess(), runContext.getStorage());
+                runContext.setSuccessRun(LocalDateTime.now());
+                runContext.setSuccessState(ExperimentPartState.FINISHED);
             }
         } catch (final Exception e) {
-            experimentContext.setAssumeState(ExperimentPartState.ERROR);
-            if (null != experimentContext.getExperimentContext().getFailure()) {
+            runContext.setAssumeState(ExperimentPartState.ERROR);
+            if (null != runContext.getExperimentContext().getFailure()) {
                 logger.debug("Invoking failure");
-                experimentContext.setFailureState(ExperimentPartState.RUNNING);
-                invoke(methodInvoker, experimentContext.getExperimentContext().hasStorage(), experimentContext.getExperimentContext().getFailure(), experimentContext.getStorage());
-                experimentContext.setFailureRun(LocalDateTime.now());
-                experimentContext.setFailureState(ExperimentPartState.FINISHED);
+                runContext.setFailureState(ExperimentPartState.RUNNING);
+                invoke(runContext.getExperimentContext().getFailureGlueLine(),
+                        methodInvoker, runContext.getExperimentContext().hasStorage(), runContext
+                                .getExperimentContext().getFailure(), runContext.getStorage());
+                runContext.setFailureRun(LocalDateTime.now());
+                runContext.setFailureState(ExperimentPartState.FINISHED);
             }
         } finally {
             observer.notifyApplicationStateChanged(experimentEngine);
         }
     }
 
-    private void invoke(final MethodInvoker methodInvoker, final boolean storageRequired, final MethodDescriptor methodDescriptor, final Storage storage) {
+    private void invoke(final String assumeGlueLine,
+                        final MethodInvoker methodInvoker,
+                        final boolean storageRequired,
+                        final MethodDescriptor methodDescriptor,
+                        final Storage storage) {
         if (storageRequired) {
-            methodInvoker.invoke(methodDescriptor, storage);
+            methodInvoker.invoke(assumeGlueLine, methodDescriptor, storage);
         } else {
-            methodInvoker.invoke(methodDescriptor);
+            methodInvoker.invoke(assumeGlueLine, methodDescriptor);
         }
     }
 

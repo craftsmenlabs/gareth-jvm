@@ -39,7 +39,8 @@ public class StorageDeserializer extends JsonDeserializer<Storage> {
             final String value = experimentRunContextNode.get("value").asText();
             final String type = experimentRunContextNode.get("type").asText();
             try {
-                final TypeConverter typeConverter = typeConverterFactory.createTypeConverter((Class<? extends Serializable>) Class.forName(type));
+                final TypeConverter typeConverter = typeConverterFactory
+                        .createTypeConverter((Class<? extends Serializable>) Class.forName(type));
                 final Serializable storedValue = typeConverter.convertToObject(value);
                 storage.store(key, storedValue);
             } catch (final Exception e) {

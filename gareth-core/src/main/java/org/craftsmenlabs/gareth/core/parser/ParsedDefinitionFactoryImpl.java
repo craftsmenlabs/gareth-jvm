@@ -1,16 +1,19 @@
 package org.craftsmenlabs.gareth.core.parser;
 
-import org.craftsmenlabs.gareth.api.annotation.*;
+import org.craftsmenlabs.gareth.api.annotation.Assume;
+import org.craftsmenlabs.gareth.api.annotation.Baseline;
+import org.craftsmenlabs.gareth.api.annotation.Failure;
+import org.craftsmenlabs.gareth.api.annotation.Success;
+import org.craftsmenlabs.gareth.api.annotation.Time;
 import org.craftsmenlabs.gareth.api.definition.ParsedDefinition;
 import org.craftsmenlabs.gareth.api.definition.ParsedDefinitionFactory;
 import org.craftsmenlabs.gareth.api.exception.GarethDefinitionParseException;
 import org.craftsmenlabs.gareth.api.exception.GarethExperimentParseException;
 import org.craftsmenlabs.gareth.api.invoker.MethodDescriptor;
 import org.craftsmenlabs.gareth.api.storage.Storage;
-import org.craftsmenlabs.gareth.core.invoker.MethodDescriptorImpl;
+import org.craftsmenlabs.gareth.core.invoker.RegexMethodDescriptorImpl;
 import org.craftsmenlabs.gareth.core.reflection.ReflectionHelper;
 
-import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.time.Duration;
@@ -18,9 +21,6 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Stream;
 
-/**
- * Created by hylke on 10/08/15.
- */
 public class ParsedDefinitionFactoryImpl implements ParsedDefinitionFactory {
 
     private final ReflectionHelper reflectionHelper;
@@ -79,9 +79,12 @@ public class ParsedDefinitionFactoryImpl implements ParsedDefinitionFactory {
 
     private void registerUnitOfWork(final Method method, final String glueLine, final Map<String, MethodDescriptor> unitOfWorkMap) {
         if (isValidMethod(method)) {
-            unitOfWorkMap.put(glueLine, new MethodDescriptorImpl(method, 0, hasStorageParameter(method)));
+            unitOfWorkMap
+                    .put(glueLine, new RegexMethodDescriptorImpl(glueLine, method, 0, hasStorageParameter(method)));
         } else {
-            throw new IllegalStateException(String.format("Method %s with glue line '%s' is not a valid method (no void return type)", method.getName(), glueLine));
+            throw new IllegalStateException(String
+                    .format("Method %s with glue line '%s' is not a valid method (no void return type)", method
+                            .getName(), glueLine));
         }
     }
 
@@ -93,35 +96,38 @@ public class ParsedDefinitionFactoryImpl implements ParsedDefinitionFactory {
      * @param durationMap
      */
     private void registerDuration(final Method method, final String glueLine, final Map<String, Duration> durationMap) throws GarethDefinitionParseException {
-        if (isValidateTimeMethod(method)) {
+        if (isTimeMethod(method)) {
             try {
                 final Object tmpDefinition = reflectionHelper.getInstanceForClass(method.getDeclaringClass());
+                //TODO parse glueline for duration
                 durationMap.put(glueLine, (Duration) method.invoke(tmpDefinition));
             } catch (final IllegalAccessException | InstantiationException | InvocationTargetException e) {
                 throw new GarethDefinitionParseException(e);
             }
         } else {
-            throw new IllegalStateException(String.format("Method %s with glue line '%s' is not a valid method (no duration return type)", method.getName(), glueLine));
+            throw new IllegalStateException(String
+                    .format("Method %s with glue line '%s' is not a valid method (no duration return type)", method
+                            .getName(), glueLine));
         }
     }
 
     private boolean isValidMethod(final Method method) {
-
         return (method.getReturnType().equals(Void.class)
-                || method.getReturnType().equals(Void.TYPE))
-                && hasValidParameters(method);
-    }
-
-    private boolean hasValidParameters(final Method method) {
-        return method.getParameterCount() == 0
-                || hasStorageParameter(method);
+                || method.getReturnType().equals(Void.TYPE));
     }
 
     private boolean hasStorageParameter(Method method) {
-        return method.getParameterCount() == 1 && method.getParameters()[0].getParameterizedType() == Storage.class;
+        return method.getParameterCount() > 0 && method.getParameters()[0].getParameterizedType() == Storage.class;
     }
 
-    private boolean isValidateTimeMethod(final Method method) {
+    private boolean isTimeMethod(final Method method) {
         return method.getReturnType().isAssignableFrom(Duration.class);
+    }
+
+    private boolean isRegexTimeMethod(final Method method) {
+        return isTimeMethod(method) &&
+                method.getParameterCount() == 2 &&
+                method.getParameterTypes()
+                      .equals(new Object[]{Integer.class, String.class});
     }
 }

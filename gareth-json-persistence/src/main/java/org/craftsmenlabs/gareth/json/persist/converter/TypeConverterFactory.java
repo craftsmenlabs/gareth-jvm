@@ -9,6 +9,7 @@ public interface TypeConverterFactory {
 
     /**
      * Get a type converter for class
+     *
      * @param clazz
      * @param <T>
      * @return
@@ -18,6 +19,7 @@ public interface TypeConverterFactory {
 
     /**
      * Add type converter class for class
+     *
      * @param clazz
      * @param typeConverterClass
      * @param <T>

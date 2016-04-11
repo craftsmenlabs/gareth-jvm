@@ -1,24 +1,20 @@
 package org.craftsmenlabs.gareth.core.context;
 
 import org.craftsmenlabs.gareth.api.context.ExperimentContext;
-import org.craftsmenlabs.gareth.api.context.ExperimentPartState;
 import org.craftsmenlabs.gareth.api.invoker.MethodDescriptor;
 import org.craftsmenlabs.gareth.api.model.AssumptionBlock;
-import org.craftsmenlabs.gareth.api.model.Experiment;
 import org.craftsmenlabs.gareth.core.invoker.MethodDescriptorImpl;
-import org.craftsmenlabs.gareth.core.storage.DefaultStorage;
 import org.junit.Before;
 import org.junit.Test;
-import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
-import java.lang.reflect.Method;
 import java.time.Duration;
-import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.Optional;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 /**
  * Created by hylke on 17/08/15.
@@ -93,7 +89,6 @@ public class ExperimentContextImplTest {
     }
 
 
-
     @Test
     public void testGetExperimentName() throws Exception {
         assertEquals("experiment name", experimentContext.getExperimentName());
@@ -150,7 +145,6 @@ public class ExperimentContextImplTest {
     }
 
 
-
     @Test
     public void testGetHash() {
         assertEquals("hash", experimentContext.getHash());
@@ -160,7 +154,6 @@ public class ExperimentContextImplTest {
     public void testHasStorageNoStorageMethods() {
         assertFalse(experimentContext.hasStorage());
     }
-
 
 
     @Test
@@ -216,12 +209,11 @@ public class ExperimentContextImplTest {
     }
 
 
-
     @Test
-    public void testBuildWithoutHash(){
+    public void testBuildWithoutHash() {
         try {
             new ExperimentContextImpl.Builder("experiment name", assumptionBlock).build(null);
-        }catch (final IllegalStateException e){
+        } catch (final IllegalStateException e) {
             assertTrue(e.getMessage().contains("ExperimentContext cannot be build without hash"));
         }
     }

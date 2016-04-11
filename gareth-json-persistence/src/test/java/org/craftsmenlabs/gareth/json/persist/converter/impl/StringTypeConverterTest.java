@@ -21,13 +21,13 @@ public class StringTypeConverterTest {
     @Test
     public void testConvertToString() throws Exception {
         final String value = stringTypeConverter.convertToString("bla");
-        assertEquals("bla",value);
+        assertEquals("bla", value);
     }
 
     @Test
     public void testConvertToObject() throws Exception {
         final String value = stringTypeConverter.convertToObject("foo");
-        assertEquals("foo",value);
+        assertEquals("foo", value);
     }
 
     @Test

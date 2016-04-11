@@ -54,7 +54,7 @@ public class IntegerTypeConverterTest {
         try {
             final Integer value = integerTypeConverter.convertToObject("fig");
             fail("Should not reach this point");
-        }catch(final NumberFormatException e){
+        } catch (final NumberFormatException e) {
 
         }
     }

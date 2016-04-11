@@ -34,7 +34,8 @@ public class DefaultTypeConverterFactory implements TypeConverterFactory {
         final Class<? extends TypeConverter> typeConverterClass = typeFactoryMap.get(clazz);
         TypeConverter typeConverter = null;
         if (typeConverterClass == null) {
-            throw new GarethUnknownTypeConverterException(String.format("Cannot find type converter for class %s", clazz));
+            throw new GarethUnknownTypeConverterException(String
+                    .format("Cannot find type converter for class %s", clazz));
         }
         try {
             typeConverter = typeConverterClass.newInstance();

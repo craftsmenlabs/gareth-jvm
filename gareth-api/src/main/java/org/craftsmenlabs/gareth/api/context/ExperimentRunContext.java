@@ -17,39 +17,39 @@ public interface ExperimentRunContext {
 
     boolean isFinished();
 
+    void setFinished(final boolean finished);
+
     LocalDateTime getBaselineRun();
-
-    LocalDateTime getAssumeRun();
-
-    LocalDateTime getSuccessRun();
-
-    LocalDateTime getFailureRun();
 
     void setBaselineRun(final LocalDateTime localDateTime);
 
+    LocalDateTime getAssumeRun();
+
     void setAssumeRun(final LocalDateTime localDateTime);
+
+    LocalDateTime getSuccessRun();
 
     void setSuccessRun(final LocalDateTime localDateTime);
 
-    void setFailureRun(final LocalDateTime localDateTime);
+    LocalDateTime getFailureRun();
 
-    void setFinished(final boolean finished);
+    void setFailureRun(final LocalDateTime localDateTime);
 
     Storage getStorage();
 
     ExperimentPartState getBaselineState();
 
-    ExperimentPartState getAssumeState();
-
-    ExperimentPartState getSuccessState();
-
-    ExperimentPartState getFailureState();
-
     void setBaselineState(final ExperimentPartState baselineState);
+
+    ExperimentPartState getAssumeState();
 
     void setAssumeState(final ExperimentPartState assumeState);
 
+    ExperimentPartState getSuccessState();
+
     void setSuccessState(final ExperimentPartState successState);
+
+    ExperimentPartState getFailureState();
 
     void setFailureState(final ExperimentPartState failureState);
 

@@ -3,6 +3,7 @@ package org.craftsmenlabs.gareth.api.annotation;
 /**
  * Created by hylke on 10/08/15.
  */
+
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;

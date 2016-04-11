@@ -6,7 +6,11 @@ import org.craftsmenlabs.gareth.api.exception.GarethUnknownExperimentException;
 import org.craftsmenlabs.gareth.api.model.Experiment;
 import org.craftsmenlabs.gareth.api.registry.ExperimentRegistry;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 
 /**
  * Created by hylke on 11/08/15.
@@ -21,7 +25,8 @@ public class ExperimentRegistryImpl implements ExperimentRegistry {
         if (!experiments.containsKey(experimentName)) {
             experiments.put(experimentName, experiment);
         } else {
-            throw new GarethAlreadyKnownExperimentException(String.format("Experiment with name '%s' already known", experimentName));
+            throw new GarethAlreadyKnownExperimentException(String
+                    .format("Experiment with name '%s' already known", experimentName));
         }
     }
 
@@ -29,7 +34,8 @@ public class ExperimentRegistryImpl implements ExperimentRegistry {
     public Experiment getExperiment(final String experimentName) {
         return Optional
                 .ofNullable(experiments.get(experimentName))
-                .orElseThrow(() -> new GarethUnknownExperimentException(String.format("Experiment '%s' unknown", experimentName)));
+                .orElseThrow(() -> new GarethUnknownExperimentException(String
+                        .format("Experiment '%s' unknown", experimentName)));
     }
 
     @Override

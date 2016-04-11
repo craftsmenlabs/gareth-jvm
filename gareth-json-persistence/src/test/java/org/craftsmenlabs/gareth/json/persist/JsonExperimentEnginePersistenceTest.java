@@ -100,8 +100,10 @@ public class JsonExperimentEnginePersistenceTest {
 
     @Test
     public void testGetExperimentStateChangeListener() throws Exception {
-        final ExperimentStateChangeListener experimentStateChangeListener1 = jsonExperimentEnginePersistence.getExperimentStateChangeListener();
-        final ExperimentStateChangeListener experimentStateChangeListener2 = jsonExperimentEnginePersistence.getExperimentStateChangeListener();
+        final ExperimentStateChangeListener experimentStateChangeListener1 = jsonExperimentEnginePersistence
+                .getExperimentStateChangeListener();
+        final ExperimentStateChangeListener experimentStateChangeListener2 = jsonExperimentEnginePersistence
+                .getExperimentStateChangeListener();
         assertSame(experimentStateChangeListener1, experimentStateChangeListener2);
     }
 

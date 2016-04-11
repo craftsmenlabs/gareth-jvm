@@ -3,7 +3,11 @@ package org.craftsmenlabs.gareth.core;
 import org.craftsmenlabs.gareth.api.ExperimentEngineConfig;
 
 import java.io.InputStream;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 /**
  * Created by hylke on 11/08/15.
@@ -55,11 +59,9 @@ public class ExperimentEngineConfigImpl implements ExperimentEngineConfig {
      */
     public static class Builder {
 
-        private boolean ignoreInvalidDefinitions, ignoreInvalidExperiments, ignoreInvocationExceptions;
-
         private final Set<Class> definitionClasses = new HashSet<>();
-
         private final List<InputStream> inputStreams = new ArrayList<>();
+        private boolean ignoreInvalidDefinitions, ignoreInvalidExperiments, ignoreInvocationExceptions;
 
         public Builder addInputStreams(final InputStream inputStream) {
             this.inputStreams.add(inputStream);

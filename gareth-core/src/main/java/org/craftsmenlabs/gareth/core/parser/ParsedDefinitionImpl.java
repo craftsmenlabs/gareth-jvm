@@ -4,7 +4,6 @@ import lombok.Getter;
 import org.craftsmenlabs.gareth.api.definition.ParsedDefinition;
 import org.craftsmenlabs.gareth.api.invoker.MethodDescriptor;
 
-import java.lang.reflect.Method;
 import java.time.Duration;
 import java.util.HashMap;
 import java.util.Map;
@@ -20,7 +19,6 @@ public class ParsedDefinitionImpl implements ParsedDefinition {
     private final Map<String, MethodDescriptor> successDefinitions = new HashMap<>();
     private final Map<String, MethodDescriptor> failureDefinitions = new HashMap<>();
     private final Map<String, Duration> timeDefinitions = new HashMap<>();
-
 
 
 }

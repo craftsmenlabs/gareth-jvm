@@ -14,7 +14,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.time.Duration;
-import java.util.*;
+import java.util.Calendar;
+import java.util.GregorianCalendar;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Random;
 
 /**
  * Created by hylke on 17/08/15.
@@ -49,7 +53,8 @@ public class DefaultAssumeScheduler implements AssumeScheduler {
             jobParams.put("observer", observer);
             jobParams.put("experimentEngine", experimentEngine);
 
-            final String jobName = experimentContext.getExperimentContext().getExperimentName() + "-" + new Random().nextInt();
+            final String jobName = experimentContext.getExperimentContext().getExperimentName() + "-" + new Random()
+                    .nextInt();
             final String triggerName = jobName + "-trigger";
 
             SundialJobScheduler.addJob(jobName, DefaultInvocationJob.class.getName(), jobParams, false);
@@ -69,13 +74,10 @@ public class DefaultAssumeScheduler implements AssumeScheduler {
     }
 
     public static class Builder {
-        private ReflectionHelper reflectionHelper = new ReflectionHelper();
-
-        private MethodInvoker methodInvoker = new MethodInvokerImpl(reflectionHelper);
-
-        private boolean ignoreInvocationExceptions;
-
         private final org.craftsmenlabs.gareth.api.observer.Observer observer;
+        private ReflectionHelper reflectionHelper = new ReflectionHelper();
+        private MethodInvoker methodInvoker = new MethodInvokerImpl(reflectionHelper);
+        private boolean ignoreInvocationExceptions;
 
         public Builder(final org.craftsmenlabs.gareth.api.observer.Observer observer) {
             this.observer = observer;

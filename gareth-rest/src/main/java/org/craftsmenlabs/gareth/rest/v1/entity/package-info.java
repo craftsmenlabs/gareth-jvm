@@ -4,7 +4,8 @@
 @XmlJavaTypeAdapters({
         @XmlJavaTypeAdapter(type = LocalDateTime.class,
                 value = LocalDateTimeAdapter.class)
-}) package org.craftsmenlabs.gareth.rest.v1.entity;
+})
+package org.craftsmenlabs.gareth.rest.v1.entity;
 
 import org.craftsmenlabs.gareth.rest.adapter.LocalDateTimeAdapter;
 

@@ -19,7 +19,7 @@ public class GarethUnknownTypeConverterExceptionTest {
     }
 
     @Test
-    public void testGetMessage(){
+    public void testGetMessage() {
         assertTrue(garethUnknownTypeConverterException.getMessage().contains("With message"));
     }
 }

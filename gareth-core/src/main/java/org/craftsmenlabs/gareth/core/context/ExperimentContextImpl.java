@@ -1,18 +1,12 @@
 package org.craftsmenlabs.gareth.core.context;
 
-import lombok.EqualsAndHashCode;
 import lombok.Getter;
-import lombok.Setter;
 import org.craftsmenlabs.gareth.api.context.ExperimentContext;
-import org.craftsmenlabs.gareth.api.context.ExperimentPartState;
 import org.craftsmenlabs.gareth.api.invoker.MethodDescriptor;
 import org.craftsmenlabs.gareth.api.model.AssumptionBlock;
-import org.craftsmenlabs.gareth.api.storage.Storage;
 
 import javax.xml.bind.annotation.XmlRootElement;
-import java.lang.reflect.Method;
 import java.time.Duration;
-import java.time.LocalDateTime;
 import java.util.Optional;
 
 /**

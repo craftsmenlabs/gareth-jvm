@@ -2,7 +2,11 @@ package org.craftsmenlabs.gareth.core;
 
 import org.craftsmenlabs.gareth.api.ExperimentEngine;
 import org.craftsmenlabs.gareth.api.ExperimentEngineConfig;
-import org.craftsmenlabs.gareth.api.annotation.*;
+import org.craftsmenlabs.gareth.api.annotation.Assume;
+import org.craftsmenlabs.gareth.api.annotation.Baseline;
+import org.craftsmenlabs.gareth.api.annotation.Failure;
+import org.craftsmenlabs.gareth.api.annotation.Success;
+import org.craftsmenlabs.gareth.api.annotation.Time;
 import org.craftsmenlabs.gareth.api.context.ExperimentContext;
 import org.craftsmenlabs.gareth.api.context.ExperimentPartState;
 import org.craftsmenlabs.gareth.api.context.ExperimentRunContext;
@@ -15,7 +19,10 @@ import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -26,10 +33,8 @@ import static org.mockito.Mockito.when;
  */
 public class ExperimentEngineImplIT {
 
-    private ExperimentEngine experimentEngine;
-
     private final static List<String> logItems = new ArrayList<>(); // Static because new instance is generated
-
+    private ExperimentEngine experimentEngine;
 
     @Before
     public void before() {
@@ -74,7 +79,8 @@ public class ExperimentEngineImplIT {
         final ExperimentRunContext mockExperimentRunContext = mock(ExperimentRunContext.class);
         final ExperimentContext mockExperimentContext = mock(ExperimentContext.class);
         when(mockExperimentContext.isValid()).thenReturn(true);
-        when(mockExperimentRunContext.getHash()).thenReturn("32f5328bb4dada228b7a8a24db729e01cb88425a32cd2f9cfab0ae8953487cda");
+        when(mockExperimentRunContext.getHash())
+                .thenReturn("32f5328bb4dada228b7a8a24db729e01cb88425a32cd2f9cfab0ae8953487cda");
         when(mockExperimentRunContext.getBaselineState()).thenReturn(ExperimentPartState.FINISHED);
         when(mockExperimentRunContext.getExperimentContext()).thenReturn(mockExperimentContext);
 

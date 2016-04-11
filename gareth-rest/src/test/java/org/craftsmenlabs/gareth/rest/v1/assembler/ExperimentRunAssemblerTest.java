@@ -8,7 +8,11 @@ import org.junit.Test;
 
 import java.time.LocalDateTime;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -43,12 +47,12 @@ public class ExperimentRunAssemblerTest {
         assertEquals(ExperimentPartState.OPEN.getName(), experimentRun.getBaselineState());
         assertEquals(ExperimentPartState.FINISHED.getName(), experimentRun.getAssumeState());
         assertEquals(ExperimentPartState.NON_EXISTENT.getName(), experimentRun.getSuccessState());
-        assertEquals(ExperimentPartState.RUNNING.getName(),experimentRun.getFailureState());
+        assertEquals(ExperimentPartState.RUNNING.getName(), experimentRun.getFailureState());
 
-        assertEquals(now,experimentRun.getBaselineExecution());
-        assertEquals(now,experimentRun.getAssumeExecution());
-        assertEquals(now,experimentRun.getSuccessExecution());
-        assertEquals(now,experimentRun.getFailureExecution());
+        assertEquals(now, experimentRun.getBaselineExecution());
+        assertEquals(now, experimentRun.getAssumeExecution());
+        assertEquals(now, experimentRun.getSuccessExecution());
+        assertEquals(now, experimentRun.getFailureExecution());
     }
 
 

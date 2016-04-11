@@ -2,7 +2,6 @@ package org.craftsmenlabs.gareth.api.definition;
 
 import org.craftsmenlabs.gareth.api.invoker.MethodDescriptor;
 
-import java.lang.reflect.Method;
 import java.time.Duration;
 import java.util.Map;
 
@@ -20,6 +19,7 @@ public interface ParsedDefinition {
 
     /**
      * Get assumption definitions
+     *
      * @return
      */
     Map<String, MethodDescriptor> getAssumeDefinitions();

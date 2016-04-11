@@ -28,7 +28,8 @@ public class JsonExperimentChangeListenerTest {
     @Before
     public void setUp() throws Exception {
         MockitoAnnotations.initMocks(this);
-        jsonExperimentChangeListener = new JsonExperimentChangeListener.Builder(mockJsonExperimentEnginePersistence).build();
+        jsonExperimentChangeListener = new JsonExperimentChangeListener.Builder(mockJsonExperimentEnginePersistence)
+                .build();
 
     }
 

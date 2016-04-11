@@ -40,7 +40,8 @@ public class DefaultTypeConverterFactoryTest {
     @Test
     public void testCreateUnknownTypeConvertForArgumentConstructorClass() {
         try {
-            defaultTypeConverterFactory.addTypeFactoryForClass(VerifyError.class, ArgumentConstructorTypeConverter.class);
+            defaultTypeConverterFactory
+                    .addTypeFactoryForClass(VerifyError.class, ArgumentConstructorTypeConverter.class);
             defaultTypeConverterFactory.createTypeConverter(VerifyError.class);
             fail("Should not reach this point");
         } catch (final GarethUnknownTypeConverterException e) {

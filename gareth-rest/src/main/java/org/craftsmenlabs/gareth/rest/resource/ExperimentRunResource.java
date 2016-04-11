@@ -33,7 +33,8 @@ public class ExperimentRunResource {
     public Response get(final @PathParam("hash") String hash) {
         return Response
                 .status(200)
-                .entity(new GenericEntity<List<ExperimentRun>>(assembleExperiments(experimentEngine.findExperimentRunContextsForHash(hash))) {
+                .entity(new GenericEntity<List<ExperimentRun>>(assembleExperiments(experimentEngine
+                        .findExperimentRunContextsForHash(hash))) {
                 })
                 .build();
     }

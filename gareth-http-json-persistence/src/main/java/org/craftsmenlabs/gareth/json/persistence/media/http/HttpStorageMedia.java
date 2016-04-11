@@ -21,9 +21,8 @@ import java.util.List;
  */
 public class HttpStorageMedia extends AbstractStorageMedia implements StorageMedia {
 
-    private final String persistUrl, restoreUrl;
-
     private static final Header HEADER_CONTENT_TYPE = new BasicHeader("Content-Type", "application/json");
+    private final String persistUrl, restoreUrl;
 
     private HttpStorageMedia(final Builder builder) {
         this.persistUrl = builder.persistUrl;
@@ -35,7 +34,8 @@ public class HttpStorageMedia extends AbstractStorageMedia implements StorageMed
         try {
             final StringWriter outputWriter = new StringWriter();
             getObjectMapper().writeValue(outputWriter, jsonExperimentContextDataList);
-            final Response response = Request.Post(persistUrl).addHeader(HEADER_CONTENT_TYPE).bodyByteArray(outputWriter.toString().getBytes()).execute();
+            final Response response = Request.Post(persistUrl).addHeader(HEADER_CONTENT_TYPE)
+                                             .bodyByteArray(outputWriter.toString().getBytes()).execute();
             final int statusCode = response.returnResponse().getStatusLine().getStatusCode();
             if (!isOkStatusCode(statusCode)) {
                 throw new GarethStateWriteException("Not a OK status code received");
@@ -55,8 +55,9 @@ public class HttpStorageMedia extends AbstractStorageMedia implements StorageMed
         try {
             final HttpResponse response = Request.Get(restoreUrl).execute().returnResponse();
             final int statusCode = response.getStatusLine().getStatusCode();
-            data = getObjectMapper().readValue(response.getEntity().getContent(), new TypeReference<List<JsonExperimentContextData>>() {
-            });
+            data = getObjectMapper()
+                    .readValue(response.getEntity().getContent(), new TypeReference<List<JsonExperimentContextData>>() {
+                    });
             if (!isOkStatusCode(statusCode)) {
                 throw new GarethStateReadException("Not a OK status code received");
             }

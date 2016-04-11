@@ -1,17 +1,14 @@
 package org.craftsmenlabs.gareth.core.persist.listener;
 
 import org.craftsmenlabs.gareth.api.ExperimentEngine;
-import org.craftsmenlabs.gareth.api.exception.GarethStateWriteException;
 import org.craftsmenlabs.gareth.core.persist.FileSystemExperimentEnginePersistence;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
-import static org.junit.Assert.*;
-import static org.mockito.Matchers.any;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
 
 /**
  * Created by hylke on 26/10/15.
@@ -29,7 +26,8 @@ public class FileSystemExperimentChangeListenerTest {
     @Before
     public void setUp() throws Exception {
         MockitoAnnotations.initMocks(this);
-        fileSystemExperimentChangeListener = new FileSystemExperimentChangeListener.Builder(mockFileSystemExperimentEnginePersistence).build();
+        fileSystemExperimentChangeListener = new FileSystemExperimentChangeListener.Builder(mockFileSystemExperimentEnginePersistence)
+                .build();
     }
 
     @Test

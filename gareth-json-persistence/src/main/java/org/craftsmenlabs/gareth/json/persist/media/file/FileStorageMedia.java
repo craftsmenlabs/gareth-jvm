@@ -32,7 +32,7 @@ public class FileStorageMedia extends AbstractStorageMedia implements StorageMed
     }
 
     @Override
-    public void persist(final List<JsonExperimentContextData> jsonExperimentContextDataList) throws GarethStateWriteException{
+    public void persist(final List<JsonExperimentContextData> jsonExperimentContextDataList) throws GarethStateWriteException {
         final ObjectMapper objectMapper = getObjectMapper();
 
         FileOutputStream fos = null;
@@ -56,8 +56,9 @@ public class FileStorageMedia extends AbstractStorageMedia implements StorageMed
         FileInputStream fis = null;
         try {
             fis = new FileInputStream(stateFile);
-            jsonExperimentContextDataList = getObjectMapper().readValue(fis, new TypeReference<List<JsonExperimentContextData>>() {
-            });
+            jsonExperimentContextDataList = getObjectMapper()
+                    .readValue(fis, new TypeReference<List<JsonExperimentContextData>>() {
+                    });
         } catch (final FileNotFoundException e) {
             LOG.error("File cannot be found", e);
             throw new GarethStateReadException(e);

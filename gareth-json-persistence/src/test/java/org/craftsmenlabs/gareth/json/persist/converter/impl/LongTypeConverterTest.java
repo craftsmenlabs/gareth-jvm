@@ -54,7 +54,7 @@ public class LongTypeConverterTest {
         try {
             final Long value = longTypeConverter.convertToObject("fig");
             fail("Should not reach this point");
-        }catch(final NumberFormatException e){
+        } catch (final NumberFormatException e) {
 
         }
     }

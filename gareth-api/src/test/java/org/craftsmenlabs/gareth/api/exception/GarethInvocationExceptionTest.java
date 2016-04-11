@@ -3,7 +3,7 @@ package org.craftsmenlabs.gareth.api.exception;
 import org.junit.Before;
 import org.junit.Test;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 /**
  * Created by hylke on 18/09/15.
@@ -11,9 +11,8 @@ import static org.junit.Assert.*;
 public class GarethInvocationExceptionTest {
 
 
-    private GarethInvocationException garethInvocationException;
-
     private final Exception illegalArgumentException = new IllegalArgumentException();
+    private GarethInvocationException garethInvocationException;
 
     @Before
     public void setUp() throws Exception {

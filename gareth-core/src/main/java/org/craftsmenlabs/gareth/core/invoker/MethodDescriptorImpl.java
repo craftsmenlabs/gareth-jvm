@@ -1,13 +1,12 @@
 package org.craftsmenlabs.gareth.core.invoker;
 
 import org.craftsmenlabs.gareth.api.invoker.MethodDescriptor;
-import org.craftsmenlabs.gareth.api.invoker.MethodInvoker;
+import org.craftsmenlabs.gareth.api.storage.Storage;
 
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
-/**
- * Created by hylke on 21/08/15.
- */
+
 public class MethodDescriptorImpl implements MethodDescriptor {
 
     private final Method method;
@@ -33,5 +32,17 @@ public class MethodDescriptorImpl implements MethodDescriptor {
     @Override
     public int getStorageIndex() {
         return this.storageParameterIndex;
+    }
+
+    public void invokeWith(String glueLineInExperiment, Object declaringClassInstance, Storage storage) throws InvocationTargetException, IllegalAccessException {
+        if (hasStorage()) {
+            getMethod().invoke(declaringClassInstance, storage);
+        } else {
+            getMethod().invoke(declaringClassInstance);
+        }
+    }
+
+    public String getPattern() {
+        return null;
     }
 }

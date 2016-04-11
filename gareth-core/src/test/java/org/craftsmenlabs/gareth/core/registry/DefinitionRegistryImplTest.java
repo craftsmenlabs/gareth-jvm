@@ -11,20 +11,19 @@ import org.mockito.MockitoAnnotations;
 import java.lang.reflect.Method;
 import java.time.Duration;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 /**
  * Created by hylke on 11/08/15.
  */
 public class DefinitionRegistryImplTest {
 
-    private DefinitionRegistryImpl definitionRegistry;
-
     Method mockMethod;
-
     MethodDescriptor mockMethodDescriptor;
-
     Duration duration;
+    private DefinitionRegistryImpl definitionRegistry;
 
     @Before
     public void setUp() throws Exception {

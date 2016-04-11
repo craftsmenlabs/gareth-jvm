@@ -14,11 +14,20 @@ import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
-import java.io.*;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.ObjectInputStream;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertSame;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -51,7 +60,8 @@ public class FileSystemExperimentEnginePersistenceTest {
         when(mockExperimentEngine.getExperimentRunContexts()).thenReturn(experimentRunContextList);
         when(mockExperimentEngine.findExperimentContextForHash("hash")).thenReturn(mockExperimentContext);
         tmpFile = File.createTempFile("gareth", ".state");
-        fileSystemExperimentEnginePersistence = new FileSystemExperimentEnginePersistence.Builder().setStateFile(tmpFile).build();
+        fileSystemExperimentEnginePersistence = new FileSystemExperimentEnginePersistence.Builder()
+                .setStateFile(tmpFile).build();
     }
 
     private List<ExperimentContext> getExperimentContexts() {
@@ -92,7 +102,8 @@ public class FileSystemExperimentEnginePersistenceTest {
     public void testPersistWithDefaultStateFile() throws Exception {
         fileSystemExperimentEnginePersistence = new FileSystemExperimentEnginePersistence.Builder().build();
         fileSystemExperimentEnginePersistence.persist(mockExperimentEngine);
-        final List<ExperimentContextData> experimentContextDataList = readContextFromTmpFile(new File(System.getProperty("java.io.tmpdir"), "gareth.state"));
+        final List<ExperimentContextData> experimentContextDataList = readContextFromTmpFile(new File(System
+                .getProperty("java.io.tmpdir"), "gareth.state"));
         assertNotNull(experimentContextDataList);
         assertEquals(1, experimentContextDataList.size());
     }
@@ -124,8 +135,10 @@ public class FileSystemExperimentEnginePersistenceTest {
 
     @Test
     public void testGetExperimentStateChangeListener() {
-        final ExperimentStateChangeListener experimentStateChangeListener1 = fileSystemExperimentEnginePersistence.getExperimentStateChangeListener();
-        final ExperimentStateChangeListener experimentStateChangeListener2 = fileSystemExperimentEnginePersistence.getExperimentStateChangeListener();
+        final ExperimentStateChangeListener experimentStateChangeListener1 = fileSystemExperimentEnginePersistence
+                .getExperimentStateChangeListener();
+        final ExperimentStateChangeListener experimentStateChangeListener2 = fileSystemExperimentEnginePersistence
+                .getExperimentStateChangeListener();
         assertNotNull(experimentStateChangeListener1);
         assertNotNull(experimentStateChangeListener2);
         assertSame(experimentStateChangeListener1, experimentStateChangeListener2);
@@ -156,7 +169,8 @@ public class FileSystemExperimentEnginePersistenceTest {
     @Test
     public void testRestoreNonExistingFile() throws Exception {
         try {
-            fileSystemExperimentEnginePersistence = new FileSystemExperimentEnginePersistence.Builder().setStateFile(new File("/not/present/file")).build();
+            fileSystemExperimentEnginePersistence = new FileSystemExperimentEnginePersistence.Builder()
+                    .setStateFile(new File("/not/present/file")).build();
             fileSystemExperimentEnginePersistence.restore(mockExperimentEngine);
             fail("Should not read this point");
         } catch (final IllegalStateException e) {

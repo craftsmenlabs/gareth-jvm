@@ -135,7 +135,8 @@ public class HttpStorageMediaTest {
 
     private void preparePersistWithStatusCode(final int statusCode) throws URISyntaxException {
         buildHttpStorageMedia(persistURIBuilder.setPath("/persist").build().toString(), null);
-        mockServer.when(HttpRequest.request().withMethod("POST").withPath("/persist")).respond(HttpResponse.response().withStatusCode(statusCode));
+        mockServer.when(HttpRequest.request().withMethod("POST").withPath("/persist"))
+                  .respond(HttpResponse.response().withStatusCode(statusCode));
     }
 
     private void prepareRestoreWithStatusCode(final int statusCode) throws URISyntaxException {
@@ -144,6 +145,7 @@ public class HttpStorageMediaTest {
 
     private void prepareRestoreWithStatusCode(final int statusCode, final String body) throws URISyntaxException {
         buildHttpStorageMedia(null, restoreURIBuilder.setPath("/restore").build().toString());
-        mockServer.when(HttpRequest.request().withMethod("GET").withPath("/restore")).respond(HttpResponse.response().withStatusCode(statusCode).withBody(body));
+        mockServer.when(HttpRequest.request().withMethod("GET").withPath("/restore"))
+                  .respond(HttpResponse.response().withStatusCode(statusCode).withBody(body));
     }
 }

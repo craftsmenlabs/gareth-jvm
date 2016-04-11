@@ -4,7 +4,6 @@ import org.craftsmenlabs.gareth.api.ExperimentEngine;
 import org.craftsmenlabs.gareth.api.rest.RestService;
 import org.glassfish.grizzly.http.server.HttpServer;
 import org.glassfish.jersey.grizzly2.httpserver.GrizzlyHttpServerFactory;
-import org.glassfish.jersey.server.ResourceConfig;
 
 import javax.ws.rs.core.UriBuilder;
 import java.net.URI;
@@ -30,7 +29,8 @@ public class RestServiceImpl implements RestService {
     @Override
     public void start() throws Exception {
         final URI baseUri = UriBuilder.fromUri(uri).port(portNumber).build();
-        final HttpServer server = GrizzlyHttpServerFactory.createHttpServer(baseUri, new GarethApplication(experimentEngine));
+        final HttpServer server = GrizzlyHttpServerFactory
+                .createHttpServer(baseUri, new GarethApplication(experimentEngine));
         server.start();
     }
 

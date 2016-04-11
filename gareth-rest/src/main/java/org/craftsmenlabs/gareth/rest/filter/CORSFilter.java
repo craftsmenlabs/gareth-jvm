@@ -17,7 +17,7 @@ import java.io.IOException;
 public class CORSFilter implements ContainerResponseFilter {
 
     @Override
-    public void filter(final ContainerRequestContext requestContext,final ContainerResponseContext responseContext) throws IOException {
+    public void filter(final ContainerRequestContext requestContext, final ContainerResponseContext responseContext) throws IOException {
         final int ACCESS_CONTROL_MAX_AGE_IN_SECONDS = 12 * 60 * 60;
         final MultivaluedMap<String, Object> headers = responseContext.getHeaders();
 

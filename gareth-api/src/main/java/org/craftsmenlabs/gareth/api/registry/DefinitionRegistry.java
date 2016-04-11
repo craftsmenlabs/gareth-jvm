@@ -2,7 +2,6 @@ package org.craftsmenlabs.gareth.api.registry;
 
 import org.craftsmenlabs.gareth.api.invoker.MethodDescriptor;
 
-import java.lang.reflect.Method;
 import java.time.Duration;
 
 /**
@@ -12,6 +11,7 @@ public interface DefinitionRegistry {
 
     /**
      * Get method for baseline
+     *
      * @param glueLine
      * @return
      */
@@ -19,6 +19,7 @@ public interface DefinitionRegistry {
 
     /**
      * Get method assume
+     *
      * @param glueLine
      * @return
      */
@@ -26,6 +27,7 @@ public interface DefinitionRegistry {
 
     /**
      * Get method for success
+     *
      * @param glueLine
      * @return
      */
@@ -34,6 +36,7 @@ public interface DefinitionRegistry {
 
     /**
      * Get method for failure
+     *
      * @param glueLine
      * @return
      */
@@ -49,6 +52,7 @@ public interface DefinitionRegistry {
 
     /**
      * Add method for baseline
+     *
      * @param glueLine
      * @param methodDescriptor
      */
@@ -56,6 +60,7 @@ public interface DefinitionRegistry {
 
     /**
      * Add method for assume
+     *
      * @param glueLine
      * @param methodDescriptor
      */
@@ -63,6 +68,7 @@ public interface DefinitionRegistry {
 
     /**
      * Add method for success
+     *
      * @param glueLine
      * @param methodDescriptor
      */
@@ -70,6 +76,7 @@ public interface DefinitionRegistry {
 
     /**
      * Add method for failure
+     *
      * @param glueLine
      * @param methodDescriptor
      */
@@ -77,6 +84,7 @@ public interface DefinitionRegistry {
 
     /**
      * Add duration for time
+     *
      * @param glueLine
      * @param duration
      */

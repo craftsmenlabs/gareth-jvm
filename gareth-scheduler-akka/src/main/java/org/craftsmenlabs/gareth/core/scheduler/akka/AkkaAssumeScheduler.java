@@ -46,7 +46,8 @@ public class AkkaAssumeScheduler implements AssumeScheduler {
         final ExperimentContext experimentContext = experimentRunContext.getExperimentContext();
         final Duration time = experimentContext.getTime();
         try {
-            actorSystem.scheduler().scheduleOnce(scala.concurrent.duration.Duration.create(time.toMillis(), TimeUnit.MILLISECONDS), () -> {
+            actorSystem.scheduler().scheduleOnce(scala.concurrent.duration.Duration
+                    .create(time.toMillis(), TimeUnit.MILLISECONDS), () -> {
                 try {
                     logger.debug("Invoking assumption");
                     methodInvoker.invoke(experimentContext.getAssume());

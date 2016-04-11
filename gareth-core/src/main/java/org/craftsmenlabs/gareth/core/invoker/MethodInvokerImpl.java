@@ -5,16 +5,11 @@ import org.craftsmenlabs.gareth.api.invoker.MethodDescriptor;
 import org.craftsmenlabs.gareth.api.invoker.MethodInvoker;
 import org.craftsmenlabs.gareth.api.storage.Storage;
 import org.craftsmenlabs.gareth.core.reflection.ReflectionHelper;
-import org.craftsmenlabs.gareth.core.storage.DefaultStorage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 
-/**
- * Created by hylke on 13/08/15.
- */
 public class MethodInvokerImpl implements MethodInvoker {
 
     private static final Logger logger = LoggerFactory.getLogger(MethodInvokerImpl.class);
@@ -26,21 +21,26 @@ public class MethodInvokerImpl implements MethodInvoker {
         this.reflectionHelper = reflectionHelper;
     }
 
-    @Override
-    public void invoke(final MethodDescriptor methodDescriptor) throws GarethInvocationException {
-        invoke(methodDescriptor, null);
+    public void invoke(MethodDescriptor methodDescriptor) throws GarethInvocationException {
+        invoke(null, methodDescriptor);
+    }
+
+    public void invoke(MethodDescriptor methodDescriptor, Storage storage) {
+        invoke(null, methodDescriptor, storage);
     }
 
     @Override
-    public void invoke(final MethodDescriptor methodDescriptor, final Storage storage) throws GarethInvocationException {
+    public void invoke(final String glueLineInExperiment, final MethodDescriptor methodDescriptor) throws GarethInvocationException {
+        invoke(glueLineInExperiment, methodDescriptor, null);
+    }
+
+    @Override
+    public void invoke(final String glueLineInExperiment, final MethodDescriptor methodDescriptor, final Storage storage) throws GarethInvocationException {
         try {
             logger.trace("Invoking method %s", methodDescriptor.getMethod().getName());
-            final Object declaringClassInstance = reflectionHelper.getInstanceForClass(methodDescriptor.getMethod().getDeclaringClass());
-            if (methodDescriptor.hasStorage()) {
-                methodDescriptor.getMethod().invoke(declaringClassInstance, storage);
-            } else {
-                methodDescriptor.getMethod().invoke(declaringClassInstance);
-            }
+            final Object declaringClassInstance = reflectionHelper
+                    .getInstanceForClass(methodDescriptor.getMethod().getDeclaringClass());
+            methodDescriptor.invokeWith(glueLineInExperiment, declaringClassInstance, storage);
         } catch (final IllegalAccessException | InvocationTargetException | InstantiationException e) {
             throw new GarethInvocationException(e);
         }

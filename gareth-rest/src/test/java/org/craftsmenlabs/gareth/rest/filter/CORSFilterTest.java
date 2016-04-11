@@ -9,7 +9,7 @@ import org.mockito.MockitoAnnotations;
 
 import javax.ws.rs.core.MultivaluedHashMap;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.when;
 
 /**

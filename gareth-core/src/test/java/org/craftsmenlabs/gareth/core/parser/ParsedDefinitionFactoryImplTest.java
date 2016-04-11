@@ -1,8 +1,11 @@
 package org.craftsmenlabs.gareth.core.parser;
 
-import org.craftsmenlabs.gareth.api.annotation.*;
+import org.craftsmenlabs.gareth.api.annotation.Assume;
+import org.craftsmenlabs.gareth.api.annotation.Baseline;
+import org.craftsmenlabs.gareth.api.annotation.Failure;
+import org.craftsmenlabs.gareth.api.annotation.Success;
+import org.craftsmenlabs.gareth.api.annotation.Time;
 import org.craftsmenlabs.gareth.api.definition.ParsedDefinition;
-import org.craftsmenlabs.gareth.api.exception.GarethDefinitionParseException;
 import org.craftsmenlabs.gareth.api.invoker.MethodDescriptor;
 import org.craftsmenlabs.gareth.api.storage.Storage;
 import org.craftsmenlabs.gareth.core.reflection.ReflectionHelper;
@@ -11,13 +14,13 @@ import org.junit.Test;
 
 import java.time.Duration;
 
-import static org.junit.Assert.*;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
-/**
- * Created by hylke on 10/08/15.
- */
 public class ParsedDefinitionFactoryImplTest {
-
 
     private ParsedDefinitionFactoryImpl parsedParsedDefinitionFactory;
 
@@ -30,44 +33,20 @@ public class ParsedDefinitionFactoryImplTest {
 
     @Test
     public void testParseWithNullClassArgument() throws Exception {
-        try {
-            parsedParsedDefinitionFactory.parse(null);
-            fail("Should not reach this point");
-        } catch (final IllegalArgumentException e) {
-            assertEquals(e.getMessage(), "Class cannot be null");
-        }
+        assertThatThrownBy(() -> parsedParsedDefinitionFactory.parse(null)).hasMessage("Class cannot be null");
     }
 
     @Test
     public void testParseTimeWithIncorrectReturnType() throws Exception {
-        try {
-            parsedParsedDefinitionFactory.parse(TimeIncorrectReturnTypeDefinition.class);
-            fail("Should not reach this point");
-        } catch (final IllegalStateException e) {
-            assertTrue(e.getMessage().contains("Method timeDefinition with glue line 'Time glueline' is not a valid method (no duration return type)"));
-        }
-    }
-
-    @Test
-    public void testParseTimeWithIncorrectMethodArguments() throws Exception {
-        try {
-            parsedParsedDefinitionFactory.parse(WithIncorrectMethodArgumentCount.class);
-            fail("Should not reach this point");
-        } catch (final IllegalStateException e) {
-            assertTrue(e.getMessage().contains("Method baselineDefinition with glue line 'Baseline glueline' is not a valid method (no void return type)"));
-        }
+        assertThatThrownBy(() -> parsedParsedDefinitionFactory.parse(TimeIncorrectReturnTypeDefinition.class))
+                .hasMessage("Method timeDefinition with glue line 'Time glueline' is not a valid method (no duration return type)");
     }
 
     @Test
     public void testParseTimeWithIncorrectConstructor() throws Exception {
-        try {
-            parsedParsedDefinitionFactory.parse(TimeIncorrectConstructorDefinition.class);
-            fail("Should not reach this point");
-        } catch (final GarethDefinitionParseException e) {
-            assertTrue(e.getMessage().contains("TimeIncorrectConstructorDefinition has no zero argument argument constructor"));
-        }
+        assertThatThrownBy(() -> parsedParsedDefinitionFactory.parse(TimeIncorrectConstructorDefinition.class))
+                .hasMessageContaining("TimeIncorrectConstructorDefinition has no zero argument argument constructor");
     }
-
 
     @Test
     public void testParseClassWithoutDefinitions() throws Exception {
@@ -79,7 +58,6 @@ public class ParsedDefinitionFactoryImplTest {
         assertTrue(parsedDefinition.getTimeDefinitions().isEmpty());
         assertTrue(parsedDefinition.getFailureDefinitions().isEmpty());
         assertTrue(parsedDefinition.getSuccessDefinitions().isEmpty());
-
 
     }
 
@@ -157,6 +135,14 @@ public class ParsedDefinitionFactoryImplTest {
     }
 
     @Test
+    public void testParseClassWithRegexTime() throws Exception {
+        final ParsedDefinition parsedDefinition = parsedParsedDefinitionFactory.parse(RegexTimeDefinition.class);
+        assertNotNull(parsedDefinition);
+        assertEquals(1, parsedDefinition.getTimeDefinitions().size());
+        assertTrue(parsedDefinition.getTimeDefinitions().containsKey("(\\d+?) ?(\\w*?)"));
+    }
+
+    @Test
     public void testParseClassWithBaselineAndStorage() throws Exception {
         final ParsedDefinition parsedDefinition = parsedParsedDefinitionFactory.parse(WithStorageParameter.class);
         assertNotNull(parsedDefinition);
@@ -171,13 +157,9 @@ public class ParsedDefinitionFactoryImplTest {
     }
 
     @Test
-    public void testParseClassWithIncorrectReturnType() throws Exception {
-        try {
-            parsedParsedDefinitionFactory.parse(WithIncorrectReturnType.class);
-            fail("should not reach this point");
-        } catch (final IllegalStateException e) {
-            assertTrue(e.getMessage().contains("Method baselineDefinition with glue line 'Baseline glueline' is not a valid method (no void return type)"));
-        }
+    public void testParseClassWithIncorrectReturnType() {
+        assertThatThrownBy(() -> parsedParsedDefinitionFactory.parse(WithIncorrectReturnType.class))
+                .hasMessage("Method baselineDefinition with glue line 'Baseline glueline' is not a valid method (no void return type)");
     }
 
     // classes for testing
@@ -224,6 +206,17 @@ public class ParsedDefinitionFactoryImplTest {
         }
     }
 
+    class RegexTimeDefinition {
+
+        public RegexTimeDefinition() {
+        }
+
+        @Time(glueLine = "(\\d+?) ?(\\w*?)")
+        public Duration timeDefinition(int amount, String unit) {
+            return null;
+        }
+    }
+
     class TimeIncorrectConstructorDefinition {
         public TimeIncorrectConstructorDefinition(final String message) {
 
@@ -251,13 +244,6 @@ public class ParsedDefinitionFactoryImplTest {
         }
     }
 
-    class WithIncorrectMethodArgumentCount {
-        @Baseline(glueLine = "Baseline glueline")
-        public Object baselineDefinition(final String invalidCount) {
-            return null;
-        }
-    }
-
     class WithStorageParameter {
 
         @Baseline(glueLine = "Baseline glueline with storage")
@@ -265,5 +251,4 @@ public class ParsedDefinitionFactoryImplTest {
 
         }
     }
-
 }

@@ -15,12 +15,14 @@ public class ExampleApplication {
 
 
     public static void main(final String[] args) {
-        final ExperimentEnginePersistence experimentEnginePersistence = new FileSystemExperimentEnginePersistence.Builder().build();
+        final ExperimentEnginePersistence experimentEnginePersistence = new FileSystemExperimentEnginePersistence.Builder()
+                .build();
         final ExperimentEngineConfig experimentEngineConfig = new ExperimentEngineConfigImpl
                 .Builder()
                 .addDefinitionClass(SampleDefinition.class)
-                .addInputStreams(ExampleApplication.class.getClass().getResourceAsStream("/experiments/businessgoal-01.experiment"))
-                .setIgnoreInvocationExceptions(true)
+                .addInputStreams(ExampleApplication.class.getClass()
+                                                         .getResourceAsStream("/experiments/businessgoal-01.experiment"))
+                .setIgnoreInvocationExceptions(false)
                 .build();
         final ExperimentEngine experimentEngine = new ExperimentEngineImpl
                 .Builder(experimentEngineConfig)

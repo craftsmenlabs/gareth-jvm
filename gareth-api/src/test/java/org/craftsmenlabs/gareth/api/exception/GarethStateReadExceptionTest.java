@@ -26,13 +26,13 @@ public class GarethStateReadExceptionTest {
 
     @Test
     public void testConstructWithoutException() {
-        final GarethStateReadException garethStateReadException = new GarethStateReadException((Exception)null);
+        final GarethStateReadException garethStateReadException = new GarethStateReadException((Exception) null);
         assertNull(garethStateReadException.getCause());
     }
 
     @Test
     public void testConstructWithoutMessage() {
-        final GarethStateReadException garethStateReadException = new GarethStateReadException((String)null);
+        final GarethStateReadException garethStateReadException = new GarethStateReadException((String) null);
         assertNull(garethStateReadException.getMessage());
     }
 

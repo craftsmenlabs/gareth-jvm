@@ -1,5 +1,13 @@
-Experiment: Validate business goal 1
+Experiment: Validate business goal 10
 
-Baseline: Sample baseline
-Assumption: Sample assume
+Baseline: sale of anvils
+Assumption: sale of anvils has gone up by 4%
+Time: 3 seconds
+Success: order 3 cake from koekela
+Failure: fire 3 sales guys at random
+
+Baseline: sale of snake oil
+Assumption: sale of snake oil has gone up by 10%
 Time: 1 minute
+Success: order 3 brownies from koekela
+Failure: fire 42 sales girls at random

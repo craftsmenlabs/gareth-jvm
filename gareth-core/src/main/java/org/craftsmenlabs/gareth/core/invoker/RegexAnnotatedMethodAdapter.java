@@ -1,30 +1,18 @@
 package org.craftsmenlabs.gareth.core.invoker;
 
-import org.craftsmenlabs.gareth.api.annotation.Assume;
-import org.craftsmenlabs.gareth.api.annotation.Baseline;
-import org.craftsmenlabs.gareth.api.annotation.Failure;
-import org.craftsmenlabs.gareth.api.annotation.Success;
-import org.craftsmenlabs.gareth.api.annotation.Time;
-import org.craftsmenlabs.gareth.api.definition.ParsedDefinition;
-import org.craftsmenlabs.gareth.api.invoker.MethodDescriptor;
+import org.craftsmenlabs.gareth.api.exception.GarethDefinitionParseException;
+import org.craftsmenlabs.gareth.api.exception.GarethInvocationException;
 import org.craftsmenlabs.gareth.api.storage.Storage;
-import org.craftsmenlabs.gareth.core.reflection.ReflectionHelper;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
 import java.lang.reflect.Type;
-import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
-import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
-
-import static java.util.Optional.ofNullable;
-
 
 public class RegexAnnotatedMethodAdapter {
 
@@ -32,56 +20,42 @@ public class RegexAnnotatedMethodAdapter {
     Method method;
     List<Class<?>> parameters = new ArrayList<>();
 
-    public RegexAnnotatedMethodAdapter(final Method method) {
+    public RegexAnnotatedMethodAdapter(final Method method, String pattern) {
         this.method = method;
         parseMethod();
-        getGlueLineTextFromAnnotation();
+        setPattern(pattern);
     }
-
-    private void getGlueLineTextFromAnnotation() {
-        ofNullable(method.getAnnotation(Baseline.class)).ifPresent(baseline -> {
-            setPattern(baseline.glueLine());
-        });
-        ofNullable(method.getAnnotation(Assume.class)).ifPresent(assume -> {
-            setPattern(assume.glueLine());
-        });
-        ofNullable(method.getAnnotation(Success.class)).ifPresent(success -> {
-            setPattern(success.glueLine());
-        });
-        ofNullable(method.getAnnotation(Failure.class)).ifPresent(failure -> {
-            setPattern(failure.glueLine());
-        });
-        ofNullable(method.getAnnotation(Time.class)).ifPresent(time -> {
-            setPattern(time.glueLine());
-        });
-    }
-
-    private void setPattern(String regex) {
-        pattern = Pattern.compile(regex);
-    }
-
 
     public Method getMethod() {
         return this.method;
     }
 
+    public void invokeWith(Object receiver, List<Object> params) {
+        //if (params == null || params.size() != parameters.size())
+        //    throw new IllegalArgumentException("Parameter list should be non-null and size " + parameters.size());
+        try {
+            method.invoke(receiver, params.toArray(new Object[0]));
+        } catch (InvocationTargetException | IllegalAccessException e) {
+            throw new GarethInvocationException(e);
+        }
+    }
 
     private void parseMethod() {
         for (Parameter parameter : method.getParameters()) {
             Class<?> cls = parameter.getType();
             if (parameter.getParameterizedType() != Storage.class) {
-                if (!isValidType(cls))
+                if (!isValidType(cls)) {
                     throw new IllegalStateException("Parameter type " + cls + " is not supported");
+                }
                 parameters.add(cls);
             }
         }
     }
 
     private boolean isValidType(Type type) {
-        return type.getTypeName().equals("java.lang.String")
-                || type.getTypeName().equals("int")
-                || type.getTypeName().equals("long")
-                || type.getTypeName().equals("double");
+        return type.getTypeName().equals("java.lang.String") || type.getTypeName().equals("int") || type.getTypeName()
+                                                                                                        .equals("long") || type
+                .getTypeName().equals("double");
     }
 
     public List<Class<?>> getNonStorageParameters() {
@@ -92,7 +66,15 @@ public class RegexAnnotatedMethodAdapter {
         return pattern.pattern();
     }
 
-    public List<Object> getParametersFromInputString(final String input) {
+    private void setPattern(String regex) {
+        try {
+            pattern = Pattern.compile(regex);
+        } catch (Exception e) {
+            throw new GarethDefinitionParseException(e);
+        }
+    }
+
+    public List<Object> getArgumentValuesFromInputString(final String input) {
         List<String> parametersFromPattern = getParametersFromPattern(input.trim());
         List<Object> parameters = new ArrayList<>();
         for (int i = 0; i < parametersFromPattern.size(); i++) {
@@ -103,14 +85,18 @@ public class RegexAnnotatedMethodAdapter {
     }
 
     Object getValueFromString(Class<?> cls, String stringVal) {
-        if (cls == String.class)
+        if (cls == String.class) {
             return stringVal;
-        if (cls == Integer.TYPE)
+        }
+        if (cls == Integer.TYPE) {
             return Integer.valueOf(stringVal);
-        if (cls == Long.TYPE)
+        }
+        if (cls == Long.TYPE) {
             return Long.valueOf(stringVal);
-        if (cls == Double.TYPE)
+        }
+        if (cls == Double.TYPE) {
             return Double.valueOf(stringVal);
+        }
         return null;
     }
 
@@ -130,5 +116,6 @@ public class RegexAnnotatedMethodAdapter {
         }
         return output;
     }
+
 
 }

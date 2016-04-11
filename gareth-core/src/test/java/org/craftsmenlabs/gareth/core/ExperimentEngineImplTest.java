@@ -3,7 +3,6 @@ package org.craftsmenlabs.gareth.core;
 import org.craftsmenlabs.gareth.api.ExperimentEngine;
 import org.craftsmenlabs.gareth.api.ExperimentEngineConfig;
 import org.craftsmenlabs.gareth.api.context.ExperimentContext;
-import org.craftsmenlabs.gareth.api.context.ExperimentPartState;
 import org.craftsmenlabs.gareth.api.context.ExperimentRunContext;
 import org.craftsmenlabs.gareth.api.definition.ParsedDefinition;
 import org.craftsmenlabs.gareth.api.definition.ParsedDefinitionFactory;
@@ -29,8 +28,15 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.junit.Assert.*;
-import static org.mockito.Mockito.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
+import static org.mockito.Mockito.any;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 /**
  * Created by hylke on 11/08/15.
@@ -78,7 +84,8 @@ public class ExperimentEngineImplTest {
         MockitoAnnotations.initMocks(this);
         when(mockExperimentEngineConfig.getDefinitionClasses()).thenReturn(new Class[]{});
         when(mockExperimentEngineConfig.getInputStreams()).thenReturn(new InputStream[]{});
-        when(mockExperimentEnginePersistence.getExperimentStateChangeListener()).thenReturn(mockExperimentStateChangeListener);
+        when(mockExperimentEnginePersistence.getExperimentStateChangeListener())
+                .thenReturn(mockExperimentStateChangeListener);
         experimentEngine = new ExperimentEngineImpl
                 .Builder(mockExperimentEngineConfig)
                 .setDefinitionRegistry(mockDefinitionRegistry)
@@ -247,7 +254,7 @@ public class ExperimentEngineImplTest {
     public void testStopWithoutPersistence() throws Exception {
         experimentEngine.start();
         experimentEngine.stop();
-        verify(mockExperimentEnginePersistence,never()).persist(experimentEngine);
+        verify(mockExperimentEnginePersistence, never()).persist(experimentEngine);
     }
 
     @Test
@@ -273,7 +280,8 @@ public class ExperimentEngineImplTest {
         experimentEngine.getExperimentRunContexts().add(experimentRunContext1);
         experimentEngine.getExperimentRunContexts().add(experimentRunContext2);
 
-        final List<ExperimentRunContext> experimentRunContexts = experimentEngine.findExperimentRunContextsForHash("hash-1");
+        final List<ExperimentRunContext> experimentRunContexts = experimentEngine
+                .findExperimentRunContextsForHash("hash-1");
         assertNotNull(experimentRunContexts);
         assertEquals(1, experimentRunContexts.size());
         assertEquals(experimentRunContext1, experimentRunContexts.get(0));

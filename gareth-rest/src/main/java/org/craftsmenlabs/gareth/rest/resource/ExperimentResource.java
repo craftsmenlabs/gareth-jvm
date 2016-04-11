@@ -11,7 +11,9 @@ import javax.inject.Inject;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
-import javax.ws.rs.core.*;
+import javax.ws.rs.core.GenericEntity;
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -29,7 +31,8 @@ public class ExperimentResource {
     public Response get() {
         return Response
                 .status(200)
-                .entity(new GenericEntity<List<Experiment>>(assembleExperiments(experimentEngine.getExperimentContexts())) {
+                .entity(new GenericEntity<List<Experiment>>(assembleExperiments(experimentEngine
+                        .getExperimentContexts())) {
                 })
                 .build();
     }
