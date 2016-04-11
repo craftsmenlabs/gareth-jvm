@@ -6,7 +6,7 @@ Gareth is platform that allows you to make business goal validation part of your
 
 For extra information visit our [website](http://craftsmenlabs.github.io/gareth/)
 
-**Table of Contents**  *generated with [DocToc](http://doctoc.herokuapp.com/)*
+**Table of Contents** 
 
 - [Gareth](#)
 	- [Building Gareth from source](#)
