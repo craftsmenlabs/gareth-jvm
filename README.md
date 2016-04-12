@@ -2,7 +2,7 @@
 [![Build Status](https://travis-ci.org/craftsmenlabs/gareth-jvm.svg)](https://travis-ci.org/craftsmenlabs/gareth-jvm)
 [![Coverage Status](https://coveralls.io/repos/craftsmenlabs/gareth-jvm/badge.svg?branch=master&service=github)](https://coveralls.io/github/craftsmenlabs/gareth-jvm?branch=master)
 
-Gareth is platform that allows you to make business goal validation part of your development process. For extra information visit our [website](http://craftsmenlabs.github.io/gareth/)
+Gareth is platform that allows you to make business goal validation part of your development process. For extra information visit our [website](http://craftsmenlabs.github.io/gareth/) and our [blog](http://craftsmenlabs.github.io/gareth/blog.html).
 
 <!-- TOC depthFrom:1 depthTo:6 withLinks:1 updateOnSave:1 orderedList:0 -->
 
@@ -318,7 +318,7 @@ public void getSaleOfAnvils() {
   System.out.println("Getting sale of anvils");
 }
 ```
-of with using the built-in Storage:
+or with using the built-in Storage:
 ```shell
 @Baseline(glueLine = "sale of anvils")
 public void getSaleOfAnvils(final Storage storage) {  
