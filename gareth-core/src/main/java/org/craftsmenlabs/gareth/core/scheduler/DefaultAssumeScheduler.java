@@ -54,19 +54,25 @@ public class DefaultAssumeScheduler implements AssumeScheduler {
                     .nextInt();
             final String triggerName = jobName + "-trigger";
 
+
             SundialJobScheduler.addJob(jobName, DefaultInvocationJob.class.getName(), jobParams, false);
+            safeThreadSleep(1); // Seems like SundialJobScheduler needs a minimum amount of delay between these two calls.
+                                // Otherwise ExperimentEngineImplIT will fail. TODO: Figure out why
             SundialJobScheduler.addSimpleTrigger(triggerName, jobName, 0, 1, now.getTime(), null);
-
-            // Start the job
-
-            //SundialJobScheduler.startJob(jobName, jobParams);
-
-
         } catch (final GarethUnknownDefinitionException | GarethInvocationException e) {
+            System.out.println("############ Gareth Exception ###########");
             logger.error("Problem during assumption invocation", e);
             if (!ignoreInvocationExceptions) {
                 throw e;
             }
+        }
+    }
+
+    private void safeThreadSleep(int millis) {
+        try {
+            Thread.sleep(millis);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
         }
     }
 
