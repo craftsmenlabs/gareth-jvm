@@ -2,11 +2,7 @@ package org.craftsmenlabs.gareth.core;
 
 import org.craftsmenlabs.gareth.api.ExperimentEngine;
 import org.craftsmenlabs.gareth.api.ExperimentEngineConfig;
-import org.craftsmenlabs.gareth.api.annotation.Assume;
-import org.craftsmenlabs.gareth.api.annotation.Baseline;
-import org.craftsmenlabs.gareth.api.annotation.Failure;
-import org.craftsmenlabs.gareth.api.annotation.Success;
-import org.craftsmenlabs.gareth.api.annotation.Time;
+import org.craftsmenlabs.gareth.api.annotation.*;
 import org.craftsmenlabs.gareth.api.context.ExperimentContext;
 import org.craftsmenlabs.gareth.api.context.ExperimentPartState;
 import org.craftsmenlabs.gareth.api.context.ExperimentRunContext;
@@ -15,42 +11,34 @@ import org.craftsmenlabs.gareth.api.storage.Storage;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.io.File;
 import java.time.Duration;
 import java.time.temporal.ChronoUnit;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-/**
- * Experiment engine integration test
- * <p>
- * Created by hylke on 14/08/15.
- */
 public class ExperimentEngineImplIT {
 
-    private final static List<String> logItems = new ArrayList<>(); // Static because new instance is generated
-    private ExperimentEngine engine;
-
     @Before
-    public void before() {
-        logItems.clear();
+    public void setUp() throws Exception {
+        clearStorage();
+    }
+
+    private void clearStorage() {
+        File[] files = new File(System.getProperty("java.io.tmpdir")).listFiles();
+        if (files != null) {
+            Arrays.stream(files).forEach(file -> file.delete());
+        }
     }
 
     @Test
     public void testRunExperiment() throws Exception {
-        engine = new ExperimentEngineImpl
-                .Builder(getConfiguration("it-experiment-01.experiment"))
-                .build();
-
+        List<String> logItems = new ArrayList<>();
+        ExperimentEngine engine = createExperimentEngine("it-experiment-01.experiment", new ExperimentDefinition(logItems));
 
         engine.start();
 
@@ -75,9 +63,8 @@ public class ExperimentEngineImplIT {
 
     @Test
     public void testRunExperimentWithAlreadyHalfRunExperiment() throws Exception {
-        engine = new ExperimentEngineImpl
-                .Builder(getConfiguration("it-experiment-01.experiment"))
-                .build();
+        List<String> logItems = new ArrayList<>();
+        ExperimentEngine engine = createExperimentEngine("it-experiment-01.experiment", new ExperimentDefinition(logItems));
 
 
         final ExperimentRunContext mockExperimentRunContext = mock(ExperimentRunContext.class);
@@ -113,9 +100,8 @@ public class ExperimentEngineImplIT {
 
     @Test
     public void testRunExperimentWithSuccess() throws Exception {
-        engine = new ExperimentEngineImpl
-                .Builder(getConfiguration("it-experiment-02.experiment"))
-                .build();
+        List<String> logItems = new ArrayList<>();
+        ExperimentEngine engine = createExperimentEngine("it-experiment-02.experiment", new ExperimentDefinition(logItems));
 
 
         engine.start();
@@ -142,13 +128,13 @@ public class ExperimentEngineImplIT {
 
     @Test
     public void testRunExperimentWithFailure() throws Exception {
-        engine = new ExperimentEngineImpl
-                .Builder(getConfiguration("it-experiment-03.experiment"))
-                .build();
+        List<String> logItems = new ArrayList<>();
+        ExperimentEngine engine = createExperimentEngine("it-experiment-03.experiment", new ExperimentDefinition(logItems));
 
 
         engine.start();
 
+        Thread.sleep(100L);
         assertEquals(1, logItems.size());
         assertEquals("baseline", logItems.get(0));
 
@@ -171,9 +157,8 @@ public class ExperimentEngineImplIT {
 
     @Test
     public void testDefinitionRegistry() {
-        engine = new ExperimentEngineImpl
-                .Builder(getConfiguration("it-experiment-02.experiment"))
-                .build();
+        List<String> logItems = new ArrayList<>();
+        ExperimentEngine engine = createExperimentEngine("it-experiment-02.experiment", new ExperimentDefinition(logItems));
 
 
         engine.start();
@@ -191,10 +176,8 @@ public class ExperimentEngineImplIT {
 
     @Test
     public void testRunExperimentWithStorage() throws Exception {
-        engine = new ExperimentEngineImpl
-                .Builder(getConfiguration("it-experiment-04.experiment"))
-                .build();
-
+        List<String> logItems = new ArrayList<>();
+        ExperimentEngine engine = createExperimentEngine("it-experiment-04.experiment", new ExperimentDefinition(logItems));
 
         engine.start();
 
@@ -229,7 +212,20 @@ public class ExperimentEngineImplIT {
     }
 
 
+    private ExperimentEngine createExperimentEngine(String fileName, ExperimentDefinition experimentDefinition) {
+        return new ExperimentEngineImpl
+                .Builder(getConfiguration(fileName))
+                .addCustomDefinitionFactory(clazz -> experimentDefinition)
+                .build();
+    }
+
     public class ExperimentDefinition {
+
+        private List<String> logItems;
+
+        public ExperimentDefinition(List<String> logItems) {
+            this.logItems = logItems;
+        }
 
         @Baseline(glueLine = "A baseline")
         public void baseline() {
