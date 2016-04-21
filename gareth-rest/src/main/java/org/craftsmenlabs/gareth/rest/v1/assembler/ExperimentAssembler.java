@@ -6,9 +6,7 @@ import org.craftsmenlabs.gareth.rest.v1.entity.Experiment;
 
 import java.util.Optional;
 
-/**
- * Created by hylke on 28/08/15.
- */
+
 public class ExperimentAssembler implements Assembler<ExperimentContext, Experiment> {
 
     @Override

@@ -8,9 +8,7 @@ import org.glassfish.jersey.grizzly2.httpserver.GrizzlyHttpServerFactory;
 import javax.ws.rs.core.UriBuilder;
 import java.net.URI;
 
-/**
- * Created by hylke on 19/08/15.
- */
+
 public class RestServiceImpl implements RestService {
 
 

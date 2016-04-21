@@ -19,9 +19,6 @@ import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-/**
- * Created by hylke on 11/10/15.
- */
 public class ExperimentRerunResourceTest {
 
     @Mock

@@ -38,8 +38,9 @@ public class MethodInvokerImpl implements MethodInvoker {
     public void invoke(final String glueLineInExperiment, final MethodDescriptor methodDescriptor, final Storage storage) throws GarethInvocationException {
         try {
             logger.trace("Invoking method %s", methodDescriptor.getMethod().getName());
+            Class<?> declaringClass = methodDescriptor.getMethod().getDeclaringClass();
             final Object declaringClassInstance = reflectionHelper
-                    .getInstanceForClass(methodDescriptor.getMethod().getDeclaringClass());
+                    .getInstanceForClass(declaringClass);
             methodDescriptor.invokeWith(glueLineInExperiment, declaringClassInstance, storage);
         } catch (final IllegalAccessException | InvocationTargetException | InstantiationException e) {
             throw new GarethInvocationException(e);

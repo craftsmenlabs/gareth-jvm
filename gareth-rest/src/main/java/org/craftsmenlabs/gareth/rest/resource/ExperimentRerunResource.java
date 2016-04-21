@@ -10,9 +10,6 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.core.Response;
 
-/**
- * Created by hylke on 09/10/15.
- */
 @Path("/experiments-rerun")
 public class ExperimentRerunResource {
 

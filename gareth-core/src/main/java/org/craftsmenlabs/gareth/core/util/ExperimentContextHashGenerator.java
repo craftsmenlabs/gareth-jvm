@@ -9,9 +9,6 @@ import java.security.NoSuchAlgorithmException;
 import java.util.Arrays;
 import java.util.Optional;
 
-/**
- * Created by hylke on 23/09/15.
- */
 public class ExperimentContextHashGenerator {
 
     private final static Logger LOG = LoggerFactory.getLogger(ExperimentContextHashGenerator.class);

@@ -7,9 +7,10 @@ import org.craftsmenlabs.gareth.core.ExperimentEngineConfigImpl;
 import org.craftsmenlabs.gareth.core.ExperimentEngineImpl;
 import org.craftsmenlabs.gareth.json.persist.JsonExperimentEnginePersistence;
 import org.craftsmenlabs.gareth.rest.RestServiceFactoryImpl;
-import org.craftsmenlabs.gareth.rest.example.definition.RestDefinitionFactory;
-import org.craftsmenlabs.gareth.rest.example.definition.SampleDefinition;
 import org.craftsmenlabs.gareth.rest.example.definition.AnotherDefinition;
+import org.craftsmenlabs.gareth.rest.example.definition.RestDefinitionFactory;
+import org.craftsmenlabs.gareth.rest.example.definition.SaleofFruit;
+import org.craftsmenlabs.gareth.rest.example.definition.SampleDefinition;
 
 /**
  * Hello world!
@@ -22,7 +23,9 @@ public class GarethRestApplication {
                 .Builder()
                 .addDefinitionClass(SampleDefinition.class)
                 .addDefinitionClass(AnotherDefinition.class)
-                .addInputStreams(GarethRestApplication.class.getClass().getResourceAsStream("/experiments/businessgoal-01.experiment"))
+                .addDefinitionClass(SaleofFruit.class)
+                .addInputStreams(GarethRestApplication.class.getClass()
+                                                            .getResourceAsStream("/experiments/businessgoal-01.experiment"))
                 .setIgnoreInvocationExceptions(true)
                 .build();
 

@@ -29,7 +29,6 @@ public class ExampleApplication {
                 .setExperimentEnginePersistence(experimentEnginePersistence)
                 .build();
         experimentEngine.start();
-
         Runtime.getRuntime().addShutdownHook(new ShutdownHook(experimentEngine));
     }
 

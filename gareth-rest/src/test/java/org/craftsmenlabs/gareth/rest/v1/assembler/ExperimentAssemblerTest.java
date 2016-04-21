@@ -13,9 +13,6 @@ import static org.junit.Assert.fail;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-/**
- * Created by hylke on 28/08/15.
- */
 public class ExperimentAssemblerTest {
 
     private ExperimentAssembler experimentAssembler;

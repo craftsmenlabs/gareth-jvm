@@ -33,9 +33,9 @@ import org.craftsmenlabs.gareth.core.context.ExperimentRunContextImpl;
 import org.craftsmenlabs.gareth.core.factory.ExperimentFactoryImpl;
 import org.craftsmenlabs.gareth.core.invoker.MethodInvokerImpl;
 import org.craftsmenlabs.gareth.core.observer.DefaultObserver;
-import org.craftsmenlabs.gareth.core.reflection.DefinitionFactory;
 import org.craftsmenlabs.gareth.core.parser.ParsedDefinitionFactoryImpl;
 import org.craftsmenlabs.gareth.core.persist.FileSystemExperimentEnginePersistence;
+import org.craftsmenlabs.gareth.core.reflection.DefinitionFactory;
 import org.craftsmenlabs.gareth.core.reflection.ReflectionHelper;
 import org.craftsmenlabs.gareth.core.registry.DefinitionRegistryImpl;
 import org.craftsmenlabs.gareth.core.registry.ExperimentRegistryImpl;
@@ -193,6 +193,8 @@ public class ExperimentEngineImpl implements ExperimentEngine {
             }
         }
     }
+
+
 
     private void runExperiments() {
         logger.info("Run and schedule experiments");
