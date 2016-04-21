@@ -8,6 +8,12 @@ import java.lang.reflect.InvocationTargetException;
  */
 public class ReflectionHelper {
 
+    private DefinitionFactory customDefinitionFactory;
+
+    public ReflectionHelper(DefinitionFactory customDefinitionFactory) {
+        this.customDefinitionFactory = customDefinitionFactory;
+    }
+
     /**
      * Create a instance for particular class (only zero argument constructors supported)
      *
@@ -18,6 +24,14 @@ public class ReflectionHelper {
      * @throws InstantiationException
      */
     public Object getInstanceForClass(final Class clazz) throws IllegalAccessException, InvocationTargetException, InstantiationException {
+
+        if (customDefinitionFactory != null) {
+            Object definition = customDefinitionFactory.createDefinition(clazz);
+            if (definition != null) {
+                return definition;
+            }
+        }
+
         Constructor constructor = null;
         Object declaringClassInstance = null;
 

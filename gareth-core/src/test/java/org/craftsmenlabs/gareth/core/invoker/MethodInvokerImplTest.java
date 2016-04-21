@@ -26,7 +26,7 @@ public class MethodInvokerImplTest {
     @Before
     public void setUp() throws Exception {
         invokeMessageList.clear();
-        methodInvoker = new MethodInvokerImpl(new ReflectionHelper());
+        methodInvoker = new MethodInvokerImpl(new ReflectionHelper(null));
         methodDescriptor = new MethodDescriptorImpl(getStubMethod(), 0, false);
     }
 

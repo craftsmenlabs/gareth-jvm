@@ -10,6 +10,7 @@ import org.craftsmenlabs.gareth.api.invoker.MethodInvoker;
 import org.craftsmenlabs.gareth.api.observer.Observer;
 import org.craftsmenlabs.gareth.api.scheduler.AssumeScheduler;
 import org.craftsmenlabs.gareth.core.invoker.MethodInvokerImpl;
+import org.craftsmenlabs.gareth.core.reflection.DefinitionFactory;
 import org.craftsmenlabs.gareth.core.reflection.ReflectionHelper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -79,13 +80,15 @@ public class AkkaAssumeScheduler implements AssumeScheduler {
 
         private final Observer observer;
 
-        private ReflectionHelper reflectionHelper = new ReflectionHelper();
+        private ReflectionHelper reflectionHelper;
 
         private MethodInvoker methodInvoker = new MethodInvokerImpl(reflectionHelper);
 
         private ActorSystem actorSystem = ActorSystem.create();
 
         private boolean ignoreInvocationExceptions;
+
+        private DefinitionFactory customDefinitionFactory;
 
         public Builder(final Observer observer) {
             this.observer = observer;
@@ -106,10 +109,17 @@ public class AkkaAssumeScheduler implements AssumeScheduler {
             return this;
         }
 
+        public Builder addCustomDefinitionFactory(DefinitionFactory definitionFactory) {
+            this.customDefinitionFactory = definitionFactory;
+            return this;
+        }
+
         public AssumeScheduler build() {
             if (null == observer) {
                 throw new IllegalStateException("Observer cannot be null");
             }
+
+            reflectionHelper = new ReflectionHelper(customDefinitionFactory);
             return new AkkaAssumeScheduler(this);
         }
     }

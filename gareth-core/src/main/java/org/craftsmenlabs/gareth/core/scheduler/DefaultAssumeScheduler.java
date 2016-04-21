@@ -9,6 +9,7 @@ import org.craftsmenlabs.gareth.api.invoker.MethodInvoker;
 import org.craftsmenlabs.gareth.api.observer.Observer;
 import org.craftsmenlabs.gareth.api.scheduler.AssumeScheduler;
 import org.craftsmenlabs.gareth.core.invoker.MethodInvokerImpl;
+import org.craftsmenlabs.gareth.core.reflection.DefinitionFactory;
 import org.craftsmenlabs.gareth.core.reflection.ReflectionHelper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -74,10 +75,14 @@ public class DefaultAssumeScheduler implements AssumeScheduler {
     }
 
     public static class Builder {
-        private final org.craftsmenlabs.gareth.api.observer.Observer observer;
-        private ReflectionHelper reflectionHelper = new ReflectionHelper();
+        private ReflectionHelper reflectionHelper ;
+
         private MethodInvoker methodInvoker = new MethodInvokerImpl(reflectionHelper);
         private boolean ignoreInvocationExceptions;
+
+        private final org.craftsmenlabs.gareth.api.observer.Observer observer;
+
+        private DefinitionFactory customDefinitionFactory;
 
         public Builder(final org.craftsmenlabs.gareth.api.observer.Observer observer) {
             this.observer = observer;
@@ -93,10 +98,17 @@ public class DefaultAssumeScheduler implements AssumeScheduler {
             return this;
         }
 
+        public Builder addCustomDefinitionFactory(DefinitionFactory customDefinitionFactory) {
+            this.customDefinitionFactory = customDefinitionFactory;
+            return this;
+        }
+
         public AssumeScheduler build() {
             if (null == observer) {
                 throw new IllegalStateException("Observer cannot be null");
             }
+
+            reflectionHelper = new ReflectionHelper(customDefinitionFactory);
             return new DefaultAssumeScheduler(this);
         }
     }
