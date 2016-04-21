@@ -33,6 +33,7 @@ import org.craftsmenlabs.gareth.core.context.ExperimentRunContextImpl;
 import org.craftsmenlabs.gareth.core.factory.ExperimentFactoryImpl;
 import org.craftsmenlabs.gareth.core.invoker.MethodInvokerImpl;
 import org.craftsmenlabs.gareth.core.observer.DefaultObserver;
+import org.craftsmenlabs.gareth.core.reflection.DefinitionFactory;
 import org.craftsmenlabs.gareth.core.parser.ParsedDefinitionFactoryImpl;
 import org.craftsmenlabs.gareth.core.persist.FileSystemExperimentEnginePersistence;
 import org.craftsmenlabs.gareth.core.reflection.ReflectionHelper;
@@ -397,9 +398,14 @@ public class ExperimentEngineImpl implements ExperimentEngine {
 
         private final ExperimentEngineConfig experimentEngineConfig;
         private DefinitionRegistry definitionRegistry = new DefinitionRegistryImpl();
-        private ReflectionHelper reflectionHelper = new ReflectionHelper();
-        private ParsedDefinitionFactory parsedDefinitionFactory = new ParsedDefinitionFactoryImpl(reflectionHelper);
-        private MethodInvoker methodInvoker = new MethodInvokerImpl(reflectionHelper);
+        private DefinitionFactory customDefinitionFactory;
+
+        private ReflectionHelper reflectionHelper;
+
+        private ParsedDefinitionFactory parsedDefinitionFactory;
+
+        private MethodInvoker methodInvoker;
+
         private ExperimentFactory experimentFactory = new ExperimentFactoryImpl();
         private ExperimentRegistry experimentRegistry = new ExperimentRegistryImpl();
         private AssumeScheduler assumeScheduler = null;
@@ -459,10 +465,39 @@ public class ExperimentEngineImpl implements ExperimentEngine {
             return this;
         }
 
+        public Builder addCustomDefinitionFactory(DefinitionFactory definitionFactory) {
+            this.customDefinitionFactory = definitionFactory;
+            return this;
+        }
+
+        public ExperimentEngine build() {
+            reflectionHelper = new ReflectionHelper(customDefinitionFactory);
+
+            builParsedDefinitionFactory();
+            builMethodInvoker();
+            registerObservables();
+            buildDefaultAssumeScheduler();
+
+            return new ExperimentEngineImpl(this);
+        }
+
+        private void builParsedDefinitionFactory() {
+            if (parsedDefinitionFactory == null) {
+                parsedDefinitionFactory = new ParsedDefinitionFactoryImpl(reflectionHelper);
+            }
+        }
+
+        private void builMethodInvoker() {
+            if (methodInvoker == null) {
+                methodInvoker = new MethodInvokerImpl(reflectionHelper);
+            }
+        }
+
         private void buildDefaultAssumeScheduler() {
             if (assumeScheduler == null) {
                 assumeScheduler = new DefaultAssumeScheduler
                         .Builder(observer)
+                        .addCustomDefinitionFactory(customDefinitionFactory)
                         .setIgnoreInvocationExceptions(experimentEngineConfig.isIgnoreInvocationExceptions())
                         .build();
             }
@@ -474,13 +509,5 @@ public class ExperimentEngineImpl implements ExperimentEngine {
                         .getExperimentStateChangeListener());
             }
         }
-
-        public ExperimentEngine build() {
-            registerObservables();
-            buildDefaultAssumeScheduler();
-            return new ExperimentEngineImpl(this);
-        }
     }
-
-
 }

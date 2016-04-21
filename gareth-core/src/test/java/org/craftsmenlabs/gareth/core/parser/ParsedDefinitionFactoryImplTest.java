@@ -21,7 +21,7 @@ public class ParsedDefinitionFactoryImplTest {
     @Before
     public void setUp() throws Exception {
 
-        parsedParsedDefinitionFactory = new ParsedDefinitionFactoryImpl(new ReflectionHelper());
+        parsedParsedDefinitionFactory = new ParsedDefinitionFactoryImpl(new ReflectionHelper(null));
 
     }
 
