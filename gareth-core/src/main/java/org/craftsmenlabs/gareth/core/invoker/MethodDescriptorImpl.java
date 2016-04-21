@@ -1,9 +1,10 @@
 package org.craftsmenlabs.gareth.core.invoker;
 
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import org.craftsmenlabs.gareth.api.invoker.MethodDescriptor;
 import org.craftsmenlabs.gareth.api.storage.Storage;
+
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 
 public class MethodDescriptorImpl implements MethodDescriptor
 {
@@ -58,7 +59,7 @@ public class MethodDescriptorImpl implements MethodDescriptor
 		}
 	}
 
-	public String getPattern()
+	public String getRegexPatternForGlueLine()
 	{
 		return pattern;
 	}

@@ -29,7 +29,7 @@ public interface MethodDescriptor {
      */
     int getStorageIndex();
 
-    String getPattern();
+    String getRegexPatternForGlueLine();
 
     void invokeWith(String glueLineInExperiment, Object declaringClassInstance, Storage storage) throws InvocationTargetException, IllegalAccessException;
 }

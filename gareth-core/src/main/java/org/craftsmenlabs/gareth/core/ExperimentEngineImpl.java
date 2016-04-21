@@ -52,13 +52,11 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-/**
- * Created by hylke on 10/08/15.
- */
 public class ExperimentEngineImpl implements ExperimentEngine {
 
     private final static Logger logger = LoggerFactory.getLogger(ExperimentEngineImpl.class);
 
+    @Getter
     private final DefinitionRegistry definitionRegistry;
 
     private final ParsedDefinitionFactory parsedDefinitionFactory;

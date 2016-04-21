@@ -10,6 +10,7 @@ import org.craftsmenlabs.gareth.api.annotation.Time;
 import org.craftsmenlabs.gareth.api.context.ExperimentContext;
 import org.craftsmenlabs.gareth.api.context.ExperimentPartState;
 import org.craftsmenlabs.gareth.api.context.ExperimentRunContext;
+import org.craftsmenlabs.gareth.api.registry.DefinitionRegistry;
 import org.craftsmenlabs.gareth.api.storage.Storage;
 import org.junit.Before;
 import org.junit.Test;
@@ -18,7 +19,10 @@ import java.time.Duration;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
@@ -34,7 +38,7 @@ import static org.mockito.Mockito.when;
 public class ExperimentEngineImplIT {
 
     private final static List<String> logItems = new ArrayList<>(); // Static because new instance is generated
-    private ExperimentEngine experimentEngine;
+    private ExperimentEngine engine;
 
     @Before
     public void before() {
@@ -43,12 +47,12 @@ public class ExperimentEngineImplIT {
 
     @Test
     public void testRunExperiment() throws Exception {
-        experimentEngine = new ExperimentEngineImpl
+        engine = new ExperimentEngineImpl
                 .Builder(getConfiguration("it-experiment-01.experiment"))
                 .build();
 
 
-        experimentEngine.start();
+        engine.start();
 
         assertEquals(1, logItems.size());
         assertEquals("baseline", logItems.get(0));
@@ -58,7 +62,7 @@ public class ExperimentEngineImplIT {
         assertEquals(2, logItems.size());
         assertEquals("assume", logItems.get(1));
 
-        final List<ExperimentRunContext> experimentRunContexts = experimentEngine.getExperimentRunContexts();
+        final List<ExperimentRunContext> experimentRunContexts = engine.getExperimentRunContexts();
         assertEquals(1, experimentRunContexts.size());
 
         final ExperimentRunContext experimentRunContext = experimentRunContexts.get(0);
@@ -71,7 +75,7 @@ public class ExperimentEngineImplIT {
 
     @Test
     public void testRunExperimentWithAlreadyHalfRunExperiment() throws Exception {
-        experimentEngine = new ExperimentEngineImpl
+        engine = new ExperimentEngineImpl
                 .Builder(getConfiguration("it-experiment-01.experiment"))
                 .build();
 
@@ -80,14 +84,14 @@ public class ExperimentEngineImplIT {
         final ExperimentContext mockExperimentContext = mock(ExperimentContext.class);
         when(mockExperimentContext.isValid()).thenReturn(true);
         when(mockExperimentRunContext.getHash())
-                .thenReturn("32f5328bb4dada228b7a8a24db729e01cb88425a32cd2f9cfab0ae8953487cda");
+                .thenReturn("417f839e066b0f1e310268bb89677dac8e64d9621e6362b69b21fa8ca92c05b6");
         when(mockExperimentRunContext.getBaselineState()).thenReturn(ExperimentPartState.FINISHED);
         when(mockExperimentRunContext.getExperimentContext()).thenReturn(mockExperimentContext);
 
-        experimentEngine.getExperimentRunContexts().add(mockExperimentRunContext);
+        engine.getExperimentRunContexts().add(mockExperimentRunContext);
 
 
-        experimentEngine.start();
+        engine.start();
 
         assertEquals(0, logItems.size());
 
@@ -96,7 +100,7 @@ public class ExperimentEngineImplIT {
         assertEquals(1, logItems.size());
         assertEquals("assume", logItems.get(1));
 
-        final List<ExperimentRunContext> experimentRunContexts = experimentEngine.getExperimentRunContexts();
+        final List<ExperimentRunContext> experimentRunContexts = engine.getExperimentRunContexts();
         assertEquals(1, experimentRunContexts.size());
 
         final ExperimentRunContext experimentRunContext = experimentRunContexts.get(0);
@@ -109,12 +113,12 @@ public class ExperimentEngineImplIT {
 
     @Test
     public void testRunExperimentWithSuccess() throws Exception {
-        experimentEngine = new ExperimentEngineImpl
+        engine = new ExperimentEngineImpl
                 .Builder(getConfiguration("it-experiment-02.experiment"))
                 .build();
 
 
-        experimentEngine.start();
+        engine.start();
 
         assertEquals(1, logItems.size());
         assertEquals("baseline", logItems.get(0));
@@ -125,7 +129,7 @@ public class ExperimentEngineImplIT {
         assertEquals("assume", logItems.get(1));
         assertEquals("success", logItems.get(2));
 
-        final List<ExperimentRunContext> experimentRunContexts = experimentEngine.getExperimentRunContexts();
+        final List<ExperimentRunContext> experimentRunContexts = engine.getExperimentRunContexts();
         assertEquals(1, experimentRunContexts.size());
 
         final ExperimentRunContext experimentContext = experimentRunContexts.get(0);
@@ -138,12 +142,12 @@ public class ExperimentEngineImplIT {
 
     @Test
     public void testRunExperimentWithFailure() throws Exception {
-        experimentEngine = new ExperimentEngineImpl
+        engine = new ExperimentEngineImpl
                 .Builder(getConfiguration("it-experiment-03.experiment"))
                 .build();
 
 
-        experimentEngine.start();
+        engine.start();
 
         assertEquals(1, logItems.size());
         assertEquals("baseline", logItems.get(0));
@@ -154,7 +158,7 @@ public class ExperimentEngineImplIT {
         assertEquals("failure", logItems.get(1));
 
 
-        final List<ExperimentRunContext> experimentContexts = experimentEngine.getExperimentRunContexts();
+        final List<ExperimentRunContext> experimentContexts = engine.getExperimentRunContexts();
         assertEquals(1, experimentContexts.size());
 
         final ExperimentRunContext experimentContext = experimentContexts.get(0);
@@ -166,24 +170,44 @@ public class ExperimentEngineImplIT {
     }
 
     @Test
+    public void testDefinitionRegistry() {
+        engine = new ExperimentEngineImpl
+                .Builder(getConfiguration("it-experiment-02.experiment"))
+                .build();
+
+
+        engine.start();
+        DefinitionRegistry definitions = engine.getDefinitionRegistry();
+        Map<String, Set<String>> lines = definitions.getGlueLinesPerCategory();
+        assertThat(lines).hasSize(5);
+        assertThat(lines.get("baseline")).containsExactlyInAnyOrder("A baseline", "^get sale of (.*?)$");
+        assertThat(lines.get("assume"))
+                .containsExactlyInAnyOrder("An assumption", "^(\\d+) (.*?) were sold$", "An assumption with failure");
+        assertThat(lines.get("success")).containsExactlyInAnyOrder("A success");
+        assertThat(lines.get("failure")).containsExactlyInAnyOrder("A failure");
+        assertThat(lines.get("time")).containsExactlyInAnyOrder("1 day");
+
+    }
+
+    @Test
     public void testRunExperimentWithStorage() throws Exception {
-        experimentEngine = new ExperimentEngineImpl
+        engine = new ExperimentEngineImpl
                 .Builder(getConfiguration("it-experiment-04.experiment"))
                 .build();
 
 
-        experimentEngine.start();
+        engine.start();
 
         assertEquals(1, logItems.size());
-        assertEquals("baseline storage", logItems.get(0));
+        assertEquals("get sale of carrots", logItems.get(0));
 
         Thread.sleep(500L);
 
         assertEquals(2, logItems.size());
-        assertEquals("assume storage", logItems.get(1));
+        assertEquals("500 carrots were sold", logItems.get(1));
 
 
-        final List<ExperimentRunContext> experimentContexts = experimentEngine.getExperimentRunContexts();
+        final List<ExperimentRunContext> experimentContexts = engine.getExperimentRunContexts();
         assertEquals(1, experimentContexts.size());
 
         final ExperimentRunContext experimentContext = experimentContexts.get(0);
@@ -212,7 +236,7 @@ public class ExperimentEngineImplIT {
             logItems.add("baseline");
         }
 
-        @Assume(glueLine = "A assumption")
+        @Assume(glueLine = "An assumption")
         public void assume() {
             logItems.add("assume");
         }
@@ -222,7 +246,7 @@ public class ExperimentEngineImplIT {
             return Duration.of(10, ChronoUnit.MILLIS);
         }
 
-        @Assume(glueLine = "A assumption with failure")
+        @Assume(glueLine = "An assumption with failure")
         public void assumeWithFailure() throws Exception {
             throw new Exception("This is a failure");
         }
@@ -237,15 +261,16 @@ public class ExperimentEngineImplIT {
             logItems.add("failure");
         }
 
-        @Baseline(glueLine = "A baseline with storage")
-        public void baseline(final Storage storage) {
-            logItems.add("baseline storage");
+        @Baseline(glueLine = "^get sale of (.*?)$")
+        public void baseline(final Storage storage, final String product) {
+            logItems.add("get sale of " + product);
         }
 
-        @Assume(glueLine = "A assumption with storage")
-        public void assume(final Storage storage) {
-            logItems.add("assume storage");
+        @Assume(glueLine = "^(\\d+) (.*?) were sold$")
+        public void assume(final Storage storage, final int amount, final String product) {
+            logItems.add(amount + " " + product + " were sold");
         }
+
 
     }
 

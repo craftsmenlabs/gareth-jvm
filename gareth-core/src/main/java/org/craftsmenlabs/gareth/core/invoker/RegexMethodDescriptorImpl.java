@@ -48,7 +48,7 @@ public class RegexMethodDescriptorImpl implements MethodDescriptor {
         methodAdapter.invokeWith(declaringClassInstance, arguments);
     }
 
-    public String getPattern() {
+    public String getRegexPatternForGlueLine() {
         return methodAdapter.getPattern();
     }
 }

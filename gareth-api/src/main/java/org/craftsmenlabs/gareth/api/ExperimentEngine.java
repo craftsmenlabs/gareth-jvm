@@ -3,6 +3,7 @@ package org.craftsmenlabs.gareth.api;
 import org.craftsmenlabs.gareth.api.context.ExperimentContext;
 import org.craftsmenlabs.gareth.api.context.ExperimentRunContext;
 import org.craftsmenlabs.gareth.api.exception.GarethUnknownExperimentException;
+import org.craftsmenlabs.gareth.api.registry.DefinitionRegistry;
 
 import java.util.List;
 
@@ -30,6 +31,7 @@ public interface ExperimentEngine {
     List<ExperimentContext> getExperimentContexts();
 
 
+
     /**
      * Get a list with experiment runs
      *
@@ -44,6 +46,8 @@ public interface ExperimentEngine {
      * @return
      */
     List<ExperimentRunContext> findExperimentRunContextsForHash(final String hash);
+
+    DefinitionRegistry getDefinitionRegistry();
 
     /**
      * (re-)plan a experiment based on experiment context.

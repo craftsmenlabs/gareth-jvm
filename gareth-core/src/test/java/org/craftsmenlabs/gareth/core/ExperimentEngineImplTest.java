@@ -28,6 +28,7 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
@@ -38,9 +39,6 @@ import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-/**
- * Created by hylke on 11/08/15.
- */
 public class ExperimentEngineImplTest {
 
     private ExperimentEngine experimentEngine;
@@ -126,6 +124,10 @@ public class ExperimentEngineImplTest {
         verify(mockExperimentRegistry).addExperiment("experiment", mockExperiment);
     }
 
+    @Test
+    public void testDefinitionRegistryAvailable() {
+        assertThat(experimentEngine.getDefinitionRegistry()).isSameAs(mockDefinitionRegistry);
+    }
 
     @Test
     public void testPlanExperimentContextInvalidExperimentContext() {
