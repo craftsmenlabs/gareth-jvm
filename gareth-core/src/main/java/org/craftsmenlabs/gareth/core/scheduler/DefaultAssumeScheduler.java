@@ -57,7 +57,7 @@ public class DefaultAssumeScheduler implements AssumeScheduler {
 
             SundialJobScheduler.addJob(jobName, DefaultInvocationJob.class.getName(), jobParams, false);
             safeThreadSleep(1); // Seems like SundialJobScheduler needs a minimum amount of delay between these two calls.
-                                // Otherwise ExperimentEngineImplIT will fail
+                                // Otherwise ExperimentEngineImplIT will fail. TODO: Figure out why
             SundialJobScheduler.addSimpleTrigger(triggerName, jobName, 0, 1, now.getTime(), null);
         } catch (final GarethUnknownDefinitionException | GarethInvocationException e) {
             System.out.println("############ Gareth Exception ###########");
