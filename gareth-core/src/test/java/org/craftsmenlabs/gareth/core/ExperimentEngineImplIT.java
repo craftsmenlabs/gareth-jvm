@@ -1,5 +1,6 @@
 package org.craftsmenlabs.gareth.core;
 
+import com.xeiam.sundial.SundialJobScheduler;
 import org.craftsmenlabs.gareth.api.ExperimentEngine;
 import org.craftsmenlabs.gareth.api.ExperimentEngineConfig;
 import org.craftsmenlabs.gareth.api.annotation.*;
@@ -8,6 +9,7 @@ import org.craftsmenlabs.gareth.api.context.ExperimentPartState;
 import org.craftsmenlabs.gareth.api.context.ExperimentRunContext;
 import org.craftsmenlabs.gareth.api.registry.DefinitionRegistry;
 import org.craftsmenlabs.gareth.api.storage.Storage;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -23,9 +25,23 @@ import static org.mockito.Mockito.when;
 
 public class ExperimentEngineImplIT {
 
+    private ExperimentEngine engine;
+
     @Before
     public void setUp() throws Exception {
         clearStorage();
+    }
+
+    @After
+    public void tearDown() throws Exception {
+        List<String> allJobNames = SundialJobScheduler.getAllJobNames();
+        if (allJobNames != null) {
+            allJobNames.forEach(SundialJobScheduler::removeJob);
+        }
+
+        if (engine != null) {
+            engine.stop();
+        }
     }
 
     private void clearStorage() {
@@ -38,7 +54,7 @@ public class ExperimentEngineImplIT {
     @Test
     public void testRunExperiment() throws Exception {
         List<String> logItems = new ArrayList<>();
-        ExperimentEngine engine = createExperimentEngine("it-experiment-01.experiment", new ExperimentDefinition(logItems));
+        engine = createExperimentEngine("it-experiment-01.experiment", new ExperimentDefinition(logItems));
 
         engine.start();
 
@@ -64,8 +80,7 @@ public class ExperimentEngineImplIT {
     @Test
     public void testRunExperimentWithAlreadyHalfRunExperiment() throws Exception {
         List<String> logItems = new ArrayList<>();
-        ExperimentEngine engine = createExperimentEngine("it-experiment-01.experiment", new ExperimentDefinition(logItems));
-
+        engine = createExperimentEngine("it-experiment-01.experiment", new ExperimentDefinition(logItems));
 
         final ExperimentRunContext mockExperimentRunContext = mock(ExperimentRunContext.class);
         final ExperimentContext mockExperimentContext = mock(ExperimentContext.class);
@@ -77,12 +92,11 @@ public class ExperimentEngineImplIT {
 
         engine.getExperimentRunContexts().add(mockExperimentRunContext);
 
-
         engine.start();
 
         assertEquals(0, logItems.size());
 
-        Thread.sleep(200L);
+        Thread.sleep(1000L);
 
         assertEquals(1, logItems.size());
         assertEquals("assume", logItems.get(1));
@@ -101,15 +115,17 @@ public class ExperimentEngineImplIT {
     @Test
     public void testRunExperimentWithSuccess() throws Exception {
         List<String> logItems = new ArrayList<>();
-        ExperimentEngine engine = createExperimentEngine("it-experiment-02.experiment", new ExperimentDefinition(logItems));
-
+        engine = createExperimentEngine("it-experiment-02.experiment", new ExperimentDefinition(logItems));
 
         engine.start();
 
         assertEquals(1, logItems.size());
         assertEquals("baseline", logItems.get(0));
 
+//        SimpleDateFormat formatter = new SimpleDateFormat("mm:ss:SS");   // lowercase "dd"
+//        System.out.println("############ About to sleep job at " + formatter.format(new GregorianCalendar().getTime()) + ") ###########");
         Thread.sleep(1000L);
+//        System.out.println("############ Woke up at " + formatter.format(new GregorianCalendar().getTime()) + ") ###########");
 
         assertEquals(3, logItems.size());
         assertEquals("assume", logItems.get(1));
@@ -129,12 +145,10 @@ public class ExperimentEngineImplIT {
     @Test
     public void testRunExperimentWithFailure() throws Exception {
         List<String> logItems = new ArrayList<>();
-        ExperimentEngine engine = createExperimentEngine("it-experiment-03.experiment", new ExperimentDefinition(logItems));
-
+        engine = createExperimentEngine("it-experiment-03.experiment", new ExperimentDefinition(logItems));
 
         engine.start();
 
-        Thread.sleep(100L);
         assertEquals(1, logItems.size());
         assertEquals("baseline", logItems.get(0));
 
@@ -158,7 +172,7 @@ public class ExperimentEngineImplIT {
     @Test
     public void testDefinitionRegistry() {
         List<String> logItems = new ArrayList<>();
-        ExperimentEngine engine = createExperimentEngine("it-experiment-02.experiment", new ExperimentDefinition(logItems));
+        engine = createExperimentEngine("it-experiment-02.experiment", new ExperimentDefinition(logItems));
 
 
         engine.start();
@@ -171,13 +185,12 @@ public class ExperimentEngineImplIT {
         assertThat(lines.get("success")).containsExactlyInAnyOrder("A success");
         assertThat(lines.get("failure")).containsExactlyInAnyOrder("A failure");
         assertThat(lines.get("time")).containsExactlyInAnyOrder("1 day");
-
     }
 
     @Test
     public void testRunExperimentWithStorage() throws Exception {
         List<String> logItems = new ArrayList<>();
-        ExperimentEngine engine = createExperimentEngine("it-experiment-04.experiment", new ExperimentDefinition(logItems));
+        engine = createExperimentEngine("it-experiment-04.experiment", new ExperimentDefinition(logItems));
 
         engine.start();
 
@@ -266,9 +279,5 @@ public class ExperimentEngineImplIT {
         public void assume(final Storage storage, final int amount, final String product) {
             logItems.add(amount + " " + product + " were sold");
         }
-
-
     }
-
-
 }
