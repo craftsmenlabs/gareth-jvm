@@ -1,18 +1,11 @@
 package org.craftsmenlabs.gareth.rest.example.definition;
 
-import org.craftsmenlabs.gareth.api.annotation.Assume;
-import org.craftsmenlabs.gareth.api.annotation.Baseline;
-import org.craftsmenlabs.gareth.api.annotation.Failure;
-import org.craftsmenlabs.gareth.api.annotation.Success;
-import org.craftsmenlabs.gareth.api.annotation.Time;
+import org.craftsmenlabs.gareth.api.annotation.*;
 import org.craftsmenlabs.gareth.api.storage.Storage;
 
 import java.time.Duration;
 import java.time.temporal.ChronoUnit;
 
-/**
- * Created by hylke on 14/08/15.
- */
 public class SampleDefinition {
 
     public SampleDefinition() {

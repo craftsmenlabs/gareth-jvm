@@ -6,9 +6,6 @@ import org.craftsmenlabs.gareth.api.storage.Storage;
 import java.time.Duration;
 import java.time.temporal.ChronoUnit;
 
-/**
- * Created by hylke on 14/08/15.
- */
 public class AnotherDefinition {
 
     private final Object object;
@@ -29,21 +26,12 @@ public class AnotherDefinition {
     @Assume(glueLine = "Another assume")
     public void anotherAssume() {
         System.out.println("Another assume was executed");
+        throw new RuntimeException("Assumption not met");
     }
 
-    @Time(glueLine = "Another 1 minute")
-    public Duration anotherTime() {
-        return Duration.of(1L, ChronoUnit.MINUTES);
-    }
-
-    @Time(glueLine = "Another 1 month")
-    public Duration anotherTimeOneMonth() {
-        return Duration.of(2L, ChronoUnit.MINUTES);
-    }
-
-    @Time(glueLine = "Another 1 year")
-    public Duration anotherTimeOneYear() {
-        return Duration.of(3L, ChronoUnit.MINUTES);
+    @Time(glueLine = "Another 10 seconds")
+    public Duration anotherTimeTenSeconds() {
+        return Duration.of(10L, ChronoUnit.SECONDS);
     }
 
     @Success(glueLine = "Another success")

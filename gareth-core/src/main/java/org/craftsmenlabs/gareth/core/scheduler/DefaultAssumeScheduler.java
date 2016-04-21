@@ -15,11 +15,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.time.Duration;
-import java.util.Calendar;
-import java.util.GregorianCalendar;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Random;
+import java.util.*;
 
 /**
  * Created by hylke on 17/08/15.
@@ -75,9 +71,9 @@ public class DefaultAssumeScheduler implements AssumeScheduler {
     }
 
     public static class Builder {
-        private ReflectionHelper reflectionHelper ;
+        private ReflectionHelper reflectionHelper;
 
-        private MethodInvoker methodInvoker = new MethodInvokerImpl(reflectionHelper);
+        private MethodInvoker methodInvoker;
         private boolean ignoreInvocationExceptions;
 
         private final org.craftsmenlabs.gareth.api.observer.Observer observer;
@@ -109,6 +105,11 @@ public class DefaultAssumeScheduler implements AssumeScheduler {
             }
 
             reflectionHelper = new ReflectionHelper(customDefinitionFactory);
+
+            if (methodInvoker == null) {
+                methodInvoker = new MethodInvokerImpl(reflectionHelper);
+            }
+
             return new DefaultAssumeScheduler(this);
         }
     }
