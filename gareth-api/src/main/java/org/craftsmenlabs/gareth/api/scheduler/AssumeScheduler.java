@@ -3,9 +3,6 @@ package org.craftsmenlabs.gareth.api.scheduler;
 import org.craftsmenlabs.gareth.api.ExperimentEngine;
 import org.craftsmenlabs.gareth.api.context.ExperimentRunContext;
 
-/**
- * Created by hylke on 14/08/15.
- */
 public interface AssumeScheduler {
 
     /**
