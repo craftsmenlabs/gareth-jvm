@@ -4,7 +4,7 @@
     <parent>
         <groupId>org.craftsmenlabs.gareth</groupId>
         <artifactId>gareth-jvm</artifactId>
-        <version>0.8.5</version>
+        <version>0.8.6-SNAPSHOT</version>
     </parent>
     <groupId>org.craftsmenlabs.gareth</groupId>
     <artifactId>gareth-http-json-persistence</artifactId>
