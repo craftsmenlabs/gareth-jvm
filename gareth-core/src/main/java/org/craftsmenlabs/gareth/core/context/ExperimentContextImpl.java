@@ -9,9 +9,6 @@ import javax.xml.bind.annotation.XmlRootElement;
 import java.time.Duration;
 import java.util.Optional;
 
-/**
- * Created by hylke on 10/08/15.
- */
 @XmlRootElement
 @Getter
 public class ExperimentContextImpl implements ExperimentContext {

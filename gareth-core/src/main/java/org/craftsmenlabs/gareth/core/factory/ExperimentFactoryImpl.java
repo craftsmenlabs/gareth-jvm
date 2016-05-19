@@ -15,9 +15,6 @@ import org.craftsmenlabs.gareth.core.listener.ExperimentBaseListener;
 
 import java.io.InputStream;
 
-/**
- * Created by hylke on 04/08/15.
- */
 public class ExperimentFactoryImpl implements ExperimentFactory {
 
     @Override

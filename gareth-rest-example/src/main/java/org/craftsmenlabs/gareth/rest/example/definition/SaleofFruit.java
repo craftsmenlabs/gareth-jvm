@@ -5,15 +5,24 @@ import org.craftsmenlabs.gareth.api.annotation.Baseline;
 import org.craftsmenlabs.gareth.api.annotation.Failure;
 import org.craftsmenlabs.gareth.api.annotation.Success;
 import org.craftsmenlabs.gareth.api.storage.Storage;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class SaleofFruit {
 
+    private static Logger LOGGER = LoggerFactory.getLogger(SaleofFruit.class);
+
     @Baseline(glueLine = "^sale of (.*?)$")
-    public void anotherBaseline(final Storage storage) {
+    public void anotherBaseline(final Storage storage, final String item) {
+        LOGGER.info("Sale of " + item);
     }
 
     @Assume(glueLine = "^has risen by (\\d+?) per cent$")
-    public void hasRisenByPercent() {
+    public void hasRisenByPercent(final int percentage) {
+        LOGGER.info("rose by percent " + percentage);
+        if (percentage < 60) {
+            throw new RuntimeException("Expected percentage > 60");
+        }
     }
 
     @Assume(glueLine = "^has risen by at least (\\d+?) items")
@@ -21,12 +30,13 @@ public class SaleofFruit {
     }
 
     @Success(glueLine = "^send (.*?) to developers$")
-    public void anotherSuccess() {
+    public void anotherSuccess(final String present) {
+        LOGGER.info("Send to developers " + present);
 
     }
 
     @Failure(glueLine = "^Blame the suits$")
     public void anotherFailure() {
-
+        LOGGER.info("You're fired!");
     }
 }

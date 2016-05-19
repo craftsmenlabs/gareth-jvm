@@ -5,15 +5,14 @@ import org.apache.commons.io.IOUtils;
 import org.craftsmenlabs.gareth.api.ExperimentEngine;
 import org.craftsmenlabs.gareth.api.ExperimentEngineConfig;
 import org.craftsmenlabs.gareth.api.context.ExperimentContext;
-import org.craftsmenlabs.gareth.api.context.ExperimentPartState;
 import org.craftsmenlabs.gareth.api.context.ExperimentRunContext;
 import org.craftsmenlabs.gareth.api.definition.ParsedDefinition;
 import org.craftsmenlabs.gareth.api.definition.ParsedDefinitionFactory;
-import org.craftsmenlabs.gareth.api.exception.*;
+import org.craftsmenlabs.gareth.api.exception.GarethDefinitionParseException;
+import org.craftsmenlabs.gareth.api.exception.GarethExperimentParseException;
+import org.craftsmenlabs.gareth.api.exception.GarethStateReadException;
+import org.craftsmenlabs.gareth.api.exception.GarethUnknownExperimentException;
 import org.craftsmenlabs.gareth.api.factory.ExperimentFactory;
-import org.craftsmenlabs.gareth.api.invoker.MethodDescriptor;
-import org.craftsmenlabs.gareth.api.invoker.MethodInvoker;
-import org.craftsmenlabs.gareth.api.model.AssumptionBlock;
 import org.craftsmenlabs.gareth.api.model.Experiment;
 import org.craftsmenlabs.gareth.api.observer.Observer;
 import org.craftsmenlabs.gareth.api.persist.ExperimentEnginePersistence;
@@ -21,28 +20,12 @@ import org.craftsmenlabs.gareth.api.registry.DefinitionRegistry;
 import org.craftsmenlabs.gareth.api.registry.ExperimentRegistry;
 import org.craftsmenlabs.gareth.api.rest.RestService;
 import org.craftsmenlabs.gareth.api.rest.RestServiceFactory;
-import org.craftsmenlabs.gareth.api.scheduler.AssumeScheduler;
 import org.craftsmenlabs.gareth.api.storage.StorageFactory;
-import org.craftsmenlabs.gareth.core.context.ExperimentContextImpl;
 import org.craftsmenlabs.gareth.core.context.ExperimentRunContextImpl;
-import org.craftsmenlabs.gareth.core.factory.ExperimentFactoryImpl;
-import org.craftsmenlabs.gareth.core.invoker.MethodInvokerImpl;
-import org.craftsmenlabs.gareth.core.observer.DefaultObserver;
-import org.craftsmenlabs.gareth.core.parser.ParsedDefinitionFactoryImpl;
-import org.craftsmenlabs.gareth.core.persist.FileSystemExperimentEnginePersistence;
-import org.craftsmenlabs.gareth.core.reflection.DefinitionFactory;
-import org.craftsmenlabs.gareth.core.reflection.ReflectionHelper;
-import org.craftsmenlabs.gareth.core.registry.DefinitionRegistryImpl;
-import org.craftsmenlabs.gareth.core.registry.ExperimentRegistryImpl;
-import org.craftsmenlabs.gareth.core.scheduler.DefaultAssumeScheduler;
-import org.craftsmenlabs.gareth.core.storage.DefaultStorageFactory;
-import org.craftsmenlabs.gareth.core.util.ExperimentContextHashGenerator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.InputStream;
-import java.time.Duration;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -63,10 +46,6 @@ public class ExperimentEngineImpl implements ExperimentEngine {
 
     private final ExperimentEngineConfig experimentEngineConfig;
 
-    private final MethodInvoker methodInvoker;
-
-    private final AssumeScheduler assumeScheduler;
-
     @Getter
     private final List<ExperimentContext> experimentContexts = new ArrayList<>();
 
@@ -81,22 +60,28 @@ public class ExperimentEngineImpl implements ExperimentEngine {
 
     private final Observer observer;
 
+    private ExperimentContextBuilder experimentContextBuilder;
+
+    private ExperimentRunner experimentRunner;
+
     @Getter
     private boolean started;
 
 
-    private ExperimentEngineImpl(final Builder builder) {
+    ExperimentEngineImpl(final ExperimentEngineImplBuilder builder) {
         this.experimentEngineConfig = builder.experimentEngineConfig;
         this.definitionRegistry = builder.definitionRegistry;
         this.parsedDefinitionFactory = builder.parsedDefinitionFactory;
         this.experimentFactory = builder.experimentFactory;
         this.experimentRegistry = builder.experimentRegistry;
-        this.methodInvoker = builder.methodInvoker;
-        this.assumeScheduler = builder.assumeScheduler;
         this.restServiceFactory = builder.restServiceFactory;
         this.storageFactory = builder.storageFactory;
         this.experimentEnginePersistence = builder.experimentEnginePersistence;
         this.observer = builder.observer;
+        experimentContextBuilder = new ExperimentContextBuilder(definitionRegistry, experimentEngineConfig);
+        experimentRunner = new ExperimentRunner(builder.methodInvoker, builder.assumeScheduler, experimentEngineConfig
+                .isIgnoreInvocationExceptions());
+
     }
 
     private void registerDefinition(final Class clazz) throws GarethDefinitionParseException {
@@ -129,40 +114,12 @@ public class ExperimentEngineImpl implements ExperimentEngine {
         observer.notifyApplicationStateChanged(this);
     }
 
-    private void populateExperimentContexts() {
-        logger.info("Populating experiment contexts");
-        for (final Experiment experiment : experimentRegistry.getAllExperiments()) {
-            for (final AssumptionBlock assumptionBlock : experiment.getAssumptionBlockList()) {
-
-                final String[] surrogateKey = {experiment.getExperimentName()
-                        , assumptionBlock.getBaseline()
-                        , assumptionBlock.getAssumption()
-                        , assumptionBlock.getTime()
-                        , assumptionBlock.getSuccess()
-                        , assumptionBlock.getFailure()};
-
-                final String hashedSurrogateKey = ExperimentContextHashGenerator.generateHash(surrogateKey);
-
-                final ExperimentContext experimentContext = new ExperimentContextImpl
-                        .Builder(experiment.getExperimentName(), assumptionBlock)
-                        .setBaseline(Optional.ofNullable(getBaseline(assumptionBlock.getBaseline())))
-                        .setAssume(Optional.ofNullable(getAssume(assumptionBlock.getAssumption())))
-                        .setTime(getDuration(assumptionBlock.getTime()))
-                        .setFailure(Optional.ofNullable(getFailure(assumptionBlock.getFailure())))
-                        .setSuccess(Optional.ofNullable(getSuccess(assumptionBlock.getSuccess())))
-                        .build(hashedSurrogateKey);
-
-                experimentContexts.add(experimentContext);
-            }
-        }
-        logger.info(String.format("Added %d different experiments", experimentContexts.size()));
-    }
 
     private void init() {
         logger.info("Initializing experiment engine");
         initDefinitions();
         initExperiments();
-        populateExperimentContexts();
+        experimentContexts.addAll(experimentContextBuilder.build(experimentRegistry.getAllExperiments()));
         loadStateFromPersistence();
     }
 
@@ -189,7 +146,15 @@ public class ExperimentEngineImpl implements ExperimentEngine {
         }
     }
 
-
+    public String runExperiment(final Experiment experiment) {
+        experimentRegistry.addExperiment(experiment.getExperimentName(), experiment);
+        ExperimentContext context = experimentContextBuilder.build(experiment);
+        final ExperimentRunContext experimentRunContext = new ExperimentRunContextImpl
+                .Builder(context, storageFactory.createStorage())
+                .build();
+        planExperimentRunContext(experimentRunContext);
+        return experimentRunContext.getHash();
+    }
 
     private void runExperiments() {
         logger.info("Run and schedule experiments");
@@ -223,8 +188,9 @@ public class ExperimentEngineImpl implements ExperimentEngine {
     public void planExperimentRunContext(final ExperimentRunContext experimentRunContext) {
         if (!isStarted()) throw new IllegalStateException("Cannot plan experiment context when engine is not started");
         if (experimentRunContext.getExperimentContext().isValid()) {
-            invokeBaseline(experimentRunContext);
-            scheduleInvokeAssume(experimentRunContext);
+            experimentRunner.invokeBaseline(experimentRunContext, () -> observer.notifyApplicationStateChanged(this));
+
+            experimentRunner.scheduleInvokeAssume(experimentRunContext, this);
             experimentRunContext.setFinished(true);
         }
     }
@@ -252,103 +218,6 @@ public class ExperimentEngineImpl implements ExperimentEngine {
                 .orElseThrow(() -> new GarethUnknownExperimentException("Cannot find experiment context for hash"));
     }
 
-    private Duration getDuration(final String timeGlueLine) {
-        Duration duration = null;
-        try {
-            duration = definitionRegistry.getDurationForTime(timeGlueLine);
-        } catch (final GarethUnknownDefinitionException e) {
-            throw new GarethInvocationException(e);
-        }
-        return duration;
-    }
-
-    private void invokeBaseline(final ExperimentRunContext runContext) {
-        //final MethodDescriptor baselineMethodDescriptor = runContext.getExperimentContext().getBaseline();
-        String glueLineInExperiment = runContext.getExperimentContext().getBaselineGlueLine();
-        logger.debug(String.format("Invoking baseline: %s with state %s", glueLineInExperiment, runContext
-                .getBaselineState().getName()));
-        if (ExperimentPartState.OPEN == runContext.getBaselineState()) {
-            try {
-                runContext.setBaselineState(ExperimentPartState.RUNNING);
-                MethodDescriptor baseline = runContext.getExperimentContext().getBaseline();
-                if (runContext.getExperimentContext().hasStorage()) {
-                    methodInvoker.invoke(glueLineInExperiment, baseline, runContext.getStorage());
-                } else {
-                    methodInvoker.invoke(glueLineInExperiment, baseline);
-                }
-                runContext.setBaselineState(ExperimentPartState.FINISHED);
-                runContext.setBaselineRun(LocalDateTime.now());
-            } catch (final GarethUnknownDefinitionException | GarethInvocationException e) {
-                runContext.setBaselineState(ExperimentPartState.ERROR);
-                if (!experimentEngineConfig.isIgnoreInvocationExceptions()) {
-                    throw e;
-                }
-            }
-            observer.notifyApplicationStateChanged(this);
-        }
-    }
-
-    private void scheduleInvokeAssume(final ExperimentRunContext experimentRunContext) {
-        if (ExperimentPartState.OPEN == experimentRunContext.getAssumeState()) {
-            try {
-                assumeScheduler.schedule(experimentRunContext, this);
-
-            } catch (final GarethUnknownDefinitionException | GarethInvocationException e) {
-                if (!experimentEngineConfig.isIgnoreInvocationExceptions()) {
-                    throw e;
-                }
-            }
-        }
-    }
-
-    private MethodDescriptor getSuccess(final String glueLine) {
-        MethodDescriptor method = null;
-        try {
-            method = definitionRegistry.getMethodDescriptorForSuccess(glueLine);
-        } catch (final GarethUnknownDefinitionException e) {
-            if (experimentEngineConfig.isIgnoreInvalidDefinitions()) {
-                throw e;
-            }
-        }
-        return method;
-    }
-
-    private MethodDescriptor getAssume(final String glueLine) {
-        MethodDescriptor method = null;
-        try {
-            method = definitionRegistry.getMethodDescriptorForAssume(glueLine);
-        } catch (final GarethUnknownDefinitionException e) {
-            if (experimentEngineConfig.isIgnoreInvalidDefinitions()) {
-                throw e;
-            }
-        }
-        return method;
-    }
-
-
-    private MethodDescriptor getBaseline(final String glueLine) {
-        MethodDescriptor method = null;
-        try {
-            method = definitionRegistry.getMethodDescriptorForBaseline(glueLine);
-        } catch (final GarethUnknownDefinitionException e) {
-            if (experimentEngineConfig.isIgnoreInvalidDefinitions()) {
-                throw e;
-            }
-        }
-        return method;
-    }
-
-    private MethodDescriptor getFailure(final String glueLine) {
-        MethodDescriptor method = null;
-        try {
-            method = definitionRegistry.getMethodDescriptorForFailure(glueLine);
-        } catch (final GarethUnknownDefinitionException e) {
-            if (experimentEngineConfig.isIgnoreInvalidDefinitions()) {
-                throw e;
-            }
-        }
-        return method;
-    }
 
     private void initExperiments() throws GarethExperimentParseException {
         for (final InputStream inputStream : experimentEngineConfig.getInputStreams()) {
@@ -388,123 +257,4 @@ public class ExperimentEngineImpl implements ExperimentEngine {
         parsedDefinition.getTimeDefinitions().forEach((k, v) -> definitionRegistry.addDurationForTime(k, v));
     }
 
-    /**
-     * Experiment engine builder class
-     */
-    public static class Builder {
-
-        private final ExperimentEngineConfig experimentEngineConfig;
-        private DefinitionRegistry definitionRegistry = new DefinitionRegistryImpl();
-        private DefinitionFactory customDefinitionFactory;
-
-        private ReflectionHelper reflectionHelper;
-
-        private ParsedDefinitionFactory parsedDefinitionFactory;
-
-        private MethodInvoker methodInvoker;
-
-        private ExperimentFactory experimentFactory = new ExperimentFactoryImpl();
-        private ExperimentRegistry experimentRegistry = new ExperimentRegistryImpl();
-        private AssumeScheduler assumeScheduler = null;
-        private RestServiceFactory restServiceFactory;
-        private StorageFactory storageFactory = new DefaultStorageFactory();
-        private Observer observer = new DefaultObserver();
-        private ExperimentEnginePersistence experimentEnginePersistence = new FileSystemExperimentEnginePersistence.Builder()
-                .build();
-
-        public Builder(final ExperimentEngineConfig experimentEngineConfig) {
-            this.experimentEngineConfig = experimentEngineConfig;
-        }
-
-        public Builder setDefinitionRegistry(final DefinitionRegistry definitionRegistry) {
-            this.definitionRegistry = definitionRegistry;
-            return this;
-        }
-
-        public Builder setParsedDefinitionFactory(final ParsedDefinitionFactory parsedDefinitionFactory) {
-            this.parsedDefinitionFactory = parsedDefinitionFactory;
-            return this;
-        }
-
-        public Builder setExperimentRegistry(final ExperimentRegistry experimentRegistry) {
-            this.experimentRegistry = experimentRegistry;
-            return this;
-        }
-
-        public Builder setMethodInvoker(final MethodInvoker methodInvoker) {
-            this.methodInvoker = methodInvoker;
-            return this;
-        }
-
-
-        public Builder setExperimentFactory(final ExperimentFactory experimentFactory) {
-            this.experimentFactory = experimentFactory;
-            return this;
-        }
-
-        public Builder setStorageFactory(final StorageFactory storageFactory) {
-            this.storageFactory = storageFactory;
-            return this;
-        }
-
-        public Builder setRestServiceFactory(final RestServiceFactory restServiceFactory) {
-            this.restServiceFactory = restServiceFactory;
-            return this;
-        }
-
-        public Builder setExperimentEnginePersistence(final ExperimentEnginePersistence experimentEnginePersistence) {
-            this.experimentEnginePersistence = experimentEnginePersistence;
-            return this;
-        }
-
-        public Builder setAssumeScheduler(final AssumeScheduler assumeScheduler) {
-            this.assumeScheduler = assumeScheduler;
-            return this;
-        }
-
-        public Builder addCustomDefinitionFactory(DefinitionFactory definitionFactory) {
-            this.customDefinitionFactory = definitionFactory;
-            return this;
-        }
-
-        public ExperimentEngine build() {
-            reflectionHelper = new ReflectionHelper(customDefinitionFactory);
-
-            builParsedDefinitionFactory();
-            builMethodInvoker();
-            registerObservables();
-            buildDefaultAssumeScheduler();
-
-            return new ExperimentEngineImpl(this);
-        }
-
-        private void builParsedDefinitionFactory() {
-            if (parsedDefinitionFactory == null) {
-                parsedDefinitionFactory = new ParsedDefinitionFactoryImpl(reflectionHelper);
-            }
-        }
-
-        private void builMethodInvoker() {
-            if (methodInvoker == null) {
-                methodInvoker = new MethodInvokerImpl(reflectionHelper);
-            }
-        }
-
-        private void buildDefaultAssumeScheduler() {
-            if (assumeScheduler == null) {
-                assumeScheduler = new DefaultAssumeScheduler
-                        .Builder(observer)
-                        .addCustomDefinitionFactory(customDefinitionFactory)
-                        .setIgnoreInvocationExceptions(experimentEngineConfig.isIgnoreInvocationExceptions())
-                        .build();
-            }
-        }
-
-        private void registerObservables() {
-            if (null != experimentEnginePersistence) {
-                observer.registerExperimentStateChangeListener(experimentEnginePersistence
-                        .getExperimentStateChangeListener());
-            }
-        }
-    }
 }

@@ -2,9 +2,6 @@ package org.craftsmenlabs.gareth.api.rest;
 
 import org.craftsmenlabs.gareth.api.ExperimentEngine;
 
-/**
- * Created by hylke on 19/08/15.
- */
 public interface RestServiceFactory {
 
     /**

@@ -9,9 +9,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-/**
- * Created by hylke on 11/08/15.
- */
 public class ExperimentEngineConfigImpl implements ExperimentEngineConfig {
 
 

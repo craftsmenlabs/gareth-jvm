@@ -11,9 +11,6 @@ import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import java.util.List;
 
-/**
- * Created by hylke on 27/08/15.
- */
 @Data
 @XmlRootElement
 public class Experiment {

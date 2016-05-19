@@ -2,9 +2,6 @@ package org.craftsmenlabs.gareth.api;
 
 import java.io.InputStream;
 
-/**
- * Created by hylke on 11/08/15.
- */
 public interface ExperimentEngineConfig {
 
     /**

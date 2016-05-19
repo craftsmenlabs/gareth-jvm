@@ -84,8 +84,7 @@ public class ExperimentEngineImplTest {
         when(mockExperimentEngineConfig.getInputStreams()).thenReturn(new InputStream[]{});
         when(mockExperimentEnginePersistence.getExperimentStateChangeListener())
                 .thenReturn(mockExperimentStateChangeListener);
-        experimentEngine = new ExperimentEngineImpl
-                .Builder(mockExperimentEngineConfig)
+        experimentEngine = new ExperimentEngineImplBuilder(mockExperimentEngineConfig)
                 .setDefinitionRegistry(mockDefinitionRegistry)
                 .setParsedDefinitionFactory(mockParsedDefinitionFactory)
                 .setExperimentFactory(mockExperimentFactory)
