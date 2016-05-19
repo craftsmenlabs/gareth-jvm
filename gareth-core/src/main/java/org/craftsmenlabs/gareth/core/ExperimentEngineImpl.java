@@ -149,6 +149,7 @@ public class ExperimentEngineImpl implements ExperimentEngine {
     public String runExperiment(final Experiment experiment) {
         experimentRegistry.addExperiment(experiment.getExperimentName(), experiment);
         ExperimentContext context = experimentContextBuilder.build(experiment);
+        experimentContexts.add(context);
         final ExperimentRunContext experimentRunContext = new ExperimentRunContextImpl
                 .Builder(context, storageFactory.createStorage())
                 .build();
