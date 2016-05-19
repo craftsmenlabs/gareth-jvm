@@ -4,9 +4,13 @@ import org.craftsmenlabs.gareth.api.annotation.Assume;
 import org.craftsmenlabs.gareth.api.annotation.Baseline;
 import org.craftsmenlabs.gareth.api.annotation.Failure;
 import org.craftsmenlabs.gareth.api.annotation.Success;
+import org.craftsmenlabs.gareth.api.annotation.Time;
 import org.craftsmenlabs.gareth.api.storage.Storage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.time.Duration;
+import java.time.temporal.ChronoUnit;
 
 public class SaleofFruit {
 
@@ -32,7 +36,11 @@ public class SaleofFruit {
     @Success(glueLine = "^send (.*?) to developers$")
     public void anotherSuccess(final String present) {
         LOGGER.info("Send to developers " + present);
+    }
 
+    @Time(glueLine = "next Easter")
+    public Duration nextEaster() {
+        return Duration.of(10L, ChronoUnit.SECONDS);
     }
 
     @Failure(glueLine = "^Blame the suits$")

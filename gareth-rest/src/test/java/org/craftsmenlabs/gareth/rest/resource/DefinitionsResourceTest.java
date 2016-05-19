@@ -37,6 +37,7 @@ public class DefinitionsResourceTest {
     public void setup() {
         when(registry.getGlueLinesPerCategory()).thenReturn(model);
         model.put("baseline", Sets.newHashSet(regexWithNumber, regexWithTwoStrings));
+        model.put("time", Sets.newHashSet("^next Easter$"));
         when(engine.getDefinitionRegistry()).thenReturn(registry);
         resource.init();
     }
@@ -54,7 +55,6 @@ public class DefinitionsResourceTest {
 
     @Test
     public void testForStringOfThreeReturnsListOfTwo() {
-
         assertThat(get("baseline", "sal").get("suggestions"))
                 .containsExactlyInAnyOrder("sale of * is *", "sale of carrots is *");
         assertThat(get("baseline", "sal").get("matches"))
@@ -77,6 +77,17 @@ public class DefinitionsResourceTest {
                 .containsExactlyInAnyOrder("sale of * is *");
     }
 
+    @Test
+    public void testForTimePatternNextEasterReturnsOne() {
+        assertThat(get("time", "next Easter").get("suggestions"))
+                .containsExactlyInAnyOrder("next Easter");
+    }
+
+    @Test
+    public void testForValidTimeStrings() {
+        assertThat(get("time", "12 days").get("suggestions"))
+                .containsExactlyInAnyOrder("* days?");
+    }
 
     Map<String, List<String>> get(String key, String value) {
         Response matches = resource.getMatches(key, value);

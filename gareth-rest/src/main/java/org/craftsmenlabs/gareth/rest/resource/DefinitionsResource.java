@@ -1,7 +1,10 @@
 package org.craftsmenlabs.gareth.rest.resource;
 
+import jersey.repackaged.com.google.common.collect.Lists;
+import jersey.repackaged.com.google.common.collect.Maps;
 import org.craftsmenlabs.gareth.api.ExperimentEngine;
 import org.craftsmenlabs.gareth.api.model.AssumptionBlock;
+import org.craftsmenlabs.gareth.core.parser.CommonDurationExpressionParser;
 import org.craftsmenlabs.gareth.rest.v1.entity.Experiment;
 import org.craftsmenlabs.gareth.rest.v1.media.GarethMediaType;
 
@@ -19,6 +22,7 @@ import javax.ws.rs.core.Response;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -32,11 +36,15 @@ public class DefinitionsResource {
     @Inject
     private ExperimentEngine experimentEngine;
     private Map<String, Set<String>> glueLinesPerCategory;
+    CommonDurationExpressionParser durationParser = new CommonDurationExpressionParser();
 
     @PostConstruct
     public void init() {
-        glueLinesPerCategory = experimentEngine.getDefinitionRegistry()
-                                               .getGlueLinesPerCategory();
+        glueLinesPerCategory = Maps.newHashMap(experimentEngine.getDefinitionRegistry()
+                                                               .getGlueLinesPerCategory());
+        Set<String> expandedTimeGlueLines = new HashSet<>(glueLinesPerCategory.get("time"));
+        expandedTimeGlueLines.addAll(timeGlueLines());
+        glueLinesPerCategory.put("time", expandedTimeGlueLines);
     }
 
 
@@ -66,7 +74,6 @@ public class DefinitionsResource {
         return produceResponse(getMatches(glueLinesPerCategory.get(key), value));
     }
 
-
     private Map<String, List<String>> getMatches(final Set<String> patterns, final String line) {
         if (line == null || line.length() < 3)
             return Collections.emptyMap();
@@ -95,6 +102,11 @@ public class DefinitionsResource {
                 .entity(new GenericEntity<Map<String, List<String>>>(matches) {
                 })
                 .build();
+    }
+
+    private List<String> timeGlueLines() {
+        return Lists
+                .newArrayList("^(\\d+) seconds?$", "^(\\d+) minutes?$", "^(\\d+) hours?$", "^(\\d+) days?$", "^(\\d+) weeks?$", "^(\\d+) months?$", "^(\\d+) years?$");
     }
 
 
