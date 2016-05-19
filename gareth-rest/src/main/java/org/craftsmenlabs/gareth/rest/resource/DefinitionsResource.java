@@ -10,22 +10,11 @@ import org.craftsmenlabs.gareth.rest.v1.media.GarethMediaType;
 
 import javax.annotation.PostConstruct;
 import javax.inject.Inject;
-import javax.ws.rs.Consumes;
-import javax.ws.rs.GET;
-import javax.ws.rs.POST;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.Produces;
+import javax.ws.rs.*;
 import javax.ws.rs.core.GenericEntity;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.function.Predicate;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -41,12 +30,11 @@ public class DefinitionsResource {
     @PostConstruct
     public void init() {
         glueLinesPerCategory = Maps.newHashMap(experimentEngine.getDefinitionRegistry()
-                                                               .getGlueLinesPerCategory());
+                .getGlueLinesPerCategory());
         Set<String> expandedTimeGlueLines = new HashSet<>(glueLinesPerCategory.get("time"));
         expandedTimeGlueLines.addAll(timeGlueLines());
         glueLinesPerCategory.put("time", expandedTimeGlueLines);
     }
-
 
     @POST
     @Consumes({MediaType.APPLICATION_JSON})
@@ -69,13 +57,13 @@ public class DefinitionsResource {
     public Response getMatches(final @PathParam("key") String key, final @PathParam("value") String value) {
         if (!glueLinesPerCategory.containsKey(key)) {
             return Response.status(Response.Status.BAD_REQUEST)
-                           .entity("final part of path must be baseline, assume, succcess, failure or time").build();
+                    .entity("final part of path must be baseline, assume, succcess, failure or time").build();
         }
         return produceResponse(getMatches(glueLinesPerCategory.get(key), value));
     }
 
     private Map<String, List<String>> getMatches(final Set<String> patterns, final String line) {
-        if (line == null || line.length() < 3)
+        if (line == null || line.isEmpty())
             return Collections.emptyMap();
         Map<String, List<String>> output = new HashMap<>();
         output.put("suggestions", getList(patterns, p -> p.contains(line) || matches(p, line)));
@@ -108,6 +96,4 @@ public class DefinitionsResource {
         return Lists
                 .newArrayList("^(\\d+) seconds?$", "^(\\d+) minutes?$", "^(\\d+) hours?$", "^(\\d+) days?$", "^(\\d+) weeks?$", "^(\\d+) months?$", "^(\\d+) years?$");
     }
-
-
 }

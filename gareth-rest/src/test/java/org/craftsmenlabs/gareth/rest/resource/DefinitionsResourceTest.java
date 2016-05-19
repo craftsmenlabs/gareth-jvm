@@ -50,7 +50,7 @@ public class DefinitionsResourceTest {
     @Test
     public void testForNullStringReturnEmptyList() {
         assertThat(get("baseline", null)).isEmpty();
-        assertThat(get("baseline", "sa")).isEmpty();
+        assertThat(get("baseline", "")).isEmpty();
     }
 
     @Test
