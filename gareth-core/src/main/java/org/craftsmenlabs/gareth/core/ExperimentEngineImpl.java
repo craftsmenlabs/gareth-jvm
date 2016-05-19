@@ -153,6 +153,7 @@ public class ExperimentEngineImpl implements ExperimentEngine {
         final ExperimentRunContext experimentRunContext = new ExperimentRunContextImpl
                 .Builder(context, storageFactory.createStorage())
                 .build();
+        experimentRunContexts.add(experimentRunContext);
         planExperimentRunContext(experimentRunContext);
         return experimentRunContext.getHash();
     }
