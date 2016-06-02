@@ -55,7 +55,7 @@ public class DefinitionsResource {
     public Response getMatches(final @PathParam("key") String key, final @PathParam("value") String value) {
         if (!glueLineMatcher.getGlueLineType(key).isPresent()) {
             return Response.status(Response.Status.BAD_REQUEST)
-                           .entity("final part of path must be baseline, assume, succcess, failure or time").build();
+                           .entity("final part of path must be baseline, assumption, success, failure or time").build();
         }
 
         return produceResponse(glueLineMatcher.getMatches(key, value));
