@@ -33,9 +33,9 @@ public class SaleofFruit {
     public void hasRisenByItems() {
     }
 
-    @Success(glueLine = "^send (.*?) to developers$")
-    public void anotherSuccess(final String present) {
-        LOGGER.info("Send to developers " + present);
+    @Success(glueLine = "^send (\\d+) bags of (.*?) to (developers|testers)$")
+    public void anotherSuccess(final int amount, final String present, String recipient) {
+        LOGGER.info("Send {} {} to {}", amount, present, recipient);
     }
 
     @Time(glueLine = "next Easter")

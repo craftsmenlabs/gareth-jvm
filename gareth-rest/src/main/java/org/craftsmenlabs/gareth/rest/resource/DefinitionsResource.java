@@ -1,39 +1,37 @@
 package org.craftsmenlabs.gareth.rest.resource;
 
-import jersey.repackaged.com.google.common.collect.Lists;
-import jersey.repackaged.com.google.common.collect.Maps;
 import org.craftsmenlabs.gareth.api.ExperimentEngine;
 import org.craftsmenlabs.gareth.api.model.AssumptionBlock;
-import org.craftsmenlabs.gareth.core.parser.CommonDurationExpressionParser;
+import org.craftsmenlabs.gareth.core.parser.GlueLineMatcher;
 import org.craftsmenlabs.gareth.rest.v1.entity.Experiment;
 import org.craftsmenlabs.gareth.rest.v1.media.GarethMediaType;
 
 import javax.annotation.PostConstruct;
 import javax.inject.Inject;
-import javax.ws.rs.*;
+import javax.ws.rs.Consumes;
+import javax.ws.rs.GET;
+import javax.ws.rs.POST;
+import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
+import javax.ws.rs.Produces;
 import javax.ws.rs.core.GenericEntity;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-import java.util.*;
-import java.util.function.Predicate;
-import java.util.regex.Pattern;
-import java.util.stream.Collectors;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
 
 @Path("/definitions")
 public class DefinitionsResource {
 
     @Inject
     private ExperimentEngine experimentEngine;
-    private Map<String, Set<String>> glueLinesPerCategory;
-    CommonDurationExpressionParser durationParser = new CommonDurationExpressionParser();
+    private GlueLineMatcher glueLineMatcher = new GlueLineMatcher();
 
     @PostConstruct
     public void init() {
-        glueLinesPerCategory = Maps.newHashMap(experimentEngine.getDefinitionRegistry()
-                .getGlueLinesPerCategory());
-        Set<String> expandedTimeGlueLines = new HashSet<>(glueLinesPerCategory.get("time"));
-        expandedTimeGlueLines.addAll(timeGlueLines());
-        glueLinesPerCategory.put("time", expandedTimeGlueLines);
+        glueLineMatcher.init(experimentEngine.getDefinitionRegistry()
+                                             .getGlueLinesPerCategory());
     }
 
     @POST
@@ -55,33 +53,12 @@ public class DefinitionsResource {
     @GET
     @Produces({GarethMediaType.APPLICATION_JSON_EXPERIMENTS_V1, MediaType.APPLICATION_JSON})
     public Response getMatches(final @PathParam("key") String key, final @PathParam("value") String value) {
-        if (!glueLinesPerCategory.containsKey(key)) {
+        if (!glueLineMatcher.getGlueLineType(key).isPresent()) {
             return Response.status(Response.Status.BAD_REQUEST)
-                    .entity("final part of path must be baseline, assume, succcess, failure or time").build();
+                           .entity("final part of path must be baseline, assume, succcess, failure or time").build();
         }
-        return produceResponse(getMatches(glueLinesPerCategory.get(key), value));
-    }
 
-    private Map<String, List<String>> getMatches(final Set<String> patterns, final String line) {
-        if (line == null || line.isEmpty())
-            return Collections.emptyMap();
-        Map<String, List<String>> output = new HashMap<>();
-        output.put("suggestions", getList(patterns, p -> p.contains(line) || matches(p, line)));
-        output.put("matches", getList(patterns, p -> matches(p, line)));
-        return output;
-    }
-
-    private List<String> getList(final Set<String> patterns, Predicate<String> filter) {
-        return patterns.stream().filter(filter).map(p -> regexForNonTechies(p)).collect(Collectors.toList());
-    }
-
-    private String regexForNonTechies(final String pattern) {
-        return pattern.replaceAll("^\\^", "").replaceAll("\\$$", "").replaceAll("\\(.+?\\)", "*");
-    }
-
-    private boolean matches(final String pattern, final String test) {
-        Pattern compile = Pattern.compile(pattern);
-        return compile.matcher(test).matches();
+        return produceResponse(glueLineMatcher.getMatches(key, value));
     }
 
     private Response produceResponse(Map<String, List<String>> matches) {
@@ -92,8 +69,4 @@ public class DefinitionsResource {
                 .build();
     }
 
-    private List<String> timeGlueLines() {
-        return Lists
-                .newArrayList("^(\\d+) seconds?$", "^(\\d+) minutes?$", "^(\\d+) hours?$", "^(\\d+) days?$", "^(\\d+) weeks?$", "^(\\d+) months?$", "^(\\d+) years?$");
-    }
 }

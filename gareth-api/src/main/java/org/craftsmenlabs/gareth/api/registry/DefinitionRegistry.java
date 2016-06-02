@@ -1,6 +1,7 @@
 package org.craftsmenlabs.gareth.api.registry;
 
 import org.craftsmenlabs.gareth.api.invoker.MethodDescriptor;
+import org.craftsmenlabs.gareth.api.model.GlueLineType;
 
 import java.time.Duration;
 import java.util.Map;
@@ -9,7 +10,7 @@ import java.util.Set;
 public interface DefinitionRegistry
 {
 
-	Map<String, Set<String>> getGlueLinesPerCategory();
+	Map<GlueLineType, Set<String>> getGlueLinesPerCategory();
 
 	/**
 	 * Get method for baseline

@@ -11,6 +11,7 @@ import org.craftsmenlabs.gareth.api.annotation.Time;
 import org.craftsmenlabs.gareth.api.context.ExperimentContext;
 import org.craftsmenlabs.gareth.api.context.ExperimentPartState;
 import org.craftsmenlabs.gareth.api.context.ExperimentRunContext;
+import org.craftsmenlabs.gareth.api.model.GlueLineType;
 import org.craftsmenlabs.gareth.api.registry.DefinitionRegistry;
 import org.craftsmenlabs.gareth.api.storage.Storage;
 import org.junit.After;
@@ -188,14 +189,14 @@ public class ExperimentEngineImplIT {
 
         engine.start();
         DefinitionRegistry definitions = engine.getDefinitionRegistry();
-        Map<String, Set<String>> lines = definitions.getGlueLinesPerCategory();
+        Map<GlueLineType, Set<String>> lines = definitions.getGlueLinesPerCategory();
         assertThat(lines).hasSize(5);
-        assertThat(lines.get("baseline")).containsExactlyInAnyOrder("A baseline", "^get sale of (.*?)$");
-        assertThat(lines.get("assume"))
+        assertThat(lines.get(GlueLineType.BASELINE)).containsExactlyInAnyOrder("A baseline", "^get sale of (.*?)$");
+        assertThat(lines.get(GlueLineType.ASSUMPTION))
                 .containsExactlyInAnyOrder("An assumption", "^(\\d+) (.*?) were sold$", "An assumption with failure");
-        assertThat(lines.get("success")).containsExactlyInAnyOrder("A success");
-        assertThat(lines.get("failure")).containsExactlyInAnyOrder("A failure");
-        assertThat(lines.get("time")).containsExactlyInAnyOrder("1 day");
+        assertThat(lines.get(GlueLineType.SUCCESS)).containsExactlyInAnyOrder("A success");
+        assertThat(lines.get(GlueLineType.FAILURE)).containsExactlyInAnyOrder("A failure");
+        assertThat(lines.get(GlueLineType.TIME)).containsExactlyInAnyOrder("1 day");
     }
 
     @Test

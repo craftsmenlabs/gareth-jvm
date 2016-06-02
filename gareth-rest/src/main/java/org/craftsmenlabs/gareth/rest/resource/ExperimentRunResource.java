@@ -18,9 +18,6 @@ import javax.ws.rs.core.Response;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Created by hylke on 13/10/15.
- */
 @Path("/experimentruns")
 public class ExperimentRunResource {
 
