@@ -11,7 +11,7 @@ import org.mockito.runners.MockitoJUnitRunner;
 @RunWith(MockitoJUnitRunner.class)
 public class CommonDurationExpressionParserTest {
 
-    CommonDurationExpressionParser parser = new CommonDurationExpressionParser();
+    private final CommonDurationExpressionParser parser = new CommonDurationExpressionParser();
 
     @Test
     public void testValidValues() {
