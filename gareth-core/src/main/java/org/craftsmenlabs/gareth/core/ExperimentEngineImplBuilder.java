@@ -27,22 +27,22 @@ import org.craftsmenlabs.gareth.core.storage.DefaultStorageFactory;
 public class ExperimentEngineImplBuilder {
 
     final ExperimentEngineConfig experimentEngineConfig;
-    DefinitionRegistry definitionRegistry = new DefinitionRegistryImpl();
-    DefinitionFactory customDefinitionFactory;
+    protected DefinitionRegistry definitionRegistry = new DefinitionRegistryImpl();
+    protected DefinitionFactory customDefinitionFactory;
 
-    ReflectionHelper reflectionHelper;
+    protected ReflectionHelper reflectionHelper;
 
-    ParsedDefinitionFactory parsedDefinitionFactory;
+    protected ParsedDefinitionFactory parsedDefinitionFactory;
 
-    MethodInvoker methodInvoker;
+    protected MethodInvoker methodInvoker;
 
-    ExperimentFactory experimentFactory = new ExperimentFactoryImpl();
-    ExperimentRegistry experimentRegistry = new ExperimentRegistryImpl();
-    AssumeScheduler assumeScheduler = null;
-    RestServiceFactory restServiceFactory;
-    StorageFactory storageFactory = new DefaultStorageFactory();
-    Observer observer = new DefaultObserver();
-    ExperimentEnginePersistence experimentEnginePersistence = new FileSystemExperimentEnginePersistence.Builder()
+    protected ExperimentFactory experimentFactory = new ExperimentFactoryImpl();
+    protected ExperimentRegistry experimentRegistry = new ExperimentRegistryImpl();
+    protected AssumeScheduler assumeScheduler = null;
+    protected RestServiceFactory restServiceFactory;
+    protected StorageFactory storageFactory = new DefaultStorageFactory();
+    protected Observer observer = new DefaultObserver();
+    protected ExperimentEnginePersistence experimentEnginePersistence = new FileSystemExperimentEnginePersistence.Builder()
             .build();
 
     public ExperimentEngineImplBuilder(final ExperimentEngineConfig experimentEngineConfig) {

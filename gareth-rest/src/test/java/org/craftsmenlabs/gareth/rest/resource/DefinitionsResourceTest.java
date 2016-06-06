@@ -28,7 +28,7 @@ public class DefinitionsResourceTest {
     @Mock
     private ExperimentEngine engine;
     @Mock
-    GlueLineMatcher glueLineMatcher;
+    private GlueLineMatcher glueLineMatcher;
     @Mock
     private DefinitionRegistry registry;
     @InjectMocks

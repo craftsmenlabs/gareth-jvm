@@ -68,7 +68,7 @@ public class ExperimentEngineImpl implements ExperimentEngine {
     private boolean started;
 
 
-    ExperimentEngineImpl(final ExperimentEngineImplBuilder builder) {
+    protected ExperimentEngineImpl(final ExperimentEngineImplBuilder builder) {
         this.experimentEngineConfig = builder.experimentEngineConfig;
         this.definitionRegistry = builder.definitionRegistry;
         this.parsedDefinitionFactory = builder.parsedDefinitionFactory;
