@@ -57,7 +57,7 @@ public class DefaultAssumeScheduler implements AssumeScheduler {
 
             SundialJobScheduler.addJob(jobName, DefaultInvocationJob.class.getName(), jobParams, false);
             safeThreadSleep(1); // Seems like SundialJobScheduler needs a minimum amount of delay between these two calls.
-                                // Otherwise ExperimentEngineImplIT will fail. TODO: Figure out why
+            // Otherwise ExperimentEngineImplIT will fail. TODO: Figure out why
             SundialJobScheduler.addSimpleTrigger(triggerName, jobName, 0, 1, now.getTime(), null);
         } catch (final GarethUnknownDefinitionException | GarethInvocationException e) {
             System.out.println("############ Gareth Exception ###########");
@@ -86,7 +86,7 @@ public class DefaultAssumeScheduler implements AssumeScheduler {
 
         private DefinitionFactory customDefinitionFactory;
 
-        public Builder(final org.craftsmenlabs.gareth.api.observer.Observer observer) {
+        public Builder(final Observer observer) {
             this.observer = observer;
         }
 
@@ -100,7 +100,7 @@ public class DefaultAssumeScheduler implements AssumeScheduler {
             return this;
         }
 
-        public Builder addCustomDefinitionFactory(DefinitionFactory customDefinitionFactory) {
+        public Builder addCustomDefinitionFactory(final DefinitionFactory customDefinitionFactory) {
             this.customDefinitionFactory = customDefinitionFactory;
             return this;
         }

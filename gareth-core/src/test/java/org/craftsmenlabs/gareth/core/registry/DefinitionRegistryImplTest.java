@@ -20,13 +20,13 @@ import static org.junit.Assert.assertTrue;
 
 public class DefinitionRegistryImplTest {
 
-    Method mockMethod;
-    MethodDescriptor baseLineDescriptor;
-    MethodDescriptor baseLineDescriptor2;
-    MethodDescriptor assumeDescriptor;
-    MethodDescriptor successDescriptor;
-    MethodDescriptor failureDescriptor;
-    Duration duration;
+    private Method mockMethod;
+    private MethodDescriptor baseLineDescriptor;
+    private MethodDescriptor baseLineDescriptor2;
+    private MethodDescriptor assumeDescriptor;
+    private MethodDescriptor successDescriptor;
+    private MethodDescriptor failureDescriptor;
+    private Duration duration;
     private DefinitionRegistryImpl registry;
 
     @Before

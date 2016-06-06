@@ -21,20 +21,20 @@ import java.util.Optional;
 
 public class ExperimentContextBuilder {
     private final static Logger logger = LoggerFactory.getLogger(ExperimentContextBuilder.class);
-    DefinitionRegistry definitionRegistry;
-    ExperimentEngineConfig experimentEngineConfig;
+    private final DefinitionRegistry definitionRegistry;
+    private final ExperimentEngineConfig experimentEngineConfig;
 
-    public ExperimentContextBuilder(DefinitionRegistry definitionRegistry,
-                                    ExperimentEngineConfig experimentEngineConfig) {
+    public ExperimentContextBuilder(final DefinitionRegistry definitionRegistry,
+                                    final ExperimentEngineConfig experimentEngineConfig) {
         this.definitionRegistry = definitionRegistry;
         this.experimentEngineConfig = experimentEngineConfig;
     }
 
-    ExperimentContext build(Experiment experiment) {
+    ExperimentContext build(final Experiment experiment) {
         return build(Arrays.asList(experiment)).get(0);
     }
 
-    List<ExperimentContext> build(List<Experiment> experiments) {
+    List<ExperimentContext> build(final List<Experiment> experiments) {
         List<ExperimentContext> experimentContexts = new ArrayList<>();
         logger.info("Populating experiment contexts");
         for (final Experiment experiment : experiments) {
