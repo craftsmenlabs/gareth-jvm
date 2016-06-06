@@ -15,24 +15,24 @@ import java.time.LocalDateTime;
 
 public class ExperimentRunner {
     private static Logger logger = LoggerFactory.getLogger(ExperimentRunner.class);
-    private MethodInvoker methodInvoker;
-    private AssumeScheduler assumeScheduler;
-    private boolean ignoreInvocationExceptions;
+    private final MethodInvoker methodInvoker;
+    private final AssumeScheduler assumeScheduler;
+    private final boolean ignoreInvocationExceptions;
 
     @FunctionalInterface
     public interface Informer {
         void invoke();
     }
 
-    public ExperimentRunner(MethodInvoker methodInvoker, AssumeScheduler assumeScheduler, boolean ignoreInvocationExceptions) {
+    public ExperimentRunner(final MethodInvoker methodInvoker,final AssumeScheduler assumeScheduler,final boolean ignoreInvocationExceptions) {
         this.methodInvoker = methodInvoker;
         this.assumeScheduler = assumeScheduler;
         this.ignoreInvocationExceptions = ignoreInvocationExceptions;
     }
 
-    void invokeBaseline(final ExperimentRunContext runContext, final Informer onStateChange) {
+    protected void invokeBaseline(final ExperimentRunContext runContext, final Informer onStateChange) {
         //final MethodDescriptor baselineMethodDescriptor = runContext.getExperimentContext().getBaseline();
-        String glueLineInExperiment = runContext.getExperimentContext().getBaselineGlueLine();
+        final String glueLineInExperiment = runContext.getExperimentContext().getBaselineGlueLine();
         logger.debug(String.format("Invoking baseline: %s with state %s", glueLineInExperiment, runContext
                 .getBaselineState().getName()));
         if (ExperimentPartState.OPEN == runContext.getBaselineState()) {
@@ -57,7 +57,7 @@ public class ExperimentRunner {
     }
 
 
-    void scheduleInvokeAssume(final ExperimentRunContext experimentRunContext, final ExperimentEngine engine) {
+    protected void scheduleInvokeAssume(final ExperimentRunContext experimentRunContext, final ExperimentEngine engine) {
         if (ExperimentPartState.OPEN == experimentRunContext.getAssumeState()) {
             try {
                 assumeScheduler.schedule(experimentRunContext, engine);

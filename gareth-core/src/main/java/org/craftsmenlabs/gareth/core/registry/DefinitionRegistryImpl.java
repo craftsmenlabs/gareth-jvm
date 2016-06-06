@@ -19,7 +19,7 @@ import java.util.regex.Pattern;
 public class DefinitionRegistryImpl implements DefinitionRegistry {
 
     private final Map<String, Pattern> regexes = new HashMap();
-    CommonDurationExpressionParser durationExpressionParser = new CommonDurationExpressionParser();
+    private final CommonDurationExpressionParser durationExpressionParser = new CommonDurationExpressionParser();
     private final Map<String, MethodDescriptor> baselineDefinitions = new HashMap<>();
     private final Map<String, MethodDescriptor> assumeDefinitions = new HashMap<>();
     private final Map<String, MethodDescriptor> successDefinitions = new HashMap<>();
@@ -88,21 +88,21 @@ public class DefinitionRegistryImpl implements DefinitionRegistry {
 
     private MethodDescriptor getDefinition(final Map<String, MethodDescriptor> valueMap, final String experimentLine) {
         Optional<MethodDescriptor> match = valueMap.values().stream()
-                                                   .filter(md -> matchesPattern(experimentLine, md
-                                                           .getRegexPatternForGlueLine())).findFirst();
+                .filter(md -> matchesPattern(experimentLine, md
+                        .getRegexPatternForGlueLine())).findFirst();
         return match.orElseThrow(() -> new GarethUnknownDefinitionException(String
                 .format("No definition found for glue line '%s'", experimentLine)));
     }
 
     private <T> T getTimeDefinition(final Map<String, T> valueMap, final String experimentLine) {
-        Optional<String> match = valueMap.keySet().stream()
-                                         .filter(annotationPattern -> matchesPattern(experimentLine, annotationPattern))
-                                         .findFirst();
+        final Optional<String> match = valueMap.keySet().stream()
+                .filter(annotationPattern -> matchesPattern(experimentLine, annotationPattern))
+                .findFirst();
         if (match.isPresent()) {
             return valueMap.get(match.get());
         } else {
             //if no custom Time method is available, try to parse the experiment glueline to a common expression
-            Optional<Duration> duration = durationExpressionParser.parse(experimentLine);
+            final Optional<Duration> duration = durationExpressionParser.parse(experimentLine);
             return (T) duration
                     .orElseThrow(() -> new GarethUnknownDefinitionException("No definition found for glue line " + experimentLine));
         }
@@ -117,7 +117,7 @@ public class DefinitionRegistryImpl implements DefinitionRegistry {
         }
     }
 
-    private boolean matchesPattern(String experimentLine, String pattern) {
+    private boolean matchesPattern(final String experimentLine, final String pattern) {
         if (experimentLine == null || pattern == null) {
             return false;
         }

@@ -11,7 +11,7 @@ import java.util.regex.Pattern;
  */
 public class CommonDurationExpressionParser {
 
-    Pattern PATTERN = Pattern.compile("(\\d{1,5}) ?([a-zA-Z]{3,7})");
+    private final Pattern PATTERN = Pattern.compile("(\\d{1,5}) ?([a-zA-Z]{3,7})");
 
     private enum TimeUnits {
         SECOND(ChronoUnit.SECONDS, 0),
@@ -32,16 +32,16 @@ public class CommonDurationExpressionParser {
         ChronoUnit chrono;
         int factor = 0;
 
-        TimeUnits(ChronoUnit chrono, int factor) {
+        TimeUnits(final ChronoUnit chrono, final int factor) {
             this.chrono = chrono;
             this.factor = factor;
         }
 
-        static Duration getDuration(String text, int amount) {
+        static Duration getDuration(final String text, final int amount) {
             TimeUnits unit = null;
             try {
                 unit = TimeUnits.valueOf(text.trim().toUpperCase());
-            } catch (Exception e) {
+            } catch (final Exception e) {
                 throw new IllegalArgumentException("Value for duration must be one of " + TimeUnits.values());
             }
             if (unit.factor == 0)
@@ -54,7 +54,7 @@ public class CommonDurationExpressionParser {
         }
     }
 
-    public Optional<Duration> parse(String text) {
+    public Optional<Duration> parse(final String text) {
         try {
             return Optional.of(parseStrict(text));
         } catch (IllegalArgumentException e) {
@@ -62,7 +62,7 @@ public class CommonDurationExpressionParser {
         }
     }
 
-    public Duration parseStrict(String text) {
+    public Duration parseStrict(final String text) {
         if (text == null)
             throw new IllegalArgumentException("input string cannot be null");
         Matcher matcher = PATTERN.matcher(text);
@@ -71,7 +71,7 @@ public class CommonDurationExpressionParser {
         return parse(matcher.group(1), matcher.group(2));
     }
 
-    private Duration parse(String amount, String unit) {
+    private Duration parse(final String amount, final String unit) {
         int i = Integer.parseInt(amount);
         if (i < 1 || i > 99999)
             throw new IllegalArgumentException("value must be between 1 and 99999");

@@ -75,8 +75,8 @@ public class RegexAnnotatedMethodAdapter {
     }
 
     public List<Object> getArgumentValuesFromInputString(final String input) {
-        List<String> parametersFromPattern = getParametersFromPattern(input.trim());
-        List<Object> parameters = new ArrayList<>();
+        final List<String> parametersFromPattern = getParametersFromPattern(input.trim());
+        final List<Object> parameters = new ArrayList<>();
         for (int i = 0; i < parametersFromPattern.size(); i++) {
             Class<?> cls = getNonStorageParameters().get(i);
             parameters.add(getValueFromString(cls, parametersFromPattern.get(i)));
@@ -100,14 +100,14 @@ public class RegexAnnotatedMethodAdapter {
         return null;
     }
 
-    List<String> getParametersFromPattern(String s) {
-        List<String> output = new ArrayList<>();
-        Matcher matcher = pattern.matcher(s);
+    private List<String> getParametersFromPattern(final String s) {
+        final List<String> output = new ArrayList<>();
+        final Matcher matcher = pattern.matcher(s);
         if (!matcher.matches()) {
             throw new IllegalArgumentException("Input string " + s + " could not be matched against pattern " + getPattern());
         }
-        int groupCount = matcher.groupCount();
-        int expectedParameters = getNonStorageParameters().size();
+        final int groupCount = matcher.groupCount();
+        final int expectedParameters = getNonStorageParameters().size();
         if (groupCount != expectedParameters) {
             throw new IllegalArgumentException("Input string " + s + " must have " + expectedParameters + " parameters.");
         }

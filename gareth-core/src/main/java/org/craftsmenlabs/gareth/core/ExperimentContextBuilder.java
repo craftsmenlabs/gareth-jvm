@@ -30,11 +30,11 @@ public class ExperimentContextBuilder {
         this.experimentEngineConfig = experimentEngineConfig;
     }
 
-    ExperimentContext build(final Experiment experiment) {
+    protected ExperimentContext build(final Experiment experiment) {
         return build(Arrays.asList(experiment)).get(0);
     }
 
-    List<ExperimentContext> build(final List<Experiment> experiments) {
+    protected List<ExperimentContext> build(final List<Experiment> experiments) {
         List<ExperimentContext> experimentContexts = new ArrayList<>();
         logger.info("Populating experiment contexts");
         for (final Experiment experiment : experiments) {

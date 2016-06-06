@@ -14,7 +14,7 @@ public class RegexAnnotatedMethodAdapterTest {
 
     @Test
     public void simpleLineWithoutStorage() throws NoSuchMethodException {
-        RegexAnnotatedMethodAdapter line =
+        final RegexAnnotatedMethodAdapter line =
                 new RegexAnnotatedMethodAdapter(Simple.class.getMethod("line"), "simpleLineWithoutStorage");
         assertThat(line.getNonStorageParameters()).isEmpty();
         assertThat(line.getPattern()).isEqualTo("simpleLineWithoutStorage");
@@ -123,7 +123,7 @@ public class RegexAnnotatedMethodAdapterTest {
     }
 
     class WithIntAndLongAndDouble {
-        String result;
+        private String result;
 
         @Baseline(glueLine = "Bookings for (.*?) with (.*?) beds? should have increased by (.*?)%")
         public void line(String roomType, int beds, double doubleVal) {

@@ -26,7 +26,7 @@ import org.craftsmenlabs.gareth.core.storage.DefaultStorageFactory;
 
 public class ExperimentEngineImplBuilder {
 
-    final ExperimentEngineConfig experimentEngineConfig;
+    protected final ExperimentEngineConfig experimentEngineConfig;
     protected DefinitionRegistry definitionRegistry = new DefinitionRegistryImpl();
     protected DefinitionFactory customDefinitionFactory;
 

@@ -16,13 +16,13 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 @RunWith(MockitoJUnitRunner.class)
 public class GlueLineMatcherTest {
-    String regexWithNumber = "^sale of carrots has risen by (\\d+?) per cent$";
-    String regexWithTwoStrings = "^sale of (.*?) is (.*?)$";
+    private final String regexWithNumber = "^sale of carrots has risen by (\\d+?) per cent$";
+    private final String regexWithTwoStrings = "^sale of (.*?) is (.*?)$";
 
     private Map<GlueLineType, Set<String>> model = new HashMap<>();
 
     @InjectMocks
-    GlueLineMatcher glueLineMatcher;
+    private GlueLineMatcher glueLineMatcher;
 
     @Before
     public void setup() {

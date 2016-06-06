@@ -32,7 +32,7 @@ public class DefinitionsResourceTest {
     @Mock
     private DefinitionRegistry registry;
     @InjectMocks
-    DefinitionsResource resource;
+    private DefinitionsResource resource;
     private Map<GlueLineType, Set<String>> model = new HashMap<>();
 
     @Before
