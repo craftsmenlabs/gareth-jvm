@@ -13,6 +13,30 @@ public class CommonDurationExpressionParser {
 
     private final Pattern PATTERN = Pattern.compile("(\\d{1,5}) ?([a-zA-Z]{3,7})");
 
+    public Optional<Duration> parse(final String text) {
+        try {
+            return Optional.of(parseStrict(text));
+        } catch (IllegalArgumentException e) {
+            return Optional.empty();
+        }
+    }
+
+    public Duration parseStrict(final String text) {
+        if (text == null)
+            throw new IllegalArgumentException("input string cannot be null");
+        Matcher matcher = PATTERN.matcher(text);
+        if (matcher == null || !matcher.matches())
+            throw new IllegalArgumentException("input string is not a valid expression: " + text);
+        return parse(matcher.group(1), matcher.group(2));
+    }
+
+    private Duration parse(final String amount, final String unit) {
+        int i = Integer.parseInt(amount);
+        if (i < 1 || i > 99999)
+            throw new IllegalArgumentException("value must be between 1 and 99999");
+        return TimeUnits.getDuration(unit, i);
+    }
+
     private enum TimeUnits {
         SECOND(ChronoUnit.SECONDS, 0),
         SECONDS(ChronoUnit.SECONDS, 0),
@@ -52,30 +76,6 @@ public class CommonDurationExpressionParser {
                 return Duration.of(amount * unit.factor, ChronoUnit.DAYS);
             }
         }
-    }
-
-    public Optional<Duration> parse(final String text) {
-        try {
-            return Optional.of(parseStrict(text));
-        } catch (IllegalArgumentException e) {
-            return Optional.empty();
-        }
-    }
-
-    public Duration parseStrict(final String text) {
-        if (text == null)
-            throw new IllegalArgumentException("input string cannot be null");
-        Matcher matcher = PATTERN.matcher(text);
-        if (matcher == null || !matcher.matches())
-            throw new IllegalArgumentException("input string is not a valid expression: " + text);
-        return parse(matcher.group(1), matcher.group(2));
-    }
-
-    private Duration parse(final String amount, final String unit) {
-        int i = Integer.parseInt(amount);
-        if (i < 1 || i > 99999)
-            throw new IllegalArgumentException("value must be between 1 and 99999");
-        return TimeUnits.getDuration(unit, i);
     }
 
 }

@@ -1,18 +1,24 @@
 package org.craftsmenlabs.gareth.core.parser;
 
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-import java.time.Duration;
-import org.craftsmenlabs.gareth.api.annotation.*;
+import org.craftsmenlabs.gareth.api.annotation.Assume;
+import org.craftsmenlabs.gareth.api.annotation.Baseline;
+import org.craftsmenlabs.gareth.api.annotation.Failure;
+import org.craftsmenlabs.gareth.api.annotation.Success;
+import org.craftsmenlabs.gareth.api.annotation.Time;
 import org.craftsmenlabs.gareth.api.definition.ParsedDefinition;
 import org.craftsmenlabs.gareth.api.invoker.MethodDescriptor;
 import org.craftsmenlabs.gareth.api.storage.Storage;
 import org.craftsmenlabs.gareth.core.reflection.ReflectionHelper;
 import org.junit.Before;
 import org.junit.Test;
+
+import java.time.Duration;
+
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 public class ParsedDefinitionFactoryImplTest {
 

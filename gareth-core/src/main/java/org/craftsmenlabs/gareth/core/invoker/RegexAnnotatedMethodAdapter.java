@@ -16,9 +16,9 @@ import java.util.stream.Collectors;
 
 public class RegexAnnotatedMethodAdapter {
 
+    private final List<Class<?>> parameters = new ArrayList<>();
     private Pattern pattern;
     private Method method;
-    private final List<Class<?>> parameters = new ArrayList<>();
 
     public RegexAnnotatedMethodAdapter(final Method method, String pattern) {
         this.method = method;
@@ -54,7 +54,7 @@ public class RegexAnnotatedMethodAdapter {
 
     private boolean isValidType(Type type) {
         return type.getTypeName().equals("java.lang.String") || type.getTypeName().equals("int") || type.getTypeName()
-                .equals("long") || type
+                                                                                                        .equals("long") || type
                 .getTypeName().equals("double");
     }
 

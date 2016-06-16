@@ -15,7 +15,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.time.Duration;
-import java.util.*;
+import java.util.Calendar;
+import java.util.GregorianCalendar;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Random;
 
 /**
  * Created by hylke on 17/08/15.
@@ -77,13 +81,10 @@ public class DefaultAssumeScheduler implements AssumeScheduler {
     }
 
     public static class Builder {
+        private final org.craftsmenlabs.gareth.api.observer.Observer observer;
         private ReflectionHelper reflectionHelper;
-
         private MethodInvoker methodInvoker;
         private boolean ignoreInvocationExceptions;
-
-        private final org.craftsmenlabs.gareth.api.observer.Observer observer;
-
         private DefinitionFactory customDefinitionFactory;
 
         public Builder(final Observer observer) {

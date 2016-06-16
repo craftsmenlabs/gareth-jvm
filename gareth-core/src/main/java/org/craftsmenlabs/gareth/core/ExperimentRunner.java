@@ -19,12 +19,7 @@ public class ExperimentRunner {
     private final AssumeScheduler assumeScheduler;
     private final boolean ignoreInvocationExceptions;
 
-    @FunctionalInterface
-    public interface Informer {
-        void invoke();
-    }
-
-    public ExperimentRunner(final MethodInvoker methodInvoker,final AssumeScheduler assumeScheduler,final boolean ignoreInvocationExceptions) {
+    public ExperimentRunner(final MethodInvoker methodInvoker, final AssumeScheduler assumeScheduler, final boolean ignoreInvocationExceptions) {
         this.methodInvoker = methodInvoker;
         this.assumeScheduler = assumeScheduler;
         this.ignoreInvocationExceptions = ignoreInvocationExceptions;
@@ -56,7 +51,6 @@ public class ExperimentRunner {
         }
     }
 
-
     protected void scheduleInvokeAssume(final ExperimentRunContext experimentRunContext, final ExperimentEngine engine) {
         if (ExperimentPartState.OPEN == experimentRunContext.getAssumeState()) {
             try {
@@ -67,6 +61,12 @@ public class ExperimentRunner {
                 }
             }
         }
+    }
+
+
+    @FunctionalInterface
+    public interface Informer {
+        void invoke();
     }
 
 }

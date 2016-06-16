@@ -1,9 +1,9 @@
 package org.craftsmenlabs.gareth.rest.resource;
 
 import org.craftsmenlabs.gareth.api.ExperimentEngine;
-import org.craftsmenlabs.gareth.api.model.AssumptionBlock;
 import org.craftsmenlabs.gareth.core.parser.GlueLineMatcher;
 import org.craftsmenlabs.gareth.rest.v1.entity.Experiment;
+import org.craftsmenlabs.gareth.rest.v1.entity.ExperimentToModelMapper;
 import org.craftsmenlabs.gareth.rest.v1.media.GarethMediaType;
 
 import javax.annotation.PostConstruct;
@@ -17,7 +17,6 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.GenericEntity;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
@@ -27,6 +26,7 @@ public class DefinitionsResource {
     @Inject
     private ExperimentEngine experimentEngine;
     private GlueLineMatcher glueLineMatcher = new GlueLineMatcher();
+    ExperimentToModelMapper mapper = new ExperimentToModelMapper();
 
     @PostConstruct
     public void init() {
@@ -37,16 +37,7 @@ public class DefinitionsResource {
     @POST
     @Consumes({MediaType.APPLICATION_JSON})
     public String createNewExperimentRun(final Experiment experiment) {
-        org.craftsmenlabs.gareth.api.model.Experiment model = new org.craftsmenlabs.gareth.api.model.Experiment();
-        model.setExperimentName(experiment.getExperimentName());
-        AssumptionBlock block = new AssumptionBlock();
-        block.setBaseline(experiment.getBaselineGlueLine());
-        block.setAssumption(experiment.getAssumeGlueLine());
-        block.setFailure(experiment.getFailureGlueLine());
-        block.setSuccess(experiment.getSuccessGlueLine());
-        block.setTime(experiment.getTimeGlueLine());
-        model.setAssumptionBlockList(Arrays.asList(block));
-        return experimentEngine.runExperiment(model);
+        return experimentEngine.runExperiment(mapper.map(experiment));
     }
 
     @Path("{key}/{value}")
