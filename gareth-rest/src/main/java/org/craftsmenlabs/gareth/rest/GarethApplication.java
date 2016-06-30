@@ -13,7 +13,6 @@ import org.glassfish.jersey.server.ResourceConfig;
 
 public class GarethApplication extends ResourceConfig {
 
-
     public GarethApplication(final ExperimentEngine experimentEngine) {
         registerInstances(new ExperimentEngineFeature(experimentEngine));
         register(JacksonJaxbJsonProvider.class);
@@ -23,9 +22,5 @@ public class GarethApplication extends ResourceConfig {
         register(DefinitionsResource.class);
         register(ExperimentRerunResource.class);
         register(CORSFilter.class);
-
-
     }
-
-
 }

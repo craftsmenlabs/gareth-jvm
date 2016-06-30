@@ -74,6 +74,6 @@ public class GlueLineMatcher {
 
     private List<String> timeGlueLines() {
         return Lists
-                .newArrayList("^(\\d+) seconds?$", "^(\\d+) minutes?$", "^(\\d+) hours?$", "^(\\d+) days?$", "^(\\d+) weeks?$", "^(\\d+) months?$", "^(\\d+) years?$");
+                .newArrayList("^(\\d+) seconds$", "^(\\d+) minutes$", "^(\\d+) hours$", "^(\\d+) days$", "^(\\d+) weeks$", "^(\\d+) months$", "^(\\d+) years$");
     }
 }

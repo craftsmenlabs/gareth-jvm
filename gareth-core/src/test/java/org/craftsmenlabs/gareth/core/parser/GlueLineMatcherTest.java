@@ -64,7 +64,7 @@ public class GlueLineMatcherTest {
     @Test
     public void testForValidTimeStrings() {
         assertThat(glueLineMatcher.getMatches("time", "12 days").get("suggestions"))
-                .containsExactlyInAnyOrder("* days?");
+                .containsExactlyInAnyOrder("* days");
     }
 
     private void assertSuggestionContains(String line, String... values) {
