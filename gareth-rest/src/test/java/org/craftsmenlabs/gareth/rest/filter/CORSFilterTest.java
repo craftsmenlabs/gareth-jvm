@@ -9,12 +9,9 @@ import org.mockito.MockitoAnnotations;
 
 import javax.ws.rs.core.MultivaluedHashMap;
 
-import static org.junit.Assert.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.when;
 
-/**
- * Created by hylke on 24/09/15.
- */
 public class CORSFilterTest {
 
     private CORSFilter corsFilter;
@@ -35,11 +32,13 @@ public class CORSFilterTest {
     public void testFilter() throws Exception {
         final MultivaluedHashMap<String, Object> headers = new MultivaluedHashMap<>();
         when(mockContainerResponse.getHeaders()).thenReturn(headers);
+
         corsFilter.filter(mockContainerRequest, mockContainerResponse);
-        assertTrue(headers.containsKey("Access-Control-Allow-Origin"));
-        assertTrue(headers.containsKey("Accces-Control-Allow-Headers"));
-        assertTrue(headers.containsKey("Access-Control-Allow-Credentials"));
-        assertTrue(headers.containsKey("Access-Control-Allow-Methods"));
-        assertTrue(headers.containsKey("Access-Control-Max-Age"));
+
+        assertThat(headers.containsKey("Access-Control-Allow-Origin")).isTrue();
+        assertThat(headers.containsKey("Access-Control-Allow-Headers")).isTrue();
+        assertThat(headers.containsKey("Access-Control-Allow-Credentials")).isTrue();
+        assertThat(headers.containsKey("Access-Control-Allow-Methods")).isTrue();
+        assertThat(headers.containsKey("Access-Control-Max-Age")).isTrue();
     }
 }

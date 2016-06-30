@@ -22,10 +22,9 @@ public class CORSFilter implements ContainerResponseFilter {
         final MultivaluedMap<String, Object> responseHeaders = responseContext.getHeaders();
 
         responseHeaders.add("Access-Control-Allow-Origin", "*");
-        responseHeaders.add("Accces-Control-Allow-Headers", "origin, content-type, accept, authorization");
         responseHeaders.add("Access-Control-Allow-Credentials", "true");
-        responseHeaders.add("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS, HEAD");
+        responseHeaders.add("Access-Control-Allow-Methods", "GET,HEAD,OPTIONS,POST,PUT");
+        responseHeaders.add("Access-Control-Allow-Headers", "Access-Control-Allow-Headers, Origin, Accept, X-Requested-With, Content-Type, Access-Control-Request-Method, Access-Control-Request-Headers");
         responseHeaders.add("Access-Control-Max-Age", ACCESS_CONTROL_MAX_AGE_IN_SECONDS);
-
     }
 }
