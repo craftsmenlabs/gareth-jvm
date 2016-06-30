@@ -27,12 +27,16 @@ public class DefinitionsResourceTest {
 
     @Mock
     private ExperimentEngine engine;
+
     @Mock
-    private GlueLineMatcher glueLineMatcher;
+    GlueLineMatcher glueLineMatcher;
+
     @Mock
     private DefinitionRegistry registry;
+
     @InjectMocks
-    private DefinitionsResource resource;
+    DefinitionsResource resource;
+
     private Map<GlueLineType, Set<String>> model = new HashMap<>();
 
     @Before

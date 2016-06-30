@@ -19,13 +19,13 @@ public class CORSFilter implements ContainerResponseFilter {
     @Override
     public void filter(final ContainerRequestContext requestContext, final ContainerResponseContext responseContext) throws IOException {
         final int ACCESS_CONTROL_MAX_AGE_IN_SECONDS = 12 * 60 * 60;
-        final MultivaluedMap<String, Object> headers = responseContext.getHeaders();
+        final MultivaluedMap<String, Object> responseHeaders = responseContext.getHeaders();
 
-        headers.add("Access-Control-Allow-Origin", "*");
-        headers.add("Accces-Control-Allow-Headers", "origin, content-type, accept, authorization");
-        headers.add("Access-Control-Allow-Credentials", "true");
-        headers.add("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS, HEAD");
-        headers.add("Access-Control-Max-Age", ACCESS_CONTROL_MAX_AGE_IN_SECONDS);
+        responseHeaders.add("Access-Control-Allow-Origin", "*");
+        responseHeaders.add("Accces-Control-Allow-Headers", "origin, content-type, accept, authorization");
+        responseHeaders.add("Access-Control-Allow-Credentials", "true");
+        responseHeaders.add("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS, HEAD");
+        responseHeaders.add("Access-Control-Max-Age", ACCESS_CONTROL_MAX_AGE_IN_SECONDS);
 
     }
 }

@@ -8,12 +8,7 @@ import org.craftsmenlabs.gareth.rest.v1.media.GarethMediaType;
 
 import javax.annotation.PostConstruct;
 import javax.inject.Inject;
-import javax.ws.rs.Consumes;
-import javax.ws.rs.GET;
-import javax.ws.rs.POST;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.Produces;
+import javax.ws.rs.*;
 import javax.ws.rs.core.GenericEntity;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
@@ -33,6 +28,15 @@ public class DefinitionsResource {
         glueLineMatcher.init(experimentEngine.getDefinitionRegistry()
                                              .getGlueLinesPerCategory());
     }
+
+
+    @Path("ping")
+    @POST
+    @Consumes({MediaType.APPLICATION_JSON})
+    public String createNewExperimentRun() {
+        return "pong";
+    }
+
 
     @POST
     @Consumes({MediaType.APPLICATION_JSON})
