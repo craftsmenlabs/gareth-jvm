@@ -29,15 +29,6 @@ public class DefinitionsResource {
                                              .getGlueLinesPerCategory());
     }
 
-
-    @Path("ping")
-    @POST
-    @Consumes({MediaType.APPLICATION_JSON})
-    public String createNewExperimentRun() {
-        return "pong";
-    }
-
-
     @POST
     @Consumes({MediaType.APPLICATION_JSON})
     public String createNewExperimentRun(final Experiment experiment) {

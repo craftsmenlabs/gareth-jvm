@@ -53,9 +53,10 @@ public class RegexAnnotatedMethodAdapter {
     }
 
     private boolean isValidType(Type type) {
-        return type.getTypeName().equals("java.lang.String") || type.getTypeName().equals("int") || type.getTypeName()
-                                                                                                        .equals("long") || type
-                .getTypeName().equals("double");
+        return type.getTypeName().equals("java.lang.String")
+                || type.getTypeName().equals("int")
+                || type.getTypeName().equals("long")
+                || type.getTypeName().equals("double");
     }
 
     public List<Class<?>> getNonStorageParameters() {
