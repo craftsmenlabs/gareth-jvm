@@ -1,4 +1,4 @@
-package org.craftsmenlabs.gareth.rest.resource;
+package org.craftsmenlabs.gareth.rest.v1.resource;
 
 import org.craftsmenlabs.gareth.api.ExperimentEngine;
 import org.craftsmenlabs.gareth.core.parser.GlueLineMatcher;

@@ -4,10 +4,10 @@ import com.fasterxml.jackson.jaxrs.json.JacksonJaxbJsonProvider;
 import org.craftsmenlabs.gareth.api.ExperimentEngine;
 import org.craftsmenlabs.gareth.rest.binder.ExperimentEngineFeature;
 import org.craftsmenlabs.gareth.rest.filter.CORSFilter;
-import org.craftsmenlabs.gareth.rest.resource.DefinitionsResource;
-import org.craftsmenlabs.gareth.rest.resource.ExperimentRerunResource;
-import org.craftsmenlabs.gareth.rest.resource.ExperimentResource;
-import org.craftsmenlabs.gareth.rest.resource.ExperimentRunResource;
+import org.craftsmenlabs.gareth.rest.v1.resource.DefinitionsResource;
+import org.craftsmenlabs.gareth.rest.v1.resource.ExperimentRerunResource;
+import org.craftsmenlabs.gareth.rest.v1.resource.ExperimentResource;
+import org.craftsmenlabs.gareth.rest.v1.resource.ExperimentRunResource;
 import org.glassfish.jersey.linking.DeclarativeLinkingFeature;
 import org.glassfish.jersey.server.ResourceConfig;
 
