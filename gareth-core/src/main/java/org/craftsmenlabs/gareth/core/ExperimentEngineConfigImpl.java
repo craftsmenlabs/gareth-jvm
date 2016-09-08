@@ -3,11 +3,7 @@ package org.craftsmenlabs.gareth.core;
 import org.craftsmenlabs.gareth.api.ExperimentEngineConfig;
 
 import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 public class ExperimentEngineConfigImpl implements ExperimentEngineConfig {
 

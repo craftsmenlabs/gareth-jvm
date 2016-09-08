@@ -1,4 +1,3 @@
-
 @XmlJavaTypeAdapters({
         @XmlJavaTypeAdapter(type = LocalDateTime.class,
                 value = LocalDateTimeAdapter.class)

@@ -17,10 +17,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static org.junit.Assert.*;
 
 
 public class HttpStorageMediaTest {
@@ -134,7 +131,7 @@ public class HttpStorageMediaTest {
     private void preparePersistWithStatusCode(final int statusCode) throws URISyntaxException {
         buildHttpStorageMedia(persistURIBuilder.setPath("/persist").build().toString(), null);
         mockServer.when(HttpRequest.request().withMethod("POST").withPath("/persist"))
-                  .respond(HttpResponse.response().withStatusCode(statusCode));
+                .respond(HttpResponse.response().withStatusCode(statusCode));
     }
 
     private void prepareRestoreWithStatusCode(final int statusCode) throws URISyntaxException {
@@ -144,6 +141,6 @@ public class HttpStorageMediaTest {
     private void prepareRestoreWithStatusCode(final int statusCode, final String body) throws URISyntaxException {
         buildHttpStorageMedia(null, restoreURIBuilder.setPath("/restore").build().toString());
         mockServer.when(HttpRequest.request().withMethod("GET").withPath("/restore"))
-                  .respond(HttpResponse.response().withStatusCode(statusCode).withBody(body));
+                .respond(HttpResponse.response().withStatusCode(statusCode).withBody(body));
     }
 }

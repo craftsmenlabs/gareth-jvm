@@ -8,7 +8,6 @@ import org.craftsmenlabs.gareth.json.persist.serializer.StorageSerializer;
 
 import java.time.LocalDateTime;
 
-
 @Data
 public class JsonExperimentContextData {
 

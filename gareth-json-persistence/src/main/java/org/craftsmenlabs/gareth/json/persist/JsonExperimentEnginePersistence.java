@@ -52,7 +52,7 @@ public class JsonExperimentEnginePersistence implements ExperimentEnginePersiste
                 final ExperimentContext experimentContext = experimentEngine
                         .findExperimentContextForHash(experimentContextData.getHash());
                 experimentEngine.getExperimentRunContexts()
-                                .add(rebuildExperimentRunContext(experimentContextData, experimentContext));
+                        .add(rebuildExperimentRunContext(experimentContextData, experimentContext));
             } catch (final GarethUnknownExperimentException e) {
                 LOG.debug("No experiment context data found.", e);
             }

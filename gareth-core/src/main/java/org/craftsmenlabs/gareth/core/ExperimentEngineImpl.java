@@ -249,13 +249,13 @@ public class ExperimentEngineImpl implements ExperimentEngine {
 
     private void addParsedDefinitionToRegistry(final ParsedDefinition parsedDefinition) {
         parsedDefinition.getBaselineDefinitions()
-                        .forEach((k, v) -> definitionRegistry.addMethodDescriptorForBaseline(k, v));
+                .forEach((k, v) -> definitionRegistry.addMethodDescriptorForBaseline(k, v));
         parsedDefinition.getAssumeDefinitions()
-                        .forEach((k, v) -> definitionRegistry.addMethodDescriptorForAssume(k, v));
+                .forEach((k, v) -> definitionRegistry.addMethodDescriptorForAssume(k, v));
         parsedDefinition.getFailureDefinitions()
-                        .forEach((k, v) -> definitionRegistry.addMethodDescriptorForFailure(k, v));
+                .forEach((k, v) -> definitionRegistry.addMethodDescriptorForFailure(k, v));
         parsedDefinition.getSuccessDefinitions()
-                        .forEach((k, v) -> definitionRegistry.addMethodDescriptorForSuccess(k, v));
+                .forEach((k, v) -> definitionRegistry.addMethodDescriptorForSuccess(k, v));
         parsedDefinition.getTimeDefinitions().forEach((k, v) -> definitionRegistry.addDurationForTime(k, v));
     }
 

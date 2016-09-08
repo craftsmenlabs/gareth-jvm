@@ -9,7 +9,6 @@ import org.craftsmenlabs.gareth.api.storage.Storage;
 
 import java.time.LocalDateTime;
 
-
 @Getter
 public class ExperimentRunContextImpl implements ExperimentRunContext {
 

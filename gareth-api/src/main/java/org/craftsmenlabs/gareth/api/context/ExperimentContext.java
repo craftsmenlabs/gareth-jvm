@@ -4,11 +4,6 @@ import org.craftsmenlabs.gareth.api.invoker.MethodDescriptor;
 
 import java.time.Duration;
 
-/**
- * Experiment context definition
- * <p>
- * Created by hylke on 10/08/15.
- */
 public interface ExperimentContext {
 
     String getHash();

@@ -1,10 +1,6 @@
 package org.craftsmenlabs.gareth.core.parser;
 
-import org.craftsmenlabs.gareth.api.annotation.Assume;
-import org.craftsmenlabs.gareth.api.annotation.Baseline;
-import org.craftsmenlabs.gareth.api.annotation.Failure;
-import org.craftsmenlabs.gareth.api.annotation.Success;
-import org.craftsmenlabs.gareth.api.annotation.Time;
+import org.craftsmenlabs.gareth.api.annotation.*;
 import org.craftsmenlabs.gareth.api.definition.ParsedDefinition;
 import org.craftsmenlabs.gareth.api.definition.ParsedDefinitionFactory;
 import org.craftsmenlabs.gareth.api.exception.GarethDefinitionParseException;
@@ -128,6 +124,6 @@ public class ParsedDefinitionFactoryImpl implements ParsedDefinitionFactory {
         return isTimeMethod(method) &&
                 method.getParameterCount() == 2 &&
                 method.getParameterTypes()
-                      .equals(new Object[]{Integer.class, String.class});
+                        .equals(new Object[]{Integer.class, String.class});
     }
 }

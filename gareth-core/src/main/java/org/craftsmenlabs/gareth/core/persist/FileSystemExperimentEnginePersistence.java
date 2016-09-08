@@ -14,13 +14,7 @@ import org.craftsmenlabs.gareth.core.persist.listener.FileSystemExperimentChange
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -73,7 +67,7 @@ public class FileSystemExperimentEnginePersistence implements ExperimentEnginePe
                 final ExperimentContext experimentContext = experimentEngine
                         .findExperimentContextForHash(experimentContextData.getHash());
                 experimentEngine.getExperimentRunContexts()
-                                .add(rebuildExperimentRunContext(experimentContextData, experimentContext));
+                        .add(rebuildExperimentRunContext(experimentContextData, experimentContext));
             } catch (final GarethUnknownExperimentException e) {
                 LOG.debug("No experiment context data found.", e);
             }
@@ -105,9 +99,9 @@ public class FileSystemExperimentEnginePersistence implements ExperimentEnginePe
         return experimentContexts.parallelStream().filter(experimentContextData -> {
             return experimentContextData.getHash().equals(hash);
         })
-                                 .findFirst()
-                                 .orElseThrow(() -> new UnknownExperimentContextException(String
-                                         .format("Cannot find experiment context data with hash %s", hash)));
+                .findFirst()
+                .orElseThrow(() -> new UnknownExperimentContextException(String
+                        .format("Cannot find experiment context data with hash %s", hash)));
     }
 
     private List<ExperimentContextData> readExperimentContextDataFromFile() throws GarethStateReadException {

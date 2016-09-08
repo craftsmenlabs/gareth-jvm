@@ -17,9 +17,6 @@ import org.craftsmenlabs.gareth.rest.example.definition.SampleDefinition;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Hello world!
- */
 public class GarethRestApplication {
     public static void main(final String[] args) {
         final RestServiceFactory restServiceFactory = new RestServiceFactoryImpl(); // Create a new rest service factory
@@ -30,7 +27,7 @@ public class GarethRestApplication {
                 .addDefinitionClass(AnotherDefinition.class)
                 .addDefinitionClass(SaleofFruit.class)
                 .addInputStreams(GarethRestApplication.class.getClass()
-                                                            .getResourceAsStream("/experiments/businessgoal-01.experiment"))
+                        .getResourceAsStream("/experiments/businessgoal-01.experiment"))
                 .setIgnoreInvocationExceptions(true)
                 .build();
 

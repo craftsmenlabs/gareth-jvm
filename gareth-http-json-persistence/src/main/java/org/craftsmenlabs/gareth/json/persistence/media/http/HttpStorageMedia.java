@@ -33,7 +33,7 @@ public class HttpStorageMedia extends AbstractStorageMedia implements StorageMed
             final StringWriter outputWriter = new StringWriter();
             getObjectMapper().writeValue(outputWriter, jsonExperimentContextDataList);
             final Response response = Request.Post(persistUrl).addHeader(HEADER_CONTENT_TYPE)
-                                             .bodyByteArray(outputWriter.toString().getBytes()).execute();
+                    .bodyByteArray(outputWriter.toString().getBytes()).execute();
             final int statusCode = response.returnResponse().getStatusLine().getStatusCode();
             if (!isOkStatusCode(statusCode)) {
                 throw new GarethStateWriteException("Not a OK status code received");
