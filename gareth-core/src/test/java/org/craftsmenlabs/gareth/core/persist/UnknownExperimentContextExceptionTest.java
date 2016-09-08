@@ -4,9 +4,7 @@ import org.junit.Test;
 
 import static org.junit.Assert.assertTrue;
 
-/**
- * Created by hylke on 24/09/15.
- */
+
 public class UnknownExperimentContextExceptionTest {
 
     @Test

@@ -6,9 +6,7 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import java.time.LocalDateTime;
 
-/**
- * Created by hylke on 13/10/15.
- */
+
 @Data
 @XmlRootElement
 public class ExperimentRun {

@@ -22,9 +22,7 @@ import static org.junit.Assert.fail;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-/**
- * Created by hylke on 13/10/15.
- */
+
 public class ExperimentRunContextImplTest {
 
     private ExperimentRunContext experimentRunContext;

@@ -5,9 +5,7 @@ import org.craftsmenlabs.gareth.api.invoker.MethodDescriptor;
 import java.time.Duration;
 import java.util.Map;
 
-/**
- * Created by hylke on 10/08/15.
- */
+
 public interface ParsedDefinition {
 
     /**

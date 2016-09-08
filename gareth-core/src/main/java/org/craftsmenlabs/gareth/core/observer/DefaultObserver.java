@@ -10,9 +10,7 @@ import org.slf4j.LoggerFactory;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Created by hylke on 26/10/15.
- */
+
 public class DefaultObserver implements Observer {
 
     private final static Logger logger = LoggerFactory.getLogger(DefaultObserver.class);

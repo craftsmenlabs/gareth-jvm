@@ -21,9 +21,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
 
-/**
- * Created by hylke on 17/08/15.
- */
+
 public class DefaultAssumeScheduler implements AssumeScheduler {
 
     private static final Logger logger = LoggerFactory.getLogger(DefaultAssumeScheduler.class);

@@ -6,9 +6,7 @@ import org.craftsmenlabs.gareth.GarethParser;
 import org.craftsmenlabs.gareth.api.model.AssumptionBlock;
 import org.craftsmenlabs.gareth.api.model.Experiment;
 
-/**
- * Created by hylke on 04/08/15.
- */
+
 public class ExperimentBaseListener extends GarethBaseListener {
 
     @Getter

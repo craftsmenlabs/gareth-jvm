@@ -6,9 +6,7 @@ import org.junit.Test;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 
-/**
- * Created by hylke on 18/09/15.
- */
+
 public class AssumptionBlockTest {
 
     private AssumptionBlock assumptionBlock;

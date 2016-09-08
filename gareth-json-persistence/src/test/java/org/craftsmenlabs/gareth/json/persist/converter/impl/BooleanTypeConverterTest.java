@@ -8,9 +8,7 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
-/**
- * Created by hylke on 04/11/15.
- */
+
 public class BooleanTypeConverterTest {
 
     private BooleanTypeConverter booleanTypeConverter;

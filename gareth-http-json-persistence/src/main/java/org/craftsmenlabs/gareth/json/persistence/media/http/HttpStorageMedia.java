@@ -16,9 +16,7 @@ import java.io.IOException;
 import java.io.StringWriter;
 import java.util.List;
 
-/**
- * Created by hylke on 15/01/16.
- */
+
 public class HttpStorageMedia extends AbstractStorageMedia implements StorageMedia {
 
     private static final Header HEADER_CONTENT_TYPE = new BasicHeader("Content-Type", "application/json");

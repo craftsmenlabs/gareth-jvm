@@ -8,9 +8,7 @@ import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
-/**
- * Created by hylke on 04/11/15.
- */
+
 public class DefaultTypeConverterFactory implements TypeConverterFactory {
 
     private final Map<Class<? extends Serializable>, Class<? extends TypeConverter<? extends Serializable>>> typeFactoryMap = new HashMap<>();

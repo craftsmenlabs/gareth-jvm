@@ -1,6 +1,4 @@
-/**
- * Created by hylke on 11/09/15.
- */
+
 @XmlJavaTypeAdapters({
         @XmlJavaTypeAdapter(type = LocalDateTime.class,
                 value = LocalDateTimeAdapter.class)

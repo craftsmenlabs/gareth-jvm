@@ -10,9 +10,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
-/**
- * Created by hylke on 21/08/15.
- */
+
 public class DefaultStorageTest {
 
     private DefaultStorage defaultStorage;

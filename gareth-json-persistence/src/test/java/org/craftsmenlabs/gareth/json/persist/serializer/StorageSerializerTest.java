@@ -14,9 +14,7 @@ import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 import static org.mockito.Mockito.verify;
 
-/**
- * Created by hylke on 04/11/15.
- */
+
 public class StorageSerializerTest {
 
     private StorageSerializer storageSerializer;

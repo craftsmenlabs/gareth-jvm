@@ -5,9 +5,7 @@ import org.junit.Test;
 
 import static org.junit.Assert.assertNull;
 
-/**
- * Created by hylke on 18/09/15.
- */
+
 public class GarethExperimentParseExceptionTest {
 
     private GarethExperimentParseException garethExperimentParseException;

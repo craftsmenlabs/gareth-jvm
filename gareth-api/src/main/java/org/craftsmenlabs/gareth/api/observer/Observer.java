@@ -3,9 +3,7 @@ package org.craftsmenlabs.gareth.api.observer;
 import org.craftsmenlabs.gareth.api.ExperimentEngine;
 import org.craftsmenlabs.gareth.api.listener.ExperimentStateChangeListener;
 
-/**
- * Created by hylke on 26/10/15.
- */
+
 public interface Observer {
 
     /**

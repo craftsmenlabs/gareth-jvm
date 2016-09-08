@@ -9,9 +9,7 @@ import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
-/**
- * Created by hylke on 05/11/15.
- */
+
 public class StorageDeserializerTest {
 
     private StorageDeserializer storageDeserializer;

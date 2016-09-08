@@ -12,9 +12,7 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
 
-/**
- * Created by hylke on 11/08/15.
- */
+
 public class ExperimentEngineConfigImplTest {
 
     @Test

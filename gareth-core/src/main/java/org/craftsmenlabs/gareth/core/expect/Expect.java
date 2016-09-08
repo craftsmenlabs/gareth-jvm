@@ -4,9 +4,7 @@ import org.craftsmenlabs.gareth.core.expect.exception.ExpectException;
 
 import java.util.Optional;
 
-/**
- * Created by hylke on 08/09/15.
- */
+
 public class Expect {
 
     public static void fail() {

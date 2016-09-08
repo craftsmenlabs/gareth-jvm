@@ -9,9 +9,7 @@ import org.craftsmenlabs.gareth.api.storage.Storage;
 
 import java.time.LocalDateTime;
 
-/**
- * Created by hylke on 13/10/15.
- */
+
 @Getter
 public class ExperimentRunContextImpl implements ExperimentRunContext {
 

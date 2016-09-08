@@ -9,9 +9,7 @@ import java.time.Month;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
-/**
- * Created by hylke on 18/09/15.
- */
+
 public class LocalDateTimeAdapterTest {
 
     private LocalDateTimeAdapter localDateTimeAdapter;

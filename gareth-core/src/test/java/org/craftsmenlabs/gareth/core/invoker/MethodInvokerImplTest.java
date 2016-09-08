@@ -14,9 +14,7 @@ import java.util.List;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
-/**
- * Created by hylke on 21/08/15.
- */
+
 public class MethodInvokerImplTest {
 
     private static final List<String> invokeMessageList = new ArrayList<>();

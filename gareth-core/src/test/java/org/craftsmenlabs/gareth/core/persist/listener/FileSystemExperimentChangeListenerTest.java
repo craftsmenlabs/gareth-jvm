@@ -10,9 +10,7 @@ import org.mockito.MockitoAnnotations;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.verify;
 
-/**
- * Created by hylke on 26/10/15.
- */
+
 public class FileSystemExperimentChangeListenerTest {
 
     private FileSystemExperimentChangeListener fileSystemExperimentChangeListener;

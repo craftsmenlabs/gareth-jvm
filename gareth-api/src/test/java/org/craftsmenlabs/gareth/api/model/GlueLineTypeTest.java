@@ -8,9 +8,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
-/**
- * Created by hylke on 03/06/16.
- */
+
 public class GlueLineTypeTest {
 
 

@@ -13,9 +13,7 @@ import java.io.IOException;
 import java.io.Serializable;
 import java.util.Optional;
 
-/**
- * Created by hylke on 04/11/15.
- */
+
 public class StorageSerializer extends JsonSerializer<Storage> {
 
 

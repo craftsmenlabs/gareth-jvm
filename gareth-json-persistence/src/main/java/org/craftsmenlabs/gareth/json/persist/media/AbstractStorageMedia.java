@@ -9,9 +9,7 @@ import org.craftsmenlabs.gareth.api.storage.Storage;
 import org.craftsmenlabs.gareth.json.persist.serializer.StorageDeserializer;
 import org.craftsmenlabs.gareth.json.persist.serializer.StorageSerializer;
 
-/**
- * Created by hylke on 14/01/16.
- */
+
 public abstract class AbstractStorageMedia {
 
     public ObjectMapper getObjectMapper() {

@@ -6,9 +6,7 @@ import org.craftsmenlabs.gareth.json.persist.JsonExperimentContextData;
 
 import java.util.List;
 
-/**
- * Created by hylke on 01/12/15.
- */
+
 public interface StorageMedia {
 
     void persist(final List<JsonExperimentContextData> jsonExperimentContextDataList) throws GarethStateWriteException;

@@ -4,9 +4,7 @@ import java.io.Serializable;
 import java.util.Optional;
 import java.util.Set;
 
-/**
- * Created by hylke on 21/08/15.
- */
+
 public interface Storage extends Serializable {
 
     /**

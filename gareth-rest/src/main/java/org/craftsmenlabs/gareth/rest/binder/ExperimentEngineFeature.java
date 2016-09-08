@@ -5,9 +5,7 @@ import org.craftsmenlabs.gareth.api.ExperimentEngine;
 import javax.ws.rs.core.Feature;
 import javax.ws.rs.core.FeatureContext;
 
-/**
- * Created by hylke on 19/08/15.
- */
+
 public class ExperimentEngineFeature implements Feature {
 
     private final ExperimentEngine experimentEngine;

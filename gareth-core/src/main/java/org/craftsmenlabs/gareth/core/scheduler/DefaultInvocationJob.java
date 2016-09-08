@@ -17,9 +17,7 @@ import org.slf4j.LoggerFactory;
 
 import java.time.LocalDateTime;
 
-/**
- * Created by hylke on 17/08/15.
- */
+
 public class DefaultInvocationJob extends Job {
 
     private static final Logger logger = LoggerFactory.getLogger(DefaultInvocationJob.class);

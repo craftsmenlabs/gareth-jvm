@@ -18,9 +18,7 @@ import org.slf4j.LoggerFactory;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Created by hylke on 30/10/15.
- */
+
 public class JsonExperimentEnginePersistence implements ExperimentEnginePersistence {
 
     private static final Logger LOG = LoggerFactory.getLogger(JsonExperimentEnginePersistence.class);

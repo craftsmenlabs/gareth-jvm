@@ -5,9 +5,7 @@ import org.craftsmenlabs.gareth.api.exception.GarethStateWriteException;
 import org.craftsmenlabs.gareth.api.listener.ExperimentStateChangeListener;
 import org.craftsmenlabs.gareth.core.persist.FileSystemExperimentEnginePersistence;
 
-/**
- * Created by hylke on 26/10/15.
- */
+
 public class FileSystemExperimentChangeListener implements ExperimentStateChangeListener {
 
     private final FileSystemExperimentEnginePersistence fileSystemExperimentEnginePersistence;

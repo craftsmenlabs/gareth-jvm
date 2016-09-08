@@ -6,9 +6,7 @@ import org.junit.Test;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 
-/**
- * Created by hylke on 04/11/15.
- */
+
 public class StringTypeConverterTest {
 
     private StringTypeConverter stringTypeConverter;

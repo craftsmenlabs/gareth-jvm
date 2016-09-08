@@ -27,9 +27,7 @@ import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-/**
- * Created by hylke on 03/11/15.
- */
+
 public class JsonExperimentEnginePersistenceTest {
 
     private ExperimentEnginePersistence jsonExperimentEnginePersistence;

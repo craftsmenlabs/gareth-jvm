@@ -2,9 +2,7 @@ package org.craftsmenlabs.gareth.json.persist.converter;
 
 import java.io.Serializable;
 
-/**
- * Created by hylke on 04/11/15.
- */
+
 public interface TypeConverterFactory {
 
     /**

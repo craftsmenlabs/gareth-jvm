@@ -1,8 +1,6 @@
 package org.craftsmenlabs.gareth.rest.filter;
 
-/**
- * Created by hylke on 11/09/15.
- */
+
 
 import javax.inject.Singleton;
 import javax.ws.rs.container.ContainerRequestContext;

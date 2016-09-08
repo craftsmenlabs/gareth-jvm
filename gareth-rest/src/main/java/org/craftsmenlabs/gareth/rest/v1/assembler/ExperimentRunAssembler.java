@@ -4,9 +4,7 @@ import org.craftsmenlabs.gareth.api.context.ExperimentRunContext;
 import org.craftsmenlabs.gareth.rest.assembler.Assembler;
 import org.craftsmenlabs.gareth.rest.v1.entity.ExperimentRun;
 
-/**
- * Created by hylke on 13/10/15.
- */
+
 public class ExperimentRunAssembler implements Assembler<ExperimentRunContext, ExperimentRun> {
 
     @Override

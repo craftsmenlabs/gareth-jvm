@@ -24,9 +24,7 @@ import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Created by hylke on 23/09/15.
- */
+
 public class FileSystemExperimentEnginePersistence implements ExperimentEnginePersistence {
 
     private static final Logger LOG = LoggerFactory.getLogger(FileSystemExperimentEnginePersistence.class);

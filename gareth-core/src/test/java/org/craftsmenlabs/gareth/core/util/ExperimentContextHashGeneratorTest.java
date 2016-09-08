@@ -11,9 +11,7 @@ import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.mockito.Mockito.when;
 
-/**
- * Created by hylke on 23/09/15.
- */
+
 public class ExperimentContextHashGeneratorTest {
 
     @Mock

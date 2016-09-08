@@ -13,9 +13,7 @@ import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 
-/**
- * Created by hylke on 18/09/15.
- */
+
 public class ExperimentEngineFeatureTest {
 
     @Mock

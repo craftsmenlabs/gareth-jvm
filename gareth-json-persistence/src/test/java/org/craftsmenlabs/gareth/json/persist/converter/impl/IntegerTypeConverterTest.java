@@ -7,9 +7,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.fail;
 
-/**
- * Created by hylke on 04/11/15.
- */
+
 public class IntegerTypeConverterTest {
 
     private IntegerTypeConverter integerTypeConverter;

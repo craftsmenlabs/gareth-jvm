@@ -5,9 +5,7 @@ import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
 
-/**
- * Created by hylke on 18/09/15.
- */
+
 public class GarethDefinitionParseExceptionTest {
 
     private final IllegalStateException illegalStateException = new IllegalStateException();

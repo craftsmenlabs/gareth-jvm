@@ -12,9 +12,7 @@ import static org.junit.Assert.fail;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.verify;
 
-/**
- * Created by hylke on 26/10/15.
- */
+
 public class DefaultObserverTest {
 
     @Mock

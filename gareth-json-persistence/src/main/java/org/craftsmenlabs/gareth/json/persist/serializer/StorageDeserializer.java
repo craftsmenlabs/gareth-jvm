@@ -16,9 +16,7 @@ import org.slf4j.LoggerFactory;
 import java.io.IOException;
 import java.io.Serializable;
 
-/**
- * Created by hylke on 05/11/15.
- */
+
 public class StorageDeserializer extends JsonDeserializer<Storage> {
 
     private final static Logger logger = LoggerFactory.getLogger(StorageDeserializer.class);

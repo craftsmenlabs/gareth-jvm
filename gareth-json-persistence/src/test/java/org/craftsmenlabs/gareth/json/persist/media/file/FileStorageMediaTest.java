@@ -21,9 +21,7 @@ import static org.junit.Assert.fail;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-/**
- * Created by hylke on 14/01/16.
- */
+
 public class FileStorageMediaTest {
 
     private File randomTmpFile;

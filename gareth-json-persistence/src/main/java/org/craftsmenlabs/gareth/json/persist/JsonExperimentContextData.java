@@ -8,9 +8,7 @@ import org.craftsmenlabs.gareth.json.persist.serializer.StorageSerializer;
 
 import java.time.LocalDateTime;
 
-/**
- * Created by hylke on 30/10/15.
- */
+
 @Data
 public class JsonExperimentContextData {
 

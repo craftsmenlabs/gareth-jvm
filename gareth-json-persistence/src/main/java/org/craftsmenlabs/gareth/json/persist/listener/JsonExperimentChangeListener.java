@@ -5,9 +5,7 @@ import org.craftsmenlabs.gareth.api.exception.GarethStateWriteException;
 import org.craftsmenlabs.gareth.api.listener.ExperimentStateChangeListener;
 import org.craftsmenlabs.gareth.json.persist.JsonExperimentEnginePersistence;
 
-/**
- * Created by hylke on 31/10/15.
- */
+
 public class JsonExperimentChangeListener implements ExperimentStateChangeListener {
 
     private final JsonExperimentEnginePersistence fileSystemExperimentEnginePersistence;

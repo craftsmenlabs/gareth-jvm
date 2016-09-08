@@ -22,9 +22,7 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
-/**
- * Created by hylke on 15/01/16.
- */
+
 public class HttpStorageMediaTest {
 
     private ClientAndServer mockServer;

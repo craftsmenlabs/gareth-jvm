@@ -10,9 +10,7 @@ import org.mockito.MockitoAnnotations;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNotSame;
 
-/**
- * Created by hylke on 18/09/15.
- */
+
 public class RestServiceFactoryImplTest {
 
 

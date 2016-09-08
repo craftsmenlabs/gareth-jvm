@@ -11,9 +11,7 @@ import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 import static org.mockito.Mockito.verify;
 
-/**
- * Created by hylke on 03/11/15.
- */
+
 public class JsonExperimentChangeListenerTest {
 
     private JsonExperimentChangeListener jsonExperimentChangeListener;

@@ -3,9 +3,7 @@ package org.craftsmenlabs.gareth.core.reflection;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 
-/**
- * Created by hylke on 13/08/15.
- */
+
 public class ReflectionHelper {
 
     private DefinitionFactory customDefinitionFactory;

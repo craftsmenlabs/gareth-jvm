@@ -4,9 +4,7 @@ import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
 
-/**
- * Created by hylke on 18/09/15.
- */
+
 public class ExperimentPartStateTest {
 
     @Test

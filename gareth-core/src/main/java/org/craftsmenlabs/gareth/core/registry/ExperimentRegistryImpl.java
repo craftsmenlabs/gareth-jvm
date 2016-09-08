@@ -12,9 +12,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
-/**
- * Created by hylke on 11/08/15.
- */
+
 public class ExperimentRegistryImpl implements ExperimentRegistry {
 
     @Getter

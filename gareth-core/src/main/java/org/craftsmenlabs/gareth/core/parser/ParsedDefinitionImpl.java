@@ -8,9 +8,7 @@ import java.time.Duration;
 import java.util.HashMap;
 import java.util.Map;
 
-/**
- * Created by hylke on 10/08/15.
- */
+
 @Getter
 public class ParsedDefinitionImpl implements ParsedDefinition {
 

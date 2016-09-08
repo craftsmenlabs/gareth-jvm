@@ -5,9 +5,7 @@ import org.junit.Test;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertSame;
 
-/**
- * Created by hylke on 24/09/15.
- */
+
 public class GarethStateReadExceptionTest {
 
     @Test

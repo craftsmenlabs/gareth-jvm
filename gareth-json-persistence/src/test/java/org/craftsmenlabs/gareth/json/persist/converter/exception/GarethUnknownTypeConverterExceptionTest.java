@@ -5,9 +5,7 @@ import org.junit.Test;
 
 import static org.junit.Assert.assertTrue;
 
-/**
- * Created by hylke on 04/11/15.
- */
+
 public class GarethUnknownTypeConverterExceptionTest {
 
 

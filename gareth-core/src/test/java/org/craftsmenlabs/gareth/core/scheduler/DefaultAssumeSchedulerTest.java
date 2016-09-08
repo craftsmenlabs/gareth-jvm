@@ -16,9 +16,7 @@ import java.time.temporal.ChronoUnit;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.when;
 
-/**
- * Created by hylke on 18/09/15.
- */
+
 public class DefaultAssumeSchedulerTest {
 
     private AssumeScheduler defaultAssumeScheduler;

@@ -7,9 +7,7 @@ import org.craftsmenlabs.gareth.api.storage.Storage;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 
-/**
- * Created by hylke on 23/09/15.
- */
+
 @Data
 class ExperimentContextData implements Serializable {
 

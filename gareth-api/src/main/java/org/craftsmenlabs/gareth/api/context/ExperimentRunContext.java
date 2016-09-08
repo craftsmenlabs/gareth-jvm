@@ -4,9 +4,7 @@ import org.craftsmenlabs.gareth.api.storage.Storage;
 
 import java.time.LocalDateTime;
 
-/**
- * Created by hylke on 13/10/15.
- */
+
 public interface ExperimentRunContext {
 
     String getHash();

@@ -16,9 +16,7 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
-/**
- * Created by hylke on 11/08/15.
- */
+
 public class ExperimentRegistryImplTest {
 
     private ExperimentRegistryImpl experimentRegistry;

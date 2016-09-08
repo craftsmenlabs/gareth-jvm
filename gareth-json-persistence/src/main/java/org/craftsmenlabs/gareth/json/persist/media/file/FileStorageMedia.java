@@ -18,9 +18,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.List;
 
-/**
- * Created by hylke on 14/01/16.
- */
+
 public class FileStorageMedia extends AbstractStorageMedia implements StorageMedia {
 
     private final static Logger LOG = LoggerFactory.getLogger(FileStorageMedia.class);
