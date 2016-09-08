@@ -1,4 +1,4 @@
-package org.craftsmenlabs.gareth.rest.example.definition;
+package org.craftsmenlabs.gareth.application.definition;
 
 import org.craftsmenlabs.gareth.api.annotation.*;
 import org.craftsmenlabs.gareth.core.storage.DefaultStorage;
