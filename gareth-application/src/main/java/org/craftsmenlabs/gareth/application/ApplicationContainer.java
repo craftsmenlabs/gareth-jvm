@@ -2,16 +2,11 @@ package org.craftsmenlabs.gareth.application;
 
 import org.craftsmenlabs.gareth.api.model.AssumptionBlock;
 import org.craftsmenlabs.gareth.api.model.Experiment;
-import org.craftsmenlabs.gareth.application.definition.AnotherDefinition;
-import org.craftsmenlabs.gareth.application.definition.RestDefinitionFactory;
-import org.craftsmenlabs.gareth.application.definition.SaleofFruit;
-import org.craftsmenlabs.gareth.application.definition.SampleDefinition;
 import org.craftsmenlabs.gareth.core.ExperimentEngineConfigImpl;
 import org.craftsmenlabs.gareth.core.ExperimentEngineImpl;
-import org.craftsmenlabs.gareth.core.ExperimentEngineImplBuilder;
-import org.craftsmenlabs.gareth.json.persist.JsonExperimentEnginePersistence;
 import org.craftsmenlabs.gareth.rest.RestServiceFactoryImpl;
 import org.craftsmenlabs.gareth.rest.RestServiceImpl;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
@@ -21,30 +16,24 @@ import java.util.List;
 @Service
 public class ApplicationContainer {
 
+    private ExperimentEngineConfigImpl experimentEngineConfigImpl;
+    private ExperimentEngineImpl experimentEngineImpl;
+
+    @Autowired
+    public ApplicationContainer(ExperimentEngineConfigImpl experimentEngineConfigImpl, ExperimentEngineImpl experimentEngineImpl) {
+        this.experimentEngineConfigImpl = experimentEngineConfigImpl;
+        this.experimentEngineImpl = experimentEngineImpl;
+    }
+
     @PostConstruct
     public void init() throws Exception {
 
-        final ExperimentEngineConfigImpl experimentEngineConfig = new ExperimentEngineConfigImpl
-                .Builder()
-                .addDefinitionClass(SampleDefinition.class)
-                .addDefinitionClass(AnotherDefinition.class)
-                .addDefinitionClass(SaleofFruit.class)
-                .addInputStreams(this.getClass()
-                        .getResourceAsStream("/experiments/businessgoal-01.experiment"))
-                .setIgnoreInvocationExceptions(true)
-                .build();
-
-        final ExperimentEngineImpl experimentEngine = new ExperimentEngineImplBuilder(experimentEngineConfig)
-                .addCustomDefinitionFactory(new RestDefinitionFactory())
-                .setExperimentEnginePersistence(new JsonExperimentEnginePersistence.Builder().build())
-                .build();
-
-        experimentEngine.start();
+        experimentEngineImpl.start();
         //experimentEngine.runExperiment(createExperiment());
-        Runtime.getRuntime().addShutdownHook(new ShutdownHook(experimentEngine));
+        Runtime.getRuntime().addShutdownHook(new ShutdownHook(experimentEngineImpl));
 
         final RestServiceFactoryImpl restServiceFactory = new RestServiceFactoryImpl(); // Create a new rest service factory
-        final RestServiceImpl restService = restServiceFactory.create(experimentEngine, 8888);
+        final RestServiceImpl restService = restServiceFactory.create(experimentEngineImpl, 8888);
         restService.start();
     }
 

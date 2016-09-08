@@ -28,11 +28,6 @@
             <groupId>org.craftsmenlabs.gareth.rest</groupId>
             <artifactId>gareth-rest</artifactId>
         </dependency>
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-web</artifactId>
-            <version>RELEASE</version>
-        </dependency>
 
     </dependencies>
 
