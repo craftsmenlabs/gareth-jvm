@@ -1,23 +1,20 @@
 package org.craftsmenlabs.gareth.core;
 
-import org.craftsmenlabs.gareth.api.ExperimentEngine;
-import org.craftsmenlabs.gareth.api.ExperimentEngineConfig;
-import org.craftsmenlabs.gareth.api.context.ExperimentContext;
-import org.craftsmenlabs.gareth.api.context.ExperimentRunContext;
-import org.craftsmenlabs.gareth.api.definition.ParsedDefinition;
-import org.craftsmenlabs.gareth.api.definition.ParsedDefinitionFactory;
 import org.craftsmenlabs.gareth.api.exception.GarethUnknownExperimentException;
-import org.craftsmenlabs.gareth.api.factory.ExperimentFactory;
-import org.craftsmenlabs.gareth.api.invoker.MethodDescriptor;
-import org.craftsmenlabs.gareth.api.invoker.MethodInvoker;
-import org.craftsmenlabs.gareth.api.listener.ExperimentStateChangeListener;
+import org.craftsmenlabs.gareth.core.invoker.MethodDescriptor;
+import org.craftsmenlabs.gareth.core.persist.listener.ExperimentStateChangeListener;
 import org.craftsmenlabs.gareth.api.model.AssumptionBlock;
 import org.craftsmenlabs.gareth.api.model.Experiment;
-import org.craftsmenlabs.gareth.api.persist.ExperimentEnginePersistence;
-import org.craftsmenlabs.gareth.api.registry.DefinitionRegistry;
-import org.craftsmenlabs.gareth.api.registry.ExperimentRegistry;
-import org.craftsmenlabs.gareth.api.rest.RestServiceFactory;
-import org.craftsmenlabs.gareth.api.scheduler.AssumeScheduler;
+import org.craftsmenlabs.gareth.core.persist.ExperimentEnginePersistence;
+import org.craftsmenlabs.gareth.core.context.ExperimentContextImpl;
+import org.craftsmenlabs.gareth.core.context.ExperimentRunContextImpl;
+import org.craftsmenlabs.gareth.core.factory.ExperimentFactoryImpl;
+import org.craftsmenlabs.gareth.core.invoker.MethodInvokerImpl;
+import org.craftsmenlabs.gareth.core.parser.ParsedDefinitionFactoryImpl;
+import org.craftsmenlabs.gareth.core.parser.ParsedDefinitionImpl;
+import org.craftsmenlabs.gareth.core.registry.DefinitionRegistryImpl;
+import org.craftsmenlabs.gareth.core.registry.ExperimentRegistryImpl;
+import org.craftsmenlabs.gareth.core.scheduler.DefaultAssumeScheduler;
 import org.craftsmenlabs.gareth.core.util.ExperimentContextHashGenerator;
 import org.junit.Before;
 import org.junit.Test;
@@ -34,35 +31,32 @@ import static org.mockito.Mockito.*;
 
 public class ExperimentEngineImplTest {
 
-    private ExperimentEngine experimentEngine;
+    private ExperimentEngineImpl experimentEngine;
 
     @Mock
-    private DefinitionRegistry mockDefinitionRegistry;
+    private DefinitionRegistryImpl mockDefinitionRegistry;
 
     @Mock
-    private ParsedDefinitionFactory mockParsedDefinitionFactory;
+    private ParsedDefinitionFactoryImpl mockParsedDefinitionFactory;
 
     @Mock
-    private ExperimentFactory mockExperimentFactory;
+    private ExperimentFactoryImpl mockExperimentFactory;
 
     @Mock
-    private ExperimentRegistry mockExperimentRegistry;
+    private ExperimentRegistryImpl mockExperimentRegistry;
 
 
     @Mock
-    private ParsedDefinition mockParsedDefinition;
+    private ParsedDefinitionImpl mockParsedDefinition;
 
     @Mock
-    private ExperimentEngineConfig mockExperimentEngineConfig;
+    private ExperimentEngineConfigImpl mockExperimentEngineConfig;
 
     @Mock
-    private AssumeScheduler mockAssumeScheduler;
+    private DefaultAssumeScheduler mockAssumeScheduler;
 
     @Mock
-    private MethodInvoker mockMethodInvoker;
-
-    @Mock
-    private RestServiceFactory mockRestServiceFactory;
+    private MethodInvokerImpl mockMethodInvoker;
 
     @Mock
     private ExperimentEnginePersistence mockExperimentEnginePersistence;
@@ -124,16 +118,16 @@ public class ExperimentEngineImplTest {
     @Test
     public void testPlanExperimentContextInvalidExperimentContext() {
         experimentEngine.start();
-        final ExperimentContext mockExperimentContext = mock(ExperimentContext.class);
+        final ExperimentContextImpl mockExperimentContext = mock(ExperimentContextImpl.class);
         when(mockExperimentContext.isValid()).thenReturn(false);
         experimentEngine.planExperimentContext(mockExperimentContext);
-        verify(mockAssumeScheduler, never()).schedule(any(ExperimentRunContext.class), any(ExperimentEngine.class));
+        verify(mockAssumeScheduler, never()).schedule(any(ExperimentRunContextImpl.class), any(ExperimentEngineImpl.class));
     }
 
     @Test
     public void testPlanExperimentContext() {
         experimentEngine.start();
-        final ExperimentContext mockExperimentContext = mock(ExperimentContext.class);
+        final ExperimentContextImpl mockExperimentContext = mock(ExperimentContextImpl.class);
         final MethodDescriptor mockMethodDescriptor = mock(MethodDescriptor.class);
         when(mockExperimentContext.getBaseline()).thenReturn(mockMethodDescriptor);
         when(mockExperimentContext.getAssume()).thenReturn(mockMethodDescriptor);
@@ -141,13 +135,13 @@ public class ExperimentEngineImplTest {
         when(mockExperimentContext.getFailure()).thenReturn(mockMethodDescriptor);
         when(mockExperimentContext.isValid()).thenReturn(true);
         experimentEngine.planExperimentContext(mockExperimentContext);
-        verify(mockAssumeScheduler).schedule(any(ExperimentRunContext.class), any(ExperimentEngine.class));
+        verify(mockAssumeScheduler).schedule(any(ExperimentRunContextImpl.class), any(ExperimentEngineImpl.class));
     }
 
     @Test
     public void testPlanExperimentContextWithStoppedEngine() {
         try {
-            final ExperimentContext mockExperimentRunContext = mock(ExperimentContext.class);
+            final ExperimentContextImpl mockExperimentRunContext = mock(ExperimentContextImpl.class);
             experimentEngine.planExperimentContext(mockExperimentRunContext);
             fail("Should not reach this point");
         } catch (final IllegalStateException e) {
@@ -203,7 +197,7 @@ public class ExperimentEngineImplTest {
         when(mockExperimentRegistry.getAllExperiments()).thenReturn(experimentList);
 
         experimentEngine.start();
-        final ExperimentContext experimentContext = experimentEngine.findExperimentContextForHash(hash);
+        final ExperimentContextImpl experimentContext = experimentEngine.findExperimentContextForHash(hash);
         assertNotNull(experimentContext);
 
     }
@@ -264,8 +258,8 @@ public class ExperimentEngineImplTest {
     @Test
     public void testFindExperimentRunContextsForHash() {
 
-        final ExperimentRunContext experimentRunContext1 = mock(ExperimentRunContext.class);
-        final ExperimentRunContext experimentRunContext2 = mock(ExperimentRunContext.class);
+        final ExperimentRunContextImpl experimentRunContext1 = mock(ExperimentRunContextImpl.class);
+        final ExperimentRunContextImpl experimentRunContext2 = mock(ExperimentRunContextImpl.class);
 
         when(experimentRunContext1.getHash()).thenReturn("hash-1");
         when(experimentRunContext2.getHash()).thenReturn("hash-2");
@@ -274,7 +268,7 @@ public class ExperimentEngineImplTest {
         experimentEngine.getExperimentRunContexts().add(experimentRunContext1);
         experimentEngine.getExperimentRunContexts().add(experimentRunContext2);
 
-        final List<ExperimentRunContext> experimentRunContexts = experimentEngine
+        final List<ExperimentRunContextImpl> experimentRunContexts = experimentEngine
                 .findExperimentRunContextsForHash("hash-1");
         assertNotNull(experimentRunContexts);
         assertEquals(1, experimentRunContexts.size());

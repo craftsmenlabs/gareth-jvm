@@ -4,17 +4,15 @@ import lombok.Getter;
 import org.craftsmenlabs.gareth.api.exception.GarethAlreadyKnownExperimentException;
 import org.craftsmenlabs.gareth.api.exception.GarethUnknownExperimentException;
 import org.craftsmenlabs.gareth.api.model.Experiment;
-import org.craftsmenlabs.gareth.api.registry.ExperimentRegistry;
 
 import java.util.*;
 
 
-public class ExperimentRegistryImpl implements ExperimentRegistry {
+public class ExperimentRegistryImpl {
 
     @Getter
     private final Map<String, Experiment> experiments = new HashMap<>();
 
-    @Override
     public void addExperiment(final String experimentName, final Experiment experiment) {
         if (!experiments.containsKey(experimentName)) {
             experiments.put(experimentName, experiment);
@@ -24,7 +22,6 @@ public class ExperimentRegistryImpl implements ExperimentRegistry {
         }
     }
 
-    @Override
     public Experiment getExperiment(final String experimentName) {
         return Optional
                 .ofNullable(experiments.get(experimentName))
@@ -32,7 +29,6 @@ public class ExperimentRegistryImpl implements ExperimentRegistry {
                         .format("Experiment '%s' unknown", experimentName)));
     }
 
-    @Override
     public List<Experiment> getAllExperiments() {
         return new ArrayList<>(experiments.values());
     }

@@ -1,14 +1,12 @@
 package org.craftsmenlabs.gareth.core.parser;
 
 import org.craftsmenlabs.gareth.api.annotation.*;
-import org.craftsmenlabs.gareth.api.definition.ParsedDefinition;
-import org.craftsmenlabs.gareth.api.definition.ParsedDefinitionFactory;
 import org.craftsmenlabs.gareth.api.exception.GarethDefinitionParseException;
 import org.craftsmenlabs.gareth.api.exception.GarethExperimentParseException;
-import org.craftsmenlabs.gareth.api.invoker.MethodDescriptor;
-import org.craftsmenlabs.gareth.api.storage.Storage;
+import org.craftsmenlabs.gareth.core.invoker.MethodDescriptor;
 import org.craftsmenlabs.gareth.core.invoker.RegexMethodDescriptorImpl;
 import org.craftsmenlabs.gareth.core.reflection.ReflectionHelper;
+import org.craftsmenlabs.gareth.core.storage.DefaultStorage;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -17,7 +15,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Stream;
 
-public class ParsedDefinitionFactoryImpl implements ParsedDefinitionFactory {
+public class ParsedDefinitionFactoryImpl {
 
     private final ReflectionHelper reflectionHelper;
 
@@ -25,13 +23,12 @@ public class ParsedDefinitionFactoryImpl implements ParsedDefinitionFactory {
         this.reflectionHelper = reflectionHelper;
     }
 
-    @Override
-    public ParsedDefinition parse(final Class clazz) throws GarethExperimentParseException {
+    public ParsedDefinitionImpl parse(final Class clazz) throws GarethExperimentParseException {
         Optional
                 .ofNullable(clazz)
                 .orElseThrow(() -> new IllegalArgumentException("Class cannot be null"));
 
-        final ParsedDefinition parsedDefinition = new ParsedDefinitionImpl();
+        final ParsedDefinitionImpl parsedDefinition = new ParsedDefinitionImpl();
         parseClass(clazz, parsedDefinition);
         return parsedDefinition;
     }
@@ -43,7 +40,7 @@ public class ParsedDefinitionFactoryImpl implements ParsedDefinitionFactory {
      * @param clazz
      * @param parsedDefinition
      */
-    private void parseClass(final Class clazz, final ParsedDefinition parsedDefinition) {
+    private void parseClass(final Class clazz, final ParsedDefinitionImpl parsedDefinition) {
         Stream
                 .of(clazz.getMethods())
                 .forEach(m -> parseMethod(m, parsedDefinition));
@@ -55,7 +52,7 @@ public class ParsedDefinitionFactoryImpl implements ParsedDefinitionFactory {
      * @param method
      * @param parsedDefinition
      */
-    private void parseMethod(final Method method, final ParsedDefinition parsedDefinition) {
+    private void parseMethod(final Method method, final ParsedDefinitionImpl parsedDefinition) {
         Optional.ofNullable(method.getAnnotation(Baseline.class)).ifPresent(baseline -> {
             registerUnitOfWork(method, baseline.glueLine(), parsedDefinition.getBaselineDefinitions());
         });
@@ -113,7 +110,7 @@ public class ParsedDefinitionFactoryImpl implements ParsedDefinitionFactory {
     }
 
     private boolean hasStorageParameter(Method method) {
-        return method.getParameterCount() > 0 && method.getParameters()[0].getParameterizedType() == Storage.class;
+        return method.getParameterCount() > 0 && method.getParameters()[0].getParameterizedType() == DefaultStorage.class;
     }
 
     private boolean isTimeMethod(final Method method) {

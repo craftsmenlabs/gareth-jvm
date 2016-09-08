@@ -1,7 +1,7 @@
 package org.craftsmenlabs.gareth.rest;
 
 import com.fasterxml.jackson.jaxrs.json.JacksonJaxbJsonProvider;
-import org.craftsmenlabs.gareth.api.ExperimentEngine;
+import org.craftsmenlabs.gareth.core.ExperimentEngineImpl;
 import org.craftsmenlabs.gareth.rest.binder.ExperimentEngineFeature;
 import org.craftsmenlabs.gareth.rest.filter.CORSFilter;
 import org.craftsmenlabs.gareth.rest.v1.resource.DefinitionsResource;
@@ -13,7 +13,7 @@ import org.glassfish.jersey.server.ResourceConfig;
 
 public class GarethApplication extends ResourceConfig {
 
-    public GarethApplication(final ExperimentEngine experimentEngine) {
+    public GarethApplication(final ExperimentEngineImpl experimentEngine) {
         registerInstances(new ExperimentEngineFeature(experimentEngine));
         register(JacksonJaxbJsonProvider.class);
         register(DeclarativeLinkingFeature.class);

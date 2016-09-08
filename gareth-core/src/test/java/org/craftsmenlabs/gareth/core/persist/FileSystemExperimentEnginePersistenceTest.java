@@ -1,13 +1,12 @@
 package org.craftsmenlabs.gareth.core.persist;
 
 import org.apache.commons.io.IOUtils;
-import org.craftsmenlabs.gareth.api.ExperimentEngine;
-import org.craftsmenlabs.gareth.api.context.ExperimentContext;
 import org.craftsmenlabs.gareth.api.context.ExperimentPartState;
-import org.craftsmenlabs.gareth.api.context.ExperimentRunContext;
 import org.craftsmenlabs.gareth.api.exception.GarethStateReadException;
-import org.craftsmenlabs.gareth.api.listener.ExperimentStateChangeListener;
-import org.craftsmenlabs.gareth.api.persist.ExperimentEnginePersistence;
+import org.craftsmenlabs.gareth.core.persist.listener.ExperimentStateChangeListener;
+import org.craftsmenlabs.gareth.core.ExperimentEngineImpl;
+import org.craftsmenlabs.gareth.core.context.ExperimentContextImpl;
+import org.craftsmenlabs.gareth.core.context.ExperimentRunContextImpl;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -27,13 +26,13 @@ public class FileSystemExperimentEnginePersistenceTest {
 
 
     @Mock
-    private ExperimentEngine mockExperimentEngine;
+    private ExperimentEngineImpl mockExperimentEngine;
 
     @Mock
-    private ExperimentRunContext mockExperimentRunContext;
+    private ExperimentRunContextImpl mockExperimentRunContext;
 
     @Mock
-    private ExperimentContext mockExperimentContext;
+    private ExperimentContextImpl mockExperimentContext;
 
     private ExperimentEnginePersistence fileSystemExperimentEnginePersistence;
 
@@ -42,8 +41,8 @@ public class FileSystemExperimentEnginePersistenceTest {
     @Before
     public void setUp() throws Exception {
         MockitoAnnotations.initMocks(this);
-        final List<ExperimentContext> experimentContextList = getExperimentContexts();
-        final List<ExperimentRunContext> experimentRunContextList = getExperimentRunContexts();
+        final List<ExperimentContextImpl> experimentContextList = getExperimentContexts();
+        final List<ExperimentRunContextImpl> experimentRunContextList = getExperimentRunContexts();
         when(mockExperimentRunContext.getExperimentContext()).thenReturn(mockExperimentContext);
         when(mockExperimentEngine.getExperimentContexts()).thenReturn(experimentContextList);
         when(mockExperimentEngine.getExperimentRunContexts()).thenReturn(experimentRunContextList);
@@ -53,8 +52,8 @@ public class FileSystemExperimentEnginePersistenceTest {
                 .setStateFile(tmpFile).build();
     }
 
-    private List<ExperimentContext> getExperimentContexts() {
-        final ArrayList<ExperimentContext> experimentContexts = new ArrayList<>();
+    private List<ExperimentContextImpl> getExperimentContexts() {
+        final ArrayList<ExperimentContextImpl> experimentContexts = new ArrayList<>();
         when(mockExperimentRunContext.getHash()).thenReturn("hash");
         when(mockExperimentRunContext.getBaselineState()).thenReturn(ExperimentPartState.ERROR);
         when(mockExperimentRunContext.getAssumeState()).thenReturn(ExperimentPartState.FINISHED);
@@ -65,8 +64,8 @@ public class FileSystemExperimentEnginePersistenceTest {
     }
 
 
-    private List<ExperimentRunContext> getExperimentRunContexts() {
-        final ArrayList<ExperimentRunContext> experimentRunContexts = new ArrayList<>();
+    private List<ExperimentRunContextImpl> getExperimentRunContexts() {
+        final ArrayList<ExperimentRunContextImpl> experimentRunContexts = new ArrayList<>();
         experimentRunContexts.add(mockExperimentRunContext);
         return experimentRunContexts;
     }

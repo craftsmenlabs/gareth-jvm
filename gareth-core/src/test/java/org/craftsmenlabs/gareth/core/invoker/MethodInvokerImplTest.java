@@ -1,7 +1,5 @@
 package org.craftsmenlabs.gareth.core.invoker;
 
-import org.craftsmenlabs.gareth.api.invoker.MethodDescriptor;
-import org.craftsmenlabs.gareth.api.storage.Storage;
 import org.craftsmenlabs.gareth.core.reflection.ReflectionHelper;
 import org.craftsmenlabs.gareth.core.storage.DefaultStorage;
 import org.junit.Before;
@@ -53,7 +51,7 @@ public class MethodInvokerImplTest {
     @Test
     public void testInvokeWithStorageParameterWithStorage() throws Exception {
         final MethodDescriptor methodDescriptor = new MethodDescriptorImpl(getStubMethodWithStorageParameter(), 0, true);
-        final Storage storage = new DefaultStorage();
+        final DefaultStorage storage = new DefaultStorage();
         methodInvoker.invoke(methodDescriptor, storage);
         assertEquals(1, invokeMessageList.size());
         assertEquals("stub with storage", invokeMessageList.get(0));
@@ -66,14 +64,14 @@ public class MethodInvokerImplTest {
     }
 
     private Method getStubMethodWithStorageParameter() throws Exception {
-        return this.getClass().getMethod("stubMethod", Storage.class);
+        return this.getClass().getMethod("stubMethod", DefaultStorage.class);
     }
 
     public void stubMethod() throws Exception {
         invokeMessageList.add("stub");
     }
 
-    public void stubMethod(final Storage storage) {
+    public void stubMethod(final DefaultStorage storage) {
         if (null != storage) storage.store("store", "value");
         invokeMessageList.add("stub with storage");
     }

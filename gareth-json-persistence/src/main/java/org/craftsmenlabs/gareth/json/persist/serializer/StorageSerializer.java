@@ -4,7 +4,7 @@ import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonSerializer;
 import com.fasterxml.jackson.databind.SerializerProvider;
-import org.craftsmenlabs.gareth.api.storage.Storage;
+import org.craftsmenlabs.gareth.core.storage.DefaultStorage;
 import org.craftsmenlabs.gareth.json.persist.converter.TypeConverter;
 import org.craftsmenlabs.gareth.json.persist.converter.TypeConverterFactory;
 import org.craftsmenlabs.gareth.json.persist.converter.impl.DefaultTypeConverterFactory;
@@ -14,7 +14,7 @@ import java.io.Serializable;
 import java.util.Optional;
 
 
-public class StorageSerializer extends JsonSerializer<Storage> {
+public class StorageSerializer extends JsonSerializer<DefaultStorage> {
 
 
     private final TypeConverterFactory typeConverterFactory;
@@ -24,7 +24,7 @@ public class StorageSerializer extends JsonSerializer<Storage> {
     }
 
     @Override
-    public void serialize(final Storage storage, final JsonGenerator jsonGenerator, final SerializerProvider serializerProvider) throws IOException, JsonProcessingException {
+    public void serialize(final DefaultStorage storage, final JsonGenerator jsonGenerator, final SerializerProvider serializerProvider) throws IOException, JsonProcessingException {
 
         if (storage != null) {
             jsonGenerator.writeStartArray();

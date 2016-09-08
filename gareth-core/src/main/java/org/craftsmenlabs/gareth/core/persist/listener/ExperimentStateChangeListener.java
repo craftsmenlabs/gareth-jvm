@@ -1,7 +1,7 @@
-package org.craftsmenlabs.gareth.api.listener;
+package org.craftsmenlabs.gareth.core.persist.listener;
 
-import org.craftsmenlabs.gareth.api.ExperimentEngine;
 import org.craftsmenlabs.gareth.api.exception.GarethStateWriteException;
+import org.craftsmenlabs.gareth.core.ExperimentEngineImpl;
 
 
 public interface ExperimentStateChangeListener {
@@ -11,6 +11,6 @@ public interface ExperimentStateChangeListener {
      *
      * @param experimentEngine
      */
-    void onChange(final ExperimentEngine experimentEngine) throws GarethStateWriteException;
+    void onChange(final ExperimentEngineImpl experimentEngine) throws GarethStateWriteException;
 
 }

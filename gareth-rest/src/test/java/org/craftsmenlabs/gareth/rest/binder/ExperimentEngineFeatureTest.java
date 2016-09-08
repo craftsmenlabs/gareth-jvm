@@ -1,6 +1,6 @@
 package org.craftsmenlabs.gareth.rest.binder;
 
-import org.craftsmenlabs.gareth.api.ExperimentEngine;
+import org.craftsmenlabs.gareth.core.ExperimentEngineImpl;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
@@ -17,7 +17,7 @@ import static org.mockito.Mockito.verify;
 public class ExperimentEngineFeatureTest {
 
     @Mock
-    private ExperimentEngine mockExperimentEngine;
+    private ExperimentEngineImpl mockExperimentEngine;
 
     private ExperimentEngineFeature experimentEngineFeature;
 

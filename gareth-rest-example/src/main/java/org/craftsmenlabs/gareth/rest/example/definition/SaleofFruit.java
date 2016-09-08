@@ -1,7 +1,7 @@
 package org.craftsmenlabs.gareth.rest.example.definition;
 
 import org.craftsmenlabs.gareth.api.annotation.*;
-import org.craftsmenlabs.gareth.api.storage.Storage;
+import org.craftsmenlabs.gareth.core.storage.DefaultStorage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -13,7 +13,7 @@ public class SaleofFruit {
     private static Logger LOGGER = LoggerFactory.getLogger(SaleofFruit.class);
 
     @Baseline(glueLine = "^sale of (.*?)$")
-    public void anotherBaseline(final Storage storage, final String item) {
+    public void anotherBaseline(final DefaultStorage storage, final String item) {
         LOGGER.info("Sale of " + item);
     }
 

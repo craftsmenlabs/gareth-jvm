@@ -1,7 +1,7 @@
 package org.craftsmenlabs.gareth.rest.example.definition;
 
 import org.craftsmenlabs.gareth.api.annotation.*;
-import org.craftsmenlabs.gareth.api.storage.Storage;
+import org.craftsmenlabs.gareth.core.storage.DefaultStorage;
 
 import java.time.Duration;
 import java.time.temporal.ChronoUnit;
@@ -16,7 +16,7 @@ public class AnotherDefinition {
     }
 
     @Baseline(glueLine = "Another baseline")
-    public void anotherBaseline(final Storage storage) {
+    public void anotherBaseline(final DefaultStorage storage) {
         storage.store("time", System.currentTimeMillis());
         storage.store("time2", System.currentTimeMillis());
 

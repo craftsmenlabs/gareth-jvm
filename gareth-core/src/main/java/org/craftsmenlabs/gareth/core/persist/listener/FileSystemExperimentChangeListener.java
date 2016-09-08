@@ -1,8 +1,7 @@
 package org.craftsmenlabs.gareth.core.persist.listener;
 
-import org.craftsmenlabs.gareth.api.ExperimentEngine;
 import org.craftsmenlabs.gareth.api.exception.GarethStateWriteException;
-import org.craftsmenlabs.gareth.api.listener.ExperimentStateChangeListener;
+import org.craftsmenlabs.gareth.core.ExperimentEngineImpl;
 import org.craftsmenlabs.gareth.core.persist.FileSystemExperimentEnginePersistence;
 
 
@@ -15,7 +14,7 @@ public class FileSystemExperimentChangeListener implements ExperimentStateChange
     }
 
     @Override
-    public void onChange(final ExperimentEngine experimentEngine) throws GarethStateWriteException {
+    public void onChange(final ExperimentEngineImpl experimentEngine) throws GarethStateWriteException {
         fileSystemExperimentEnginePersistence.persist(experimentEngine);
     }
 

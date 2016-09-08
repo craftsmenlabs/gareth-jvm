@@ -1,6 +1,6 @@
 package org.craftsmenlabs.gareth.rest.v1.resource;
 
-import org.craftsmenlabs.gareth.api.ExperimentEngine;
+import org.craftsmenlabs.gareth.core.ExperimentEngineImpl;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.InjectMocks;
@@ -16,7 +16,7 @@ import static org.junit.Assert.assertNotNull;
 public class ExperimentRunResourceTest {
 
     @Mock
-    private ExperimentEngine experimentEngine;
+    private ExperimentEngineImpl experimentEngine;
 
     @InjectMocks
     private ExperimentRunResource experimentRunResource;

@@ -1,9 +1,7 @@
 package org.craftsmenlabs.gareth.core.context;
 
-import org.craftsmenlabs.gareth.api.context.ExperimentContext;
 import org.craftsmenlabs.gareth.api.context.ExperimentPartState;
-import org.craftsmenlabs.gareth.api.context.ExperimentRunContext;
-import org.craftsmenlabs.gareth.api.invoker.MethodDescriptor;
+import org.craftsmenlabs.gareth.core.invoker.MethodDescriptor;
 import org.craftsmenlabs.gareth.core.storage.DefaultStorage;
 import org.junit.Before;
 import org.junit.Test;
@@ -19,10 +17,10 @@ import static org.mockito.Mockito.when;
 
 public class ExperimentRunContextImplTest {
 
-    private ExperimentRunContext experimentRunContext;
+    private ExperimentRunContextImpl experimentRunContext;
 
     @Mock
-    private ExperimentContext mockExperimentContext;
+    private ExperimentContextImpl mockExperimentContext;
 
     @Mock
     private MethodDescriptor mockMethodDescriptor;
@@ -98,7 +96,7 @@ public class ExperimentRunContextImplTest {
 
     @Test
     public void testGetDefaultStates() {
-        ExperimentContext mockOtherExperimentContext = mock(ExperimentContext.class);
+        ExperimentContextImpl mockOtherExperimentContext = mock(ExperimentContextImpl.class);
         experimentRunContext = new ExperimentRunContextImpl.Builder(mockOtherExperimentContext, null).build();
         assertEquals(ExperimentPartState.NON_EXISTENT, experimentRunContext.getBaselineState());
         assertEquals(ExperimentPartState.NON_EXISTENT, experimentRunContext.getAssumeState());

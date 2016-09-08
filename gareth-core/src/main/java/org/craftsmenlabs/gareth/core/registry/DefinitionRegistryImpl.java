@@ -3,9 +3,8 @@ package org.craftsmenlabs.gareth.core.registry;
 import lombok.Getter;
 import org.craftsmenlabs.gareth.api.exception.GarethAlreadyKnownDefinitionException;
 import org.craftsmenlabs.gareth.api.exception.GarethUnknownDefinitionException;
-import org.craftsmenlabs.gareth.api.invoker.MethodDescriptor;
+import org.craftsmenlabs.gareth.core.invoker.MethodDescriptor;
 import org.craftsmenlabs.gareth.api.model.GlueLineType;
-import org.craftsmenlabs.gareth.api.registry.DefinitionRegistry;
 import org.craftsmenlabs.gareth.core.parser.CommonDurationExpressionParser;
 
 import java.time.Duration;
@@ -16,7 +15,7 @@ import java.util.Set;
 import java.util.regex.Pattern;
 
 @Getter
-public class DefinitionRegistryImpl implements DefinitionRegistry {
+public class DefinitionRegistryImpl {
 
     private final Map<String, Pattern> regexes = new HashMap();
     private final CommonDurationExpressionParser durationExpressionParser = new CommonDurationExpressionParser();
@@ -36,52 +35,42 @@ public class DefinitionRegistryImpl implements DefinitionRegistry {
         return allPatterns;
     }
 
-    @Override
     public MethodDescriptor getMethodDescriptorForBaseline(final String glueLine) {
         return getDefinition(getBaselineDefinitions(), glueLine);
     }
 
-    @Override
     public MethodDescriptor getMethodDescriptorForAssume(final String glueLine) {
         return getDefinition(getAssumeDefinitions(), glueLine);
     }
 
-    @Override
     public MethodDescriptor getMethodDescriptorForSuccess(final String glueLine) {
         return getDefinition(getSuccessDefinitions(), glueLine);
     }
 
-    @Override
     public MethodDescriptor getMethodDescriptorForFailure(final String glueLine) {
         return getDefinition(getFailureDefinitions(), glueLine);
     }
 
-    @Override
     public void addMethodDescriptorForBaseline(final String glueLine, final MethodDescriptor method) {
         addDefinition(getBaselineDefinitions(), glueLine, method);
     }
 
-    @Override
     public void addMethodDescriptorForAssume(final String glueLine, final MethodDescriptor method) {
         addDefinition(getAssumeDefinitions(), glueLine, method);
     }
 
-    @Override
     public void addMethodDescriptorForSuccess(final String glueLine, final MethodDescriptor method) {
         addDefinition(getSuccessDefinitions(), glueLine, method);
     }
 
-    @Override
     public void addMethodDescriptorForFailure(final String glueLine, final MethodDescriptor method) {
         addDefinition(getFailureDefinitions(), glueLine, method);
     }
 
-    @Override
     public Duration getDurationForTime(final String glueLine) {
         return getTimeDefinition(getTimeDefinitions(), glueLine);
     }
 
-    @Override
     public void addDurationForTime(final String glueLine, final Duration duration) {
         addDefinition(getTimeDefinitions(), glueLine, duration);
     }

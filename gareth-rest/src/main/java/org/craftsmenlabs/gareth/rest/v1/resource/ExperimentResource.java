@@ -1,7 +1,7 @@
 package org.craftsmenlabs.gareth.rest.v1.resource;
 
-import org.craftsmenlabs.gareth.api.ExperimentEngine;
-import org.craftsmenlabs.gareth.api.context.ExperimentContext;
+import org.craftsmenlabs.gareth.core.ExperimentEngineImpl;
+import org.craftsmenlabs.gareth.core.context.ExperimentContextImpl;
 import org.craftsmenlabs.gareth.rest.assembler.Assembler;
 import org.craftsmenlabs.gareth.rest.v1.assembler.ExperimentAssembler;
 import org.craftsmenlabs.gareth.rest.v1.entity.Experiment;
@@ -21,7 +21,7 @@ import java.util.List;
 public class ExperimentResource {
 
     @Inject
-    private ExperimentEngine experimentEngine;
+    private ExperimentEngineImpl experimentEngine;
 
     @GET
     @Produces({GarethMediaType.APPLICATION_JSON_EXPERIMENTS_V1, MediaType.APPLICATION_JSON})
@@ -34,10 +34,10 @@ public class ExperimentResource {
                 .build();
     }
 
-    private List<Experiment> assembleExperiments(final List<ExperimentContext> experimentContexts) {
-        final Assembler<ExperimentContext, Experiment> assembler = new ExperimentAssembler();
+    private List<Experiment> assembleExperiments(final List<ExperimentContextImpl> experimentContexts) {
+        final Assembler<ExperimentContextImpl, Experiment> assembler = new ExperimentAssembler();
         final List<Experiment> experiments = new ArrayList<>();
-        for (final ExperimentContext experimentContext : experimentContexts) {
+        for (final ExperimentContextImpl experimentContext : experimentContexts) {
             experiments.add(assembler.assembleOutbound(experimentContext));
         }
         return experiments;

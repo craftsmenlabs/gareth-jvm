@@ -2,7 +2,7 @@ package org.craftsmenlabs.gareth.core.persist;
 
 import lombok.Data;
 import org.craftsmenlabs.gareth.api.context.ExperimentPartState;
-import org.craftsmenlabs.gareth.api.storage.Storage;
+import org.craftsmenlabs.gareth.core.storage.DefaultStorage;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
@@ -16,5 +16,5 @@ class ExperimentContextData implements Serializable {
     private String hash;
     private LocalDateTime baselineRun, assumeRun, successRun, failureRun;
     private ExperimentPartState baselineState, assumeState, successState, failureState;
-    private Storage storage;
+    private DefaultStorage storage;
 }

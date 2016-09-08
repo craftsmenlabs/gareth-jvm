@@ -1,7 +1,7 @@
 package org.craftsmenlabs.gareth.core.registry;
 
 import org.craftsmenlabs.gareth.api.exception.GarethAlreadyKnownDefinitionException;
-import org.craftsmenlabs.gareth.api.invoker.MethodDescriptor;
+import org.craftsmenlabs.gareth.core.invoker.MethodDescriptor;
 import org.craftsmenlabs.gareth.api.model.GlueLineType;
 import org.craftsmenlabs.gareth.core.invoker.MethodDescriptorImpl;
 import org.junit.Before;

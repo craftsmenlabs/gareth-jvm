@@ -2,26 +2,21 @@ package org.craftsmenlabs.gareth.core;
 
 import lombok.Getter;
 import org.apache.commons.io.IOUtils;
-import org.craftsmenlabs.gareth.api.ExperimentEngine;
-import org.craftsmenlabs.gareth.api.ExperimentEngineConfig;
-import org.craftsmenlabs.gareth.api.context.ExperimentContext;
-import org.craftsmenlabs.gareth.api.context.ExperimentRunContext;
-import org.craftsmenlabs.gareth.api.definition.ParsedDefinition;
-import org.craftsmenlabs.gareth.api.definition.ParsedDefinitionFactory;
 import org.craftsmenlabs.gareth.api.exception.GarethDefinitionParseException;
 import org.craftsmenlabs.gareth.api.exception.GarethExperimentParseException;
 import org.craftsmenlabs.gareth.api.exception.GarethStateReadException;
 import org.craftsmenlabs.gareth.api.exception.GarethUnknownExperimentException;
-import org.craftsmenlabs.gareth.api.factory.ExperimentFactory;
 import org.craftsmenlabs.gareth.api.model.Experiment;
-import org.craftsmenlabs.gareth.api.observer.Observer;
-import org.craftsmenlabs.gareth.api.persist.ExperimentEnginePersistence;
-import org.craftsmenlabs.gareth.api.registry.DefinitionRegistry;
-import org.craftsmenlabs.gareth.api.registry.ExperimentRegistry;
-import org.craftsmenlabs.gareth.api.rest.RestService;
-import org.craftsmenlabs.gareth.api.rest.RestServiceFactory;
-import org.craftsmenlabs.gareth.api.storage.StorageFactory;
+import org.craftsmenlabs.gareth.core.context.ExperimentContextImpl;
 import org.craftsmenlabs.gareth.core.context.ExperimentRunContextImpl;
+import org.craftsmenlabs.gareth.core.factory.ExperimentFactoryImpl;
+import org.craftsmenlabs.gareth.core.observer.DefaultObserver;
+import org.craftsmenlabs.gareth.core.parser.ParsedDefinitionFactoryImpl;
+import org.craftsmenlabs.gareth.core.parser.ParsedDefinitionImpl;
+import org.craftsmenlabs.gareth.core.persist.ExperimentEnginePersistence;
+import org.craftsmenlabs.gareth.core.registry.DefinitionRegistryImpl;
+import org.craftsmenlabs.gareth.core.registry.ExperimentRegistryImpl;
+import org.craftsmenlabs.gareth.core.storage.DefaultStorageFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -31,34 +26,32 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-public class ExperimentEngineImpl implements ExperimentEngine {
+public class ExperimentEngineImpl {
 
     private final static Logger logger = LoggerFactory.getLogger(ExperimentEngineImpl.class);
 
     @Getter
-    private final DefinitionRegistry definitionRegistry;
+    private final DefinitionRegistryImpl definitionRegistry;
 
-    private final ParsedDefinitionFactory parsedDefinitionFactory;
+    private final ParsedDefinitionFactoryImpl parsedDefinitionFactory;
 
-    private final ExperimentFactory experimentFactory;
+    private final ExperimentFactoryImpl experimentFactory;
 
-    private final ExperimentRegistry experimentRegistry;
+    private final ExperimentRegistryImpl experimentRegistry;
 
-    private final ExperimentEngineConfig experimentEngineConfig;
-
-    @Getter
-    private final List<ExperimentContext> experimentContexts = new ArrayList<>();
+    private final ExperimentEngineConfigImpl experimentEngineConfig;
 
     @Getter
-    private final List<ExperimentRunContext> experimentRunContexts = new ArrayList<>();
+    private final List<ExperimentContextImpl> experimentContexts = new ArrayList<>();
 
-    private final RestServiceFactory restServiceFactory;
+    @Getter
+    private final List<ExperimentRunContextImpl> experimentRunContexts = new ArrayList<>();
 
-    private final StorageFactory storageFactory;
+    private final DefaultStorageFactory storageFactory;
 
     private final ExperimentEnginePersistence experimentEnginePersistence;
 
-    private final Observer observer;
+    private final DefaultObserver observer;
 
     private ExperimentContextBuilder experimentContextBuilder;
 
@@ -74,7 +67,6 @@ public class ExperimentEngineImpl implements ExperimentEngine {
         this.parsedDefinitionFactory = builder.parsedDefinitionFactory;
         this.experimentFactory = builder.experimentFactory;
         this.experimentRegistry = builder.experimentRegistry;
-        this.restServiceFactory = builder.restServiceFactory;
         this.storageFactory = builder.storageFactory;
         this.experimentEnginePersistence = builder.experimentEnginePersistence;
         this.observer = builder.observer;
@@ -85,7 +77,7 @@ public class ExperimentEngineImpl implements ExperimentEngine {
     }
 
     private void registerDefinition(final Class clazz) throws GarethDefinitionParseException {
-        final ParsedDefinition parsedDefinition = parsedDefinitionFactory.parse(clazz);
+        final ParsedDefinitionImpl parsedDefinition = parsedDefinitionFactory.parse(clazz);
         addParsedDefinitionToRegistry(parsedDefinition);
     }
 
@@ -94,7 +86,6 @@ public class ExperimentEngineImpl implements ExperimentEngine {
         experimentRegistry.addExperiment(experiment.getExperimentName(), experiment);
     }
 
-    @Override
     public void start() {
         if (isStarted()) {
             throw new IllegalStateException("Experiment engine already started");
@@ -102,11 +93,9 @@ public class ExperimentEngineImpl implements ExperimentEngine {
         started = true;
         logger.info("Starting experiment engine");
         init();
-        startRestService();
         runExperiments();
     }
 
-    @Override
     public void stop() {
         if (!isStarted()) {
             throw new IllegalStateException("Experiment engine is not started");
@@ -133,24 +122,11 @@ public class ExperimentEngineImpl implements ExperimentEngine {
         }
     }
 
-    private void startRestService() {
-        if (null != restServiceFactory) {
-            try {
-                logger.info("Starting REST service");
-                final RestService restService = restServiceFactory.create(this, 8888);
-                restService.start();
-
-            } catch (final Exception e) {
-                logger.error("REST service cannot be started", e);
-            }
-        }
-    }
-
     public String runExperiment(final Experiment experiment) {
         experimentRegistry.addExperiment(experiment.getExperimentName(), experiment);
-        ExperimentContext context = experimentContextBuilder.build(experiment);
+        ExperimentContextImpl context = experimentContextBuilder.build(experiment);
         experimentContexts.add(context);
-        final ExperimentRunContext experimentRunContext = new ExperimentRunContextImpl
+        final ExperimentRunContextImpl experimentRunContext = new ExperimentRunContextImpl
                 .Builder(context, storageFactory.createStorage())
                 .build();
         experimentRunContexts.add(experimentRunContext);
@@ -160,9 +136,9 @@ public class ExperimentEngineImpl implements ExperimentEngine {
 
     private void runExperiments() {
         logger.info("Run and schedule experiments");
-        for (final ExperimentContext experimentContext : experimentContexts) {
+        for (final ExperimentContextImpl experimentContext : experimentContexts) {
             if (isNewExperimentRunContextNeeded(experimentContext.getHash())) {
-                final ExperimentRunContext experimentRunContext = new ExperimentRunContextImpl
+                final ExperimentRunContextImpl experimentRunContext = new ExperimentRunContextImpl
                         .Builder(experimentContext, storageFactory.createStorage())
                         .build();
                 experimentRunContexts.add(experimentRunContext);
@@ -178,16 +154,15 @@ public class ExperimentEngineImpl implements ExperimentEngine {
                 .count() == 0L;
     }
 
-    @Override
-    public void planExperimentContext(final ExperimentContext experimentContext) {
-        final ExperimentRunContext experimentRunContext = new ExperimentRunContextImpl
+    public void planExperimentContext(final ExperimentContextImpl experimentContext) {
+        final ExperimentRunContextImpl experimentRunContext = new ExperimentRunContextImpl
                 .Builder(experimentContext, storageFactory.createStorage())
                 .build();
         experimentRunContexts.add(experimentRunContext);
         planExperimentRunContext(experimentRunContext);
     }
 
-    public void planExperimentRunContext(final ExperimentRunContext experimentRunContext) {
+    public void planExperimentRunContext(final ExperimentRunContextImpl experimentRunContext) {
         if (!isStarted()) throw new IllegalStateException("Cannot plan experiment context when engine is not started");
         if (experimentRunContext.getExperimentContext().isValid()) {
             experimentRunner.invokeBaseline(experimentRunContext, () -> observer.notifyApplicationStateChanged(this));
@@ -197,8 +172,7 @@ public class ExperimentEngineImpl implements ExperimentEngine {
         }
     }
 
-    @Override
-    public List<ExperimentRunContext> findExperimentRunContextsForHash(final String hash) {
+    public List<ExperimentRunContextImpl> findExperimentRunContextsForHash(final String hash) {
         if (hash == null) throw new IllegalArgumentException("Hash cannot be null");
 
         return getExperimentRunContexts()
@@ -207,11 +181,10 @@ public class ExperimentEngineImpl implements ExperimentEngine {
                 .collect(Collectors.toList());
     }
 
-    @Override
-    public ExperimentContext findExperimentContextForHash(final String hash) throws GarethUnknownExperimentException {
+    public ExperimentContextImpl findExperimentContextForHash(final String hash) throws GarethUnknownExperimentException {
         if (!isStarted()) throw new IllegalStateException("Cannot plan experiment context when engine is not started");
         if (hash == null) throw new IllegalArgumentException("Hash cannot be null");
-        final Optional<ExperimentContext> experimentContext = experimentContexts
+        final Optional<ExperimentContextImpl> experimentContext = experimentContexts
                 .stream()
                 .filter(ec -> ec.getHash().equals(hash))
                 .findFirst();
@@ -247,7 +220,7 @@ public class ExperimentEngineImpl implements ExperimentEngine {
         }
     }
 
-    private void addParsedDefinitionToRegistry(final ParsedDefinition parsedDefinition) {
+    private void addParsedDefinitionToRegistry(final ParsedDefinitionImpl parsedDefinition) {
         parsedDefinition.getBaselineDefinitions()
                 .forEach((k, v) -> definitionRegistry.addMethodDescriptorForBaseline(k, v));
         parsedDefinition.getAssumeDefinitions()
@@ -258,5 +231,4 @@ public class ExperimentEngineImpl implements ExperimentEngine {
                 .forEach((k, v) -> definitionRegistry.addMethodDescriptorForSuccess(k, v));
         parsedDefinition.getTimeDefinitions().forEach((k, v) -> definitionRegistry.addDurationForTime(k, v));
     }
-
 }

@@ -1,16 +1,14 @@
 package org.craftsmenlabs.gareth.rest;
 
-import org.craftsmenlabs.gareth.api.ExperimentEngine;
-import org.craftsmenlabs.gareth.api.rest.RestService;
-import org.craftsmenlabs.gareth.api.rest.RestServiceFactory;
+import org.craftsmenlabs.gareth.core.ExperimentEngineImpl;
 
-public class RestServiceFactoryImpl implements RestServiceFactory {
+public class RestServiceFactoryImpl {
 
-    @Override
-    public RestService create(final ExperimentEngine experimentEngine, final int port) {
+    public RestServiceImpl create(final ExperimentEngineImpl experimentEngine, final int port) {
         return new RestServiceImpl
                 .Builder()
                 .setExperimentEngine(experimentEngine)
+                .setPortNumber(port)
                 .build();
     }
 }

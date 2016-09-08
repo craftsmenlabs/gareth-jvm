@@ -1,6 +1,6 @@
 package org.craftsmenlabs.gareth.core.persist.listener;
 
-import org.craftsmenlabs.gareth.api.ExperimentEngine;
+import org.craftsmenlabs.gareth.core.ExperimentEngineImpl;
 import org.craftsmenlabs.gareth.core.persist.FileSystemExperimentEnginePersistence;
 import org.junit.Before;
 import org.junit.Test;
@@ -19,7 +19,7 @@ public class FileSystemExperimentChangeListenerTest {
     private FileSystemExperimentEnginePersistence mockFileSystemExperimentEnginePersistence;
 
     @Mock
-    private ExperimentEngine mockExperimentEngine;
+    private ExperimentEngineImpl mockExperimentEngine;
 
     @Before
     public void setUp() throws Exception {

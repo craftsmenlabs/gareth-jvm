@@ -1,8 +1,7 @@
 package org.craftsmenlabs.gareth.core.context;
 
 import lombok.Getter;
-import org.craftsmenlabs.gareth.api.context.ExperimentContext;
-import org.craftsmenlabs.gareth.api.invoker.MethodDescriptor;
+import org.craftsmenlabs.gareth.core.invoker.MethodDescriptor;
 import org.craftsmenlabs.gareth.api.model.AssumptionBlock;
 
 import javax.xml.bind.annotation.XmlRootElement;
@@ -11,7 +10,7 @@ import java.util.Optional;
 
 @XmlRootElement
 @Getter
-public class ExperimentContextImpl implements ExperimentContext {
+public class ExperimentContextImpl {
 
     private final String hash;
 
@@ -44,7 +43,6 @@ public class ExperimentContextImpl implements ExperimentContext {
     }
 
 
-    @Override
     public boolean isValid() {
         return null != baseline
                 && null != assume
@@ -52,7 +50,6 @@ public class ExperimentContextImpl implements ExperimentContext {
     }
 
 
-    @Override
     public boolean hasStorage() {
         return getAssume().hasStorage()
                 || getBaseline().hasStorage()
@@ -108,7 +105,7 @@ public class ExperimentContextImpl implements ExperimentContext {
             return this;
         }
 
-        public ExperimentContext build(final String hash) {
+        public ExperimentContextImpl build(final String hash) {
             Optional.ofNullable(hash)
                     .orElseThrow(() -> new IllegalStateException("ExperimentContext cannot be build without hash"));
             return new ExperimentContextImpl(hash, this);
