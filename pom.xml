@@ -368,7 +368,6 @@
         <module>gareth-rest</module>
         <module>gareth-json-persistence</module>
         <module>gareth-http-json-persistence</module>
-        <module>gareth-example</module>
         <module>gareth-rest-example</module>
     </modules>
 
