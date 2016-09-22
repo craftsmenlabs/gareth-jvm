@@ -10,11 +10,11 @@ import static org.junit.Assert.*;
 import static org.mockito.Mockito.mock;
 
 
-public class ExperimentEngineConfigImplTest {
+public class ExperimentEngineConfigTest {
 
     @Test
     public void testBuildConfigWithNothingSet() {
-        final ExperimentEngineConfigImpl experimentEngineConfig = new ExperimentEngineConfigImpl
+        final ExperimentEngineConfig experimentEngineConfig = new ExperimentEngineConfig
                 .Builder()
                 .build();
 
@@ -26,7 +26,7 @@ public class ExperimentEngineConfigImplTest {
 
     @Test
     public void testAddDefinitionClass() throws Exception {
-        final ExperimentEngineConfigImpl experimentEngineConfig = new ExperimentEngineConfigImpl
+        final ExperimentEngineConfig experimentEngineConfig = new ExperimentEngineConfig
                 .Builder()
                 .addDefinitionClass(Object.class)
                 .build();
@@ -41,7 +41,7 @@ public class ExperimentEngineConfigImplTest {
     public void testAddDefinitionClasses() throws Exception {
         final List<Class> classes = new ArrayList<>();
         classes.add(Object.class);
-        final ExperimentEngineConfigImpl experimentEngineConfig = new ExperimentEngineConfigImpl
+        final ExperimentEngineConfig experimentEngineConfig = new ExperimentEngineConfig
                 .Builder()
                 .addDefinitionClasses(classes)
                 .build();
@@ -55,7 +55,7 @@ public class ExperimentEngineConfigImplTest {
     @Test
     public void testAddInputStream() throws Exception {
         final InputStream mockInputStream = mock(InputStream.class);
-        final ExperimentEngineConfigImpl experimentEngineConfig = new ExperimentEngineConfigImpl
+        final ExperimentEngineConfig experimentEngineConfig = new ExperimentEngineConfig
                 .Builder()
                 .addInputStreams(mockInputStream)
                 .build();
@@ -71,7 +71,7 @@ public class ExperimentEngineConfigImplTest {
         final InputStream mockInputStream = mock(InputStream.class);
         final List<InputStream> inputStreamList = new ArrayList<>();
         inputStreamList.add(mockInputStream);
-        final ExperimentEngineConfigImpl experimentEngineConfig = new ExperimentEngineConfigImpl
+        final ExperimentEngineConfig experimentEngineConfig = new ExperimentEngineConfig
                 .Builder()
                 .addInputStreams(inputStreamList)
                 .build();
@@ -84,7 +84,7 @@ public class ExperimentEngineConfigImplTest {
 
     @Test
     public void testSetIgnoreInvalidDefinitions() throws Exception {
-        final ExperimentEngineConfigImpl experimentEngineConfig = new ExperimentEngineConfigImpl
+        final ExperimentEngineConfig experimentEngineConfig = new ExperimentEngineConfig
                 .Builder()
                 .setIgnoreInvalidDefinitions(true)
                 .build();
@@ -97,7 +97,7 @@ public class ExperimentEngineConfigImplTest {
 
     @Test
     public void testSetIgnoreInvalidExperiments() throws Exception {
-        final ExperimentEngineConfigImpl experimentEngineConfig = new ExperimentEngineConfigImpl
+        final ExperimentEngineConfig experimentEngineConfig = new ExperimentEngineConfig
                 .Builder()
                 .setIgnoreInvalidExperiments(true)
                 .build();
@@ -110,7 +110,7 @@ public class ExperimentEngineConfigImplTest {
 
     @Test
     public void testSetIgnoreInvocationExceptions() throws Exception {
-        final ExperimentEngineConfigImpl experimentEngineConfig = new ExperimentEngineConfigImpl
+        final ExperimentEngineConfig experimentEngineConfig = new ExperimentEngineConfig
                 .Builder()
                 .setIgnoreInvocationExceptions(true)
                 .build();

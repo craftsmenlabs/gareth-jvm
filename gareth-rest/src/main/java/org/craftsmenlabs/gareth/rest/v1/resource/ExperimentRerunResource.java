@@ -1,8 +1,8 @@
 package org.craftsmenlabs.gareth.rest.v1.resource;
 
 import org.craftsmenlabs.gareth.api.exception.GarethUnknownExperimentException;
-import org.craftsmenlabs.gareth.core.ExperimentEngineImpl;
-import org.craftsmenlabs.gareth.core.context.ExperimentContextImpl;
+import org.craftsmenlabs.gareth.core.ExperimentEngine;
+import org.craftsmenlabs.gareth.core.context.ExperimentContext;
 
 import javax.inject.Inject;
 import javax.ws.rs.GET;
@@ -14,14 +14,14 @@ import javax.ws.rs.core.Response;
 public class ExperimentRerunResource {
 
     @Inject
-    private ExperimentEngineImpl experimentEngine;
+    private ExperimentEngine experimentEngine;
 
     @GET
     @Path("{hash}")
     public Response rerunExperiment(final @PathParam("hash") String hash) {
         Response response = null;
         try {
-            final ExperimentContextImpl experimentContext = experimentEngine.findExperimentContextForHash(hash);
+            final ExperimentContext experimentContext = experimentEngine.findExperimentContextForHash(hash);
             experimentEngine.planExperimentContext(experimentContext);
             response = Response.accepted().build();
         } catch (final GarethUnknownExperimentException e) {

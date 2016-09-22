@@ -1,14 +1,14 @@
 package org.craftsmenlabs.gareth.rest.v2.assembler;
 
-import org.craftsmenlabs.gareth.core.context.ExperimentRunContextImpl;
+import org.craftsmenlabs.gareth.core.context.ExperimentRunContext;
 import org.craftsmenlabs.gareth.rest.assembler.Assembler;
 import org.craftsmenlabs.gareth.rest.v2.entity.ExperimentRun;
 
 
-public class ExperimentRunAssembler implements Assembler<ExperimentRunContextImpl, ExperimentRun> {
+public class ExperimentRunAssembler implements Assembler<ExperimentRunContext, ExperimentRun> {
 
     @Override
-    public ExperimentRun assembleOutbound(final ExperimentRunContextImpl inbound) {
+    public ExperimentRun assembleOutbound(final ExperimentRunContext inbound) {
         ExperimentRun experimentRun = null;
         if (inbound != null) {
             experimentRun = new ExperimentRun();
@@ -27,7 +27,7 @@ public class ExperimentRunAssembler implements Assembler<ExperimentRunContextImp
     }
 
     @Override
-    public ExperimentRunContextImpl assembleInbound(final ExperimentRun outbound) {
+    public ExperimentRunContext assembleInbound(final ExperimentRun outbound) {
         throw new UnsupportedOperationException("Experiment run cannot be assembled inbound");
     }
 }

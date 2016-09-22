@@ -4,8 +4,8 @@ import org.craftsmenlabs.gareth.api.context.ExperimentPartState;
 import org.craftsmenlabs.gareth.api.exception.GarethInvocationException;
 import org.craftsmenlabs.gareth.api.exception.GarethUnknownDefinitionException;
 import org.craftsmenlabs.gareth.core.invoker.MethodDescriptor;
-import org.craftsmenlabs.gareth.core.context.ExperimentRunContextImpl;
-import org.craftsmenlabs.gareth.core.invoker.MethodInvokerImpl;
+import org.craftsmenlabs.gareth.core.context.ExperimentRunContext;
+import org.craftsmenlabs.gareth.core.invoker.MethodInvoker;
 import org.craftsmenlabs.gareth.core.scheduler.DefaultAssumeScheduler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -14,17 +14,17 @@ import java.time.LocalDateTime;
 
 public class ExperimentRunner {
     private static Logger logger = LoggerFactory.getLogger(ExperimentRunner.class);
-    private final MethodInvokerImpl methodInvoker;
+    private final MethodInvoker methodInvoker;
     private final DefaultAssumeScheduler assumeScheduler;
     private final boolean ignoreInvocationExceptions;
 
-    public ExperimentRunner(final MethodInvokerImpl methodInvoker, final DefaultAssumeScheduler assumeScheduler, final boolean ignoreInvocationExceptions) {
+    public ExperimentRunner(final MethodInvoker methodInvoker, final DefaultAssumeScheduler assumeScheduler, final boolean ignoreInvocationExceptions) {
         this.methodInvoker = methodInvoker;
         this.assumeScheduler = assumeScheduler;
         this.ignoreInvocationExceptions = ignoreInvocationExceptions;
     }
 
-    protected void invokeBaseline(final ExperimentRunContextImpl runContext, final Informer onStateChange) {
+    protected void invokeBaseline(final ExperimentRunContext runContext, final Informer onStateChange) {
         //final MethodDescriptor baselineMethodDescriptor = runContext.getExperimentContext().getBaseline();
         final String glueLineInExperiment = runContext.getExperimentContext().getBaselineGlueLine();
         logger.debug(String.format("Invoking baseline: %s with state %s", glueLineInExperiment, runContext
@@ -50,7 +50,7 @@ public class ExperimentRunner {
         }
     }
 
-    protected void scheduleInvokeAssume(final ExperimentRunContextImpl experimentRunContext, final ExperimentEngineImpl engine) {
+    protected void scheduleInvokeAssume(final ExperimentRunContext experimentRunContext, final ExperimentEngine engine) {
         if (ExperimentPartState.OPEN == experimentRunContext.getAssumeState()) {
             try {
                 assumeScheduler.schedule(experimentRunContext, engine);

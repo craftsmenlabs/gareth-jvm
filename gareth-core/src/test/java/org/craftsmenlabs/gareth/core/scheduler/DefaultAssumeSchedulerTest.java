@@ -1,8 +1,8 @@
 package org.craftsmenlabs.gareth.core.scheduler;
 
-import org.craftsmenlabs.gareth.core.ExperimentEngineImpl;
-import org.craftsmenlabs.gareth.core.context.ExperimentContextImpl;
-import org.craftsmenlabs.gareth.core.context.ExperimentRunContextImpl;
+import org.craftsmenlabs.gareth.core.ExperimentEngine;
+import org.craftsmenlabs.gareth.core.context.ExperimentContext;
+import org.craftsmenlabs.gareth.core.context.ExperimentRunContext;
 import org.craftsmenlabs.gareth.core.observer.DefaultObserver;
 import org.junit.Before;
 import org.junit.Test;
@@ -21,13 +21,13 @@ public class DefaultAssumeSchedulerTest {
     private DefaultAssumeScheduler defaultAssumeScheduler;
 
     @Mock
-    private ExperimentEngineImpl mockExperimentEngine;
+    private ExperimentEngine mockExperimentEngine;
 
     @Mock
-    private ExperimentRunContextImpl mockExperimentRunContext;
+    private ExperimentRunContext mockExperimentRunContext;
 
     @Mock
-    private ExperimentContextImpl mockExperimentContext;
+    private ExperimentContext mockExperimentContext;
 
     @Mock
     private DefaultObserver mockObserver;

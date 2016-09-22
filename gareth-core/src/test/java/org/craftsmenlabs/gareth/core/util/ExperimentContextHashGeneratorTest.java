@@ -1,6 +1,6 @@
 package org.craftsmenlabs.gareth.core.util;
 
-import org.craftsmenlabs.gareth.core.context.ExperimentContextImpl;
+import org.craftsmenlabs.gareth.core.context.ExperimentContext;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
@@ -13,7 +13,7 @@ import static org.mockito.Mockito.when;
 public class ExperimentContextHashGeneratorTest {
 
     @Mock
-    private ExperimentContextImpl mockExperimentContext;
+    private ExperimentContext mockExperimentContext;
 
     @Before
     public void before() {

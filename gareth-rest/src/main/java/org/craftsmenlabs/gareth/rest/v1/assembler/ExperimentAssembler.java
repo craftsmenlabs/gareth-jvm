@@ -1,16 +1,16 @@
 package org.craftsmenlabs.gareth.rest.v1.assembler;
 
-import org.craftsmenlabs.gareth.core.context.ExperimentContextImpl;
+import org.craftsmenlabs.gareth.core.context.ExperimentContext;
 import org.craftsmenlabs.gareth.rest.assembler.Assembler;
 import org.craftsmenlabs.gareth.rest.v1.entity.Experiment;
 
 import java.util.Optional;
 
 
-public class ExperimentAssembler implements Assembler<ExperimentContextImpl, Experiment> {
+public class ExperimentAssembler implements Assembler<ExperimentContext, Experiment> {
 
     @Override
-    public Experiment assembleOutbound(final ExperimentContextImpl inbound) {
+    public Experiment assembleOutbound(final ExperimentContext inbound) {
         Experiment experiment = null;
         if (Optional.ofNullable(inbound).isPresent()) {
             experiment = new Experiment();
@@ -26,7 +26,7 @@ public class ExperimentAssembler implements Assembler<ExperimentContextImpl, Exp
     }
 
     @Override
-    public ExperimentContextImpl assembleInbound(final Experiment outbound) {
+    public ExperimentContext assembleInbound(final Experiment outbound) {
         throw new UnsupportedOperationException("Experiment cannot be assembled inbound");
     }
 }

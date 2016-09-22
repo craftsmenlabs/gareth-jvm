@@ -8,14 +8,14 @@ import org.slf4j.LoggerFactory;
 
 import java.lang.reflect.InvocationTargetException;
 
-public class MethodInvokerImpl {
+public class MethodInvoker {
 
-    private static final Logger logger = LoggerFactory.getLogger(MethodInvokerImpl.class);
+    private static final Logger logger = LoggerFactory.getLogger(MethodInvoker.class);
 
 
     private final ReflectionHelper reflectionHelper;
 
-    public MethodInvokerImpl(final ReflectionHelper reflectionHelper) {
+    public MethodInvoker(final ReflectionHelper reflectionHelper) {
         this.reflectionHelper = reflectionHelper;
     }
 

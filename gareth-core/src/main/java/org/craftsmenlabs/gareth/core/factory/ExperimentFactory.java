@@ -10,7 +10,7 @@ import org.craftsmenlabs.gareth.core.listener.ExperimentBaseListener;
 
 import java.io.InputStream;
 
-public class ExperimentFactoryImpl {
+public class ExperimentFactory {
 
     public Experiment buildExperiment(final InputStream inputStream) throws GarethExperimentParseException {
         try {

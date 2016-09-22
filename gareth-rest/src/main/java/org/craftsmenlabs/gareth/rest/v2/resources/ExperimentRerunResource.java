@@ -1,8 +1,8 @@
 package org.craftsmenlabs.gareth.rest.v2.resources;
 
 import org.craftsmenlabs.gareth.api.exception.GarethUnknownExperimentException;
-import org.craftsmenlabs.gareth.core.ExperimentEngineImpl;
-import org.craftsmenlabs.gareth.core.context.ExperimentContextImpl;
+import org.craftsmenlabs.gareth.core.ExperimentEngine;
+import org.craftsmenlabs.gareth.core.context.ExperimentContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.web.bind.annotation.*;
@@ -15,10 +15,10 @@ import javax.ws.rs.core.MediaType;
 @CrossOrigin
 public class ExperimentRerunResource {
 
-    private final ExperimentEngineImpl experimentEngine;
+    private final ExperimentEngine experimentEngine;
 
     @Autowired
-    public ExperimentRerunResource(final ExperimentEngineImpl experimentEngine) {
+    public ExperimentRerunResource(final ExperimentEngine experimentEngine) {
         this.experimentEngine = experimentEngine;
     }
 
@@ -28,7 +28,7 @@ public class ExperimentRerunResource {
             produces = {MediaType.APPLICATION_JSON})
     public boolean rerunExperiment(final @PathVariable("hash") String hash) {
         try {
-            final ExperimentContextImpl experimentContext = experimentEngine.findExperimentContextForHash(hash);
+            final ExperimentContext experimentContext = experimentEngine.findExperimentContextForHash(hash);
             experimentEngine.planExperimentContext(experimentContext);
             return true;
         } catch (final GarethUnknownExperimentException e) {

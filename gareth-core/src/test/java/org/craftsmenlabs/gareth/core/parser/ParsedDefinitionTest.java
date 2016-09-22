@@ -7,13 +7,13 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
 
-public class ParsedDefinitionImplTest {
+public class ParsedDefinitionTest {
 
-    private ParsedDefinitionImpl parsedDefinition;
+    private ParsedDefinition parsedDefinition;
 
     @Before
     public void before() {
-        parsedDefinition = new ParsedDefinitionImpl();
+        parsedDefinition = new ParsedDefinition();
     }
 
     @Test

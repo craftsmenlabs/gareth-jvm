@@ -2,15 +2,15 @@ package org.craftsmenlabs.gareth.core.persist;
 
 import org.craftsmenlabs.gareth.api.exception.GarethStateReadException;
 import org.craftsmenlabs.gareth.api.exception.GarethStateWriteException;
-import org.craftsmenlabs.gareth.core.ExperimentEngineImpl;
+import org.craftsmenlabs.gareth.core.ExperimentEngine;
 import org.craftsmenlabs.gareth.core.persist.listener.ExperimentStateChangeListener;
 
 
 public interface ExperimentEnginePersistence {
 
-    void persist(final ExperimentEngineImpl experimentEngine) throws GarethStateWriteException;
+    void persist(final ExperimentEngine experimentEngine) throws GarethStateWriteException;
 
-    void restore(final ExperimentEngineImpl experimentEngine) throws GarethStateReadException;
+    void restore(final ExperimentEngine experimentEngine) throws GarethStateReadException;
 
     ExperimentStateChangeListener getExperimentStateChangeListener();
 }

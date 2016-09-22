@@ -1,7 +1,7 @@
 package org.craftsmenlabs.gareth.rest.v2.resources;
 
-import org.craftsmenlabs.gareth.core.ExperimentEngineImpl;
-import org.craftsmenlabs.gareth.core.context.ExperimentContextImpl;
+import org.craftsmenlabs.gareth.core.ExperimentEngine;
+import org.craftsmenlabs.gareth.core.context.ExperimentContext;
 import org.craftsmenlabs.gareth.rest.assembler.Assembler;
 import org.craftsmenlabs.gareth.rest.v2.assembler.ExperimentAssembler;
 import org.craftsmenlabs.gareth.rest.v2.entity.Experiment;
@@ -22,10 +22,10 @@ import java.util.List;
 @CrossOrigin
 public class ExperimentResource {
 
-    private ExperimentEngineImpl experimentEngine;
+    private ExperimentEngine experimentEngine;
 
     @Autowired
-    public ExperimentResource(ExperimentEngineImpl experimentEngine) {
+    public ExperimentResource(ExperimentEngine experimentEngine) {
         this.experimentEngine = experimentEngine;
     }
 
@@ -38,10 +38,10 @@ public class ExperimentResource {
                 .getExperimentContexts());
     }
 
-    private List<Experiment> assembleExperiments(final List<ExperimentContextImpl> experimentContexts) {
-        final Assembler<ExperimentContextImpl, Experiment> assembler = new ExperimentAssembler();
+    private List<Experiment> assembleExperiments(final List<ExperimentContext> experimentContexts) {
+        final Assembler<ExperimentContext, Experiment> assembler = new ExperimentAssembler();
         final List<Experiment> experiments = new ArrayList<>();
-        for (final ExperimentContextImpl experimentContext : experimentContexts) {
+        for (final ExperimentContext experimentContext : experimentContexts) {
             experiments.add(assembler.assembleOutbound(experimentContext));
         }
 

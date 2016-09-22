@@ -3,9 +3,9 @@ package org.craftsmenlabs.gareth.core.scheduler;
 import com.xeiam.sundial.SundialJobScheduler;
 import org.craftsmenlabs.gareth.api.exception.GarethInvocationException;
 import org.craftsmenlabs.gareth.api.exception.GarethUnknownDefinitionException;
-import org.craftsmenlabs.gareth.core.ExperimentEngineImpl;
-import org.craftsmenlabs.gareth.core.context.ExperimentRunContextImpl;
-import org.craftsmenlabs.gareth.core.invoker.MethodInvokerImpl;
+import org.craftsmenlabs.gareth.core.ExperimentEngine;
+import org.craftsmenlabs.gareth.core.context.ExperimentRunContext;
+import org.craftsmenlabs.gareth.core.invoker.MethodInvoker;
 import org.craftsmenlabs.gareth.core.observer.DefaultObserver;
 import org.craftsmenlabs.gareth.core.reflection.DefinitionFactory;
 import org.craftsmenlabs.gareth.core.reflection.ReflectionHelper;
@@ -20,7 +20,7 @@ public class DefaultAssumeScheduler {
 
     private static final Logger logger = LoggerFactory.getLogger(DefaultAssumeScheduler.class);
 
-    private final MethodInvokerImpl methodInvoker;
+    private final MethodInvoker methodInvoker;
     private final boolean ignoreInvocationExceptions;
     private final DefaultObserver observer;
 
@@ -32,7 +32,7 @@ public class DefaultAssumeScheduler {
         SundialJobScheduler.startScheduler();
     }
 
-    public void schedule(final ExperimentRunContextImpl experimentContext, final ExperimentEngineImpl experimentEngine) {
+    public void schedule(final ExperimentRunContext experimentContext, final ExperimentEngine experimentEngine) {
         final Duration time = experimentContext.getExperimentContext().getTime();
         final Calendar now = new GregorianCalendar();
         now.add(Calendar.MILLISECOND, new Long(time.toMillis()).intValue());
@@ -74,7 +74,7 @@ public class DefaultAssumeScheduler {
     public static class Builder {
         private final DefaultObserver observer;
         private ReflectionHelper reflectionHelper;
-        private MethodInvokerImpl methodInvoker;
+        private MethodInvoker methodInvoker;
         private boolean ignoreInvocationExceptions;
         private DefinitionFactory customDefinitionFactory;
 
@@ -87,7 +87,7 @@ public class DefaultAssumeScheduler {
             return this;
         }
 
-        public Builder setMethodInvoker(final MethodInvokerImpl methodInvoker) {
+        public Builder setMethodInvoker(final MethodInvoker methodInvoker) {
             this.methodInvoker = methodInvoker;
             return this;
         }
@@ -105,7 +105,7 @@ public class DefaultAssumeScheduler {
             reflectionHelper = new ReflectionHelper(customDefinitionFactory);
 
             if (methodInvoker == null) {
-                methodInvoker = new MethodInvokerImpl(reflectionHelper);
+                methodInvoker = new MethodInvoker(reflectionHelper);
             }
 
             return new DefaultAssumeScheduler(this);

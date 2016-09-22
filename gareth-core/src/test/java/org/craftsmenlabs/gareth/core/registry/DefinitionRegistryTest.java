@@ -18,7 +18,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
-public class DefinitionRegistryImplTest {
+public class DefinitionRegistryTest {
 
     private Method mockMethod;
     private MethodDescriptor baseLineDescriptor;
@@ -27,7 +27,7 @@ public class DefinitionRegistryImplTest {
     private MethodDescriptor successDescriptor;
     private MethodDescriptor failureDescriptor;
     private Duration duration;
-    private DefinitionRegistryImpl registry;
+    private DefinitionRegistry registry;
 
     @Before
     public void setUp() throws Exception {
@@ -41,7 +41,7 @@ public class DefinitionRegistryImplTest {
 
         duration = Duration.ofHours(2);
         // Add default registries
-        registry = new DefinitionRegistryImpl();
+        registry = new DefinitionRegistry();
         registry.getBaselineDefinitions().put("baseline", baseLineDescriptor);
         registry.getAssumeDefinitions().put("assume", assumeDescriptor);
         registry.getSuccessDefinitions().put("success", successDescriptor);

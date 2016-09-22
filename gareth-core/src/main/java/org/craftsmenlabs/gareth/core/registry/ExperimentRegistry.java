@@ -8,7 +8,7 @@ import org.craftsmenlabs.gareth.api.model.Experiment;
 import java.util.*;
 
 
-public class ExperimentRegistryImpl {
+public class ExperimentRegistry {
 
     @Getter
     private final Map<String, Experiment> experiments = new HashMap<>();

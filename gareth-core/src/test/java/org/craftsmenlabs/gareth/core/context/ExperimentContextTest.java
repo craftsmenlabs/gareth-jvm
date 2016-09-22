@@ -14,10 +14,10 @@ import java.util.Optional;
 import static org.junit.Assert.*;
 
 
-public class ExperimentContextImplTest {
+public class ExperimentContextTest {
 
     private final String hash = "hash";
-    private ExperimentContextImpl experimentContext;
+    private ExperimentContext experimentContext;
     private AssumptionBlock assumptionBlock;
     private Duration mockDuration;
     private Optional<MethodDescriptor> stubMethodDescriptor;
@@ -37,7 +37,7 @@ public class ExperimentContextImplTest {
         assumptionBlock.setTime("time");
 
         stubMethodDescriptor = stubMethodDescriptor();
-        experimentContext = new ExperimentContextImpl
+        experimentContext = new ExperimentContext
                 .Builder("experiment name", assumptionBlock)
                 .setBaseline(stubMethodDescriptor)
                 .setAssume(stubMethodDescriptor)
@@ -55,7 +55,7 @@ public class ExperimentContextImplTest {
 
     @Test
     public void testIsValidTimeMissing() throws Exception {
-        experimentContext = new ExperimentContextImpl
+        experimentContext = new ExperimentContext
                 .Builder("experiment name", assumptionBlock)
                 .setBaseline(stubMethodDescriptor)
                 .setAssume(stubMethodDescriptor)
@@ -65,7 +65,7 @@ public class ExperimentContextImplTest {
 
     @Test
     public void testIsValidBaselineMissing() throws Exception {
-        experimentContext = new ExperimentContextImpl
+        experimentContext = new ExperimentContext
                 .Builder("experiment name", assumptionBlock)
                 .setAssume(stubMethodDescriptor)
                 .setTime(mockDuration)
@@ -75,7 +75,7 @@ public class ExperimentContextImplTest {
 
     @Test
     public void testIsValidAssumeMissing() throws Exception {
-        experimentContext = new ExperimentContextImpl
+        experimentContext = new ExperimentContext
                 .Builder("experiment name", assumptionBlock)
                 .setBaseline(stubMethodDescriptor)
                 .setTime(mockDuration)
@@ -153,7 +153,7 @@ public class ExperimentContextImplTest {
 
     @Test
     public void testHasStorageOnBaseline() {
-        experimentContext = new ExperimentContextImpl
+        experimentContext = new ExperimentContext
                 .Builder("experiment name", assumptionBlock)
                 .setBaseline(Optional.of(new MethodDescriptorImpl(null, 0, true)))
                 .setAssume(stubMethodDescriptor)
@@ -166,7 +166,7 @@ public class ExperimentContextImplTest {
 
     @Test
     public void testHasStorageOnAssume() {
-        experimentContext = new ExperimentContextImpl
+        experimentContext = new ExperimentContext
                 .Builder("experiment name", assumptionBlock)
                 .setBaseline(stubMethodDescriptor)
                 .setAssume(Optional.of(new MethodDescriptorImpl(null, 0, true)))
@@ -179,7 +179,7 @@ public class ExperimentContextImplTest {
 
     @Test
     public void testHasStorageOnFailure() {
-        experimentContext = new ExperimentContextImpl
+        experimentContext = new ExperimentContext
                 .Builder("experiment name", assumptionBlock)
                 .setBaseline(stubMethodDescriptor)
                 .setAssume(stubMethodDescriptor)
@@ -192,7 +192,7 @@ public class ExperimentContextImplTest {
 
     @Test
     public void testHasStorageOnSuccess() {
-        experimentContext = new ExperimentContextImpl
+        experimentContext = new ExperimentContext
                 .Builder("experiment name", assumptionBlock)
                 .setBaseline(stubMethodDescriptor)
                 .setAssume(stubMethodDescriptor)
@@ -207,7 +207,7 @@ public class ExperimentContextImplTest {
     @Test
     public void testBuildWithoutHash() {
         try {
-            new ExperimentContextImpl.Builder("experiment name", assumptionBlock).build(null);
+            new ExperimentContext.Builder("experiment name", assumptionBlock).build(null);
         } catch (final IllegalStateException e) {
             assertTrue(e.getMessage().contains("ExperimentContext cannot be build without hash"));
         }

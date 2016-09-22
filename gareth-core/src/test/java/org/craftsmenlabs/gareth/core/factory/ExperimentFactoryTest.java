@@ -11,7 +11,7 @@ import java.io.InputStream;
 import static org.junit.Assert.*;
 
 
-public class ExperimentFactoryImplTest {
+public class ExperimentFactoryTest {
 
     @Test
     public void testExperiment1() {
@@ -174,7 +174,7 @@ public class ExperimentFactoryImplTest {
     @Test
     public void testNullInputStreamExperiment() {
         try {
-            new ExperimentFactoryImpl().buildExperiment(null);
+            new ExperimentFactory().buildExperiment(null);
         } catch (final Exception e) {
             assertTrue(e instanceof GarethExperimentParseException);
         }
@@ -184,7 +184,7 @@ public class ExperimentFactoryImplTest {
         final InputStream fileInputStream = getClass().getResourceAsStream("/experiments/" + fileName);
 
         try {
-            new ExperimentFactoryImpl().buildExperiment(fileInputStream);
+            new ExperimentFactory().buildExperiment(fileInputStream);
         } catch (Exception e) {
             throw e;
         } finally {
@@ -198,7 +198,7 @@ public class ExperimentFactoryImplTest {
         try {
 
 
-            return new ExperimentFactoryImpl().buildExperiment(fileInputStream);
+            return new ExperimentFactory().buildExperiment(fileInputStream);
 
 
         } catch (Exception e) {

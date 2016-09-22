@@ -1,6 +1,6 @@
 package org.craftsmenlabs.gareth.json.persist.listener;
 
-import org.craftsmenlabs.gareth.core.ExperimentEngineImpl;
+import org.craftsmenlabs.gareth.core.ExperimentEngine;
 import org.craftsmenlabs.gareth.json.persist.JsonExperimentEnginePersistence;
 import org.junit.Before;
 import org.junit.Test;
@@ -21,7 +21,7 @@ public class JsonExperimentChangeListenerTest {
 
 
     @Mock
-    private ExperimentEngineImpl mockExperimentEngine;
+    private ExperimentEngine mockExperimentEngine;
 
     @Before
     public void setUp() throws Exception {

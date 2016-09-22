@@ -6,10 +6,10 @@ import com.xeiam.sundial.exceptions.JobInterruptException;
 import lombok.AccessLevel;
 import lombok.Setter;
 import org.craftsmenlabs.gareth.api.context.ExperimentPartState;
+import org.craftsmenlabs.gareth.core.ExperimentEngine;
 import org.craftsmenlabs.gareth.core.invoker.MethodDescriptor;
-import org.craftsmenlabs.gareth.core.ExperimentEngineImpl;
-import org.craftsmenlabs.gareth.core.context.ExperimentRunContextImpl;
-import org.craftsmenlabs.gareth.core.invoker.MethodInvokerImpl;
+import org.craftsmenlabs.gareth.core.context.ExperimentRunContext;
+import org.craftsmenlabs.gareth.core.invoker.MethodInvoker;
 import org.craftsmenlabs.gareth.core.observer.DefaultObserver;
 import org.craftsmenlabs.gareth.core.storage.DefaultStorage;
 import org.slf4j.Logger;
@@ -26,10 +26,10 @@ public class DefaultInvocationJob extends Job {
 
     @Override
     public void doRun() throws JobInterruptException {
-        final MethodInvokerImpl methodInvoker = getJobContext().getRequiredValue("methodInvoker");
-        final ExperimentRunContextImpl runContext = getJobContext().getRequiredValue("experimentRunContext");
+        final MethodInvoker methodInvoker = getJobContext().getRequiredValue("methodInvoker");
+        final ExperimentRunContext runContext = getJobContext().getRequiredValue("experimentRunContext");
         final DefaultObserver observer = getJobContext().getRequiredValue("observer");
-        final ExperimentEngineImpl experimentEngine = getJobContext().getRequiredValue("experimentEngine");
+        final ExperimentEngine experimentEngine = getJobContext().getRequiredValue("experimentEngine");
         try {
             logger.debug("Invoking assumption");
             runContext.setAssumeState(ExperimentPartState.RUNNING);
@@ -65,7 +65,7 @@ public class DefaultInvocationJob extends Job {
     }
 
     private void invoke(final String assumeGlueLine,
-                        final MethodInvokerImpl methodInvoker,
+                        final MethodInvoker methodInvoker,
                         final boolean storageRequired,
                         final MethodDescriptor methodDescriptor,
                         final DefaultStorage storage) {

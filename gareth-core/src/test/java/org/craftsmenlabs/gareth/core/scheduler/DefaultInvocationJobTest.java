@@ -3,10 +3,10 @@ package org.craftsmenlabs.gareth.core.scheduler;
 import com.xeiam.sundial.JobContext;
 import org.craftsmenlabs.gareth.api.context.ExperimentPartState;
 import org.craftsmenlabs.gareth.core.invoker.MethodDescriptor;
-import org.craftsmenlabs.gareth.core.ExperimentEngineImpl;
-import org.craftsmenlabs.gareth.core.context.ExperimentContextImpl;
-import org.craftsmenlabs.gareth.core.context.ExperimentRunContextImpl;
-import org.craftsmenlabs.gareth.core.invoker.MethodInvokerImpl;
+import org.craftsmenlabs.gareth.core.ExperimentEngine;
+import org.craftsmenlabs.gareth.core.context.ExperimentContext;
+import org.craftsmenlabs.gareth.core.context.ExperimentRunContext;
+import org.craftsmenlabs.gareth.core.invoker.MethodInvoker;
 import org.craftsmenlabs.gareth.core.observer.DefaultObserver;
 import org.craftsmenlabs.gareth.core.storage.DefaultStorage;
 import org.junit.Before;
@@ -28,13 +28,13 @@ public class DefaultInvocationJobTest {
     private JobContext mockJobContext;
 
     @Mock
-    private MethodInvokerImpl mockMethodInvoker;
+    private MethodInvoker mockMethodInvoker;
 
     @Mock
-    private ExperimentRunContextImpl mockExperimentRunContext;
+    private ExperimentRunContext mockExperimentRunContext;
 
     @Mock
-    private ExperimentContextImpl mockExperimentContext;
+    private ExperimentContext mockExperimentContext;
 
     @Mock
     private MethodDescriptor mockMethodDescriptor;
@@ -43,7 +43,7 @@ public class DefaultInvocationJobTest {
     private DefaultObserver mockObserver;
 
     @Mock
-    private ExperimentEngineImpl mockExperimentEngine;
+    private ExperimentEngine mockExperimentEngine;
 
     @Before
     public void before() {

@@ -4,9 +4,9 @@ import org.craftsmenlabs.gareth.api.exception.GarethStateReadException;
 import org.craftsmenlabs.gareth.api.exception.GarethStateWriteException;
 import org.craftsmenlabs.gareth.core.persist.listener.ExperimentStateChangeListener;
 import org.craftsmenlabs.gareth.core.persist.ExperimentEnginePersistence;
-import org.craftsmenlabs.gareth.core.ExperimentEngineImpl;
-import org.craftsmenlabs.gareth.core.context.ExperimentContextImpl;
-import org.craftsmenlabs.gareth.core.context.ExperimentRunContextImpl;
+import org.craftsmenlabs.gareth.core.ExperimentEngine;
+import org.craftsmenlabs.gareth.core.context.ExperimentContext;
+import org.craftsmenlabs.gareth.core.context.ExperimentRunContext;
 import org.craftsmenlabs.gareth.json.persist.media.StorageMedia;
 import org.junit.Before;
 import org.junit.Test;
@@ -27,17 +27,17 @@ public class JsonExperimentEnginePersistenceTest {
     private ExperimentEnginePersistence jsonExperimentEnginePersistence;
 
     @Mock
-    private ExperimentEngineImpl mockExperimentEngine;
+    private ExperimentEngine mockExperimentEngine;
 
 
     @Mock
-    private ExperimentContextImpl mockExperimentContext;
+    private ExperimentContext mockExperimentContext;
 
     @Mock
     private StorageMedia mockStorageMedia;
 
     @Mock
-    private ExperimentRunContextImpl mockExperimentRunContext;
+    private ExperimentRunContext mockExperimentRunContext;
 
     @Captor
     private ArgumentCaptor<List<JsonExperimentContextData>> argumentCaptor;

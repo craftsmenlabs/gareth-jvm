@@ -1,6 +1,6 @@
 package org.craftsmenlabs.gareth.rest.v1.resource;
 
-import org.craftsmenlabs.gareth.core.ExperimentEngineImpl;
+import org.craftsmenlabs.gareth.core.ExperimentEngine;
 import org.craftsmenlabs.gareth.core.parser.GlueLineMatcher;
 import org.craftsmenlabs.gareth.rest.v1.entity.Experiment;
 import org.craftsmenlabs.gareth.rest.v1.entity.ExperimentToModelMapper;
@@ -19,7 +19,7 @@ import java.util.Map;
 public class DefinitionsResource {
 
     @Inject
-    private ExperimentEngineImpl experimentEngine;
+    private ExperimentEngine experimentEngine;
     private GlueLineMatcher glueLineMatcher = new GlueLineMatcher();
     ExperimentToModelMapper mapper = new ExperimentToModelMapper();
 

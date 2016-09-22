@@ -8,9 +8,9 @@ import org.craftsmenlabs.gareth.core.storage.DefaultStorage;
 import java.time.LocalDateTime;
 
 @Getter
-public class ExperimentRunContextImpl {
+public class ExperimentRunContext {
 
-    private final ExperimentContextImpl experimentContext;
+    private final ExperimentContext experimentContext;
 
     private final DefaultStorage storage;
 
@@ -22,7 +22,7 @@ public class ExperimentRunContextImpl {
 
     private boolean finished;
 
-    private ExperimentRunContextImpl(final Builder builder) {
+    private ExperimentRunContext(final Builder builder) {
         this.experimentContext = builder.experimentContext;
         this.storage = builder.storage;
 
@@ -55,7 +55,7 @@ public class ExperimentRunContextImpl {
     }
 
     public static class Builder {
-        private ExperimentContextImpl experimentContext;
+        private ExperimentContext experimentContext;
         private DefaultStorage storage;
 
         private ExperimentPartState baselineState = ExperimentPartState.NON_EXISTENT;
@@ -66,12 +66,12 @@ public class ExperimentRunContextImpl {
 
         private ExperimentPartState failureState = ExperimentPartState.NON_EXISTENT;
 
-        public Builder(final ExperimentContextImpl experimentContext, final DefaultStorage storage) {
+        public Builder(final ExperimentContext experimentContext, final DefaultStorage storage) {
             this.experimentContext = experimentContext;
             this.storage = storage;
         }
 
-        public ExperimentRunContextImpl build() {
+        public ExperimentRunContext build() {
             if (null == experimentContext) {
                 throw new IllegalStateException("Cannot build experiment run context without experiment context");
             }
@@ -79,7 +79,7 @@ public class ExperimentRunContextImpl {
             if (null != experimentContext.getAssume()) assumeState = ExperimentPartState.OPEN;
             if (null != experimentContext.getSuccess()) successState = ExperimentPartState.OPEN;
             if (null != experimentContext.getFailure()) failureState = ExperimentPartState.OPEN;
-            return new ExperimentRunContextImpl(this);
+            return new ExperimentRunContext(this);
         }
     }
 }

@@ -3,7 +3,7 @@ package org.craftsmenlabs.gareth.core;
 import java.io.InputStream;
 import java.util.*;
 
-public class ExperimentEngineConfigImpl {
+public class ExperimentEngineConfig {
 
 
     private final Set<Class> definitionClasses;
@@ -12,7 +12,7 @@ public class ExperimentEngineConfigImpl {
 
     private final boolean ignoreInvalidDefinitions, ignoreInvalidExperiments, ignoreInvocationExceptions;
 
-    private ExperimentEngineConfigImpl(final Builder builder) {
+    private ExperimentEngineConfig(final Builder builder) {
         this.definitionClasses = builder.definitionClasses;
         this.inputStreamList = builder.inputStreams;
         this.ignoreInvalidDefinitions = builder.ignoreInvalidDefinitions;
@@ -84,8 +84,8 @@ public class ExperimentEngineConfigImpl {
             return this;
         }
 
-        public ExperimentEngineConfigImpl build() {
-            return new ExperimentEngineConfigImpl(this);
+        public ExperimentEngineConfig build() {
+            return new ExperimentEngineConfig(this);
         }
     }
 

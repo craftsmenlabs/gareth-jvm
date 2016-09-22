@@ -15,12 +15,12 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 
-public class ExperimentRunContextImplTest {
+public class ExperimentRunContextTest {
 
-    private ExperimentRunContextImpl experimentRunContext;
+    private ExperimentRunContext experimentRunContext;
 
     @Mock
-    private ExperimentContextImpl mockExperimentContext;
+    private ExperimentContext mockExperimentContext;
 
     @Mock
     private MethodDescriptor mockMethodDescriptor;
@@ -34,7 +34,7 @@ public class ExperimentRunContextImplTest {
         when(mockExperimentContext.getAssume()).thenReturn(mockMethodDescriptor);
         when(mockExperimentContext.getSuccess()).thenReturn(mockMethodDescriptor);
         when(mockExperimentContext.getFailure()).thenReturn(mockMethodDescriptor);
-        experimentRunContext = new ExperimentRunContextImpl.Builder(mockExperimentContext, null).build();
+        experimentRunContext = new ExperimentRunContext.Builder(mockExperimentContext, null).build();
     }
 
 
@@ -96,8 +96,8 @@ public class ExperimentRunContextImplTest {
 
     @Test
     public void testGetDefaultStates() {
-        ExperimentContextImpl mockOtherExperimentContext = mock(ExperimentContextImpl.class);
-        experimentRunContext = new ExperimentRunContextImpl.Builder(mockOtherExperimentContext, null).build();
+        ExperimentContext mockOtherExperimentContext = mock(ExperimentContext.class);
+        experimentRunContext = new ExperimentRunContext.Builder(mockOtherExperimentContext, null).build();
         assertEquals(ExperimentPartState.NON_EXISTENT, experimentRunContext.getBaselineState());
         assertEquals(ExperimentPartState.NON_EXISTENT, experimentRunContext.getAssumeState());
         assertEquals(ExperimentPartState.NON_EXISTENT, experimentRunContext.getSuccessState());
@@ -204,7 +204,7 @@ public class ExperimentRunContextImplTest {
     @Test
     public void testGetWithStorage() {
         final DefaultStorage storage = new DefaultStorage();
-        experimentRunContext = new ExperimentRunContextImpl
+        experimentRunContext = new ExperimentRunContext
                 .Builder(mockExperimentContext, storage)
                 .build();
         assertNotNull(experimentRunContext.getStorage());
@@ -214,7 +214,7 @@ public class ExperimentRunContextImplTest {
     @Test
     public void buildWithoutExperimentContext() {
         try {
-            experimentRunContext = new ExperimentRunContextImpl
+            experimentRunContext = new ExperimentRunContext
                     .Builder(null, null)
                     .build();
             fail("Should not reach this point");

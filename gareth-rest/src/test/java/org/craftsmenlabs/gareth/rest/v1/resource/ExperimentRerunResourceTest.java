@@ -2,8 +2,8 @@ package org.craftsmenlabs.gareth.rest.v1.resource;
 
 import org.craftsmenlabs.gareth.api.exception.GarethUnknownExperimentException;
 import org.craftsmenlabs.gareth.api.model.AssumptionBlock;
-import org.craftsmenlabs.gareth.core.ExperimentEngineImpl;
-import org.craftsmenlabs.gareth.core.context.ExperimentContextImpl;
+import org.craftsmenlabs.gareth.core.ExperimentEngine;
+import org.craftsmenlabs.gareth.core.context.ExperimentContext;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.InjectMocks;
@@ -19,9 +19,9 @@ import static org.mockito.Mockito.*;
 public class ExperimentRerunResourceTest {
 
     @Mock
-    private ExperimentEngineImpl experimentEngine;
+    private ExperimentEngine experimentEngine;
 
-    private ExperimentContextImpl experimentContext;
+    private ExperimentContext experimentContext;
 
     @InjectMocks
     private ExperimentRerunResource experimentRerunResource;
@@ -30,7 +30,7 @@ public class ExperimentRerunResourceTest {
     @Before
     public void before() {
         experimentRerunResource = new ExperimentRerunResource();
-        experimentContext = new ExperimentContextImpl.Builder("experiment", new AssumptionBlock()).build("hash");
+        experimentContext = new ExperimentContext.Builder("experiment", new AssumptionBlock()).build("hash");
         MockitoAnnotations.initMocks(this);
     }
 

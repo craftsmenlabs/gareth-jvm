@@ -14,9 +14,9 @@ import java.util.List;
 import static org.junit.Assert.*;
 
 
-public class ExperimentRegistryImplTest {
+public class ExperimentRegistryTest {
 
-    private ExperimentRegistryImpl experimentRegistry;
+    private ExperimentRegistry experimentRegistry;
 
     @Mock
     private Experiment mockExperiment;
@@ -24,7 +24,7 @@ public class ExperimentRegistryImplTest {
     @Before
     public void setUp() throws Exception {
         MockitoAnnotations.initMocks(this);
-        experimentRegistry = new ExperimentRegistryImpl();
+        experimentRegistry = new ExperimentRegistry();
         experimentRegistry.getExperiments().put("mockExperiment", mockExperiment);
 
 

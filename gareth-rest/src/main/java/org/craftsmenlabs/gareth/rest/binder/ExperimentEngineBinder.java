@@ -1,20 +1,20 @@
 package org.craftsmenlabs.gareth.rest.binder;
 
-import org.craftsmenlabs.gareth.core.ExperimentEngineImpl;
+import org.craftsmenlabs.gareth.core.ExperimentEngine;
 import org.glassfish.hk2.utilities.binding.AbstractBinder;
 
 
 public class ExperimentEngineBinder extends AbstractBinder {
 
-    private final ExperimentEngineImpl experimentEngine;
+    private final ExperimentEngine experimentEngine;
 
-    public ExperimentEngineBinder(final ExperimentEngineImpl experimentEngine) {
+    public ExperimentEngineBinder(final ExperimentEngine experimentEngine) {
         this.experimentEngine = experimentEngine;
     }
 
     @Override
     protected void configure() {
-        bind(experimentEngine).to(ExperimentEngineImpl.class);
+        bind(experimentEngine).to(ExperimentEngine.class);
     }
 
 

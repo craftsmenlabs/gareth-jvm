@@ -2,7 +2,7 @@ package org.craftsmenlabs.gareth.rest.v2.resource;
 
 import mockit.*;
 import org.craftsmenlabs.gareth.api.model.GlueLineType;
-import org.craftsmenlabs.gareth.core.ExperimentEngineImpl;
+import org.craftsmenlabs.gareth.core.ExperimentEngine;
 import org.craftsmenlabs.gareth.core.parser.GlueLineMatcher;
 import org.craftsmenlabs.gareth.rest.v2.entity.ExperimentToModelMapper2;
 import org.craftsmenlabs.gareth.rest.v2.resources.DefinitionsResource;
@@ -19,7 +19,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 public class DefinitionsResourceTest {
 
     @Injectable
-    private ExperimentEngineImpl experimentEngine;
+    private ExperimentEngine experimentEngine;
 
     @Mocked
     private GlueLineMatcher glueLineMatcher;

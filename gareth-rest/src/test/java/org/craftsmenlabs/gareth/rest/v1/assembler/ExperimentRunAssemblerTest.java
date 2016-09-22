@@ -1,7 +1,7 @@
 package org.craftsmenlabs.gareth.rest.v1.assembler;
 
 import org.craftsmenlabs.gareth.api.context.ExperimentPartState;
-import org.craftsmenlabs.gareth.core.context.ExperimentRunContextImpl;
+import org.craftsmenlabs.gareth.core.context.ExperimentRunContext;
 import org.craftsmenlabs.gareth.rest.v1.entity.ExperimentRun;
 import org.junit.Before;
 import org.junit.Test;
@@ -25,7 +25,7 @@ public class ExperimentRunAssemblerTest {
     @Test
     public void testAssembleOutbound() throws Exception {
         final LocalDateTime now = LocalDateTime.now();
-        final ExperimentRunContextImpl experimentRunContext = mock(ExperimentRunContextImpl.class);
+        final ExperimentRunContext experimentRunContext = mock(ExperimentRunContext.class);
         when(experimentRunContext.getBaselineState()).thenReturn(ExperimentPartState.OPEN);
         when(experimentRunContext.getAssumeState()).thenReturn(ExperimentPartState.FINISHED);
         when(experimentRunContext.getSuccessState()).thenReturn(ExperimentPartState.NON_EXISTENT);

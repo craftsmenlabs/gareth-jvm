@@ -13,16 +13,16 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 
-public class MethodInvokerImplTest {
+public class MethodInvokerTest {
 
     private static final List<String> invokeMessageList = new ArrayList<>();
-    private MethodInvokerImpl methodInvoker;
+    private MethodInvoker methodInvoker;
     private MethodDescriptor methodDescriptor;
 
     @Before
     public void setUp() throws Exception {
         invokeMessageList.clear();
-        methodInvoker = new MethodInvokerImpl(new ReflectionHelper(null));
+        methodInvoker = new MethodInvoker(new ReflectionHelper(null));
         methodDescriptor = new MethodDescriptorImpl(getStubMethod(), 0, false);
     }
 

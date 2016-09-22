@@ -4,9 +4,9 @@ import org.craftsmenlabs.gareth.application.definition.AnotherDefinition;
 import org.craftsmenlabs.gareth.application.definition.RestDefinitionFactory;
 import org.craftsmenlabs.gareth.application.definition.SaleofFruit;
 import org.craftsmenlabs.gareth.application.definition.SampleDefinition;
-import org.craftsmenlabs.gareth.core.ExperimentEngineConfigImpl;
-import org.craftsmenlabs.gareth.core.ExperimentEngineImpl;
-import org.craftsmenlabs.gareth.core.ExperimentEngineImplBuilder;
+import org.craftsmenlabs.gareth.core.ExperimentEngineConfig;
+import org.craftsmenlabs.gareth.core.ExperimentEngine;
+import org.craftsmenlabs.gareth.core.ExperimentEngineBuilder;
 import org.craftsmenlabs.gareth.json.persist.JsonExperimentEnginePersistence;
 import org.craftsmenlabs.gareth.rest.config.RestConfiguration;
 import org.springframework.context.annotation.Bean;
@@ -21,8 +21,8 @@ import org.springframework.web.cors.CorsConfiguration;
 public class ApplicationConfiguration {
 
     @Bean
-    ExperimentEngineConfigImpl experimentEngineConfigImpl() {
-        return new ExperimentEngineConfigImpl
+    ExperimentEngineConfig experimentEngineConfigImpl() {
+        return new ExperimentEngineConfig
                 .Builder()
                 .addDefinitionClass(SampleDefinition.class)
                 .addDefinitionClass(AnotherDefinition.class)
@@ -34,8 +34,8 @@ public class ApplicationConfiguration {
     }
 
     @Bean
-    ExperimentEngineImpl experimentEngine(ExperimentEngineConfigImpl experimentEngineConfigImpl){
-        return new ExperimentEngineImplBuilder(experimentEngineConfigImpl)
+    ExperimentEngine experimentEngine(ExperimentEngineConfig experimentEngineConfig){
+        return new ExperimentEngineBuilder(experimentEngineConfig)
                 .addCustomDefinitionFactory(new RestDefinitionFactory())
                 .setExperimentEnginePersistence(new JsonExperimentEnginePersistence.Builder().build())
                 .build();

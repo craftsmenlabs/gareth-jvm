@@ -5,8 +5,8 @@ import mockit.Injectable;
 import mockit.Tested;
 import mockit.Verifications;
 import org.craftsmenlabs.gareth.api.exception.GarethUnknownExperimentException;
-import org.craftsmenlabs.gareth.core.ExperimentEngineImpl;
-import org.craftsmenlabs.gareth.core.context.ExperimentContextImpl;
+import org.craftsmenlabs.gareth.core.ExperimentEngine;
+import org.craftsmenlabs.gareth.core.context.ExperimentContext;
 import org.craftsmenlabs.gareth.rest.v2.resources.ExperimentRerunResource;
 import org.junit.Test;
 
@@ -16,10 +16,10 @@ import static org.assertj.core.api.AssertionsForInterfaceTypes.assertThat;
 public class ExperimentRerunResourceTest {
 
     @Injectable
-    private ExperimentEngineImpl experimentEngine;
+    private ExperimentEngine experimentEngine;
 
     @Injectable
-    private ExperimentContextImpl experimentContext;
+    private ExperimentContext experimentContext;
 
     @Tested
     private ExperimentRerunResource experimentRerunResource;

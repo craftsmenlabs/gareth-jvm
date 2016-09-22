@@ -15,20 +15,20 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Stream;
 
-public class ParsedDefinitionFactoryImpl {
+public class ParsedDefinitionFactory {
 
     private final ReflectionHelper reflectionHelper;
 
-    public ParsedDefinitionFactoryImpl(final ReflectionHelper reflectionHelper) {
+    public ParsedDefinitionFactory(final ReflectionHelper reflectionHelper) {
         this.reflectionHelper = reflectionHelper;
     }
 
-    public ParsedDefinitionImpl parse(final Class clazz) throws GarethExperimentParseException {
+    public ParsedDefinition parse(final Class clazz) throws GarethExperimentParseException {
         Optional
                 .ofNullable(clazz)
                 .orElseThrow(() -> new IllegalArgumentException("Class cannot be null"));
 
-        final ParsedDefinitionImpl parsedDefinition = new ParsedDefinitionImpl();
+        final ParsedDefinition parsedDefinition = new ParsedDefinition();
         parseClass(clazz, parsedDefinition);
         return parsedDefinition;
     }
@@ -40,7 +40,7 @@ public class ParsedDefinitionFactoryImpl {
      * @param clazz
      * @param parsedDefinition
      */
-    private void parseClass(final Class clazz, final ParsedDefinitionImpl parsedDefinition) {
+    private void parseClass(final Class clazz, final ParsedDefinition parsedDefinition) {
         Stream
                 .of(clazz.getMethods())
                 .forEach(m -> parseMethod(m, parsedDefinition));
@@ -52,7 +52,7 @@ public class ParsedDefinitionFactoryImpl {
      * @param method
      * @param parsedDefinition
      */
-    private void parseMethod(final Method method, final ParsedDefinitionImpl parsedDefinition) {
+    private void parseMethod(final Method method, final ParsedDefinition parsedDefinition) {
         Optional.ofNullable(method.getAnnotation(Baseline.class)).ifPresent(baseline -> {
             registerUnitOfWork(method, baseline.glueLine(), parsedDefinition.getBaselineDefinitions());
         });

@@ -1,6 +1,6 @@
 package org.craftsmenlabs.gareth.rest.v2.assembler;
 
-import org.craftsmenlabs.gareth.core.context.ExperimentContextImpl;
+import org.craftsmenlabs.gareth.core.context.ExperimentContext;
 import org.craftsmenlabs.gareth.rest.v2.entity.Experiment;
 import org.junit.Before;
 import org.junit.Test;
@@ -21,7 +21,7 @@ public class ExperimentAssemblerTest {
     @Test
     public void testAssembleOutbound() throws Exception {
 
-        final ExperimentContextImpl experimentContext = mock(ExperimentContextImpl.class);
+        final ExperimentContext experimentContext = mock(ExperimentContext.class);
         when(experimentContext.getHash()).thenReturn("hash");
         when(experimentContext.getExperimentName()).thenReturn("experiment");
         when(experimentContext.getBaselineGlueLine()).thenReturn("baseline");

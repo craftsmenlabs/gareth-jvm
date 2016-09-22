@@ -2,10 +2,10 @@ package org.craftsmenlabs.gareth.application;
 
 import org.craftsmenlabs.gareth.api.model.AssumptionBlock;
 import org.craftsmenlabs.gareth.api.model.Experiment;
-import org.craftsmenlabs.gareth.core.ExperimentEngineConfigImpl;
-import org.craftsmenlabs.gareth.core.ExperimentEngineImpl;
-import org.craftsmenlabs.gareth.rest.RestServiceFactoryImpl;
-import org.craftsmenlabs.gareth.rest.RestServiceImpl;
+import org.craftsmenlabs.gareth.core.ExperimentEngine;
+import org.craftsmenlabs.gareth.core.ExperimentEngineConfig;
+import org.craftsmenlabs.gareth.rest.RestServiceFactory;
+import org.craftsmenlabs.gareth.rest.RestService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -16,24 +16,24 @@ import java.util.List;
 @Service
 public class ApplicationContainer {
 
-    private ExperimentEngineConfigImpl experimentEngineConfigImpl;
-    private ExperimentEngineImpl experimentEngineImpl;
+    private ExperimentEngineConfig experimentEngineConfig;
+    private ExperimentEngine experimentEngine;
 
     @Autowired
-    public ApplicationContainer(ExperimentEngineConfigImpl experimentEngineConfigImpl, ExperimentEngineImpl experimentEngineImpl) {
-        this.experimentEngineConfigImpl = experimentEngineConfigImpl;
-        this.experimentEngineImpl = experimentEngineImpl;
+    public ApplicationContainer(ExperimentEngineConfig experimentEngineConfig, ExperimentEngine experimentEngine) {
+        this.experimentEngineConfig = experimentEngineConfig;
+        this.experimentEngine = experimentEngine;
     }
 
     @PostConstruct
     public void init() throws Exception {
 
-        experimentEngineImpl.start();
+        experimentEngine.start();
         //experimentEngine.runExperiment(createExperiment());
-        Runtime.getRuntime().addShutdownHook(new ShutdownHook(experimentEngineImpl));
+        Runtime.getRuntime().addShutdownHook(new ShutdownHook(experimentEngine));
 
-        final RestServiceFactoryImpl restServiceFactory = new RestServiceFactoryImpl(); // Create a new rest service factory
-        final RestServiceImpl restService = restServiceFactory.create(experimentEngineImpl, 8888);
+        final RestServiceFactory restServiceFactory = new RestServiceFactory(); // Create a new rest service factory
+        final RestService restService = restServiceFactory.create(experimentEngine, 8888);
         restService.start();
     }
 
@@ -61,9 +61,9 @@ public class ApplicationContainer {
      */
     static class ShutdownHook extends Thread {
 
-        private final ExperimentEngineImpl experimentEngine;
+        private final ExperimentEngine experimentEngine;
 
-        private ShutdownHook(final ExperimentEngineImpl experimentEngine) {
+        private ShutdownHook(final ExperimentEngine experimentEngine) {
             this.experimentEngine = experimentEngine;
         }
 

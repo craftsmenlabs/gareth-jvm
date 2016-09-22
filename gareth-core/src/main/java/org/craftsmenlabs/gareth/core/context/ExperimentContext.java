@@ -10,7 +10,7 @@ import java.util.Optional;
 
 @XmlRootElement
 @Getter
-public class ExperimentContextImpl {
+public class ExperimentContext {
 
     private final String hash;
 
@@ -22,7 +22,7 @@ public class ExperimentContextImpl {
 
     private final String baselineGlueLine, assumeGlueLine, successGlueLine, failureGlueLine, timeGlueLine;
 
-    private ExperimentContextImpl(final String hash, final Builder builder) {
+    private ExperimentContext(final String hash, final Builder builder) {
         this.hash = hash;
         this.experimentName = builder.experimentName;
         // Gluelines
@@ -105,10 +105,10 @@ public class ExperimentContextImpl {
             return this;
         }
 
-        public ExperimentContextImpl build(final String hash) {
+        public ExperimentContext build(final String hash) {
             Optional.ofNullable(hash)
                     .orElseThrow(() -> new IllegalStateException("ExperimentContext cannot be build without hash"));
-            return new ExperimentContextImpl(hash, this);
+            return new ExperimentContext(hash, this);
         }
     }
 }

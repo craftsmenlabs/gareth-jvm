@@ -15,7 +15,7 @@ import java.util.Set;
 import java.util.regex.Pattern;
 
 @Getter
-public class DefinitionRegistryImpl {
+public class DefinitionRegistry {
 
     private final Map<String, Pattern> regexes = new HashMap();
     private final CommonDurationExpressionParser durationExpressionParser = new CommonDurationExpressionParser();

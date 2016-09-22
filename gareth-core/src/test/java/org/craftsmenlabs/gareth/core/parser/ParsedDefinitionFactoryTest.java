@@ -12,14 +12,14 @@ import java.time.Duration;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.Assert.*;
 
-public class ParsedDefinitionFactoryImplTest {
+public class ParsedDefinitionFactoryTest {
 
-    private ParsedDefinitionFactoryImpl parsedParsedDefinitionFactory;
+    private ParsedDefinitionFactory parsedParsedDefinitionFactory;
 
     @Before
     public void setUp() throws Exception {
 
-        parsedParsedDefinitionFactory = new ParsedDefinitionFactoryImpl(new ReflectionHelper(null));
+        parsedParsedDefinitionFactory = new ParsedDefinitionFactory(new ReflectionHelper(null));
 
     }
 
@@ -42,7 +42,7 @@ public class ParsedDefinitionFactoryImplTest {
 
     @Test
     public void testParseClassWithoutDefinitions() throws Exception {
-        final ParsedDefinitionImpl parsedDefinition = parsedParsedDefinitionFactory.parse(Object.class);
+        final ParsedDefinition parsedDefinition = parsedParsedDefinitionFactory.parse(Object.class);
         assertNotNull(parsedDefinition);
 
         assertTrue(parsedDefinition.getBaselineDefinitions().isEmpty());
@@ -55,7 +55,7 @@ public class ParsedDefinitionFactoryImplTest {
 
     @Test
     public void testParseClassWithAssume() throws Exception {
-        final ParsedDefinitionImpl parsedDefinition = parsedParsedDefinitionFactory.parse(AssumeDefinition.class);
+        final ParsedDefinition parsedDefinition = parsedParsedDefinitionFactory.parse(AssumeDefinition.class);
         assertNotNull(parsedDefinition);
 
         assertTrue(parsedDefinition.getBaselineDefinitions().isEmpty());
@@ -72,7 +72,7 @@ public class ParsedDefinitionFactoryImplTest {
 
     @Test
     public void testParseClassWithSuccess() throws Exception {
-        final ParsedDefinitionImpl parsedDefinition = parsedParsedDefinitionFactory.parse(SuccessDefinition.class);
+        final ParsedDefinition parsedDefinition = parsedParsedDefinitionFactory.parse(SuccessDefinition.class);
         assertNotNull(parsedDefinition);
 
         assertTrue(parsedDefinition.getBaselineDefinitions().isEmpty());
@@ -86,7 +86,7 @@ public class ParsedDefinitionFactoryImplTest {
 
     @Test
     public void testParseClassWithFailure() throws Exception {
-        final ParsedDefinitionImpl parsedDefinition = parsedParsedDefinitionFactory.parse(FailureDefinition.class);
+        final ParsedDefinition parsedDefinition = parsedParsedDefinitionFactory.parse(FailureDefinition.class);
         assertNotNull(parsedDefinition);
 
         assertTrue(parsedDefinition.getBaselineDefinitions().isEmpty());
@@ -100,7 +100,7 @@ public class ParsedDefinitionFactoryImplTest {
 
     @Test
     public void testParseClassWithBaseline() throws Exception {
-        final ParsedDefinitionImpl parsedDefinition = parsedParsedDefinitionFactory.parse(BaselineDefinition.class);
+        final ParsedDefinition parsedDefinition = parsedParsedDefinitionFactory.parse(BaselineDefinition.class);
         assertNotNull(parsedDefinition);
 
         assertTrue(parsedDefinition.getAssumeDefinitions().isEmpty());
@@ -114,7 +114,7 @@ public class ParsedDefinitionFactoryImplTest {
 
     @Test
     public void testParseClassWithTime() throws Exception {
-        final ParsedDefinitionImpl parsedDefinition = parsedParsedDefinitionFactory.parse(TimeDefinition.class);
+        final ParsedDefinition parsedDefinition = parsedParsedDefinitionFactory.parse(TimeDefinition.class);
         assertNotNull(parsedDefinition);
 
         assertTrue(parsedDefinition.getAssumeDefinitions().isEmpty());
@@ -128,7 +128,7 @@ public class ParsedDefinitionFactoryImplTest {
 
     @Test
     public void testParseClassWithBaselineAndStorage() throws Exception {
-        final ParsedDefinitionImpl parsedDefinition = parsedParsedDefinitionFactory.parse(WithStorageParameter.class);
+        final ParsedDefinition parsedDefinition = parsedParsedDefinitionFactory.parse(WithStorageParameter.class);
         assertNotNull(parsedDefinition);
 
         assertTrue(parsedDefinition.getAssumeDefinitions().isEmpty());
