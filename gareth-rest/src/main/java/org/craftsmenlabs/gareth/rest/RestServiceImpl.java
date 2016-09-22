@@ -7,9 +7,7 @@ import org.glassfish.jersey.grizzly2.httpserver.GrizzlyHttpServerFactory;
 import javax.ws.rs.core.UriBuilder;
 import java.net.URI;
 
-
 public class RestServiceImpl {
-
 
     private final int portNumber;
 
