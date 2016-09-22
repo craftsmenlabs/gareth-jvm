@@ -19,7 +19,7 @@ public class ExperimentToModelMapperTest {
         experiment.setFailureGlueLine("failure");
         experiment.setSuccessGlueLine("success");
         experiment.setTimeGlueLine("time");
-        org.craftsmenlabs.gareth.api.model.Experiment mapped = new ExperimentToModelMapper2().map(experiment);
+        org.craftsmenlabs.gareth.api.model.Experiment mapped = new ExperimentToModelMapper().map(experiment);
         assertThat(mapped.getExperimentName()).isEqualTo("Experiment");
         assertThat(mapped.getAssumptionBlockList()).hasSize(1);
         AssumptionBlock block = mapped.getAssumptionBlockList().get(0);

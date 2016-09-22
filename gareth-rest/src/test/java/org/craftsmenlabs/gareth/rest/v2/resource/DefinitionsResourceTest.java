@@ -4,7 +4,7 @@ import mockit.*;
 import org.craftsmenlabs.gareth.api.model.GlueLineType;
 import org.craftsmenlabs.gareth.core.ExperimentEngine;
 import org.craftsmenlabs.gareth.core.parser.GlueLineMatcher;
-import org.craftsmenlabs.gareth.rest.v2.entity.ExperimentToModelMapper2;
+import org.craftsmenlabs.gareth.rest.v2.entity.ExperimentToModelMapper;
 import org.craftsmenlabs.gareth.rest.v2.resources.DefinitionsResource;
 import org.junit.Test;
 
@@ -21,26 +21,16 @@ public class DefinitionsResourceTest {
     @Injectable
     private ExperimentEngine experimentEngine;
 
-    @Mocked
+    @Injectable
     private GlueLineMatcher glueLineMatcher;
 
     @Injectable
-    private ExperimentToModelMapper2 mapper;
+    private ExperimentToModelMapper mapper;
 
     @Tested
     DefinitionsResource resource;
 
     private Map<GlueLineType, Set<String>> model = new HashMap<>();
-
-//    @Before
-//    public void setup() {
-//        new Expectations(){{
-//
-//        }};
-//        when(registry.getGlueLinesPerCategory()).thenReturn(model);
-//        when(engine.getDefinitionRegistry()).thenReturn(registry);
-//        resource.init();
-//    }
 
     @Test
     public void testInitialization(@Injectable Map<GlueLineType, Set<String>> param) {

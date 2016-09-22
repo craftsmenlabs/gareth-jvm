@@ -3,12 +3,13 @@ package org.craftsmenlabs.gareth.rest.v2.assembler;
 import org.craftsmenlabs.gareth.core.context.ExperimentContext;
 import org.craftsmenlabs.gareth.rest.assembler.Assembler;
 import org.craftsmenlabs.gareth.rest.v2.entity.Experiment;
+import org.springframework.stereotype.Component;
 
 import javax.ws.rs.core.Link;
 import java.util.Collections;
 import java.util.Optional;
 
-
+@Component
 public class ExperimentAssembler implements Assembler<ExperimentContext, Experiment> {
 
     @Override

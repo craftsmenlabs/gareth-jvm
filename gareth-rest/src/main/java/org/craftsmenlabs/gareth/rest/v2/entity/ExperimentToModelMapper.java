@@ -6,7 +6,7 @@ import org.springframework.stereotype.Component;
 import java.util.Arrays;
 
 @Component
-public class ExperimentToModelMapper2 {
+public class ExperimentToModelMapper {
     public org.craftsmenlabs.gareth.api.model.Experiment map(final Experiment experiment) {
         org.craftsmenlabs.gareth.api.model.Experiment model = new org.craftsmenlabs.gareth.api.model.Experiment();
         model.setExperimentName(experiment.getExperimentName());

@@ -3,7 +3,7 @@ package org.craftsmenlabs.gareth.rest.v2.resources;
 import org.craftsmenlabs.gareth.core.ExperimentEngine;
 import org.craftsmenlabs.gareth.core.parser.GlueLineMatcher;
 import org.craftsmenlabs.gareth.rest.v2.entity.Experiment;
-import org.craftsmenlabs.gareth.rest.v2.entity.ExperimentToModelMapper2;
+import org.craftsmenlabs.gareth.rest.v2.entity.ExperimentToModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.web.bind.annotation.*;
@@ -19,15 +19,16 @@ import java.util.Map;
 public class DefinitionsResource {
 
     private final ExperimentEngine experimentEngine;
-    private final GlueLineMatcher glueLineMatcher = new GlueLineMatcher();
-    private final ExperimentToModelMapper2 mapper;
+    private final GlueLineMatcher glueLineMatcher;
+    private final ExperimentToModelMapper mapper;
 
     @Autowired
-    public DefinitionsResource(ExperimentEngine experimentEngine, ExperimentToModelMapper2 mapper) {
+    public DefinitionsResource(ExperimentEngine experimentEngine, GlueLineMatcher glueLineMatcher, ExperimentToModelMapper mapper) {
         this.experimentEngine = experimentEngine;
+        this.glueLineMatcher = glueLineMatcher;
         this.mapper = mapper;
 
-        glueLineMatcher.init(experimentEngine.getDefinitionRegistry()
+        this.glueLineMatcher.init(experimentEngine.getDefinitionRegistry()
                 .getGlueLinesPerCategory());
     }
 

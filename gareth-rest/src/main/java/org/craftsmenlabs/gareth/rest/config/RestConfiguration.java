@@ -1,6 +1,7 @@
 package org.craftsmenlabs.gareth.rest.config;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.craftsmenlabs.gareth.core.parser.GlueLineMatcher;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
@@ -19,4 +20,8 @@ public class RestConfiguration {
         return mapper;
     }
 
+    @Bean
+    public GlueLineMatcher glueLineMatcher() {
+        return new GlueLineMatcher();
+    }
 }

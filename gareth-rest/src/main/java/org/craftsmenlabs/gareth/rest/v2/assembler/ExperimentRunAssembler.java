@@ -3,8 +3,9 @@ package org.craftsmenlabs.gareth.rest.v2.assembler;
 import org.craftsmenlabs.gareth.core.context.ExperimentRunContext;
 import org.craftsmenlabs.gareth.rest.assembler.Assembler;
 import org.craftsmenlabs.gareth.rest.v2.entity.ExperimentRun;
+import org.springframework.stereotype.Component;
 
-
+@Component
 public class ExperimentRunAssembler implements Assembler<ExperimentRunContext, ExperimentRun> {
 
     @Override
