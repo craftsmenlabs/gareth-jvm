@@ -1,7 +1,6 @@
 package org.craftsmenlabs.gareth.rest;
 
-import org.craftsmenlabs.gareth.api.ExperimentEngine;
-import org.craftsmenlabs.gareth.api.rest.RestService;
+import org.craftsmenlabs.gareth.core.ExperimentEngineImpl;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
@@ -17,7 +16,7 @@ public class RestServiceFactoryImplTest {
     private RestServiceFactoryImpl restServiceFactory;
 
     @Mock
-    private ExperimentEngine mockExperimentEngine;
+    private ExperimentEngineImpl mockExperimentEngine;
 
     @Before
     public void before() throws Exception {
@@ -27,8 +26,8 @@ public class RestServiceFactoryImplTest {
 
     @Test
     public void testCreate() throws Exception {
-        final RestService restService1 = restServiceFactory.create(mockExperimentEngine, 80);
-        final RestService restService2 = restServiceFactory.create(mockExperimentEngine, 80);
+        final RestServiceImpl restService1 = restServiceFactory.create(mockExperimentEngine, 80);
+        final RestServiceImpl restService2 = restServiceFactory.create(mockExperimentEngine, 80);
         assertNotNull(restService1);
         assertNotNull(restService2);
         assertNotSame(restService1, restService2);

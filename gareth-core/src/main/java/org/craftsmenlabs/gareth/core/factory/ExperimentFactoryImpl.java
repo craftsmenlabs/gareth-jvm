@@ -5,15 +5,13 @@ import org.apache.commons.io.IOUtils;
 import org.craftsmenlabs.gareth.GarethLexer;
 import org.craftsmenlabs.gareth.GarethParser;
 import org.craftsmenlabs.gareth.api.exception.GarethExperimentParseException;
-import org.craftsmenlabs.gareth.api.factory.ExperimentFactory;
 import org.craftsmenlabs.gareth.api.model.Experiment;
 import org.craftsmenlabs.gareth.core.listener.ExperimentBaseListener;
 
 import java.io.InputStream;
 
-public class ExperimentFactoryImpl implements ExperimentFactory {
+public class ExperimentFactoryImpl {
 
-    @Override
     public Experiment buildExperiment(final InputStream inputStream) throws GarethExperimentParseException {
         try {
             final ANTLRInputStream antlrInputStream = new ANTLRInputStream(inputStream);

@@ -1,14 +1,12 @@
 package org.craftsmenlabs.gareth.core.scheduler;
 
 import com.xeiam.sundial.SundialJobScheduler;
-import org.craftsmenlabs.gareth.api.ExperimentEngine;
-import org.craftsmenlabs.gareth.api.context.ExperimentRunContext;
 import org.craftsmenlabs.gareth.api.exception.GarethInvocationException;
 import org.craftsmenlabs.gareth.api.exception.GarethUnknownDefinitionException;
-import org.craftsmenlabs.gareth.api.invoker.MethodInvoker;
-import org.craftsmenlabs.gareth.api.observer.Observer;
-import org.craftsmenlabs.gareth.api.scheduler.AssumeScheduler;
+import org.craftsmenlabs.gareth.core.ExperimentEngineImpl;
+import org.craftsmenlabs.gareth.core.context.ExperimentRunContextImpl;
 import org.craftsmenlabs.gareth.core.invoker.MethodInvokerImpl;
+import org.craftsmenlabs.gareth.core.observer.DefaultObserver;
 import org.craftsmenlabs.gareth.core.reflection.DefinitionFactory;
 import org.craftsmenlabs.gareth.core.reflection.ReflectionHelper;
 import org.slf4j.Logger;
@@ -18,13 +16,13 @@ import java.time.Duration;
 import java.util.*;
 
 
-public class DefaultAssumeScheduler implements AssumeScheduler {
+public class DefaultAssumeScheduler {
 
     private static final Logger logger = LoggerFactory.getLogger(DefaultAssumeScheduler.class);
 
-    private final MethodInvoker methodInvoker;
+    private final MethodInvokerImpl methodInvoker;
     private final boolean ignoreInvocationExceptions;
-    private final Observer observer;
+    private final DefaultObserver observer;
 
 
     private DefaultAssumeScheduler(final Builder builder) {
@@ -34,8 +32,7 @@ public class DefaultAssumeScheduler implements AssumeScheduler {
         SundialJobScheduler.startScheduler();
     }
 
-    @Override
-    public void schedule(final ExperimentRunContext experimentContext, final ExperimentEngine experimentEngine) {
+    public void schedule(final ExperimentRunContextImpl experimentContext, final ExperimentEngineImpl experimentEngine) {
         final Duration time = experimentContext.getExperimentContext().getTime();
         final Calendar now = new GregorianCalendar();
         now.add(Calendar.MILLISECOND, new Long(time.toMillis()).intValue());
@@ -75,13 +72,13 @@ public class DefaultAssumeScheduler implements AssumeScheduler {
     }
 
     public static class Builder {
-        private final org.craftsmenlabs.gareth.api.observer.Observer observer;
+        private final DefaultObserver observer;
         private ReflectionHelper reflectionHelper;
-        private MethodInvoker methodInvoker;
+        private MethodInvokerImpl methodInvoker;
         private boolean ignoreInvocationExceptions;
         private DefinitionFactory customDefinitionFactory;
 
-        public Builder(final Observer observer) {
+        public Builder(final DefaultObserver observer) {
             this.observer = observer;
         }
 
@@ -90,7 +87,7 @@ public class DefaultAssumeScheduler implements AssumeScheduler {
             return this;
         }
 
-        public Builder setMethodInvoker(final MethodInvoker methodInvoker) {
+        public Builder setMethodInvoker(final MethodInvokerImpl methodInvoker) {
             this.methodInvoker = methodInvoker;
             return this;
         }
@@ -100,7 +97,7 @@ public class DefaultAssumeScheduler implements AssumeScheduler {
             return this;
         }
 
-        public AssumeScheduler build() {
+        public DefaultAssumeScheduler build() {
             if (null == observer) {
                 throw new IllegalStateException("Observer cannot be null");
             }

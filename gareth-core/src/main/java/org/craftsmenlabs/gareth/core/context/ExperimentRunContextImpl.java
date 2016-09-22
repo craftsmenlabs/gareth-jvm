@@ -2,19 +2,17 @@ package org.craftsmenlabs.gareth.core.context;
 
 import lombok.Getter;
 import lombok.Setter;
-import org.craftsmenlabs.gareth.api.context.ExperimentContext;
 import org.craftsmenlabs.gareth.api.context.ExperimentPartState;
-import org.craftsmenlabs.gareth.api.context.ExperimentRunContext;
-import org.craftsmenlabs.gareth.api.storage.Storage;
+import org.craftsmenlabs.gareth.core.storage.DefaultStorage;
 
 import java.time.LocalDateTime;
 
 @Getter
-public class ExperimentRunContextImpl implements ExperimentRunContext {
+public class ExperimentRunContextImpl {
 
-    private final ExperimentContext experimentContext;
+    private final ExperimentContextImpl experimentContext;
 
-    private final Storage storage;
+    private final DefaultStorage storage;
 
     @Setter
     private ExperimentPartState baselineState, assumeState, successState, failureState;
@@ -35,35 +33,30 @@ public class ExperimentRunContextImpl implements ExperimentRunContext {
         this.failureState = builder.failureState;
     }
 
-    @Override
     public String getHash() {
         return experimentContext.getHash();
     }
 
-    @Override
     public boolean hasFailures() {
         return null != failureRun;
     }
 
-    @Override
     public boolean isRunning() {
         return (null != baselineRun || null != assumeRun)
                 && !(null != successRun || null != failureRun);
     }
 
-    @Override
     public boolean isFinished() {
         return finished;
     }
 
-    @Override
     public void setFinished(final boolean finished) {
         this.finished = finished;
     }
 
     public static class Builder {
-        private ExperimentContext experimentContext;
-        private Storage storage;
+        private ExperimentContextImpl experimentContext;
+        private DefaultStorage storage;
 
         private ExperimentPartState baselineState = ExperimentPartState.NON_EXISTENT;
 
@@ -73,12 +66,12 @@ public class ExperimentRunContextImpl implements ExperimentRunContext {
 
         private ExperimentPartState failureState = ExperimentPartState.NON_EXISTENT;
 
-        public Builder(final ExperimentContext experimentContext, final Storage storage) {
+        public Builder(final ExperimentContextImpl experimentContext, final DefaultStorage storage) {
             this.experimentContext = experimentContext;
             this.storage = storage;
         }
 
-        public ExperimentRunContext build() {
+        public ExperimentRunContextImpl build() {
             if (null == experimentContext) {
                 throw new IllegalStateException("Cannot build experiment run context without experiment context");
             }

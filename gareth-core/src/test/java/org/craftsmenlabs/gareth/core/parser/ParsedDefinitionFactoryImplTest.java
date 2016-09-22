@@ -1,10 +1,9 @@
 package org.craftsmenlabs.gareth.core.parser;
 
 import org.craftsmenlabs.gareth.api.annotation.*;
-import org.craftsmenlabs.gareth.api.definition.ParsedDefinition;
-import org.craftsmenlabs.gareth.api.invoker.MethodDescriptor;
-import org.craftsmenlabs.gareth.api.storage.Storage;
+import org.craftsmenlabs.gareth.core.invoker.MethodDescriptor;
 import org.craftsmenlabs.gareth.core.reflection.ReflectionHelper;
+import org.craftsmenlabs.gareth.core.storage.DefaultStorage;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -43,7 +42,7 @@ public class ParsedDefinitionFactoryImplTest {
 
     @Test
     public void testParseClassWithoutDefinitions() throws Exception {
-        final ParsedDefinition parsedDefinition = parsedParsedDefinitionFactory.parse(Object.class);
+        final ParsedDefinitionImpl parsedDefinition = parsedParsedDefinitionFactory.parse(Object.class);
         assertNotNull(parsedDefinition);
 
         assertTrue(parsedDefinition.getBaselineDefinitions().isEmpty());
@@ -56,7 +55,7 @@ public class ParsedDefinitionFactoryImplTest {
 
     @Test
     public void testParseClassWithAssume() throws Exception {
-        final ParsedDefinition parsedDefinition = parsedParsedDefinitionFactory.parse(AssumeDefinition.class);
+        final ParsedDefinitionImpl parsedDefinition = parsedParsedDefinitionFactory.parse(AssumeDefinition.class);
         assertNotNull(parsedDefinition);
 
         assertTrue(parsedDefinition.getBaselineDefinitions().isEmpty());
@@ -73,7 +72,7 @@ public class ParsedDefinitionFactoryImplTest {
 
     @Test
     public void testParseClassWithSuccess() throws Exception {
-        final ParsedDefinition parsedDefinition = parsedParsedDefinitionFactory.parse(SuccessDefinition.class);
+        final ParsedDefinitionImpl parsedDefinition = parsedParsedDefinitionFactory.parse(SuccessDefinition.class);
         assertNotNull(parsedDefinition);
 
         assertTrue(parsedDefinition.getBaselineDefinitions().isEmpty());
@@ -87,7 +86,7 @@ public class ParsedDefinitionFactoryImplTest {
 
     @Test
     public void testParseClassWithFailure() throws Exception {
-        final ParsedDefinition parsedDefinition = parsedParsedDefinitionFactory.parse(FailureDefinition.class);
+        final ParsedDefinitionImpl parsedDefinition = parsedParsedDefinitionFactory.parse(FailureDefinition.class);
         assertNotNull(parsedDefinition);
 
         assertTrue(parsedDefinition.getBaselineDefinitions().isEmpty());
@@ -101,7 +100,7 @@ public class ParsedDefinitionFactoryImplTest {
 
     @Test
     public void testParseClassWithBaseline() throws Exception {
-        final ParsedDefinition parsedDefinition = parsedParsedDefinitionFactory.parse(BaselineDefinition.class);
+        final ParsedDefinitionImpl parsedDefinition = parsedParsedDefinitionFactory.parse(BaselineDefinition.class);
         assertNotNull(parsedDefinition);
 
         assertTrue(parsedDefinition.getAssumeDefinitions().isEmpty());
@@ -115,7 +114,7 @@ public class ParsedDefinitionFactoryImplTest {
 
     @Test
     public void testParseClassWithTime() throws Exception {
-        final ParsedDefinition parsedDefinition = parsedParsedDefinitionFactory.parse(TimeDefinition.class);
+        final ParsedDefinitionImpl parsedDefinition = parsedParsedDefinitionFactory.parse(TimeDefinition.class);
         assertNotNull(parsedDefinition);
 
         assertTrue(parsedDefinition.getAssumeDefinitions().isEmpty());
@@ -129,7 +128,7 @@ public class ParsedDefinitionFactoryImplTest {
 
     @Test
     public void testParseClassWithBaselineAndStorage() throws Exception {
-        final ParsedDefinition parsedDefinition = parsedParsedDefinitionFactory.parse(WithStorageParameter.class);
+        final ParsedDefinitionImpl parsedDefinition = parsedParsedDefinitionFactory.parse(WithStorageParameter.class);
         assertNotNull(parsedDefinition);
 
         assertTrue(parsedDefinition.getAssumeDefinitions().isEmpty());
@@ -221,7 +220,7 @@ public class ParsedDefinitionFactoryImplTest {
     class WithStorageParameter {
 
         @Baseline(glueLine = "Baseline glueline with storage")
-        public void baselineWithStorageParameter(final Storage storage) {
+        public void baselineWithStorageParameter(final DefaultStorage storage) {
 
         }
     }

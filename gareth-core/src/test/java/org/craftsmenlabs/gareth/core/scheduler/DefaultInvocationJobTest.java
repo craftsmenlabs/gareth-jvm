@@ -1,14 +1,14 @@
 package org.craftsmenlabs.gareth.core.scheduler;
 
 import com.xeiam.sundial.JobContext;
-import org.craftsmenlabs.gareth.api.ExperimentEngine;
-import org.craftsmenlabs.gareth.api.context.ExperimentContext;
 import org.craftsmenlabs.gareth.api.context.ExperimentPartState;
-import org.craftsmenlabs.gareth.api.context.ExperimentRunContext;
-import org.craftsmenlabs.gareth.api.invoker.MethodDescriptor;
-import org.craftsmenlabs.gareth.api.invoker.MethodInvoker;
-import org.craftsmenlabs.gareth.api.observer.Observer;
-import org.craftsmenlabs.gareth.api.storage.Storage;
+import org.craftsmenlabs.gareth.core.invoker.MethodDescriptor;
+import org.craftsmenlabs.gareth.core.ExperimentEngineImpl;
+import org.craftsmenlabs.gareth.core.context.ExperimentContextImpl;
+import org.craftsmenlabs.gareth.core.context.ExperimentRunContextImpl;
+import org.craftsmenlabs.gareth.core.invoker.MethodInvokerImpl;
+import org.craftsmenlabs.gareth.core.observer.DefaultObserver;
+import org.craftsmenlabs.gareth.core.storage.DefaultStorage;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
@@ -28,22 +28,22 @@ public class DefaultInvocationJobTest {
     private JobContext mockJobContext;
 
     @Mock
-    private MethodInvoker mockMethodInvoker;
+    private MethodInvokerImpl mockMethodInvoker;
 
     @Mock
-    private ExperimentRunContext mockExperimentRunContext;
+    private ExperimentRunContextImpl mockExperimentRunContext;
 
     @Mock
-    private ExperimentContext mockExperimentContext;
+    private ExperimentContextImpl mockExperimentContext;
 
     @Mock
     private MethodDescriptor mockMethodDescriptor;
 
     @Mock
-    private Observer mockObserver;
+    private DefaultObserver mockObserver;
 
     @Mock
-    private ExperimentEngine mockExperimentEngine;
+    private ExperimentEngineImpl mockExperimentEngine;
 
     @Before
     public void before() {
@@ -79,7 +79,7 @@ public class DefaultInvocationJobTest {
         verify(mockExperimentRunContext, never()).setSuccessState(any(ExperimentPartState.class));
         verify(mockExperimentRunContext).setAssumeRun(any(LocalDateTime.class));
         verify(mockExperimentContext).getAssume();
-        verify(mockMethodInvoker).invoke(anyString(), any(MethodDescriptor.class), any(Storage.class));
+        verify(mockMethodInvoker).invoke(anyString(), any(MethodDescriptor.class), any(DefaultStorage.class));
         verify(mockObserver).notifyApplicationStateChanged(mockExperimentEngine);
     }
 

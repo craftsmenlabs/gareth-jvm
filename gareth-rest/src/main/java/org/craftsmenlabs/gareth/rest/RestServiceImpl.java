@@ -1,22 +1,19 @@
 package org.craftsmenlabs.gareth.rest;
 
-import org.craftsmenlabs.gareth.api.ExperimentEngine;
-import org.craftsmenlabs.gareth.api.rest.RestService;
+import org.craftsmenlabs.gareth.core.ExperimentEngineImpl;
 import org.glassfish.grizzly.http.server.HttpServer;
 import org.glassfish.jersey.grizzly2.httpserver.GrizzlyHttpServerFactory;
 
 import javax.ws.rs.core.UriBuilder;
 import java.net.URI;
 
-
-public class RestServiceImpl implements RestService {
-
+public class RestServiceImpl {
 
     private final int portNumber;
 
     private final String uri;
 
-    private final ExperimentEngine experimentEngine;
+    private final ExperimentEngineImpl experimentEngine;
 
     private RestServiceImpl(final Builder builder) {
         this.portNumber = builder.portNumber;
@@ -24,7 +21,6 @@ public class RestServiceImpl implements RestService {
         this.experimentEngine = builder.experimentEngine;
     }
 
-    @Override
     public void start() throws Exception {
         final URI baseUri = UriBuilder.fromUri(uri).port(portNumber).build();
         final HttpServer server = GrizzlyHttpServerFactory
@@ -37,9 +33,9 @@ public class RestServiceImpl implements RestService {
 
         private String uri = "http://localhost/";
 
-        private ExperimentEngine experimentEngine;
+        private ExperimentEngineImpl experimentEngine;
 
-        public Builder setExperimentEngine(final ExperimentEngine experimentEngine) {
+        public Builder setExperimentEngine(final ExperimentEngineImpl experimentEngine) {
             this.experimentEngine = experimentEngine;
             return this;
         }
@@ -54,8 +50,7 @@ public class RestServiceImpl implements RestService {
             return this;
         }
 
-
-        public RestService build() {
+        public RestServiceImpl build() {
             return new RestServiceImpl(this);
         }
     }

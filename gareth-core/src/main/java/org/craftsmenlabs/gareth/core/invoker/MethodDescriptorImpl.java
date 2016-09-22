@@ -1,7 +1,6 @@
 package org.craftsmenlabs.gareth.core.invoker;
 
-import org.craftsmenlabs.gareth.api.invoker.MethodDescriptor;
-import org.craftsmenlabs.gareth.api.storage.Storage;
+import org.craftsmenlabs.gareth.core.storage.DefaultStorage;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -40,7 +39,7 @@ public class MethodDescriptorImpl implements MethodDescriptor {
         return this.storageParameterIndex;
     }
 
-    public void invokeWith(String glueLineInExperiment, Object declaringClassInstance, Storage storage)
+    public void invokeWith(String glueLineInExperiment, Object declaringClassInstance, DefaultStorage storage)
             throws InvocationTargetException, IllegalAccessException {
         if (hasStorage()) {
             getMethod().invoke(declaringClassInstance, storage);

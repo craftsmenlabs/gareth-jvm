@@ -12,6 +12,7 @@
 
     <!-- Properties -->
     <properties>
+        <java.version>1.8</java.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <jdk.version>1.8</jdk.version>
         <junit.version>4.12</junit.version>
@@ -23,14 +24,16 @@
         <logback.version>1.1.3</logback.version>
         <jersey2.version>2.22.1</jersey2.version>
         <jetty.version>9.3.2.v20150730</jetty.version>
+        <jmockit.version>1.26</jmockit.version>
         <slf4j.version>1.7.12</slf4j.version>
-        <jackson.version>2.6.3</jackson.version>
+        <jackson.version>2.8.2</jackson.version>
         <jacoco-maven-plugin.version>0.7.5.201505241946</jacoco-maven-plugin.version>
         <coveralls-maven-plugin.version>4.0.0</coveralls-maven-plugin.version>
         <el.version>2.2.4</el.version>
         <httpclient.version>4.5.1</httpclient.version>
         <mockserver-netty.version>3.10.2</mockserver-netty.version>
         <guava.version>19.0</guava.version>
+        <spring.version>1.4.0.RELEASE</spring.version>
     </properties>
 
     <organization>
@@ -97,6 +100,15 @@
     <!-- Dependency stuff -->
     <dependencyManagement>
         <dependencies>
+
+
+            <!-- Spring Boot stuff -->
+            <dependency>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-dependencies</artifactId>
+                <version>${spring.version}</version>
+                <type>pom</type>
+            </dependency>
 
             <!-- Gareth stuff -->
             <dependency>
@@ -252,6 +264,13 @@
             </dependency>
 
             <dependency>
+                <groupId>org.jmockit</groupId>
+                <artifactId>jmockit</artifactId>
+                <version>${jmockit.version}</version>
+                <scope>test</scope>
+            </dependency>
+
+            <dependency>
                 <groupId>org.mock-server</groupId>
                 <artifactId>mockserver-netty</artifactId>
                 <version>${mockserver-netty.version}</version>
@@ -265,6 +284,28 @@
 
     <!-- Global dependencies -->
     <dependencies>
+
+        <!-- Spring Boot -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-dependencies</artifactId>
+            <version>${spring.version}</version>
+            <type>pom</type>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter</artifactId>
+            <version>${spring.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-test</artifactId>
+            <version>${spring.version}</version>
+            <scope>test</scope>
+        </dependency>
+
         <!-- Lombok -->
         <dependency>
             <groupId>org.projectlombok</groupId>
@@ -286,6 +327,11 @@
 
         <!-- Test depedencies -->
         <dependency>
+            <groupId>org.jmockit</groupId>
+            <artifactId>jmockit</artifactId>
+        </dependency>
+
+        <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
             <version>${junit.version}</version>
@@ -296,6 +342,7 @@
             <groupId>org.mockito</groupId>
             <artifactId>mockito-core</artifactId>
         </dependency>
+
         <dependency>
             <groupId>org.assertj</groupId>
             <artifactId>assertj-core</artifactId>
@@ -356,6 +403,11 @@
                     <repoToken>ZqEBXtnjWZTL55tnf5byahr8uSNwUobig</repoToken>
                 </configuration>
             </plugin>
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+                <version>${spring.version}</version>
+            </plugin>
         </plugins>
     </build>
 
@@ -368,7 +420,7 @@
         <module>gareth-rest</module>
         <module>gareth-json-persistence</module>
         <module>gareth-http-json-persistence</module>
-        <module>gareth-rest-example</module>
+        <module>gareth-application</module>
     </modules>
 
 

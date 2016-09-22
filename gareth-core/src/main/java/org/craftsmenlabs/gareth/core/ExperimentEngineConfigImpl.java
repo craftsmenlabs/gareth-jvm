@@ -1,11 +1,9 @@
 package org.craftsmenlabs.gareth.core;
 
-import org.craftsmenlabs.gareth.api.ExperimentEngineConfig;
-
 import java.io.InputStream;
 import java.util.*;
 
-public class ExperimentEngineConfigImpl implements ExperimentEngineConfig {
+public class ExperimentEngineConfigImpl {
 
 
     private final Set<Class> definitionClasses;
@@ -22,27 +20,22 @@ public class ExperimentEngineConfigImpl implements ExperimentEngineConfig {
         this.ignoreInvocationExceptions = builder.ignoreInvocationExceptions;
     }
 
-    @Override
     public Class[] getDefinitionClasses() {
         return definitionClasses.toArray(new Class[definitionClasses.size()]);
     }
 
-    @Override
     public InputStream[] getInputStreams() {
         return this.inputStreamList.toArray(new InputStream[this.inputStreamList.size()]);
     }
 
-    @Override
     public boolean isIgnoreInvalidDefinitions() {
         return ignoreInvalidDefinitions;
     }
 
-    @Override
     public boolean isIgnoreInvalidExperiments() {
         return ignoreInvalidExperiments;
     }
 
-    @Override
     public boolean isIgnoreInvocationExceptions() {
         return ignoreInvocationExceptions;
     }
@@ -91,7 +84,7 @@ public class ExperimentEngineConfigImpl implements ExperimentEngineConfig {
             return this;
         }
 
-        public ExperimentEngineConfig build() {
+        public ExperimentEngineConfigImpl build() {
             return new ExperimentEngineConfigImpl(this);
         }
     }

@@ -1,10 +1,9 @@
 package org.craftsmenlabs.gareth.core.scheduler;
 
-import org.craftsmenlabs.gareth.api.ExperimentEngine;
-import org.craftsmenlabs.gareth.api.context.ExperimentContext;
-import org.craftsmenlabs.gareth.api.context.ExperimentRunContext;
-import org.craftsmenlabs.gareth.api.observer.Observer;
-import org.craftsmenlabs.gareth.api.scheduler.AssumeScheduler;
+import org.craftsmenlabs.gareth.core.ExperimentEngineImpl;
+import org.craftsmenlabs.gareth.core.context.ExperimentContextImpl;
+import org.craftsmenlabs.gareth.core.context.ExperimentRunContextImpl;
+import org.craftsmenlabs.gareth.core.observer.DefaultObserver;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
@@ -19,19 +18,19 @@ import static org.mockito.Mockito.when;
 
 public class DefaultAssumeSchedulerTest {
 
-    private AssumeScheduler defaultAssumeScheduler;
+    private DefaultAssumeScheduler defaultAssumeScheduler;
 
     @Mock
-    private ExperimentEngine mockExperimentEngine;
+    private ExperimentEngineImpl mockExperimentEngine;
 
     @Mock
-    private ExperimentRunContext mockExperimentRunContext;
+    private ExperimentRunContextImpl mockExperimentRunContext;
 
     @Mock
-    private ExperimentContext mockExperimentContext;
+    private ExperimentContextImpl mockExperimentContext;
 
     @Mock
-    private Observer mockObserver;
+    private DefaultObserver mockObserver;
 
     @Before
     public void before() {

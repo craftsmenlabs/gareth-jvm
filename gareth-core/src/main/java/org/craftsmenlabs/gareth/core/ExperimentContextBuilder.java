@@ -1,14 +1,12 @@
 package org.craftsmenlabs.gareth.core;
 
-import org.craftsmenlabs.gareth.api.ExperimentEngineConfig;
-import org.craftsmenlabs.gareth.api.context.ExperimentContext;
 import org.craftsmenlabs.gareth.api.exception.GarethInvocationException;
 import org.craftsmenlabs.gareth.api.exception.GarethUnknownDefinitionException;
-import org.craftsmenlabs.gareth.api.invoker.MethodDescriptor;
+import org.craftsmenlabs.gareth.core.invoker.MethodDescriptor;
 import org.craftsmenlabs.gareth.api.model.AssumptionBlock;
 import org.craftsmenlabs.gareth.api.model.Experiment;
-import org.craftsmenlabs.gareth.api.registry.DefinitionRegistry;
 import org.craftsmenlabs.gareth.core.context.ExperimentContextImpl;
+import org.craftsmenlabs.gareth.core.registry.DefinitionRegistryImpl;
 import org.craftsmenlabs.gareth.core.util.ExperimentContextHashGenerator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -21,21 +19,21 @@ import java.util.Optional;
 
 public class ExperimentContextBuilder {
     private final static Logger logger = LoggerFactory.getLogger(ExperimentContextBuilder.class);
-    private final DefinitionRegistry definitionRegistry;
-    private final ExperimentEngineConfig experimentEngineConfig;
+    private final DefinitionRegistryImpl definitionRegistry;
+    private final ExperimentEngineConfigImpl experimentEngineConfig;
 
-    public ExperimentContextBuilder(final DefinitionRegistry definitionRegistry,
-                                    final ExperimentEngineConfig experimentEngineConfig) {
+    public ExperimentContextBuilder(final DefinitionRegistryImpl definitionRegistry,
+                                    final ExperimentEngineConfigImpl experimentEngineConfig) {
         this.definitionRegistry = definitionRegistry;
         this.experimentEngineConfig = experimentEngineConfig;
     }
 
-    protected ExperimentContext build(final Experiment experiment) {
+    protected ExperimentContextImpl build(final Experiment experiment) {
         return build(Arrays.asList(experiment)).get(0);
     }
 
-    protected List<ExperimentContext> build(final List<Experiment> experiments) {
-        List<ExperimentContext> experimentContexts = new ArrayList<>();
+    protected List<ExperimentContextImpl> build(final List<Experiment> experiments) {
+        List<ExperimentContextImpl> experimentContexts = new ArrayList<>();
         logger.info("Populating experiment contexts");
         for (final Experiment experiment : experiments) {
             for (final AssumptionBlock assumptionBlock : experiment.getAssumptionBlockList()) {
@@ -49,7 +47,7 @@ public class ExperimentContextBuilder {
 
                 final String hashedSurrogateKey = ExperimentContextHashGenerator.generateHash(surrogateKey);
 
-                final ExperimentContext experimentContext = new ExperimentContextImpl
+                final ExperimentContextImpl experimentContext = new ExperimentContextImpl
                         .Builder(experiment.getExperimentName(), assumptionBlock)
                         .setBaseline(Optional.ofNullable(getBaseline(assumptionBlock.getBaseline())))
                         .setAssume(Optional.ofNullable(getAssume(assumptionBlock.getAssumption())))

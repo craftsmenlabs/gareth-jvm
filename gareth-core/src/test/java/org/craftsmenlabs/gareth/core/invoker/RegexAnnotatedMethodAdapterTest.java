@@ -1,7 +1,7 @@
 package org.craftsmenlabs.gareth.core.invoker;
 
 import org.craftsmenlabs.gareth.api.annotation.Baseline;
-import org.craftsmenlabs.gareth.api.storage.Storage;
+import org.craftsmenlabs.gareth.core.storage.DefaultStorage;
 import org.junit.Test;
 
 import java.io.File;
@@ -23,7 +23,7 @@ public class RegexAnnotatedMethodAdapterTest {
     @Test
     public void withStorage() throws NoSuchMethodException {
         RegexAnnotatedMethodAdapter line =
-                new RegexAnnotatedMethodAdapter(WithStorage.class.getMethod("line", Storage.class), "withStorage");
+                new RegexAnnotatedMethodAdapter(WithStorage.class.getMethod("line", DefaultStorage.class), "withStorage");
         assertThat(line.getNonStorageParameters()).isEmpty();
         assertThat(line.getPattern()).isEqualTo("withStorage");
     }
@@ -32,7 +32,7 @@ public class RegexAnnotatedMethodAdapterTest {
     public void withStorageAndString() throws NoSuchMethodException {
         RegexAnnotatedMethodAdapter line =
                 new RegexAnnotatedMethodAdapter(WithStorageAndString.class
-                        .getMethod("line", Storage.class, String.class), "withStorageAndString");
+                        .getMethod("line", DefaultStorage.class, String.class), "withStorageAndString");
         assertThat(line.getNonStorageParameters()).containsExactly(String.class);
         assertThat(line.getPattern()).isEqualTo("withStorageAndString");
     }
@@ -41,7 +41,7 @@ public class RegexAnnotatedMethodAdapterTest {
     public void withStorageAndStringAndInt() throws NoSuchMethodException {
         RegexAnnotatedMethodAdapter line =
                 new RegexAnnotatedMethodAdapter(WithStorageAndStringAndint.class
-                        .getMethod("line", Storage.class, String.class, Integer.TYPE), "withStorageAndStringAndInt");
+                        .getMethod("line", DefaultStorage.class, String.class, Integer.TYPE), "withStorageAndStringAndInt");
         assertThat(line.getNonStorageParameters()).containsExactly(String.class, Integer.TYPE);
         assertThat(line.getPattern()).isEqualTo("withStorageAndStringAndInt");
     }
@@ -98,21 +98,21 @@ public class RegexAnnotatedMethodAdapterTest {
 
     static class WithStorage {
         @Baseline(glueLine = "withStorage")
-        public void line(Storage storage) {
+        public void line(DefaultStorage storage) {
 
         }
     }
 
     static class WithStorageAndString {
         @Baseline(glueLine = "withStorageAndString")
-        public void line(Storage storage, String string) {
+        public void line(DefaultStorage storage, String string) {
 
         }
     }
 
     static class WithStorageAndStringAndint {
         @Baseline(glueLine = "withStorageAndStringAndInt")
-        public void line(Storage storage, String string, int intVal) {
+        public void line(DefaultStorage storage, String string, int intVal) {
         }
     }
 

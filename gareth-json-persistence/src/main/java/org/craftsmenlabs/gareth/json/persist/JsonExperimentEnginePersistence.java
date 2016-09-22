@@ -1,13 +1,12 @@
 package org.craftsmenlabs.gareth.json.persist;
 
-import org.craftsmenlabs.gareth.api.ExperimentEngine;
-import org.craftsmenlabs.gareth.api.context.ExperimentContext;
-import org.craftsmenlabs.gareth.api.context.ExperimentRunContext;
 import org.craftsmenlabs.gareth.api.exception.GarethStateReadException;
 import org.craftsmenlabs.gareth.api.exception.GarethStateWriteException;
 import org.craftsmenlabs.gareth.api.exception.GarethUnknownExperimentException;
-import org.craftsmenlabs.gareth.api.listener.ExperimentStateChangeListener;
-import org.craftsmenlabs.gareth.api.persist.ExperimentEnginePersistence;
+import org.craftsmenlabs.gareth.core.persist.listener.ExperimentStateChangeListener;
+import org.craftsmenlabs.gareth.core.persist.ExperimentEnginePersistence;
+import org.craftsmenlabs.gareth.core.ExperimentEngineImpl;
+import org.craftsmenlabs.gareth.core.context.ExperimentContextImpl;
 import org.craftsmenlabs.gareth.core.context.ExperimentRunContextImpl;
 import org.craftsmenlabs.gareth.json.persist.listener.JsonExperimentChangeListener;
 import org.craftsmenlabs.gareth.json.persist.media.StorageMedia;
@@ -33,7 +32,7 @@ public class JsonExperimentEnginePersistence implements ExperimentEnginePersiste
     }
 
     @Override
-    public void persist(final ExperimentEngine experimentEngine) throws GarethStateWriteException {
+    public void persist(final ExperimentEngineImpl experimentEngine) throws GarethStateWriteException {
         final List<JsonExperimentContextData> data = new ArrayList<>();
         experimentEngine.getExperimentRunContexts().forEach((experimentRunContext -> {
             data.add(assembleToContextData(experimentRunContext));
@@ -44,12 +43,12 @@ public class JsonExperimentEnginePersistence implements ExperimentEnginePersiste
 
 
     @Override
-    public void restore(final ExperimentEngine experimentEngine) throws GarethStateReadException {
+    public void restore(final ExperimentEngineImpl experimentEngine) throws GarethStateReadException {
         final List<JsonExperimentContextData> experimentContextDataList = storageMedia.restore();
 
         experimentContextDataList.forEach(experimentContextData -> {
             try {
-                final ExperimentContext experimentContext = experimentEngine
+                final ExperimentContextImpl experimentContext = experimentEngine
                         .findExperimentContextForHash(experimentContextData.getHash());
                 experimentEngine.getExperimentRunContexts()
                         .add(rebuildExperimentRunContext(experimentContextData, experimentContext));
@@ -59,8 +58,8 @@ public class JsonExperimentEnginePersistence implements ExperimentEnginePersiste
         });
     }
 
-    private ExperimentRunContext rebuildExperimentRunContext(final JsonExperimentContextData experimentContextData, final ExperimentContext experimentContext) {
-        final ExperimentRunContext experimentRunContext = new ExperimentRunContextImpl
+    private ExperimentRunContextImpl rebuildExperimentRunContext(final JsonExperimentContextData experimentContextData, final ExperimentContextImpl experimentContext) {
+        final ExperimentRunContextImpl experimentRunContext = new ExperimentRunContextImpl
                 .Builder(experimentContext, experimentContextData.getStorage())
                 .build();
         experimentRunContext.setBaselineState(experimentContextData.getBaselineState());
@@ -77,7 +76,7 @@ public class JsonExperimentEnginePersistence implements ExperimentEnginePersiste
     }
 
 
-    private JsonExperimentContextData assembleToContextData(final ExperimentRunContext experimentRunContext) {
+    private JsonExperimentContextData assembleToContextData(final ExperimentRunContextImpl experimentRunContext) {
         JsonExperimentContextData jsonExperimentContextData = null;
         if (null != experimentRunContext) {
             jsonExperimentContextData = new JsonExperimentContextData();

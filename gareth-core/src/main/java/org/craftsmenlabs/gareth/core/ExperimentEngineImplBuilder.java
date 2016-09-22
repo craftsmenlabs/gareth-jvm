@@ -1,21 +1,10 @@
 package org.craftsmenlabs.gareth.core;
 
-import org.craftsmenlabs.gareth.api.ExperimentEngine;
-import org.craftsmenlabs.gareth.api.ExperimentEngineConfig;
-import org.craftsmenlabs.gareth.api.definition.ParsedDefinitionFactory;
-import org.craftsmenlabs.gareth.api.factory.ExperimentFactory;
-import org.craftsmenlabs.gareth.api.invoker.MethodInvoker;
-import org.craftsmenlabs.gareth.api.observer.Observer;
-import org.craftsmenlabs.gareth.api.persist.ExperimentEnginePersistence;
-import org.craftsmenlabs.gareth.api.registry.DefinitionRegistry;
-import org.craftsmenlabs.gareth.api.registry.ExperimentRegistry;
-import org.craftsmenlabs.gareth.api.rest.RestServiceFactory;
-import org.craftsmenlabs.gareth.api.scheduler.AssumeScheduler;
-import org.craftsmenlabs.gareth.api.storage.StorageFactory;
 import org.craftsmenlabs.gareth.core.factory.ExperimentFactoryImpl;
 import org.craftsmenlabs.gareth.core.invoker.MethodInvokerImpl;
 import org.craftsmenlabs.gareth.core.observer.DefaultObserver;
 import org.craftsmenlabs.gareth.core.parser.ParsedDefinitionFactoryImpl;
+import org.craftsmenlabs.gareth.core.persist.ExperimentEnginePersistence;
 import org.craftsmenlabs.gareth.core.persist.FileSystemExperimentEnginePersistence;
 import org.craftsmenlabs.gareth.core.reflection.DefinitionFactory;
 import org.craftsmenlabs.gareth.core.reflection.ReflectionHelper;
@@ -26,62 +15,56 @@ import org.craftsmenlabs.gareth.core.storage.DefaultStorageFactory;
 
 public class ExperimentEngineImplBuilder {
 
-    protected final ExperimentEngineConfig experimentEngineConfig;
-    protected DefinitionRegistry definitionRegistry = new DefinitionRegistryImpl();
+    protected final ExperimentEngineConfigImpl experimentEngineConfig;
+    protected DefinitionRegistryImpl definitionRegistry = new DefinitionRegistryImpl();
     protected DefinitionFactory customDefinitionFactory;
 
     protected ReflectionHelper reflectionHelper;
 
-    protected ParsedDefinitionFactory parsedDefinitionFactory;
+    protected ParsedDefinitionFactoryImpl parsedDefinitionFactory;
 
-    protected MethodInvoker methodInvoker;
+    protected MethodInvokerImpl methodInvoker;
 
-    protected ExperimentFactory experimentFactory = new ExperimentFactoryImpl();
-    protected ExperimentRegistry experimentRegistry = new ExperimentRegistryImpl();
-    protected AssumeScheduler assumeScheduler = null;
-    protected RestServiceFactory restServiceFactory;
-    protected StorageFactory storageFactory = new DefaultStorageFactory();
-    protected Observer observer = new DefaultObserver();
+    protected ExperimentFactoryImpl experimentFactory = new ExperimentFactoryImpl();
+    protected ExperimentRegistryImpl experimentRegistry = new ExperimentRegistryImpl();
+    protected DefaultAssumeScheduler assumeScheduler = null;
+    protected DefaultStorageFactory storageFactory = new DefaultStorageFactory();
+    protected DefaultObserver observer = new DefaultObserver();
     protected ExperimentEnginePersistence experimentEnginePersistence = new FileSystemExperimentEnginePersistence.Builder()
             .build();
 
-    public ExperimentEngineImplBuilder(final ExperimentEngineConfig experimentEngineConfig) {
+    public ExperimentEngineImplBuilder(final ExperimentEngineConfigImpl experimentEngineConfig) {
         this.experimentEngineConfig = experimentEngineConfig;
     }
 
-    public ExperimentEngineImplBuilder setDefinitionRegistry(final DefinitionRegistry definitionRegistry) {
+    public ExperimentEngineImplBuilder setDefinitionRegistry(final DefinitionRegistryImpl definitionRegistry) {
         this.definitionRegistry = definitionRegistry;
         return this;
     }
 
-    public ExperimentEngineImplBuilder setParsedDefinitionFactory(final ParsedDefinitionFactory parsedDefinitionFactory) {
+    public ExperimentEngineImplBuilder setParsedDefinitionFactory(final ParsedDefinitionFactoryImpl parsedDefinitionFactory) {
         this.parsedDefinitionFactory = parsedDefinitionFactory;
         return this;
     }
 
-    public ExperimentEngineImplBuilder setExperimentRegistry(final ExperimentRegistry experimentRegistry) {
+    public ExperimentEngineImplBuilder setExperimentRegistry(final ExperimentRegistryImpl experimentRegistry) {
         this.experimentRegistry = experimentRegistry;
         return this;
     }
 
-    public ExperimentEngineImplBuilder setMethodInvoker(final MethodInvoker methodInvoker) {
+    public ExperimentEngineImplBuilder setMethodInvoker(final MethodInvokerImpl methodInvoker) {
         this.methodInvoker = methodInvoker;
         return this;
     }
 
 
-    public ExperimentEngineImplBuilder setExperimentFactory(final ExperimentFactory experimentFactory) {
+    public ExperimentEngineImplBuilder setExperimentFactory(final ExperimentFactoryImpl experimentFactory) {
         this.experimentFactory = experimentFactory;
         return this;
     }
 
-    public ExperimentEngineImplBuilder setStorageFactory(final StorageFactory storageFactory) {
+    public ExperimentEngineImplBuilder setStorageFactory(final DefaultStorageFactory storageFactory) {
         this.storageFactory = storageFactory;
-        return this;
-    }
-
-    public ExperimentEngineImplBuilder setRestServiceFactory(final RestServiceFactory restServiceFactory) {
-        this.restServiceFactory = restServiceFactory;
         return this;
     }
 
@@ -90,7 +73,7 @@ public class ExperimentEngineImplBuilder {
         return this;
     }
 
-    public ExperimentEngineImplBuilder setAssumeScheduler(final AssumeScheduler assumeScheduler) {
+    public ExperimentEngineImplBuilder setAssumeScheduler(final DefaultAssumeScheduler assumeScheduler) {
         this.assumeScheduler = assumeScheduler;
         return this;
     }
@@ -100,7 +83,7 @@ public class ExperimentEngineImplBuilder {
         return this;
     }
 
-    public ExperimentEngine build() {
+    public ExperimentEngineImpl build() {
         reflectionHelper = new ReflectionHelper(customDefinitionFactory);
 
         builParsedDefinitionFactory();

@@ -5,7 +5,6 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.JsonDeserializer;
 import com.fasterxml.jackson.databind.JsonNode;
-import org.craftsmenlabs.gareth.api.storage.Storage;
 import org.craftsmenlabs.gareth.core.storage.DefaultStorage;
 import org.craftsmenlabs.gareth.json.persist.converter.TypeConverter;
 import org.craftsmenlabs.gareth.json.persist.converter.TypeConverterFactory;
@@ -17,7 +16,7 @@ import java.io.IOException;
 import java.io.Serializable;
 
 
-public class StorageDeserializer extends JsonDeserializer<Storage> {
+public class StorageDeserializer extends JsonDeserializer<DefaultStorage> {
 
     private final static Logger logger = LoggerFactory.getLogger(StorageDeserializer.class);
 
@@ -28,8 +27,8 @@ public class StorageDeserializer extends JsonDeserializer<Storage> {
     }
 
     @Override
-    public Storage deserialize(final JsonParser jsonParser, final DeserializationContext deserializationContext) throws IOException, JsonProcessingException {
-        final Storage storage = new DefaultStorage();
+    public DefaultStorage deserialize(final JsonParser jsonParser, final DeserializationContext deserializationContext) throws IOException, JsonProcessingException {
+        final DefaultStorage storage = new DefaultStorage();
         final JsonNode node = jsonParser.getCodec().readTree(jsonParser);
 
         node.forEach(experimentRunContextNode -> {

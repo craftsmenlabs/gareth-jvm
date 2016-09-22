@@ -1,9 +1,8 @@
 package org.craftsmenlabs.gareth.rest.v1.resource;
 
-import org.craftsmenlabs.gareth.api.ExperimentEngine;
-import org.craftsmenlabs.gareth.api.context.ExperimentContext;
 import org.craftsmenlabs.gareth.api.exception.GarethUnknownExperimentException;
 import org.craftsmenlabs.gareth.api.model.AssumptionBlock;
+import org.craftsmenlabs.gareth.core.ExperimentEngineImpl;
 import org.craftsmenlabs.gareth.core.context.ExperimentContextImpl;
 import org.junit.Before;
 import org.junit.Test;
@@ -20,9 +19,9 @@ import static org.mockito.Mockito.*;
 public class ExperimentRerunResourceTest {
 
     @Mock
-    private ExperimentEngine experimentEngine;
+    private ExperimentEngineImpl experimentEngine;
 
-    private ExperimentContext experimentContext;
+    private ExperimentContextImpl experimentContext;
 
     @InjectMocks
     private ExperimentRerunResource experimentRerunResource;

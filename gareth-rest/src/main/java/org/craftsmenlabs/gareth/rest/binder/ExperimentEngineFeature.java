@@ -1,6 +1,6 @@
 package org.craftsmenlabs.gareth.rest.binder;
 
-import org.craftsmenlabs.gareth.api.ExperimentEngine;
+import org.craftsmenlabs.gareth.core.ExperimentEngineImpl;
 
 import javax.ws.rs.core.Feature;
 import javax.ws.rs.core.FeatureContext;
@@ -8,9 +8,9 @@ import javax.ws.rs.core.FeatureContext;
 
 public class ExperimentEngineFeature implements Feature {
 
-    private final ExperimentEngine experimentEngine;
+    private final ExperimentEngineImpl experimentEngine;
 
-    public ExperimentEngineFeature(final ExperimentEngine experimentEngine) {
+    public ExperimentEngineFeature(final ExperimentEngineImpl experimentEngine) {
         this.experimentEngine = experimentEngine;
     }
 

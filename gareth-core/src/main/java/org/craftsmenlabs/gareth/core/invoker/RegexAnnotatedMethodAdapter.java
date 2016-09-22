@@ -2,7 +2,7 @@ package org.craftsmenlabs.gareth.core.invoker;
 
 import org.craftsmenlabs.gareth.api.exception.GarethDefinitionParseException;
 import org.craftsmenlabs.gareth.api.exception.GarethInvocationException;
-import org.craftsmenlabs.gareth.api.storage.Storage;
+import org.craftsmenlabs.gareth.core.storage.DefaultStorage;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -43,7 +43,7 @@ public class RegexAnnotatedMethodAdapter {
     private void parseMethod() {
         for (Parameter parameter : method.getParameters()) {
             Class<?> cls = parameter.getType();
-            if (parameter.getParameterizedType() != Storage.class) {
+            if (parameter.getParameterizedType() != DefaultStorage.class) {
                 if (!isValidType(cls)) {
                     throw new IllegalStateException("Parameter type " + cls + " is not supported");
                 }
@@ -60,7 +60,7 @@ public class RegexAnnotatedMethodAdapter {
     }
 
     public List<Class<?>> getNonStorageParameters() {
-        return parameters.stream().filter((p) -> p != Storage.class).collect(Collectors.toList());
+        return parameters.stream().filter((p) -> p != DefaultStorage.class).collect(Collectors.toList());
     }
 
     public String getPattern() {

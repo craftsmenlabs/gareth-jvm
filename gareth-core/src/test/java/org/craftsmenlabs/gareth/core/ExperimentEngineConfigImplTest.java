@@ -1,6 +1,5 @@
 package org.craftsmenlabs.gareth.core;
 
-import org.craftsmenlabs.gareth.api.ExperimentEngineConfig;
 import org.junit.Test;
 
 import java.io.InputStream;
@@ -15,7 +14,7 @@ public class ExperimentEngineConfigImplTest {
 
     @Test
     public void testBuildConfigWithNothingSet() {
-        final ExperimentEngineConfig experimentEngineConfig = new ExperimentEngineConfigImpl
+        final ExperimentEngineConfigImpl experimentEngineConfig = new ExperimentEngineConfigImpl
                 .Builder()
                 .build();
 
@@ -27,7 +26,7 @@ public class ExperimentEngineConfigImplTest {
 
     @Test
     public void testAddDefinitionClass() throws Exception {
-        final ExperimentEngineConfig experimentEngineConfig = new ExperimentEngineConfigImpl
+        final ExperimentEngineConfigImpl experimentEngineConfig = new ExperimentEngineConfigImpl
                 .Builder()
                 .addDefinitionClass(Object.class)
                 .build();
@@ -42,7 +41,7 @@ public class ExperimentEngineConfigImplTest {
     public void testAddDefinitionClasses() throws Exception {
         final List<Class> classes = new ArrayList<>();
         classes.add(Object.class);
-        final ExperimentEngineConfig experimentEngineConfig = new ExperimentEngineConfigImpl
+        final ExperimentEngineConfigImpl experimentEngineConfig = new ExperimentEngineConfigImpl
                 .Builder()
                 .addDefinitionClasses(classes)
                 .build();
@@ -56,7 +55,7 @@ public class ExperimentEngineConfigImplTest {
     @Test
     public void testAddInputStream() throws Exception {
         final InputStream mockInputStream = mock(InputStream.class);
-        final ExperimentEngineConfig experimentEngineConfig = new ExperimentEngineConfigImpl
+        final ExperimentEngineConfigImpl experimentEngineConfig = new ExperimentEngineConfigImpl
                 .Builder()
                 .addInputStreams(mockInputStream)
                 .build();
@@ -72,7 +71,7 @@ public class ExperimentEngineConfigImplTest {
         final InputStream mockInputStream = mock(InputStream.class);
         final List<InputStream> inputStreamList = new ArrayList<>();
         inputStreamList.add(mockInputStream);
-        final ExperimentEngineConfig experimentEngineConfig = new ExperimentEngineConfigImpl
+        final ExperimentEngineConfigImpl experimentEngineConfig = new ExperimentEngineConfigImpl
                 .Builder()
                 .addInputStreams(inputStreamList)
                 .build();
@@ -85,7 +84,7 @@ public class ExperimentEngineConfigImplTest {
 
     @Test
     public void testSetIgnoreInvalidDefinitions() throws Exception {
-        final ExperimentEngineConfig experimentEngineConfig = new ExperimentEngineConfigImpl
+        final ExperimentEngineConfigImpl experimentEngineConfig = new ExperimentEngineConfigImpl
                 .Builder()
                 .setIgnoreInvalidDefinitions(true)
                 .build();
@@ -98,7 +97,7 @@ public class ExperimentEngineConfigImplTest {
 
     @Test
     public void testSetIgnoreInvalidExperiments() throws Exception {
-        final ExperimentEngineConfig experimentEngineConfig = new ExperimentEngineConfigImpl
+        final ExperimentEngineConfigImpl experimentEngineConfig = new ExperimentEngineConfigImpl
                 .Builder()
                 .setIgnoreInvalidExperiments(true)
                 .build();
@@ -111,7 +110,7 @@ public class ExperimentEngineConfigImplTest {
 
     @Test
     public void testSetIgnoreInvocationExceptions() throws Exception {
-        final ExperimentEngineConfig experimentEngineConfig = new ExperimentEngineConfigImpl
+        final ExperimentEngineConfigImpl experimentEngineConfig = new ExperimentEngineConfigImpl
                 .Builder()
                 .setIgnoreInvocationExceptions(true)
                 .build();

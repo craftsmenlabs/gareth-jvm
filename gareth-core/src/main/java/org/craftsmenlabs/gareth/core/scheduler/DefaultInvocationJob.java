@@ -5,18 +5,17 @@ import com.xeiam.sundial.JobContext;
 import com.xeiam.sundial.exceptions.JobInterruptException;
 import lombok.AccessLevel;
 import lombok.Setter;
-import org.craftsmenlabs.gareth.api.ExperimentEngine;
 import org.craftsmenlabs.gareth.api.context.ExperimentPartState;
-import org.craftsmenlabs.gareth.api.context.ExperimentRunContext;
-import org.craftsmenlabs.gareth.api.invoker.MethodDescriptor;
-import org.craftsmenlabs.gareth.api.invoker.MethodInvoker;
-import org.craftsmenlabs.gareth.api.observer.Observer;
-import org.craftsmenlabs.gareth.api.storage.Storage;
+import org.craftsmenlabs.gareth.core.invoker.MethodDescriptor;
+import org.craftsmenlabs.gareth.core.ExperimentEngineImpl;
+import org.craftsmenlabs.gareth.core.context.ExperimentRunContextImpl;
+import org.craftsmenlabs.gareth.core.invoker.MethodInvokerImpl;
+import org.craftsmenlabs.gareth.core.observer.DefaultObserver;
+import org.craftsmenlabs.gareth.core.storage.DefaultStorage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.time.LocalDateTime;
-
 
 public class DefaultInvocationJob extends Job {
 
@@ -27,10 +26,10 @@ public class DefaultInvocationJob extends Job {
 
     @Override
     public void doRun() throws JobInterruptException {
-        final MethodInvoker methodInvoker = getJobContext().getRequiredValue("methodInvoker");
-        final ExperimentRunContext runContext = getJobContext().getRequiredValue("experimentRunContext");
-        final Observer observer = getJobContext().getRequiredValue("observer");
-        final ExperimentEngine experimentEngine = getJobContext().getRequiredValue("experimentEngine");
+        final MethodInvokerImpl methodInvoker = getJobContext().getRequiredValue("methodInvoker");
+        final ExperimentRunContextImpl runContext = getJobContext().getRequiredValue("experimentRunContext");
+        final DefaultObserver observer = getJobContext().getRequiredValue("observer");
+        final ExperimentEngineImpl experimentEngine = getJobContext().getRequiredValue("experimentEngine");
         try {
             logger.debug("Invoking assumption");
             runContext.setAssumeState(ExperimentPartState.RUNNING);
@@ -66,10 +65,10 @@ public class DefaultInvocationJob extends Job {
     }
 
     private void invoke(final String assumeGlueLine,
-                        final MethodInvoker methodInvoker,
+                        final MethodInvokerImpl methodInvoker,
                         final boolean storageRequired,
                         final MethodDescriptor methodDescriptor,
-                        final Storage storage) {
+                        final DefaultStorage storage) {
         if (storageRequired) {
             methodInvoker.invoke(assumeGlueLine, methodDescriptor, storage);
         } else {

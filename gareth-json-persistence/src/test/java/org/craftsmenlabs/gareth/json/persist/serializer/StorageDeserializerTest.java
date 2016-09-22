@@ -2,7 +2,7 @@ package org.craftsmenlabs.gareth.json.persist.serializer;
 
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.DeserializationContext;
-import org.craftsmenlabs.gareth.api.storage.Storage;
+import org.craftsmenlabs.gareth.core.storage.DefaultStorage;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -29,6 +29,6 @@ public class StorageDeserializerTest {
     @Ignore
     @Test
     public void testDeserialize() throws Exception {
-        final Storage storage = storageDeserializer.deserialize(mockJsonParser, mockDeserializationContext);
+        final DefaultStorage storage = storageDeserializer.deserialize(mockJsonParser, mockDeserializationContext);
     }
 }

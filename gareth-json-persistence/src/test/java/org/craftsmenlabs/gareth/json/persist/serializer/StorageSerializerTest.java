@@ -2,7 +2,6 @@ package org.craftsmenlabs.gareth.json.persist.serializer;
 
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.SerializerProvider;
-import org.craftsmenlabs.gareth.api.storage.Storage;
 import org.craftsmenlabs.gareth.core.storage.DefaultStorage;
 import org.craftsmenlabs.gareth.json.persist.converter.exception.GarethUnknownTypeConverterException;
 import org.junit.Before;
@@ -34,7 +33,7 @@ public class StorageSerializerTest {
     @Test
     public void testSerialize() throws Exception {
 
-        final Storage storage = new DefaultStorage();
+        final DefaultStorage storage = new DefaultStorage();
         storage.store("hello", "world");
         storageSerializer.serialize(storage, mockJsonGenerator, mockSerializerProvider);
 
@@ -47,7 +46,7 @@ public class StorageSerializerTest {
     public void testSerializeUnsupportedType() throws Exception {
 
         try {
-            final Storage storage = new DefaultStorage();
+            final DefaultStorage storage = new DefaultStorage();
             storage.store("hello", new Error());
             storageSerializer.serialize(storage, mockJsonGenerator, mockSerializerProvider);
             fail("Should not reach this point");

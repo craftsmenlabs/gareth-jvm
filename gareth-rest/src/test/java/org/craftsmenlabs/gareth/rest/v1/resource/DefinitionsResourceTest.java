@@ -1,9 +1,9 @@
 package org.craftsmenlabs.gareth.rest.v1.resource;
 
-import org.craftsmenlabs.gareth.api.ExperimentEngine;
 import org.craftsmenlabs.gareth.api.model.GlueLineType;
-import org.craftsmenlabs.gareth.api.registry.DefinitionRegistry;
+import org.craftsmenlabs.gareth.core.ExperimentEngineImpl;
 import org.craftsmenlabs.gareth.core.parser.GlueLineMatcher;
+import org.craftsmenlabs.gareth.core.registry.DefinitionRegistryImpl;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -24,13 +24,13 @@ import static org.mockito.Mockito.*;
 public class DefinitionsResourceTest {
 
     @Mock
-    private ExperimentEngine engine;
+    private ExperimentEngineImpl engine;
 
     @Mock
     GlueLineMatcher glueLineMatcher;
 
     @Mock
-    private DefinitionRegistry registry;
+    private DefinitionRegistryImpl registry;
 
     @InjectMocks
     DefinitionsResource resource;

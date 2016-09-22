@@ -1,7 +1,6 @@
 package org.craftsmenlabs.gareth.core.context;
 
-import org.craftsmenlabs.gareth.api.context.ExperimentContext;
-import org.craftsmenlabs.gareth.api.invoker.MethodDescriptor;
+import org.craftsmenlabs.gareth.core.invoker.MethodDescriptor;
 import org.craftsmenlabs.gareth.api.model.AssumptionBlock;
 import org.craftsmenlabs.gareth.core.invoker.MethodDescriptorImpl;
 import org.junit.Before;
@@ -18,7 +17,7 @@ import static org.junit.Assert.*;
 public class ExperimentContextImplTest {
 
     private final String hash = "hash";
-    private ExperimentContext experimentContext;
+    private ExperimentContextImpl experimentContext;
     private AssumptionBlock assumptionBlock;
     private Duration mockDuration;
     private Optional<MethodDescriptor> stubMethodDescriptor;
