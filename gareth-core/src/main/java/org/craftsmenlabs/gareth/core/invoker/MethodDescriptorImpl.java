@@ -39,6 +39,7 @@ public class MethodDescriptorImpl implements MethodDescriptor {
         return this.storageParameterIndex;
     }
 
+    @Override
     public void invokeWith(String glueLineInExperiment, Object declaringClassInstance, DefaultStorage storage)
             throws InvocationTargetException, IllegalAccessException {
         if (hasStorage()) {
@@ -48,6 +49,7 @@ public class MethodDescriptorImpl implements MethodDescriptor {
         }
     }
 
+    @Override
     public String getRegexPatternForGlueLine() {
         return pattern;
     }

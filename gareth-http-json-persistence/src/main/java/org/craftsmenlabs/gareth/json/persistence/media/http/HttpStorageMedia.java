@@ -16,11 +16,12 @@ import java.io.IOException;
 import java.io.StringWriter;
 import java.util.List;
 
-
 public class HttpStorageMedia extends AbstractStorageMedia implements StorageMedia {
 
     private static final Header HEADER_CONTENT_TYPE = new BasicHeader("Content-Type", "application/json");
-    private final String persistUrl, restoreUrl;
+
+    private final String persistUrl;
+    private final String restoreUrl;
 
     private HttpStorageMedia(final Builder builder) {
         this.persistUrl = builder.persistUrl;
@@ -80,7 +81,6 @@ public class HttpStorageMedia extends AbstractStorageMedia implements StorageMed
             this.restoreUrl = restoreUrl;
             return this;
         }
-
 
         public HttpStorageMedia build() {
             return new HttpStorageMedia(this);

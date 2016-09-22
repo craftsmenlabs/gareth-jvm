@@ -24,8 +24,7 @@ public class ParsedDefinitionFactory {
     }
 
     public ParsedDefinition parse(final Class clazz) throws GarethExperimentParseException {
-        Optional
-                .ofNullable(clazz)
+        Optional.ofNullable(clazz)
                 .orElseThrow(() -> new IllegalArgumentException("Class cannot be null"));
 
         final ParsedDefinition parsedDefinition = new ParsedDefinition();
@@ -41,8 +40,7 @@ public class ParsedDefinitionFactory {
      * @param parsedDefinition
      */
     private void parseClass(final Class clazz, final ParsedDefinition parsedDefinition) {
-        Stream
-                .of(clazz.getMethods())
+        Stream.of(clazz.getMethods())
                 .forEach(m -> parseMethod(m, parsedDefinition));
     }
 

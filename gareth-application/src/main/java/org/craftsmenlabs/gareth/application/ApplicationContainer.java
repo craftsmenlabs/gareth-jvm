@@ -22,7 +22,6 @@ public class ApplicationContainer {
     public void init() throws Exception {
 
         experimentEngine.start();
-        //experimentEngine.runExperiment(createExperiment());
         Runtime.getRuntime().addShutdownHook(new ShutdownHook(experimentEngine));
 
         final RestServiceFactory restServiceFactory = new RestServiceFactory(); // Create a new rest service factory

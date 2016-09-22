@@ -14,7 +14,16 @@ class ExperimentContextData implements Serializable {
     private static final long serialVersionUID = 1L;
 
     private String hash;
-    private LocalDateTime baselineRun, assumeRun, successRun, failureRun;
-    private ExperimentPartState baselineState, assumeState, successState, failureState;
+
+    private LocalDateTime baselineRun;
+    private LocalDateTime assumeRun;
+    private LocalDateTime successRun;
+    private LocalDateTime failureRun;
+
+    private ExperimentPartState baselineState;
+    private ExperimentPartState assumeState;
+    private ExperimentPartState successState;
+    private ExperimentPartState failureState;
+
     private DefaultStorage storage;
 }

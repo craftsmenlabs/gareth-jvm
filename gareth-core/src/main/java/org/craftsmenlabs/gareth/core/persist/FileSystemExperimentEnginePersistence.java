@@ -53,7 +53,6 @@ public class FileSystemExperimentEnginePersistence implements ExperimentEnginePe
             IOUtils.closeQuietly(oos);
             IOUtils.closeQuietly(fos);
         }
-
     }
 
     @Override

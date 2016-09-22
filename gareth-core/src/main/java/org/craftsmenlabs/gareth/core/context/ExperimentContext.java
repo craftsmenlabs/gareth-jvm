@@ -13,14 +13,20 @@ import java.util.Optional;
 public class ExperimentContext {
 
     private final String hash;
-
     private final String experimentName;
 
-    private final MethodDescriptor baseline, assume, success, failure;
+    private final MethodDescriptor baseline;
+    private final MethodDescriptor assume;
+    private final MethodDescriptor success;
+    private final MethodDescriptor failure;
+
+    private final String baselineGlueLine;
+    private final String assumeGlueLine;
+    private final String successGlueLine;
+    private final String failureGlueLine;
+    private final String timeGlueLine;
 
     private final Duration time;
-
-    private final String baselineGlueLine, assumeGlueLine, successGlueLine, failureGlueLine, timeGlueLine;
 
     private ExperimentContext(final String hash, final Builder builder) {
         this.hash = hash;
@@ -39,7 +45,6 @@ public class ExperimentContext {
 
         // Time
         this.time = builder.time;
-
     }
 
 

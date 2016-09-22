@@ -21,7 +21,6 @@ public class ExperimentBaseListener extends GarethBaseListener {
         experiment.getAssumptionBlockList().add(new AssumptionBlock());
     }
 
-
     @Override
     public void exitExperiment(GarethParser.ExperimentContext ctx) {
         experiment.setExperimentName(cleanupInput(ctx.expirementName.getText()));

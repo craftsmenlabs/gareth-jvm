@@ -26,7 +26,6 @@ public class GlueLineMatcher {
         return GlueLineType.safeValueOf(key == null ? null : key.trim().toUpperCase());
     }
 
-
     public Map<String, List<String>> getMatches(final String glueLineType, final String line) {
         if (line == null || line.isEmpty()) {
             return Collections.emptyMap();

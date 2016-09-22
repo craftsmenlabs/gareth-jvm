@@ -31,8 +31,6 @@ public class RegexAnnotatedMethodAdapter {
     }
 
     public void invokeWith(Object receiver, List<Object> params) {
-        //if (params == null || params.size() != parameters.size())
-        //    throw new IllegalArgumentException("Parameter list should be non-null and size " + parameters.size());
         try {
             method.invoke(receiver, params.toArray(new Object[0]));
         } catch (InvocationTargetException | IllegalAccessException e) {
@@ -117,6 +115,4 @@ public class RegexAnnotatedMethodAdapter {
         }
         return output;
     }
-
-
 }

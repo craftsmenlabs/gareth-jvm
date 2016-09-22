@@ -16,7 +16,6 @@ public class DefaultObserver {
 
     private final List<ExperimentStateChangeListener> experimentStateChangeListenerList = new ArrayList<>();
 
-
     public void notifyApplicationStateChanged(final ExperimentEngine experimentEngine) {
         logger.debug("Notifying the application state listeners on change");
         for (final ExperimentStateChangeListener experimentStateChangeListener : experimentStateChangeListenerList) {
@@ -31,6 +30,4 @@ public class DefaultObserver {
     public void registerExperimentStateChangeListener(final ExperimentStateChangeListener experimentStateChangeListener) {
         experimentStateChangeListenerList.add(experimentStateChangeListener);
     }
-
-
 }

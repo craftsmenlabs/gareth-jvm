@@ -15,10 +15,22 @@ public class ExperimentRunContext {
     private final DefaultStorage storage;
 
     @Setter
-    private ExperimentPartState baselineState, assumeState, successState, failureState;
+    private ExperimentPartState baselineState;
+    @Setter
+    private ExperimentPartState assumeState;
+    @Setter
+    private ExperimentPartState successState;
+    @Setter
+    private ExperimentPartState failureState;
 
     @Setter
-    private LocalDateTime baselineRun, assumeRun, successRun, failureRun;
+    private LocalDateTime baselineRun;
+    @Setter
+    private LocalDateTime assumeRun;
+    @Setter
+    private LocalDateTime successRun;
+    @Setter
+    private LocalDateTime failureRun;
 
     private boolean finished;
 
@@ -59,11 +71,8 @@ public class ExperimentRunContext {
         private DefaultStorage storage;
 
         private ExperimentPartState baselineState = ExperimentPartState.NON_EXISTENT;
-
         private ExperimentPartState assumeState = ExperimentPartState.NON_EXISTENT;
-
         private ExperimentPartState successState = ExperimentPartState.NON_EXISTENT;
-
         private ExperimentPartState failureState = ExperimentPartState.NON_EXISTENT;
 
         public Builder(final ExperimentContext experimentContext, final DefaultStorage storage) {
@@ -72,13 +81,15 @@ public class ExperimentRunContext {
         }
 
         public ExperimentRunContext build() {
-            if (null == experimentContext) {
+            if (experimentContext == null) {
                 throw new IllegalStateException("Cannot build experiment run context without experiment context");
             }
-            if (null != experimentContext.getBaseline()) baselineState = ExperimentPartState.OPEN;
-            if (null != experimentContext.getAssume()) assumeState = ExperimentPartState.OPEN;
-            if (null != experimentContext.getSuccess()) successState = ExperimentPartState.OPEN;
-            if (null != experimentContext.getFailure()) failureState = ExperimentPartState.OPEN;
+
+            if (experimentContext.getBaseline() != null) baselineState = ExperimentPartState.OPEN;
+            if (experimentContext.getAssume() != null) assumeState = ExperimentPartState.OPEN;
+            if (experimentContext.getSuccess() != null) successState = ExperimentPartState.OPEN;
+            if (experimentContext.getFailure() != null) failureState = ExperimentPartState.OPEN;
+
             return new ExperimentRunContext(this);
         }
     }

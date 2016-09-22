@@ -24,7 +24,6 @@ public class DefaultAssumeScheduler {
     private final boolean ignoreInvocationExceptions;
     private final DefaultObserver observer;
 
-
     private DefaultAssumeScheduler(final Builder builder) {
         this.methodInvoker = builder.methodInvoker;
         this.ignoreInvocationExceptions = builder.ignoreInvocationExceptions;
@@ -111,5 +110,4 @@ public class DefaultAssumeScheduler {
             return new DefaultAssumeScheduler(this);
         }
     }
-
 }

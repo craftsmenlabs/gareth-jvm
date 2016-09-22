@@ -10,7 +10,9 @@ public class ExperimentEngineConfig {
 
     private final List<InputStream> inputStreamList;
 
-    private final boolean ignoreInvalidDefinitions, ignoreInvalidExperiments, ignoreInvocationExceptions;
+    private final boolean ignoreInvalidDefinitions;
+    private final boolean ignoreInvalidExperiments;
+    private final boolean ignoreInvocationExceptions;
 
     private ExperimentEngineConfig(final Builder builder) {
         this.definitionClasses = builder.definitionClasses;
@@ -88,6 +90,4 @@ public class ExperimentEngineConfig {
             return new ExperimentEngineConfig(this);
         }
     }
-
-
 }

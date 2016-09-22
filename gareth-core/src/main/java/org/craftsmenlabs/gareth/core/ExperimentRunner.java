@@ -14,6 +14,7 @@ import java.time.LocalDateTime;
 
 public class ExperimentRunner {
     private static Logger logger = LoggerFactory.getLogger(ExperimentRunner.class);
+
     private final MethodInvoker methodInvoker;
     private final DefaultAssumeScheduler assumeScheduler;
     private final boolean ignoreInvocationExceptions;
@@ -62,10 +63,8 @@ public class ExperimentRunner {
         }
     }
 
-
     @FunctionalInterface
     public interface Informer {
         void invoke();
     }
-
 }

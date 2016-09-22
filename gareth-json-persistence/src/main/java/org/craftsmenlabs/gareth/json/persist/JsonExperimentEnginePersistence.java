@@ -17,7 +17,6 @@ import org.slf4j.LoggerFactory;
 import java.util.ArrayList;
 import java.util.List;
 
-
 public class JsonExperimentEnginePersistence implements ExperimentEnginePersistence {
 
     private static final Logger LOG = LoggerFactory.getLogger(JsonExperimentEnginePersistence.class);
@@ -40,7 +39,6 @@ public class JsonExperimentEnginePersistence implements ExperimentEnginePersiste
 
         storageMedia.persist(data);
     }
-
 
     @Override
     public void restore(final ExperimentEngine experimentEngine) throws GarethStateReadException {

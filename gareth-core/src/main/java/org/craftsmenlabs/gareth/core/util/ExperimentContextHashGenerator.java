@@ -13,7 +13,6 @@ public class ExperimentContextHashGenerator {
 
     private final static Logger LOG = LoggerFactory.getLogger(ExperimentContextHashGenerator.class);
 
-
     public static String generateHash(final String[] unhashedSurrogateKey) {
         byte[] digest = {};
         try {
