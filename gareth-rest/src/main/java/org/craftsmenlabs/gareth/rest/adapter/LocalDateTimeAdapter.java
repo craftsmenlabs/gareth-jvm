@@ -12,8 +12,7 @@ public class LocalDateTimeAdapter extends XmlAdapter<String, LocalDateTime> {
     @Override
     public LocalDateTime unmarshal(final String dateString) throws Exception {
         final Instant instant = Instant.parse(dateString);
-        LocalDateTime dateTime = LocalDateTime.ofInstant(instant, ZoneOffset.UTC);
-        return dateTime;
+        return LocalDateTime.ofInstant(instant, ZoneOffset.UTC);
     }
 
     @Override

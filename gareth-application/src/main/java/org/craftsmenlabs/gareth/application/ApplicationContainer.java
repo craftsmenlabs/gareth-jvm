@@ -1,8 +1,6 @@
 package org.craftsmenlabs.gareth.application;
 
 import org.craftsmenlabs.gareth.core.ExperimentEngine;
-import org.craftsmenlabs.gareth.rest.RestService;
-import org.craftsmenlabs.gareth.rest.RestServiceFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -20,13 +18,8 @@ public class ApplicationContainer {
 
     @PostConstruct
     public void init() throws Exception {
-
         experimentEngine.start();
         Runtime.getRuntime().addShutdownHook(new ShutdownHook(experimentEngine));
-
-        final RestServiceFactory restServiceFactory = new RestServiceFactory(); // Create a new rest service factory
-        final RestService restService = restServiceFactory.create(experimentEngine, 8888);
-        restService.start();
     }
 
     /**
