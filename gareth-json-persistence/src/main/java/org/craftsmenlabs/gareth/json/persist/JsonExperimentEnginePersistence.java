@@ -25,9 +25,13 @@ public class JsonExperimentEnginePersistence implements ExperimentEnginePersiste
 
     private final JsonExperimentChangeListener jsonExperimentChangeListener;
 
-    private JsonExperimentEnginePersistence(final Builder builder) {
-        this.storageMedia = builder.storageMedia;
-        jsonExperimentChangeListener = new JsonExperimentChangeListener.Builder(this).build();
+    public JsonExperimentEnginePersistence() {
+        this(new FileStorageMedia.Builder().build());
+    }
+
+    public JsonExperimentEnginePersistence(StorageMedia storageMedia) {
+        this.storageMedia = storageMedia;
+        jsonExperimentChangeListener = new JsonExperimentChangeListener(this);
     }
 
     @Override
@@ -98,19 +102,5 @@ public class JsonExperimentEnginePersistence implements ExperimentEnginePersiste
     @Override
     public ExperimentStateChangeListener getExperimentStateChangeListener() {
         return jsonExperimentChangeListener;
-    }
-
-    public static class Builder {
-
-        private StorageMedia storageMedia = new FileStorageMedia.Builder().build();
-
-        public Builder setStorageMedia(final StorageMedia storageMedia) {
-            this.storageMedia = storageMedia;
-            return this;
-        }
-
-        public ExperimentEnginePersistence build() {
-            return new JsonExperimentEnginePersistence(this);
-        }
     }
 }

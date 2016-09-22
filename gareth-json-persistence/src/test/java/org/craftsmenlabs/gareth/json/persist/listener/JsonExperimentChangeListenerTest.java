@@ -11,7 +11,6 @@ import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 import static org.mockito.Mockito.verify;
 
-
 public class JsonExperimentChangeListenerTest {
 
     private JsonExperimentChangeListener jsonExperimentChangeListener;
@@ -26,9 +25,7 @@ public class JsonExperimentChangeListenerTest {
     @Before
     public void setUp() throws Exception {
         MockitoAnnotations.initMocks(this);
-        jsonExperimentChangeListener = new JsonExperimentChangeListener.Builder(mockJsonExperimentEnginePersistence)
-                .build();
-
+        jsonExperimentChangeListener = new JsonExperimentChangeListener(mockJsonExperimentEnginePersistence);
     }
 
     @Test
@@ -40,7 +37,7 @@ public class JsonExperimentChangeListenerTest {
     @Test
     public void testBuildWithNullExperimentEngine() {
         try {
-            new JsonExperimentChangeListener.Builder(null).build();
+            new JsonExperimentChangeListener(null);
             fail("Should not reach this point");
         } catch (final IllegalStateException e) {
             assertTrue(e.getMessage().contains("File system persistence engine cannot be null"));

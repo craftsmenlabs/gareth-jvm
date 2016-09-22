@@ -5,34 +5,20 @@ import org.craftsmenlabs.gareth.core.persist.listener.ExperimentStateChangeListe
 import org.craftsmenlabs.gareth.core.ExperimentEngine;
 import org.craftsmenlabs.gareth.json.persist.JsonExperimentEnginePersistence;
 
-
 public class JsonExperimentChangeListener implements ExperimentStateChangeListener {
 
     private final JsonExperimentEnginePersistence fileSystemExperimentEnginePersistence;
 
-    private JsonExperimentChangeListener(final Builder builder) {
-        this.fileSystemExperimentEnginePersistence = builder.jsonExperimentEnginePersistence;
+    public JsonExperimentChangeListener(JsonExperimentEnginePersistence jsonExperimentEnginePersistence) {
+        if (jsonExperimentEnginePersistence == null) {
+            throw new IllegalStateException("File system persistence engine cannot be null");
+        }
+
+        this.fileSystemExperimentEnginePersistence = jsonExperimentEnginePersistence;
     }
 
     @Override
     public void onChange(final ExperimentEngine experimentEngine) throws GarethStateWriteException {
         fileSystemExperimentEnginePersistence.persist(experimentEngine);
-    }
-
-    public static class Builder {
-
-        private final JsonExperimentEnginePersistence jsonExperimentEnginePersistence;
-
-        public Builder(final JsonExperimentEnginePersistence jsonExperimentEnginePersistence) {
-            this.jsonExperimentEnginePersistence = jsonExperimentEnginePersistence;
-        }
-
-        public JsonExperimentChangeListener build() {
-            if (jsonExperimentEnginePersistence == null) {
-                throw new IllegalStateException("File system persistence engine cannot be null");
-            }
-            return new JsonExperimentChangeListener(this);
-        }
-
     }
 }

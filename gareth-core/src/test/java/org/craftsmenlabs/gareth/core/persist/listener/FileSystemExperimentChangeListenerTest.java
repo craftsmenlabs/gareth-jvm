@@ -10,7 +10,6 @@ import org.mockito.MockitoAnnotations;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.verify;
 
-
 public class FileSystemExperimentChangeListenerTest {
 
     private FileSystemExperimentChangeListener fileSystemExperimentChangeListener;
@@ -24,14 +23,13 @@ public class FileSystemExperimentChangeListenerTest {
     @Before
     public void setUp() throws Exception {
         MockitoAnnotations.initMocks(this);
-        fileSystemExperimentChangeListener = new FileSystemExperimentChangeListener.Builder(mockFileSystemExperimentEnginePersistence)
-                .build();
+        fileSystemExperimentChangeListener = new FileSystemExperimentChangeListener(mockFileSystemExperimentEnginePersistence);
     }
 
     @Test
     public void buildWithoutPersistence() {
         try {
-            fileSystemExperimentChangeListener = new FileSystemExperimentChangeListener.Builder(null).build();
+            fileSystemExperimentChangeListener = new FileSystemExperimentChangeListener(null);
         } catch (final IllegalStateException e) {
             assertTrue(e.getMessage().contains("File system persistence engine cannot be null"));
         }
@@ -42,6 +40,4 @@ public class FileSystemExperimentChangeListenerTest {
         fileSystemExperimentChangeListener.onChange(mockExperimentEngine);
         verify(mockFileSystemExperimentEnginePersistence).persist(mockExperimentEngine);
     }
-
-
 }

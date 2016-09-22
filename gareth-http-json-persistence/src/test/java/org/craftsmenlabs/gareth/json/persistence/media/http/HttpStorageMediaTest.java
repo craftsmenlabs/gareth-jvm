@@ -19,7 +19,6 @@ import java.util.Random;
 
 import static org.junit.Assert.*;
 
-
 public class HttpStorageMediaTest {
 
     private ClientAndServer mockServer;
@@ -125,7 +124,7 @@ public class HttpStorageMediaTest {
     }
 
     public void buildHttpStorageMedia(final String persistUrl, final String restoreUrl) {
-        httpStorageMedia = new HttpStorageMedia.Builder().setPeristUrl(persistUrl).setRestoreUrl(restoreUrl).build();
+        httpStorageMedia = new HttpStorageMedia(persistUrl, restoreUrl);
     }
 
     private void preparePersistWithStatusCode(final int statusCode) throws URISyntaxException {

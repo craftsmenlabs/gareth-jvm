@@ -37,8 +37,7 @@ public class ApplicationConfiguration {
     ExperimentEngine experimentEngine(ExperimentEngineConfig experimentEngineConfig){
         return new ExperimentEngineBuilder(experimentEngineConfig)
                 .addCustomDefinitionFactory(new RestDefinitionFactory())
-                .setExperimentEnginePersistence(new JsonExperimentEnginePersistence.Builder().build())
+                .setExperimentEnginePersistence(new JsonExperimentEnginePersistence())
                 .build();
     }
-
 }

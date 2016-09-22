@@ -23,9 +23,9 @@ public class HttpStorageMedia extends AbstractStorageMedia implements StorageMed
     private final String persistUrl;
     private final String restoreUrl;
 
-    private HttpStorageMedia(final Builder builder) {
-        this.persistUrl = builder.persistUrl;
-        this.restoreUrl = builder.restoreUrl;
+    public HttpStorageMedia(String persistUrl, String restoreUrl) {
+        this.persistUrl = persistUrl;
+        this.restoreUrl = restoreUrl;
     }
 
     @Override
@@ -66,25 +66,4 @@ public class HttpStorageMedia extends AbstractStorageMedia implements StorageMed
         }
         return data;
     }
-
-    public static class Builder {
-
-        private String persistUrl, restoreUrl;
-
-        public Builder setPeristUrl(final String persistUrl) {
-            this.persistUrl = persistUrl;
-            return this;
-        }
-
-
-        public Builder setRestoreUrl(final String restoreUrl) {
-            this.restoreUrl = restoreUrl;
-            return this;
-        }
-
-        public HttpStorageMedia build() {
-            return new HttpStorageMedia(this);
-        }
-    }
-
 }

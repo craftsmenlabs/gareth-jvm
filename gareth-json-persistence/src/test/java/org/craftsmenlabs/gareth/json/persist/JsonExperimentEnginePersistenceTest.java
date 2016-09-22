@@ -21,14 +21,12 @@ import static java.util.Arrays.asList;
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
-
 public class JsonExperimentEnginePersistenceTest {
 
     private ExperimentEnginePersistence jsonExperimentEnginePersistence;
 
     @Mock
     private ExperimentEngine mockExperimentEngine;
-
 
     @Mock
     private ExperimentContext mockExperimentContext;
@@ -47,10 +45,7 @@ public class JsonExperimentEnginePersistenceTest {
     public void before() {
         MockitoAnnotations.initMocks(this);
         when(mockExperimentEngine.getExperimentRunContexts()).thenReturn(asList(mockExperimentRunContext));
-        jsonExperimentEnginePersistence = new JsonExperimentEnginePersistence
-                .Builder()
-                .setStorageMedia(mockStorageMedia)
-                .build();
+        jsonExperimentEnginePersistence = new JsonExperimentEnginePersistence(mockStorageMedia);
     }
 
 
@@ -98,6 +93,4 @@ public class JsonExperimentEnginePersistenceTest {
                 .getExperimentStateChangeListener();
         assertSame(experimentStateChangeListener1, experimentStateChangeListener2);
     }
-
-
 }

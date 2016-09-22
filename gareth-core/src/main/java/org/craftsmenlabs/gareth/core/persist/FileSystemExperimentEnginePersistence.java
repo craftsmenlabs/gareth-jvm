@@ -5,9 +5,9 @@ import org.craftsmenlabs.gareth.api.exception.GarethStateReadException;
 import org.craftsmenlabs.gareth.api.exception.GarethStateWriteException;
 import org.craftsmenlabs.gareth.api.exception.GarethUnknownExperimentException;
 import org.craftsmenlabs.gareth.core.ExperimentEngine;
-import org.craftsmenlabs.gareth.core.persist.listener.ExperimentStateChangeListener;
 import org.craftsmenlabs.gareth.core.context.ExperimentContext;
 import org.craftsmenlabs.gareth.core.context.ExperimentRunContext;
+import org.craftsmenlabs.gareth.core.persist.listener.ExperimentStateChangeListener;
 import org.craftsmenlabs.gareth.core.persist.listener.FileSystemExperimentChangeListener;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -15,7 +15,6 @@ import org.slf4j.LoggerFactory;
 import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
-
 
 public class FileSystemExperimentEnginePersistence implements ExperimentEnginePersistence {
 
@@ -27,7 +26,7 @@ public class FileSystemExperimentEnginePersistence implements ExperimentEnginePe
 
     private FileSystemExperimentEnginePersistence(final Builder builder) {
         this.stateFile = builder.stateFile;
-        fileSystemExperimentChangeListener = new FileSystemExperimentChangeListener.Builder(this).build();
+        fileSystemExperimentChangeListener = new FileSystemExperimentChangeListener(this);
     }
 
     @Override
