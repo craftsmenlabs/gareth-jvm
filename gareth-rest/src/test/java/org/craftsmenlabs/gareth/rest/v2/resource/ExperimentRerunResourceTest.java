@@ -10,9 +10,8 @@ import org.craftsmenlabs.gareth.core.context.ExperimentContextImpl;
 import org.craftsmenlabs.gareth.rest.v2.resources.ExperimentRerunResource;
 import org.junit.Test;
 
-import javax.ws.rs.core.Response;
-
-import static org.junit.Assert.assertEquals;
+import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
+import static org.assertj.core.api.AssertionsForInterfaceTypes.assertThat;
 
 public class ExperimentRerunResourceTest {
 
@@ -29,36 +28,30 @@ public class ExperimentRerunResourceTest {
     public void testRerunExperiment() throws Exception {
         final String hash = "hash";
 
-        new Expectations(){{
+        new Expectations() {{
             experimentEngine.findExperimentContextForHash(hash);
-            result=experimentContext;
+            result = experimentContext;
         }};
 
-        final Response response = experimentRerunResource.rerunExperiment(hash);
+        final boolean result = experimentRerunResource.rerunExperiment(hash);
 
-        new Verifications(){{
+        new Verifications() {{
             experimentEngine.planExperimentContext(experimentContext);
         }};
 
-        assertEquals(202, response.getStatus());
+        assertThat(result).isTrue();
     }
 
     @Test
     public void testRerunExperimentWithUnknownExperiment() throws Exception {
         final String hash = "hash";
 
-        new Expectations(){{
+        new Expectations() {{
             experimentEngine.findExperimentContextForHash(hash);
-            result=new GarethUnknownExperimentException("b");
+            result = new GarethUnknownExperimentException("b");
         }};
 
-        final Response response = experimentRerunResource.rerunExperiment(hash);
-
-        new Verifications(){{
-            experimentEngine.planExperimentContext(experimentContext);
-            maxTimes = 0;
-        }};
-
-        assertEquals(404, response.getStatus());
+        assertThatThrownBy(() -> experimentRerunResource.rerunExperiment(hash))
+                .isInstanceOf(IllegalStateException.class);
     }
 }

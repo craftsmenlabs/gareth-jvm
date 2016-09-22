@@ -8,9 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.web.bind.annotation.*;
 
-import javax.ws.rs.core.GenericEntity;
 import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
 import java.util.List;
 import java.util.Map;
 
@@ -45,21 +43,11 @@ public class DefinitionsResource {
             value = "/{key}/{value}",
             method = RequestMethod.GET,
             produces = {MediaType.APPLICATION_JSON})
-    public Response getMatches(final @PathVariable("key") String key, final @PathVariable("value") String value) {
+    public Map<String, List<String>> getMatches(final @PathVariable("key") String key, final @PathVariable("value") String value) {
         if (!glueLineMatcher.getGlueLineType(key).isPresent()) {
-            return Response.status(Response.Status.BAD_REQUEST)
-                    .entity("final part of path must be baseline, assumption, success, failure or time").build();
+            throw new IllegalArgumentException("final part of path must be baseline, assumption, success, failure or time");
         }
 
-        final Response response = produceResponse(glueLineMatcher.getMatches(key, value));
-        return response;
-    }
-
-    private Response produceResponse(Map<String, List<String>> matches) {
-        return Response
-                .status(200)
-                .entity(new GenericEntity<Map<String, List<String>>>(matches) {
-                })
-                .build();
+        return glueLineMatcher.getMatches(key, value);
     }
 }

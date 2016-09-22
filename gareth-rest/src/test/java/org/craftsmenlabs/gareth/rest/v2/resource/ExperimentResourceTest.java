@@ -3,14 +3,14 @@ package org.craftsmenlabs.gareth.rest.v2.resource;
 import mockit.Injectable;
 import mockit.Tested;
 import org.craftsmenlabs.gareth.core.ExperimentEngineImpl;
+import org.craftsmenlabs.gareth.rest.v2.entity.Experiment;
 import org.craftsmenlabs.gareth.rest.v2.resources.ExperimentResource;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.runners.MockitoJUnitRunner;
 
-import javax.ws.rs.core.Response;
+import java.util.List;
 
-import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
 
@@ -25,8 +25,7 @@ public class ExperimentResourceTest {
 
     @Test
     public void testGet() throws Exception {
-        final Response response = experimentResource.get();
+        final List<Experiment> response = experimentResource.get();
         assertNotNull(response);
-        assertEquals(200, response.getStatus());
     }
 }

@@ -14,6 +14,7 @@ import java.util.Optional;
 import java.util.Set;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 public class DefinitionsResourceTest {
 
@@ -43,7 +44,7 @@ public class DefinitionsResourceTest {
 
     @Test
     public void testInitialization(@Injectable Map<GlueLineType, Set<String>> param) {
-        new Verifications(){{
+        new Verifications() {{
             glueLineMatcher.init(withAny(param));
         }};
     }
@@ -55,7 +56,8 @@ public class DefinitionsResourceTest {
             result = Optional.empty();
         }};
 
-        assertThat(resource.getMatches("!@#", null).getStatus()).isEqualTo(400);
+        assertThatThrownBy(() -> resource.getMatches("!@#", null))
+                .isInstanceOfAny(IllegalArgumentException.class);
     }
 
     @Test
@@ -67,7 +69,7 @@ public class DefinitionsResourceTest {
             glueLineMatcher.getMatches("assume", "sale has increased");
             result = map;
         }};
-        assertThat(resource.getMatches("assume", "sale has increased").getEntity()).isSameAs(map);
+        assertThat(resource.getMatches("assume", "sale has increased")).isSameAs(map);
     }
 
 }

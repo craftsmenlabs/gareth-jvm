@@ -12,9 +12,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-import javax.ws.rs.core.GenericEntity;
 import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -35,13 +33,9 @@ public class ExperimentResource {
             value = "",
             method = RequestMethod.GET,
             produces = {MediaType.APPLICATION_JSON})
-    public Response get() {
-        return Response
-                .status(200)
-                .entity(new GenericEntity<List<Experiment>>(assembleExperiments(experimentEngine
-                        .getExperimentContexts())) {
-                })
-                .build();
+    public List<Experiment> get() {
+        return assembleExperiments(experimentEngine
+                .getExperimentContexts());
     }
 
     private List<Experiment> assembleExperiments(final List<ExperimentContextImpl> experimentContexts) {

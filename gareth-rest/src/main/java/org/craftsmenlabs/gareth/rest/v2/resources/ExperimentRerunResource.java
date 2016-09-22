@@ -8,7 +8,6 @@ import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.web.bind.annotation.*;
 
 import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
 
 @RestController
 @RequestMapping("/v2/experiments-rerun")
@@ -27,15 +26,13 @@ public class ExperimentRerunResource {
             value = "/{hash}",
             method = RequestMethod.GET,
             produces = {MediaType.APPLICATION_JSON})
-    public Response rerunExperiment(final @PathVariable("hash") String hash) {
-        Response response = null;
+    public boolean rerunExperiment(final @PathVariable("hash") String hash) {
         try {
             final ExperimentContextImpl experimentContext = experimentEngine.findExperimentContextForHash(hash);
             experimentEngine.planExperimentContext(experimentContext);
-            response = Response.accepted().build();
+            return true;
         } catch (final GarethUnknownExperimentException e) {
-            response = Response.status(Response.Status.NOT_FOUND).build();
+            throw new IllegalStateException("Not found");
         }
-        return response;
     }
 }

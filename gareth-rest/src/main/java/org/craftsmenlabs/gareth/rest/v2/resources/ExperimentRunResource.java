@@ -9,9 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.web.bind.annotation.*;
 
-import javax.ws.rs.core.GenericEntity;
 import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -32,13 +30,9 @@ public class ExperimentRunResource {
             value = "/{hash}",
             method = RequestMethod.GET,
             produces = {MediaType.APPLICATION_JSON})
-    public Response get(final @PathVariable("hash") String hash) {
-        return Response
-                .status(200)
-                .entity(new GenericEntity<List<ExperimentRun>>(assembleExperiments(experimentEngine
-                        .findExperimentRunContextsForHash(hash))) {
-                })
-                .build();
+    public List<ExperimentRun> get(final @PathVariable("hash") String hash) {
+        return assembleExperiments(experimentEngine
+                .findExperimentRunContextsForHash(hash));
     }
 
     private List<ExperimentRun> assembleExperiments(final List<ExperimentRunContextImpl> experimentRunContexts) {
