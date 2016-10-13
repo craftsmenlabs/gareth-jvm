@@ -146,14 +146,16 @@ public class ParsedDefinitionFactoryImplTest {
     public void testParseWithPackageName() {
         final ParsedDefinition parsedDefinition = parsedParsedDefinitionFactory.parse(SampleDefinition.class.getPackage().getName());
         assertNotNull(parsedDefinition);
-
-        assertTrue(parsedDefinition.getAssumeDefinitions().isEmpty());
-        assertTrue(parsedDefinition.getTimeDefinitions().isEmpty());
-        assertTrue(parsedDefinition.getFailureDefinitions().isEmpty());
-        assertTrue(parsedDefinition.getSuccessDefinitions().isEmpty());
-
         assertEquals(1, parsedDefinition.getBaselineDefinitions().size());
+        assertEquals(1, parsedDefinition.getSuccessDefinitions().size());
+        assertEquals(1, parsedDefinition.getFailureDefinitions().size());
+        assertEquals(1, parsedDefinition.getAssumeDefinitions().size());
+        assertEquals(1, parsedDefinition.getTimeDefinitions().size());
         assertTrue(parsedDefinition.getBaselineDefinitions().containsKey("Baseline glueline"));
+        assertTrue(parsedDefinition.getAssumeDefinitions().containsKey("Assume glueline"));
+        assertTrue(parsedDefinition.getSuccessDefinitions().containsKey("Success glueline"));
+        assertTrue(parsedDefinition.getFailureDefinitions().containsKey("Failure glueline"));
+        assertTrue(parsedDefinition.getTimeDefinitions().containsKey("Time glueline"));
     }
 
     @Test
