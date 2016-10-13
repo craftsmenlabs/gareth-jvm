@@ -12,6 +12,13 @@ public interface ExperimentEngineConfig {
     Class[] getDefinitionClasses();
 
     /**
+     * Get definition packages
+     *
+     * @return
+     */
+    String[] getDefinitionPackages();
+
+    /**
      * Get collection of experiment input streamss
      *
      * @return

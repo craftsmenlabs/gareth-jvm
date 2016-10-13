@@ -9,10 +9,13 @@ import org.craftsmenlabs.gareth.api.invoker.MethodDescriptor;
 import org.craftsmenlabs.gareth.api.storage.Storage;
 import org.craftsmenlabs.gareth.core.invoker.RegexMethodDescriptorImpl;
 import org.craftsmenlabs.gareth.core.reflection.ReflectionHelper;
+import org.reflections.Reflections;
+import org.reflections.scanners.MethodAnnotationsScanner;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.time.Duration;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Stream;
@@ -36,6 +39,34 @@ public class ParsedDefinitionFactoryImpl implements ParsedDefinitionFactory {
         return parsedDefinition;
     }
 
+
+    @Override
+    public ParsedDefinition parse(final String packageName) throws GarethDefinitionParseException {
+        final ParsedDefinition parsedDefinition = new ParsedDefinitionImpl();
+        final Reflections reflections = new Reflections(packageName, new MethodAnnotationsScanner());
+        for (final Method method : reflections.getMethodsAnnotatedWith(Baseline.class)) {
+            registerUnitOfWork(method, method.getAnnotation(Baseline.class).glueLine(), parsedDefinition.getBaselineDefinitions());
+        }
+
+        for (final Method method : reflections.getMethodsAnnotatedWith(Assume.class)) {
+            registerUnitOfWork(method, method.getAnnotation(Assume.class).glueLine(), parsedDefinition.getAssumeDefinitions());
+        }
+
+        for (final Method method : reflections.getMethodsAnnotatedWith(Success.class)) {
+            registerUnitOfWork(method, method.getAnnotation(Success.class).glueLine(), parsedDefinition.getSuccessDefinitions());
+        }
+
+        for (final Method method : reflections.getMethodsAnnotatedWith(Failure.class)) {
+            registerUnitOfWork(method, method.getAnnotation(Failure.class).glueLine(), parsedDefinition.getFailureDefinitions());
+        }
+
+
+        for (final Method method : reflections.getMethodsAnnotatedWith(Time.class)) {
+            registerDuration(method, method.getAnnotation(Time.class).glueLine(), parsedDefinition.getTimeDefinitions());
+        }
+
+        return parsedDefinition;
+    }
 
     /**
      * Parse class

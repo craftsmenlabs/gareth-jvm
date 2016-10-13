@@ -4,6 +4,7 @@ import org.craftsmenlabs.gareth.api.annotation.*;
 import org.craftsmenlabs.gareth.api.definition.ParsedDefinition;
 import org.craftsmenlabs.gareth.api.invoker.MethodDescriptor;
 import org.craftsmenlabs.gareth.api.storage.Storage;
+import org.craftsmenlabs.gareth.core.parser.sample.SampleDefinition;
 import org.craftsmenlabs.gareth.core.reflection.ReflectionHelper;
 import org.junit.Before;
 import org.junit.Test;
@@ -26,7 +27,7 @@ public class ParsedDefinitionFactoryImplTest {
 
     @Test
     public void testParseWithNullClassArgument() throws Exception {
-        assertThatThrownBy(() -> parsedParsedDefinitionFactory.parse(null)).hasMessage("Class cannot be null");
+        assertThatThrownBy(() -> parsedParsedDefinitionFactory.parse((Class)null)).hasMessage("Class cannot be null");
     }
 
     @Test
@@ -139,6 +140,20 @@ public class ParsedDefinitionFactoryImplTest {
 
         assertEquals(1, parsedDefinition.getBaselineDefinitions().size());
         assertTrue(parsedDefinition.getBaselineDefinitions().containsKey("Baseline glueline with storage"));
+    }
+
+    @Test
+    public void testParseWithPackageName() {
+        final ParsedDefinition parsedDefinition = parsedParsedDefinitionFactory.parse(SampleDefinition.class.getPackage().getName());
+        assertNotNull(parsedDefinition);
+
+        assertTrue(parsedDefinition.getAssumeDefinitions().isEmpty());
+        assertTrue(parsedDefinition.getTimeDefinitions().isEmpty());
+        assertTrue(parsedDefinition.getFailureDefinitions().isEmpty());
+        assertTrue(parsedDefinition.getSuccessDefinitions().isEmpty());
+
+        assertEquals(1, parsedDefinition.getBaselineDefinitions().size());
+        assertTrue(parsedDefinition.getBaselineDefinitions().containsKey("Baseline glueline"));
     }
 
     @Test

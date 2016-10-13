@@ -84,8 +84,13 @@ public class ExperimentEngineImpl implements ExperimentEngine {
 
     }
 
-    private void registerDefinition(final Class clazz) throws GarethDefinitionParseException {
+    private void registerClassDefinition(final Class clazz) throws GarethDefinitionParseException {
         final ParsedDefinition parsedDefinition = parsedDefinitionFactory.parse(clazz);
+        addParsedDefinitionToRegistry(parsedDefinition);
+    }
+
+    private void registerPackageDefinition(final String packageName) throws GarethDefinitionParseException {
+        final ParsedDefinition parsedDefinition = parsedDefinitionFactory.parse(packageName);
         addParsedDefinitionToRegistry(parsedDefinition);
     }
 
@@ -236,9 +241,26 @@ public class ExperimentEngineImpl implements ExperimentEngine {
     }
 
     private void initDefinitions() {
+        initPackageDefinitions();
+        initClassDefinitions();
+    }
+
+    private void initPackageDefinitions() {
+        for (final String packageName : experimentEngineConfig.getDefinitionPackages()) {
+            try {
+                registerPackageDefinition(packageName);
+            } catch (final GarethDefinitionParseException e) {
+                if (!experimentEngineConfig.isIgnoreInvalidDefinitions()) {
+                    throw e;
+                }
+            }
+        }
+    }
+
+    private void initClassDefinitions() {
         for (final Class clazz : experimentEngineConfig.getDefinitionClasses()) {
             try {
-                registerDefinition(clazz);
+                registerClassDefinition(clazz);
             } catch (final GarethDefinitionParseException e) {
                 if (!experimentEngineConfig.isIgnoreInvalidDefinitions()) {
                     throw e;

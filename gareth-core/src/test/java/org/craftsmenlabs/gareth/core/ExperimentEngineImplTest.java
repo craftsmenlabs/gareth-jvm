@@ -74,6 +74,7 @@ public class ExperimentEngineImplTest {
     public void setUp() throws Exception {
         MockitoAnnotations.initMocks(this);
         when(mockExperimentEngineConfig.getDefinitionClasses()).thenReturn(new Class[]{});
+        when(mockExperimentEngineConfig.getDefinitionPackages()).thenReturn(new String[]{});
         when(mockExperimentEngineConfig.getInputStreams()).thenReturn(new InputStream[]{});
         when(mockExperimentEnginePersistence.getExperimentStateChangeListener())
                 .thenReturn(mockExperimentStateChangeListener);

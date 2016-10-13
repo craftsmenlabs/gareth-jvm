@@ -95,7 +95,7 @@ public class ExperimentEngineImplBuilder {
         return this;
     }
 
-    public ExperimentEngineImplBuilder addCustomDefinitionFactory(DefinitionFactory definitionFactory) {
+    public ExperimentEngineImplBuilder addCustomDefinitionFactory(final DefinitionFactory definitionFactory) {
         this.customDefinitionFactory = definitionFactory;
         return this;
     }

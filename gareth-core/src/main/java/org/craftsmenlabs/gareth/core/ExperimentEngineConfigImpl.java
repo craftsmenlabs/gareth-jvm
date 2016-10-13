@@ -10,12 +10,15 @@ public class ExperimentEngineConfigImpl implements ExperimentEngineConfig {
 
     private final Set<Class> definitionClasses;
 
+    private final Set<String> definitionPackages;
+
     private final List<InputStream> inputStreamList;
 
     private final boolean ignoreInvalidDefinitions, ignoreInvalidExperiments, ignoreInvocationExceptions;
 
     private ExperimentEngineConfigImpl(final Builder builder) {
         this.definitionClasses = builder.definitionClasses;
+        this.definitionPackages = builder.definitionPackages;
         this.inputStreamList = builder.inputStreams;
         this.ignoreInvalidDefinitions = builder.ignoreInvalidDefinitions;
         this.ignoreInvalidExperiments = builder.ignoreInvalidExperiments;
@@ -25,6 +28,12 @@ public class ExperimentEngineConfigImpl implements ExperimentEngineConfig {
     @Override
     public Class[] getDefinitionClasses() {
         return definitionClasses.toArray(new Class[definitionClasses.size()]);
+    }
+
+
+    @Override
+    public String[] getDefinitionPackages() {
+        return definitionPackages.toArray(new String[definitionPackages.size()]);
     }
 
     @Override
@@ -53,6 +62,7 @@ public class ExperimentEngineConfigImpl implements ExperimentEngineConfig {
     public static class Builder {
 
         private final Set<Class> definitionClasses = new HashSet<>();
+        private final Set<String> definitionPackages = new HashSet<>();
         private final List<InputStream> inputStreams = new ArrayList<>();
         private boolean ignoreInvalidDefinitions, ignoreInvalidExperiments, ignoreInvocationExceptions;
 
@@ -73,6 +83,16 @@ public class ExperimentEngineConfigImpl implements ExperimentEngineConfig {
 
         public Builder addDefinitionClasses(final Collection<Class> definitionClasses) {
             this.definitionClasses.addAll(definitionClasses);
+            return this;
+        }
+
+        public Builder addDefinitionPackage(final String definitionPackage) {
+            this.definitionPackages.add(definitionPackage);
+            return this;
+        }
+
+        public Builder addDefinitionPackages(final Collection<String> definitionPackages) {
+            this.definitionPackages.addAll(definitionPackages);
             return this;
         }
 

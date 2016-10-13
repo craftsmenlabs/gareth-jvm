@@ -39,6 +39,19 @@ public class ExperimentEngineConfigImplTest {
     }
 
     @Test
+    public void testAddDefinitionPackage() throws Exception {
+        final ExperimentEngineConfig experimentEngineConfig = new ExperimentEngineConfigImpl
+                .Builder()
+                .addDefinitionPackage("package")
+                .build();
+
+        assertFalse(experimentEngineConfig.isIgnoreInvalidDefinitions());
+        assertFalse(experimentEngineConfig.isIgnoreInvalidExperiments());
+        assertEquals(1, experimentEngineConfig.getDefinitionPackages().length);
+        assertEquals(0, experimentEngineConfig.getInputStreams().length);
+    }
+
+    @Test
     public void testAddDefinitionClasses() throws Exception {
         final List<Class> classes = new ArrayList<>();
         classes.add(Object.class);
@@ -50,6 +63,21 @@ public class ExperimentEngineConfigImplTest {
         assertFalse(experimentEngineConfig.isIgnoreInvalidDefinitions());
         assertFalse(experimentEngineConfig.isIgnoreInvalidExperiments());
         assertEquals(1, experimentEngineConfig.getDefinitionClasses().length);
+        assertEquals(0, experimentEngineConfig.getInputStreams().length);
+    }
+
+    @Test
+    public void testAddDefinitionPackages() throws Exception {
+        final List<String> packages = new ArrayList<>();
+        packages.add("packages");
+        final ExperimentEngineConfig experimentEngineConfig = new ExperimentEngineConfigImpl
+                .Builder()
+                .addDefinitionPackages(packages)
+                .build();
+
+        assertFalse(experimentEngineConfig.isIgnoreInvalidDefinitions());
+        assertFalse(experimentEngineConfig.isIgnoreInvalidExperiments());
+        assertEquals(1, experimentEngineConfig.getDefinitionPackages().length);
         assertEquals(0, experimentEngineConfig.getInputStreams().length);
     }
 
