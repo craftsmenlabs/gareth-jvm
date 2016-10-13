@@ -161,7 +161,7 @@ public class ExampleApplication {
         final ExperimentEngineConfig experimentEngineConfig = new ExperimentEngineConfigImpl
                 .Builder()
                 .addDefinitionClass(SampleDefinition.class)
-                .addDefinitionPacke("org.craftmenslabs.gareth.package.with.definitions")
+                .addDefinitionPackage("org.craftmenslabs.gareth.package.with.definitions")
                 .addInputStreams(ExampleApplication.class.getClass().getResourceAsStream("/experiments/businessgoal-01.experiment"))
                 .setIgnoreInvocationExceptions(true)
                 .build();
