@@ -1,4 +1,4 @@
-package org.craftsmenlabs.gareth.rest.v2.entity;
+package org.craftsmenlabs.gareth.rest.v1.entity;
 
 import org.craftsmenlabs.gareth.api.model.AssumptionBlock;
 import org.junit.Test;
@@ -12,9 +12,9 @@ public class ExperimentToModelMapperTest {
 
     @Test
     public void testFullMapping() {
-        org.craftsmenlabs.gareth.rest.v2.entity.Experiment experiment = new Experiment();
-        experiment.setWeight(42);
+        Experiment experiment = new Experiment();
         experiment.setAssumeGlueLine("assume");
+        experiment.setWeight(42);
         experiment.setBaselineGlueLine("baseline");
         experiment.setExperimentName("Experiment");
         experiment.setFailureGlueLine("failure");

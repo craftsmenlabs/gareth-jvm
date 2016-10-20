@@ -12,9 +12,15 @@ import org.craftsmenlabs.gareth.core.persist.listener.FileSystemExperimentChange
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.*;
-import java.util.ArrayList;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class FileSystemExperimentEnginePersistence implements ExperimentEnginePersistence {
 
@@ -31,11 +37,9 @@ public class FileSystemExperimentEnginePersistence implements ExperimentEnginePe
 
     @Override
     public void persist(final ExperimentEngine experimentEngine) throws GarethStateWriteException {
-        final List<ExperimentContextData> data = new ArrayList<>();
-        experimentEngine.getExperimentRunContexts().forEach((experimentRunContext -> {
-            data.add(buildExperimentContextData(experimentRunContext));
-        }));
-
+        final List<ExperimentContextData> data = experimentEngine.getExperimentRunContexts().stream()
+                                                                 .map(ctx -> buildExperimentContextData(ctx))
+                                                                 .collect(Collectors.toList());
         FileOutputStream fos = null;
         ObjectOutputStream oos = null;
         try {
@@ -63,7 +67,7 @@ public class FileSystemExperimentEnginePersistence implements ExperimentEnginePe
                 final ExperimentContext experimentContext = experimentEngine
                         .findExperimentContextForHash(experimentContextData.getHash());
                 experimentEngine.getExperimentRunContexts()
-                        .add(rebuildExperimentRunContext(experimentContextData, experimentContext));
+                                .add(rebuildExperimentRunContext(experimentContextData, experimentContext));
             } catch (final GarethUnknownExperimentException e) {
                 LOG.debug("No experiment context data found.", e);
             }
@@ -76,28 +80,28 @@ public class FileSystemExperimentEnginePersistence implements ExperimentEnginePe
     }
 
     private ExperimentRunContext rebuildExperimentRunContext(final ExperimentContextData experimentContextData, final ExperimentContext experimentContext) {
-        final ExperimentRunContext experimentRunContext = new ExperimentRunContext
+        final ExperimentRunContext runContext = new ExperimentRunContext
                 .Builder(experimentContext, experimentContextData.getStorage())
                 .build();
-        experimentRunContext.setBaselineState(experimentContextData.getBaselineState());
-        experimentRunContext.setAssumeState(experimentContextData.getAssumeState());
-        experimentRunContext.setSuccessState(experimentContextData.getSuccessState());
-        experimentRunContext.setFailureState(experimentContextData.getFailureState());
+        runContext.setBaselineState(experimentContextData.getBaselineState());
+        runContext.setAssumeState(experimentContextData.getAssumeState());
+        runContext.setSuccessState(experimentContextData.getSuccessState());
+        runContext.setFailureState(experimentContextData.getFailureState());
         // Write runs
-        experimentRunContext.setBaselineRun(experimentContextData.getBaselineRun());
-        experimentRunContext.setAssumeRun(experimentContextData.getAssumeRun());
-        experimentRunContext.setSuccessRun(experimentContextData.getSuccessRun());
-        experimentRunContext.setFailureRun(experimentContextData.getFailureRun());
-        return experimentRunContext;
+        runContext.setBaselineRun(experimentContextData.getBaselineRun());
+        runContext.setAssumeRun(experimentContextData.getAssumeRun());
+        runContext.setSuccessRun(experimentContextData.getSuccessRun());
+        runContext.setFailureRun(experimentContextData.getFailureRun());
+        return runContext;
     }
 
     private ExperimentContextData findExperimentContextDataForHash(final List<ExperimentContextData> experimentContexts, final String hash) {
         return experimentContexts.parallelStream().filter(experimentContextData -> {
             return experimentContextData.getHash().equals(hash);
         })
-                .findFirst()
-                .orElseThrow(() -> new UnknownExperimentContextException(String
-                        .format("Cannot find experiment context data with hash %s", hash)));
+                                 .findFirst()
+                                 .orElseThrow(() -> new UnknownExperimentContextException(String
+                                         .format("Cannot find experiment context data with hash %s", hash)));
     }
 
     private List<ExperimentContextData> readExperimentContextDataFromFile() throws GarethStateReadException {

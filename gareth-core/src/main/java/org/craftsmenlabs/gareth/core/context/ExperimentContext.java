@@ -1,8 +1,8 @@
 package org.craftsmenlabs.gareth.core.context;
 
 import lombok.Getter;
-import org.craftsmenlabs.gareth.core.invoker.MethodDescriptor;
 import org.craftsmenlabs.gareth.api.model.AssumptionBlock;
+import org.craftsmenlabs.gareth.core.invoker.MethodDescriptor;
 
 import javax.xml.bind.annotation.XmlRootElement;
 import java.time.Duration;
@@ -13,24 +13,21 @@ import java.util.Optional;
 public class ExperimentContext {
 
     private final String hash;
+
     private final String experimentName;
 
-    private final MethodDescriptor baseline;
-    private final MethodDescriptor assume;
-    private final MethodDescriptor success;
-    private final MethodDescriptor failure;
+    private final int weight;
 
-    private final String baselineGlueLine;
-    private final String assumeGlueLine;
-    private final String successGlueLine;
-    private final String failureGlueLine;
-    private final String timeGlueLine;
+    private final MethodDescriptor baseline, assume, success, failure;
 
     private final Duration time;
+
+    private final String baselineGlueLine, assumeGlueLine, successGlueLine, failureGlueLine, timeGlueLine;
 
     private ExperimentContext(final String hash, final Builder builder) {
         this.hash = hash;
         this.experimentName = builder.experimentName;
+        this.weight = builder.weight;
         // Gluelines
         this.baselineGlueLine = builder.assumptionBlock.getBaseline();
         this.assumeGlueLine = builder.assumptionBlock.getAssumption();
@@ -45,6 +42,7 @@ public class ExperimentContext {
 
         // Time
         this.time = builder.time;
+
     }
 
 
@@ -71,10 +69,16 @@ public class ExperimentContext {
         private MethodDescriptor baseline, assume, success, failure;
 
         private Duration time;
+        public int weight;
 
         public Builder(final String experimentName, final AssumptionBlock assumptionBlock) {
             this.experimentName = experimentName;
             this.assumptionBlock = assumptionBlock;
+        }
+
+        public Builder setWeight(int weight) {
+            this.weight = weight;
+            return this;
         }
 
         public Builder setBaseline(final Optional<MethodDescriptor> baseline) {

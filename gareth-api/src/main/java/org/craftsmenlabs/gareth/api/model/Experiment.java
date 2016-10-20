@@ -7,9 +7,7 @@ import java.util.List;
 
 @Data
 public class Experiment {
-
     private String experimentName;
+    private int weight;
     private List<AssumptionBlock> assumptionBlockList = new ArrayList<AssumptionBlock>();
-
-
 }

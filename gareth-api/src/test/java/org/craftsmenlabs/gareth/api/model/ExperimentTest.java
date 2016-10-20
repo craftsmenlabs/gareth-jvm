@@ -6,7 +6,10 @@ import org.junit.Test;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNotSame;
+import static org.junit.Assert.assertSame;
 
 
 public class ExperimentTest {
@@ -16,11 +19,6 @@ public class ExperimentTest {
     @Before
     public void before() {
         experiment = new Experiment();
-    }
-
-    @Test
-    public void testGetExperimentName() throws Exception {
-        assertNull(experiment.getExperimentName());
     }
 
     @Test

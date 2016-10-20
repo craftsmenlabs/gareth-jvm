@@ -1,6 +1,7 @@
 package org.craftsmenlabs.gareth.core.factory;
 
 import org.apache.commons.io.IOUtils;
+import org.assertj.core.api.Assertions;
 import org.craftsmenlabs.gareth.api.exception.GarethExperimentParseException;
 import org.craftsmenlabs.gareth.api.model.AssumptionBlock;
 import org.craftsmenlabs.gareth.api.model.Experiment;
@@ -8,7 +9,10 @@ import org.junit.Test;
 
 import java.io.InputStream;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 
 public class ExperimentFactoryTest {
@@ -20,6 +24,7 @@ public class ExperimentFactoryTest {
 
         assertNotNull(experiment);
         assertEquals("Reduce failed logins", experiment.getExperimentName());
+        assertEquals(8, experiment.getWeight());
         assertEquals(1, experiment.getAssumptionBlockList().size());
         // Validate assumption block
         final AssumptionBlock assumptionBlock = experiment.getAssumptionBlockList().get(0);
@@ -40,6 +45,7 @@ public class ExperimentFactoryTest {
         assertNotNull(experiment);
         assertEquals("Reduce failed logins (multiple assumptions)", experiment.getExperimentName());
         assertEquals(2, experiment.getAssumptionBlockList().size());
+        assertEquals(0, experiment.getWeight());
         // Validate assumption block 1
         final AssumptionBlock assumptionBlock1 = experiment.getAssumptionBlockList().get(0);
         final AssumptionBlock expectedAssumptionBlock1 = new AssumptionBlock();
@@ -164,11 +170,8 @@ public class ExperimentFactoryTest {
 
     @Test
     public void testEmptyExperiment() {
-        try {
-            parseFailureExperiment("experiment-failure-0001.experiment");
-        } catch (final Exception e) {
-            assertTrue(e instanceof GarethExperimentParseException);
-        }
+        Assertions.assertThatThrownBy(() -> parseFailureExperiment("experiment-failure-0001.experiment"))
+            .isInstanceOf(GarethExperimentParseException.class);
     }
 
     @Test
@@ -194,12 +197,8 @@ public class ExperimentFactoryTest {
 
     private Experiment parseTestExperiment(final String fileName) {
         final InputStream fileInputStream = getClass().getResourceAsStream("/experiments/" + fileName);
-
         try {
-
-
             return new ExperimentFactory().buildExperiment(fileInputStream);
-
 
         } catch (Exception e) {
             fail("Should not reach this point");

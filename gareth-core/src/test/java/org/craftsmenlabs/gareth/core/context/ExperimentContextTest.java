@@ -1,7 +1,7 @@
 package org.craftsmenlabs.gareth.core.context;
 
-import org.craftsmenlabs.gareth.core.invoker.MethodDescriptor;
 import org.craftsmenlabs.gareth.api.model.AssumptionBlock;
+import org.craftsmenlabs.gareth.core.invoker.MethodDescriptor;
 import org.craftsmenlabs.gareth.core.invoker.MethodDescriptorImpl;
 import org.junit.Before;
 import org.junit.Test;
@@ -11,7 +11,9 @@ import java.time.Duration;
 import java.time.temporal.ChronoUnit;
 import java.util.Optional;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 
 public class ExperimentContextTest {
@@ -39,6 +41,7 @@ public class ExperimentContextTest {
         stubMethodDescriptor = stubMethodDescriptor();
         experimentContext = new ExperimentContext
                 .Builder("experiment name", assumptionBlock)
+                .setWeight(42)
                 .setBaseline(stubMethodDescriptor)
                 .setAssume(stubMethodDescriptor)
                 .setFailure(stubMethodDescriptor)
@@ -88,6 +91,12 @@ public class ExperimentContextTest {
     public void testGetExperimentName() throws Exception {
         assertEquals("experiment name", experimentContext.getExperimentName());
     }
+
+    @Test
+    public void testGetWeight() throws Exception {
+        assertEquals(42, experimentContext.getWeight());
+    }
+
 
     @Test
     public void testGetBaseline() throws Exception {

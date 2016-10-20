@@ -1,6 +1,7 @@
 grammar Gareth;
 
 experiment: 'Experiment:' expirementName=GlueLine;
+weight: 'Weight:' experimentWeight=GlueLine;
 baseline: 'Baseline:' baselineGlueLine=GlueLine;
 assumption: 'Assumption:' assumptionGlueLine=GlueLine;
 time: 'Time:' timeGlueLine=GlueLine;
@@ -11,6 +12,7 @@ failure: 'Failure:' failureGlueLine=GlueLine;
 experimentBlock:
     (NL)*
     (experiment NL)
+    (weight NL)?
     (NL)*
     (assumptionBlock)+
     EOF;

@@ -2,10 +2,10 @@ package org.craftsmenlabs.gareth.core;
 
 import org.craftsmenlabs.gareth.api.exception.GarethInvocationException;
 import org.craftsmenlabs.gareth.api.exception.GarethUnknownDefinitionException;
-import org.craftsmenlabs.gareth.core.invoker.MethodDescriptor;
 import org.craftsmenlabs.gareth.api.model.AssumptionBlock;
 import org.craftsmenlabs.gareth.api.model.Experiment;
 import org.craftsmenlabs.gareth.core.context.ExperimentContext;
+import org.craftsmenlabs.gareth.core.invoker.MethodDescriptor;
 import org.craftsmenlabs.gareth.core.registry.DefinitionRegistry;
 import org.craftsmenlabs.gareth.core.util.ExperimentContextHashGenerator;
 import org.slf4j.Logger;
@@ -49,6 +49,7 @@ public class ExperimentContextBuilder {
 
                 final ExperimentContext experimentContext = new ExperimentContext
                         .Builder(experiment.getExperimentName(), assumptionBlock)
+                        .setWeight(experiment.getWeight())
                         .setBaseline(Optional.ofNullable(getBaseline(assumptionBlock.getBaseline())))
                         .setAssume(Optional.ofNullable(getAssume(assumptionBlock.getAssumption())))
                         .setTime(getDuration(assumptionBlock.getTime()))

@@ -51,6 +51,12 @@ public class ExperimentBaseListener extends GarethBaseListener {
         getNewestAssumptionBlock().setTime(cleanupInput(ctx.timeGlueLine.getText()));
     }
 
+    @Override
+    public void exitWeight(GarethParser.WeightContext ctx) {
+        String weight = ctx.experimentWeight.getText().trim().toLowerCase();
+        experiment.setWeight(Integer.parseInt(weight));
+    }
+
     private AssumptionBlock getNewestAssumptionBlock() {
         return experiment.getAssumptionBlockList().get(experiment.getAssumptionBlockList().size() - 1);
     }

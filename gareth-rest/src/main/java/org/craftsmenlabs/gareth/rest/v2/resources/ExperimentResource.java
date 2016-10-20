@@ -13,8 +13,8 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.ws.rs.core.MediaType;
-import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/v2/experiments")
@@ -40,11 +40,6 @@ public class ExperimentResource {
 
     private List<Experiment> assembleExperiments(final List<ExperimentContext> experimentContexts) {
         final Assembler<ExperimentContext, Experiment> assembler = new ExperimentAssembler();
-        final List<Experiment> experiments = new ArrayList<>();
-        for (final ExperimentContext experimentContext : experimentContexts) {
-            experiments.add(assembler.assembleOutbound(experimentContext));
-        }
-
-        return experiments;
+        return experimentContexts.stream().map(ctx -> assembler.assembleOutbound(ctx)).collect(Collectors.toList());
     }
 }
