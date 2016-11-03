@@ -7,6 +7,9 @@ import org.craftsmenlabs.gareth.core.storage.DefaultStorage;
 
 import java.time.LocalDateTime;
 
+/**
+ * Contains information about an experiment run, i.e. the lifecycle state and start time of each baseline
+ */
 @Getter
 public class ExperimentRunContext {
 

@@ -16,8 +16,6 @@ import org.springframework.context.annotation.Import;
 import org.springframework.web.cors.CorsConfiguration;
 
 @Configuration
-@Import({CorsConfiguration.class, RestConfiguration.class})
-@ComponentScan(basePackages = {"org.craftsmenlabs.gareth.application"})
 public class ApplicationConfiguration {
 
     @Bean

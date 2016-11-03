@@ -8,6 +8,9 @@ import javax.xml.bind.annotation.XmlRootElement;
 import java.time.Duration;
 import java.util.Optional;
 
+/**
+ * Contains all data of an experiment definition, including references to the methods of the corresponding Definition class
+ */
 @XmlRootElement
 @Getter
 public class ExperimentContext {

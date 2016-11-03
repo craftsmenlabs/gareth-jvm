@@ -7,7 +7,10 @@ import java.time.Duration;
 import java.util.HashMap;
 import java.util.Map;
 
-
+/**
+ * Represents a mapping between glueline text and a corresponding method in a definition files.
+ * A single Definition file may contain more than one baselineDefinitions, for example.
+ */
 @Getter
 public class ParsedDefinition {
 

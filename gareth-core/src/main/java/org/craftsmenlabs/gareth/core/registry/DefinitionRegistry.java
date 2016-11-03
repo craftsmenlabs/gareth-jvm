@@ -5,7 +5,7 @@ import org.craftsmenlabs.gareth.api.exception.GarethAlreadyKnownDefinitionExcept
 import org.craftsmenlabs.gareth.api.exception.GarethUnknownDefinitionException;
 import org.craftsmenlabs.gareth.core.invoker.MethodDescriptor;
 import org.craftsmenlabs.gareth.api.model.GlueLineType;
-import org.craftsmenlabs.gareth.core.parser.CommonDurationExpressionParser;
+import org.craftsmenlabs.gareth.core.parser.DurationExpressionParser;
 
 import java.time.Duration;
 import java.util.HashMap;
@@ -18,7 +18,7 @@ import java.util.regex.Pattern;
 public class DefinitionRegistry {
 
     private final Map<String, Pattern> regexes = new HashMap();
-    private final CommonDurationExpressionParser durationExpressionParser = new CommonDurationExpressionParser();
+    private final DurationExpressionParser durationExpressionParser = new DurationExpressionParser();
     private final Map<String, MethodDescriptor> baselineDefinitions = new HashMap<>();
     private final Map<String, MethodDescriptor> assumeDefinitions = new HashMap<>();
     private final Map<String, MethodDescriptor> successDefinitions = new HashMap<>();

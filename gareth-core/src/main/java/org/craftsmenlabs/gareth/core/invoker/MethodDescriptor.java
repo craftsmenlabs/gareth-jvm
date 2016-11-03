@@ -1,5 +1,7 @@
 package org.craftsmenlabs.gareth.core.invoker;
 
+import org.craftsmenlabs.gareth.core.storage.DefaultStorage;
+
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
@@ -29,5 +31,5 @@ public interface MethodDescriptor {
 
     String getRegexPatternForGlueLine();
 
-    void invokeWith(String glueLineInExperiment, Object declaringClassInstance, org.craftsmenlabs.gareth.core.storage.DefaultStorage storage) throws InvocationTargetException, IllegalAccessException;
+    void invokeWith(String glueLineInExperiment, Object declaringClassInstance, DefaultStorage storage) throws InvocationTargetException, IllegalAccessException;
 }
