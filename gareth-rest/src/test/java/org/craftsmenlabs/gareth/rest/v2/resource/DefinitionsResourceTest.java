@@ -1,6 +1,9 @@
 package org.craftsmenlabs.gareth.rest.v2.resource;
 
-import mockit.*;
+import mockit.Expectations;
+import mockit.Injectable;
+import mockit.Tested;
+import mockit.Verifications;
 import org.craftsmenlabs.gareth.api.model.GlueLineType;
 import org.craftsmenlabs.gareth.core.ExperimentEngine;
 import org.craftsmenlabs.gareth.core.parser.GlueLineMatcher;
@@ -18,18 +21,14 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 public class DefinitionsResourceTest {
 
-    @Injectable
-    private ExperimentEngine experimentEngine;
-
-    @Injectable
-    private GlueLineMatcher glueLineMatcher;
-
-    @Injectable
-    private ExperimentToModelMapper mapper;
-
     @Tested
     DefinitionsResource resource;
-
+    @Injectable
+    private ExperimentEngine experimentEngine;
+    @Injectable
+    private GlueLineMatcher glueLineMatcher;
+    @Injectable
+    private ExperimentToModelMapper mapper;
     private Map<GlueLineType, Set<String>> model = new HashMap<>();
 
     @Test

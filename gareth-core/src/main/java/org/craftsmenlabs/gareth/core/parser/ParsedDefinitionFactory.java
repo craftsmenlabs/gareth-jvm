@@ -1,6 +1,10 @@
 package org.craftsmenlabs.gareth.core.parser;
 
-import org.craftsmenlabs.gareth.api.annotation.*;
+import org.craftsmenlabs.gareth.api.annotation.Assume;
+import org.craftsmenlabs.gareth.api.annotation.Baseline;
+import org.craftsmenlabs.gareth.api.annotation.Failure;
+import org.craftsmenlabs.gareth.api.annotation.Success;
+import org.craftsmenlabs.gareth.api.annotation.Time;
 import org.craftsmenlabs.gareth.api.exception.GarethDefinitionParseException;
 import org.craftsmenlabs.gareth.api.exception.GarethExperimentParseException;
 import org.craftsmenlabs.gareth.core.invoker.MethodDescriptor;
@@ -41,7 +45,7 @@ public class ParsedDefinitionFactory {
      */
     private void parseClass(final Class clazz, final ParsedDefinition parsedDefinition) {
         Stream.of(clazz.getMethods())
-                .forEach(m -> parseMethod(m, parsedDefinition));
+              .forEach(m -> parseMethod(m, parsedDefinition));
     }
 
     /**
@@ -108,7 +112,8 @@ public class ParsedDefinitionFactory {
     }
 
     private boolean hasStorageParameter(Method method) {
-        return method.getParameterCount() > 0 && method.getParameters()[0].getParameterizedType() == DefaultStorage.class;
+        return method.getParameterCount() > 0 && method.getParameters()[0]
+                .getParameterizedType() == DefaultStorage.class;
     }
 
     private boolean isTimeMethod(final Method method) {
@@ -119,6 +124,6 @@ public class ParsedDefinitionFactory {
         return isTimeMethod(method) &&
                 method.getParameterCount() == 2 &&
                 method.getParameterTypes()
-                        .equals(new Object[]{Integer.class, String.class});
+                      .equals(new Object[]{Integer.class, String.class});
     }
 }

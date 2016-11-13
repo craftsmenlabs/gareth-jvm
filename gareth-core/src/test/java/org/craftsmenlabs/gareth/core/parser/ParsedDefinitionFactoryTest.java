@@ -1,6 +1,10 @@
 package org.craftsmenlabs.gareth.core.parser;
 
-import org.craftsmenlabs.gareth.api.annotation.*;
+import org.craftsmenlabs.gareth.api.annotation.Assume;
+import org.craftsmenlabs.gareth.api.annotation.Baseline;
+import org.craftsmenlabs.gareth.api.annotation.Failure;
+import org.craftsmenlabs.gareth.api.annotation.Success;
+import org.craftsmenlabs.gareth.api.annotation.Time;
 import org.craftsmenlabs.gareth.core.invoker.MethodDescriptor;
 import org.craftsmenlabs.gareth.core.reflection.ReflectionHelper;
 import org.craftsmenlabs.gareth.core.storage.DefaultStorage;
@@ -10,7 +14,10 @@ import org.junit.Test;
 import java.time.Duration;
 
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 public class ParsedDefinitionFactoryTest {
 

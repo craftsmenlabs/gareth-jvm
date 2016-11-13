@@ -1,485 +1,487 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://maven.apache.org/POM/4.0.0"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-    <modelVersion>4.0.0</modelVersion>
+	<modelVersion>4.0.0</modelVersion>
 
-    <groupId>org.craftsmenlabs.gareth</groupId>
-    <artifactId>gareth-jvm</artifactId>
-    <version>0.8.7-SNAPSHOT</version>
-    <packaging>pom</packaging>
-    <name>gareth-jvm</name>
-    <url>http://craftsmenlabs.github.io/gareth/</url>
+	<groupId>org.craftsmenlabs.gareth</groupId>
+	<artifactId>gareth-jvm</artifactId>
+	<version>0.8.7-SNAPSHOT</version>
+	<packaging>pom</packaging>
+	<name>gareth-jvm</name>
+	<url>http://craftsmenlabs.github.io/gareth/</url>
 
-    <!-- Properties -->
-    <properties>
-        <java.version>1.8</java.version>
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <jdk.version>1.8</jdk.version>
-        <junit.version>4.12</junit.version>
-        <mockito.version>1.10.19</mockito.version>
-        <antlr.plugin.version>4.5</antlr.plugin.version>
-        <antlr.version>4.5.1</antlr.version>
-        <commons.io.version>2.4</commons.io.version>
-        <lombok.version>1.16.6</lombok.version>
-        <logback.version>1.1.3</logback.version>
-        <jersey2.version>2.22.1</jersey2.version>
-        <jetty.version>9.3.2.v20150730</jetty.version>
-        <jmockit.version>1.26</jmockit.version>
-        <slf4j.version>1.7.12</slf4j.version>
-        <jackson.version>2.8.2</jackson.version>
-        <jacoco-maven-plugin.version>0.7.5.201505241946</jacoco-maven-plugin.version>
-        <coveralls-maven-plugin.version>4.0.0</coveralls-maven-plugin.version>
-        <el.version>2.2.4</el.version>
-        <httpclient.version>4.5.1</httpclient.version>
-        <mockserver-netty.version>3.10.2</mockserver-netty.version>
-        <guava.version>19.0</guava.version>
-        <spring.version>1.4.0.RELEASE</spring.version>
-    </properties>
+	<!-- Properties -->
+	<properties>
+		<java.version>1.8</java.version>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<jdk.version>1.8</jdk.version>
+		<junit.version>4.12</junit.version>
+		<mockito.version>1.10.19</mockito.version>
+		<antlr.plugin.version>4.5</antlr.plugin.version>
+		<antlr.version>4.5.1</antlr.version>
+		<commons.io.version>2.4</commons.io.version>
+		<lombok.version>1.16.6</lombok.version>
+		<logback.version>1.1.3</logback.version>
+		<jersey2.version>2.22.1</jersey2.version>
+		<jetty.version>9.3.2.v20150730</jetty.version>
+		<jmockit.version>1.26</jmockit.version>
+		<slf4j.version>1.7.12</slf4j.version>
+		<jackson.version>2.8.2</jackson.version>
+		<jacoco-maven-plugin.version>0.7.5.201505241946</jacoco-maven-plugin.version>
+		<coveralls-maven-plugin.version>4.0.0</coveralls-maven-plugin.version>
+		<el.version>2.2.4</el.version>
+		<httpclient.version>4.5.1</httpclient.version>
+		<mockserver-netty.version>3.10.2</mockserver-netty.version>
+		<guava.version>19.0</guava.version>
+		<spring.version>1.4.0.RELEASE</spring.version>
+		<kotlin.version>1.0.4</kotlin.version>
+		<swagger.version>2.6.0</swagger.version>
+	</properties>
 
-    <organization>
-        <name>craftsmenlabs</name>
-        <url>http://gareth.craftsmenlabs.org</url>
-    </organization>
-
-
-    <!-- Sonatype parent (for release to maven central) -->
-    <parent>
-        <groupId>org.sonatype.oss</groupId>
-        <artifactId>oss-parent</artifactId>
-        <version>7</version>
-    </parent>
-
-    <description>
-        Gareth is a tool that helps you to make the validation business goals part of your development project
-    </description>
-
-    <!-- Issue management -->
-    <issueManagement>
-        <system>github</system>
-        <url>https://github.com/craftsmenlabs/gareth-jvm/issues</url>
-    </issueManagement>
-
-    <ciManagement>
-        <url>https://travis-ci.org/craftsmenlabs/gareth-jvm</url>
-        <system>TravisCI</system>
-    </ciManagement>
-
-    <!-- Contributions -->
-    <contributors>
-        <contributor>
-            <name>Hylke Stapersma</name>
-            <email>hylke.stapersma@gmail.com</email>
-            <roles>
-                <role>Lead</role>
-            </roles>
-        </contributor>
-        <contributor>
-            <name>Niels Tales</name>
-            <roles>
-                <role>Product Owner</role>
-            </roles>
-        </contributor>
-    </contributors>
-
-    <!-- Source code management information -->
-    <scm>
-        <connection>scm:git:git://github.com/craftsmenlabs/gareth-jvm.git</connection>
-        <developerConnection>scm:git:ssh://git@github.com/craftsmenlabs/gareth-jvm.git</developerConnection>
-        <url>https://github.com/craftsmenlabs/gareth-jvm.git</url>
-    </scm>
-
-    <!-- License -->
-    <licenses>
-        <license>
-            <name>GNU General Public License, version 2</name>
-            <url>http://www.gnu.org/licenses/old-licenses/gpl-2.0.en.html</url>
-            <distribution>repo</distribution>
-        </license>
-    </licenses>
-
-    <!-- Dependency stuff -->
-    <dependencyManagement>
-        <dependencies>
+	<organization>
+		<name>craftsmenlabs</name>
+		<url>http://gareth.craftsmenlabs.org</url>
+	</organization>
 
 
-            <!-- Spring Boot stuff -->
-            <dependency>
-                <groupId>org.springframework.boot</groupId>
-                <artifactId>spring-boot-dependencies</artifactId>
-                <version>${spring.version}</version>
-                <type>pom</type>
-            </dependency>
-            <dependency>
-                <groupId>org.springframework.boot</groupId>
-                <artifactId>spring-boot-starter-data-jpa</artifactId>
-                <version>${spring.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.springframework.boot</groupId>
-                <artifactId>spring-boot-starter-jdbc</artifactId>
-                <version>${spring.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.springframework.boot</groupId>
-                <artifactId>spring-boot-starter-security</artifactId>
-                <version>${spring.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.springframework.boot</groupId>
-                <artifactId>spring-boot-starter-web</artifactId>
-                <version>${spring.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.springframework.boot</groupId>
-                <artifactId>spring-boot-starter-test</artifactId>
-                <version>${spring.version}</version>
-                <scope>test</scope>
-            </dependency>
-            <dependency>
-                <groupId>org.springframework.boot</groupId>
-                <artifactId>spring-boot-devtools</artifactId>
-                <version>${spring.version}</version>
-                <optional>true</optional>
-            </dependency>
+	<!-- Sonatype parent (for release to maven central) -->
+	<parent>
+		<groupId>org.sonatype.oss</groupId>
+		<artifactId>oss-parent</artifactId>
+		<version>7</version>
+	</parent>
 
-            <!-- Gareth stuff -->
-            <dependency>
-                <groupId>org.craftsmenlabs.gareth</groupId>
-                <artifactId>gareth-antlr</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.craftsmenlabs.gareth</groupId>
-                <artifactId>gareth-api</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.craftsmenlabs.gareth</groupId>
-                <artifactId>gareth-core</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.craftsmenlabs.gareth.rest</groupId>
-                <artifactId>gareth-rest</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.craftsmenlabs.gareth</groupId>
-                <artifactId>gareth-json-persistence</artifactId>
-                <version>${project.version}</version>
-            </dependency>
+	<description>
+		Gareth is a tool that helps you to make the validation business goals part of your development project
+	</description>
 
-            <!-- ANTLR -->
-            <dependency>
-                <artifactId>antlr4</artifactId>
-                <groupId>org.antlr</groupId>
-                <version>${antlr.version}</version>
-            </dependency>
+	<!-- Issue management -->
+	<issueManagement>
+		<system>github</system>
+		<url>https://github.com/craftsmenlabs/gareth-jvm/issues</url>
+	</issueManagement>
 
-            <!-- Lombok -->
-            <dependency>
-                <groupId>org.projectlombok</groupId>
-                <artifactId>lombok</artifactId>
-                <version>${lombok.version}</version>
-                <scope>provided</scope>
-            </dependency>
-            <dependency>
-                <groupId>com.google.guava</groupId>
-                <artifactId>guava</artifactId>
-                <version>${guava.version}</version>
-            </dependency>
+	<ciManagement>
+		<url>https://travis-ci.org/craftsmenlabs/gareth-jvm</url>
+		<system>TravisCI</system>
+	</ciManagement>
 
-            <!-- Commons IO -->
-            <dependency>
-                <groupId>commons-io</groupId>
-                <artifactId>commons-io</artifactId>
-                <version>${commons.io.version}</version>
-            </dependency>
+	<!-- Contributions -->
+	<contributors>
+		<contributor>
+			<name>Hylke Stapersma</name>
+			<email>hylke.stapersma@gmail.com</email>
+			<roles>
+				<role>Lead</role>
+			</roles>
+		</contributor>
+		<contributor>
+			<name>Niels Tales</name>
+			<roles>
+				<role>Product Owner</role>
+			</roles>
+		</contributor>
+	</contributors>
 
-            <!-- Sundial -->
-            <dependency>
-                <groupId>com.xeiam</groupId>
-                <artifactId>sundial</artifactId>
-                <version>2.0.1</version>
-            </dependency>
+	<!-- Source code management information -->
+	<scm>
+		<connection>scm:git:git://github.com/craftsmenlabs/gareth-jvm.git</connection>
+		<developerConnection>scm:git:ssh://git@github.com/craftsmenlabs/gareth-jvm.git</developerConnection>
+		<url>https://github.com/craftsmenlabs/gareth-jvm.git</url>
+	</scm>
 
-            <!-- Jackson -->
-            <dependency>
-                <groupId>com.fasterxml.jackson.module</groupId>
-                <artifactId>jackson-module-jaxb-annotations</artifactId>
-                <version>${jackson.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>com.fasterxml.jackson.core</groupId>
-                <artifactId>jackson-annotations</artifactId>
-                <version>${jackson.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>com.fasterxml.jackson.datatype</groupId>
-                <artifactId>jackson-datatype-jsr310</artifactId>
-                <version>${jackson.version}</version>
-            </dependency>
+	<!-- License -->
+	<licenses>
+		<license>
+			<name>GNU General Public License, version 2</name>
+			<url>http://www.gnu.org/licenses/old-licenses/gpl-2.0.en.html</url>
+			<distribution>repo</distribution>
+		</license>
+	</licenses>
+
+	<!-- Dependency stuff -->
+	<dependencyManagement>
+		<dependencies>
 
 
-            <!-- Jersey version -->
+			<!-- Spring Boot stuff -->
+			<dependency>
+				<groupId>org.springframework.boot</groupId>
+				<artifactId>spring-boot-dependencies</artifactId>
+				<version>${spring.version}</version>
+				<type>pom</type>
+			</dependency>
+			<dependency>
+				<groupId>org.springframework.boot</groupId>
+				<artifactId>spring-boot-starter-data-jpa</artifactId>
+				<version>${spring.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.springframework.boot</groupId>
+				<artifactId>spring-boot-starter-jdbc</artifactId>
+				<version>${spring.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.springframework.boot</groupId>
+				<artifactId>spring-boot-starter-security</artifactId>
+				<version>${spring.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.springframework.boot</groupId>
+				<artifactId>spring-boot-starter-web</artifactId>
+				<version>${spring.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.springframework.boot</groupId>
+				<artifactId>spring-boot-starter-test</artifactId>
+				<version>${spring.version}</version>
+				<scope>test</scope>
+			</dependency>
+			<dependency>
+				<groupId>org.springframework.boot</groupId>
+				<artifactId>spring-boot-devtools</artifactId>
+				<version>${spring.version}</version>
+				<optional>true</optional>
+			</dependency>
 
-            <dependency>
-                <groupId>org.glassfish.jersey.containers</groupId>
-                <artifactId>jersey-container-grizzly2-http</artifactId>
-                <version>${jersey2.version}</version>
-            </dependency>
+			<!-- Gareth stuff -->
+			<dependency>
+				<groupId>org.craftsmenlabs.gareth</groupId>
+				<artifactId>gareth-antlr</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.craftsmenlabs.gareth</groupId>
+				<artifactId>gareth-api</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.craftsmenlabs.gareth</groupId>
+				<artifactId>gareth-core</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.craftsmenlabs.gareth.rest</groupId>
+				<artifactId>gareth-rest</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.craftsmenlabs.gareth</groupId>
+				<artifactId>gareth-json-persistence</artifactId>
+				<version>${project.version}</version>
+			</dependency>
 
-            <dependency>
-                <groupId>org.glassfish.jersey.media</groupId>
-                <artifactId>jersey-media-json-jackson</artifactId>
-                <version>${jersey2.version}</version>
-            </dependency>
+			<!-- ANTLR -->
+			<dependency>
+				<artifactId>antlr4</artifactId>
+				<groupId>org.antlr</groupId>
+				<version>${antlr.version}</version>
+			</dependency>
 
-            <dependency>
-                <groupId>org.glassfish.jersey.ext</groupId>
-                <artifactId>jersey-declarative-linking</artifactId>
-                <version>${jersey2.version}</version>
-            </dependency>
+			<!-- Lombok -->
+			<dependency>
+				<groupId>org.projectlombok</groupId>
+				<artifactId>lombok</artifactId>
+				<version>${lombok.version}</version>
+				<scope>provided</scope>
+			</dependency>
+			<dependency>
+				<groupId>com.google.guava</groupId>
+				<artifactId>guava</artifactId>
+				<version>${guava.version}</version>
+			</dependency>
 
-            <dependency>
-                <groupId>javax.el</groupId>
-                <artifactId>javax.el-api</artifactId>
-                <version>${el.version}</version>
-            </dependency>
+			<!-- Commons IO -->
+			<dependency>
+				<groupId>commons-io</groupId>
+				<artifactId>commons-io</artifactId>
+				<version>${commons.io.version}</version>
+			</dependency>
 
-            <dependency>
-                <groupId>org.glassfish.web</groupId>
-                <artifactId>javax.el</artifactId>
-                <version>${el.version}</version>
-            </dependency>
+			<!-- Sundial -->
+			<dependency>
+				<groupId>com.xeiam</groupId>
+				<artifactId>sundial</artifactId>
+				<version>2.0.1</version>
+			</dependency>
 
-            <!-- Logback -->
-            <dependency>
-                <groupId>ch.qos.logback</groupId>
-                <artifactId>logback-classic</artifactId>
-                <version>${logback.version}</version>
-            </dependency>
-
-            <dependency>
-                <groupId>org.slf4j</groupId>
-                <artifactId>jul-to-slf4j</artifactId>
-                <version>${slf4j.version}</version>
-            </dependency>
-
-            <!-- http client -->
-            <dependency>
-                <groupId>org.apache.httpcomponents</groupId>
-                <artifactId>httpclient</artifactId>
-                <version>${httpclient.version}</version>
-            </dependency>
-
-            <dependency>
-                <groupId>org.apache.httpcomponents</groupId>
-                <artifactId>fluent-hc</artifactId>
-                <version>${httpclient.version}</version>
-            </dependency>
-
-
-            <!-- Test depedencies -->
-            <dependency>
-                <groupId>junit</groupId>
-                <artifactId>junit</artifactId>
-                <version>${junit.version}</version>
-                <scope>test</scope>
-            </dependency>
-
-            <dependency>
-                <groupId>org.mockito</groupId>
-                <artifactId>mockito-core</artifactId>
-                <version>${mockito.version}</version>
-                <scope>test</scope>
-            </dependency>
-
-            <dependency>
-                <groupId>org.jmockit</groupId>
-                <artifactId>jmockit</artifactId>
-                <version>${jmockit.version}</version>
-                <scope>test</scope>
-            </dependency>
-
-            <dependency>
-                <groupId>org.mock-server</groupId>
-                <artifactId>mockserver-netty</artifactId>
-                <version>${mockserver-netty.version}</version>
-                <scope>test</scope>
-            </dependency>
-
-
-        </dependencies>
-
-    </dependencyManagement>
-
-    <!-- Global dependencies -->
-    <dependencies>
-
-        <!-- Spring Boot -->
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-dependencies</artifactId>
-            <version>${spring.version}</version>
-            <type>pom</type>
-        </dependency>
-
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter</artifactId>
-            <version>${spring.version}</version>
-        </dependency>
-
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-test</artifactId>
-            <version>${spring.version}</version>
-            <scope>test</scope>
-        </dependency>
-
-        <!-- Lombok -->
-        <dependency>
-            <groupId>org.projectlombok</groupId>
-            <artifactId>lombok</artifactId>
-            <scope>provided</scope>
-        </dependency>
-
-        <!-- Commons IO -->
-        <dependency>
-            <groupId>commons-io</groupId>
-            <artifactId>commons-io</artifactId>
-            <version>${commons.io.version}</version>
-        </dependency>
-
-        <dependency>
-            <groupId>ch.qos.logback</groupId>
-            <artifactId>logback-classic</artifactId>
-        </dependency>
-
-        <!-- Test depedencies -->
-        <dependency>
-            <groupId>org.jmockit</groupId>
-            <artifactId>jmockit</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-            <version>${junit.version}</version>
-            <scope>test</scope>
-        </dependency>
-
-        <dependency>
-            <groupId>org.mockito</groupId>
-            <artifactId>mockito-core</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>org.assertj</groupId>
-            <artifactId>assertj-core</artifactId>
-            <version>3.4.0</version>
-            <scope>test</scope>
-        </dependency>
-    </dependencies>
-
-    <build>
-        <plugins>
-            <!-- Java version -->
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-compiler-plugin</artifactId>
-                <version>3.3</version>
-                <configuration>
-                    <source>${jdk.version}</source>
-                    <target>${jdk.version}</target>
-                </configuration>
-            </plugin>
-            <plugin>
-                <artifactId>maven-release-plugin</artifactId>
-                <version>2.1</version>
-            </plugin>
-
-            <!-- Coverage report  -->
-            <plugin>
-                <groupId>org.jacoco</groupId>
-                <artifactId>jacoco-maven-plugin</artifactId>
-                <version>${jacoco-maven-plugin.version}</version>
-                <executions>
-                    <!-- Prepares the property pointing to the JaCoCo
-                    runtime agent which is passed as VM argument when Maven the Surefire plugin
-                    is executed. -->
-                    <execution>
-                        <id>pre-unit-test</id>
-                        <goals>
-                            <goal>prepare-agent</goal>
-                        </goals>
-                    </execution>
-
-                    <!-- Ensures that the code coverage report for
-                    unit tests is created after unit tests have been run. -->
-                    <execution>
-                        <id>post-unit-test</id>
-                        <phase>test</phase>
-                        <goals>
-                            <goal>report</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
-            <plugin>
-                <groupId>org.eluder.coveralls</groupId>
-                <artifactId>coveralls-maven-plugin</artifactId>
-                <version>${coveralls-maven-plugin.version}</version>
-                <configuration>
-                    <repoToken>ZqEBXtnjWZTL55tnf5byahr8uSNwUobig</repoToken>
-                </configuration>
-            </plugin>
-            <plugin>
-                <groupId>org.springframework.boot</groupId>
-                <artifactId>spring-boot-maven-plugin</artifactId>
-                <version>${spring.version}</version>
-            </plugin>
-        </plugins>
-    </build>
+			<!-- Jackson -->
+			<dependency>
+				<groupId>com.fasterxml.jackson.module</groupId>
+				<artifactId>jackson-module-jaxb-annotations</artifactId>
+				<version>${jackson.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>com.fasterxml.jackson.core</groupId>
+				<artifactId>jackson-annotations</artifactId>
+				<version>${jackson.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>com.fasterxml.jackson.datatype</groupId>
+				<artifactId>jackson-datatype-jsr310</artifactId>
+				<version>${jackson.version}</version>
+			</dependency>
 
 
-    <!-- Modules -->
-    <modules>
-        <module>gareth-antlr</module>
-        <module>gareth-api</module>
-        <module>gareth-core</module>
-        <module>gareth-rest</module>
-        <module>gareth-json-persistence</module>
-        <module>gareth-http-json-persistence</module>
-        <module>gareth-application</module>
-        <module>gareth-execution-ri</module>
-    </modules>
+			<!-- Jersey version -->
+
+			<dependency>
+				<groupId>org.glassfish.jersey.containers</groupId>
+				<artifactId>jersey-container-grizzly2-http</artifactId>
+				<version>${jersey2.version}</version>
+			</dependency>
+
+			<dependency>
+				<groupId>org.glassfish.jersey.media</groupId>
+				<artifactId>jersey-media-json-jackson</artifactId>
+				<version>${jersey2.version}</version>
+			</dependency>
+
+			<dependency>
+				<groupId>org.glassfish.jersey.ext</groupId>
+				<artifactId>jersey-declarative-linking</artifactId>
+				<version>${jersey2.version}</version>
+			</dependency>
+
+			<dependency>
+				<groupId>javax.el</groupId>
+				<artifactId>javax.el-api</artifactId>
+				<version>${el.version}</version>
+			</dependency>
+
+			<dependency>
+				<groupId>org.glassfish.web</groupId>
+				<artifactId>javax.el</artifactId>
+				<version>${el.version}</version>
+			</dependency>
+
+			<!-- Logback -->
+			<dependency>
+				<groupId>ch.qos.logback</groupId>
+				<artifactId>logback-classic</artifactId>
+				<version>${logback.version}</version>
+			</dependency>
+
+			<dependency>
+				<groupId>org.slf4j</groupId>
+				<artifactId>jul-to-slf4j</artifactId>
+				<version>${slf4j.version}</version>
+			</dependency>
+
+			<!-- http client -->
+			<dependency>
+				<groupId>org.apache.httpcomponents</groupId>
+				<artifactId>httpclient</artifactId>
+				<version>${httpclient.version}</version>
+			</dependency>
+
+			<dependency>
+				<groupId>org.apache.httpcomponents</groupId>
+				<artifactId>fluent-hc</artifactId>
+				<version>${httpclient.version}</version>
+			</dependency>
 
 
-    <!-- Profiles -->
-    <profiles>
-        <profile>
-            <id>release-sign-artifacts</id>
-            <build>
-                <plugins>
-                    <plugin>
-                        <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-gpg-plugin</artifactId>
-                        <version>1.1</version>
-                        <executions>
-                            <execution>
-                                <id>sign-artifacts</id>
-                                <phase>verify</phase>
-                                <goals>
-                                    <goal>sign</goal>
-                                </goals>
-                            </execution>
-                        </executions>
-                    </plugin>
-                </plugins>
-            </build>
-        </profile>
-    </profiles>
+			<!-- Test depedencies -->
+			<dependency>
+				<groupId>junit</groupId>
+				<artifactId>junit</artifactId>
+				<version>${junit.version}</version>
+				<scope>test</scope>
+			</dependency>
+
+			<dependency>
+				<groupId>org.mockito</groupId>
+				<artifactId>mockito-core</artifactId>
+				<version>${mockito.version}</version>
+				<scope>test</scope>
+			</dependency>
+
+			<dependency>
+				<groupId>org.jmockit</groupId>
+				<artifactId>jmockit</artifactId>
+				<version>${jmockit.version}</version>
+				<scope>test</scope>
+			</dependency>
+
+			<dependency>
+				<groupId>org.mock-server</groupId>
+				<artifactId>mockserver-netty</artifactId>
+				<version>${mockserver-netty.version}</version>
+				<scope>test</scope>
+			</dependency>
+
+
+		</dependencies>
+
+	</dependencyManagement>
+
+	<!-- Global dependencies -->
+	<dependencies>
+
+		<!-- Spring Boot -->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-dependencies</artifactId>
+			<version>${spring.version}</version>
+			<type>pom</type>
+		</dependency>
+
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter</artifactId>
+			<version>${spring.version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-test</artifactId>
+			<version>${spring.version}</version>
+			<scope>test</scope>
+		</dependency>
+
+		<!-- Lombok -->
+		<dependency>
+			<groupId>org.projectlombok</groupId>
+			<artifactId>lombok</artifactId>
+			<scope>provided</scope>
+		</dependency>
+
+		<!-- Commons IO -->
+		<dependency>
+			<groupId>commons-io</groupId>
+			<artifactId>commons-io</artifactId>
+			<version>${commons.io.version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>ch.qos.logback</groupId>
+			<artifactId>logback-classic</artifactId>
+		</dependency>
+
+		<!-- Test depedencies -->
+		<dependency>
+			<groupId>org.jmockit</groupId>
+			<artifactId>jmockit</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<version>${junit.version}</version>
+			<scope>test</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>org.mockito</groupId>
+			<artifactId>mockito-core</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>org.assertj</groupId>
+			<artifactId>assertj-core</artifactId>
+			<version>3.4.0</version>
+			<scope>test</scope>
+		</dependency>
+	</dependencies>
+
+	<build>
+		<plugins>
+			<!-- Java version -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<version>3.3</version>
+				<configuration>
+					<source>${jdk.version}</source>
+					<target>${jdk.version}</target>
+				</configuration>
+			</plugin>
+			<plugin>
+				<artifactId>maven-release-plugin</artifactId>
+				<version>2.1</version>
+			</plugin>
+
+			<!-- Coverage report  -->
+			<plugin>
+				<groupId>org.jacoco</groupId>
+				<artifactId>jacoco-maven-plugin</artifactId>
+				<version>${jacoco-maven-plugin.version}</version>
+				<executions>
+					<!-- Prepares the property pointing to the JaCoCo
+					runtime agent which is passed as VM argument when Maven the Surefire plugin
+					is executed. -->
+					<execution>
+						<id>pre-unit-test</id>
+						<goals>
+							<goal>prepare-agent</goal>
+						</goals>
+					</execution>
+
+					<!-- Ensures that the code coverage report for
+					unit tests is created after unit tests have been run. -->
+					<execution>
+						<id>post-unit-test</id>
+						<phase>test</phase>
+						<goals>
+							<goal>report</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+				<groupId>org.eluder.coveralls</groupId>
+				<artifactId>coveralls-maven-plugin</artifactId>
+				<version>${coveralls-maven-plugin.version}</version>
+				<configuration>
+					<repoToken>ZqEBXtnjWZTL55tnf5byahr8uSNwUobig</repoToken>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.springframework.boot</groupId>
+				<artifactId>spring-boot-maven-plugin</artifactId>
+				<version>${spring.version}</version>
+			</plugin>
+		</plugins>
+	</build>
+
+
+	<!-- Modules -->
+	<modules>
+		<module>gareth-antlr</module>
+		<module>gareth-api</module>
+		<module>gareth-core</module>
+		<module>gareth-rest</module>
+		<module>gareth-json-persistence</module>
+		<module>gareth-http-json-persistence</module>
+		<module>gareth-application</module>
+		<module>gareth-execution-ri</module>
+	</modules>
+
+
+	<!-- Profiles -->
+	<profiles>
+		<profile>
+			<id>release-sign-artifacts</id>
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-gpg-plugin</artifactId>
+						<version>1.1</version>
+						<executions>
+							<execution>
+								<id>sign-artifacts</id>
+								<phase>verify</phase>
+								<goals>
+									<goal>sign</goal>
+								</goals>
+							</execution>
+						</executions>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+	</profiles>
 
 </project>

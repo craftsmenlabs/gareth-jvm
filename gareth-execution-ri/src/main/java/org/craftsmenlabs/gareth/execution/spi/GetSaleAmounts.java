@@ -1,15 +1,29 @@
 package org.craftsmenlabs.gareth.execution.spi;
 
 import org.craftsmenlabs.gareth.api.annotation.Baseline;
-import org.craftsmenlabs.gareth.execution.invoker.DefaultStorage;
+import org.craftsmenlabs.gareth.execution.RunContext;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
-public class GetSaleAmounts {
+public class GetSaleAmounts
+{
 
-    @Baseline(glueLine = "^sale of (.*?)$")
-    public void getSaleOfItem(final DefaultStorage storage, final String item) {
+	@Autowired
+	private MockDB mockDB;
 
-    }
+	@Baseline(glueLine = "^sale of (.*?)$")
+	public void getSaleOfItem(final RunContext context, final String item)
+	{
+		if (item == "fruit")
+		{
+			context.storeLong("fruit", 42);
+		}
+
+		if (item == "widgets")
+		{
+			context.storeLong("peaches", 50);
+		}
+	}
 
 }

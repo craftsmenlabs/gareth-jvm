@@ -2,10 +2,10 @@ package org.craftsmenlabs.gareth.core.scheduler;
 
 import com.xeiam.sundial.JobContext;
 import org.craftsmenlabs.gareth.api.context.ExperimentPartState;
-import org.craftsmenlabs.gareth.core.invoker.MethodDescriptor;
 import org.craftsmenlabs.gareth.core.ExperimentEngine;
 import org.craftsmenlabs.gareth.core.context.ExperimentContext;
 import org.craftsmenlabs.gareth.core.context.ExperimentRunContext;
+import org.craftsmenlabs.gareth.core.invoker.MethodDescriptor;
 import org.craftsmenlabs.gareth.core.invoker.MethodInvoker;
 import org.craftsmenlabs.gareth.core.observer.DefaultObserver;
 import org.craftsmenlabs.gareth.core.storage.DefaultStorage;
@@ -18,7 +18,11 @@ import java.time.LocalDateTime;
 
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.doThrow;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 public class DefaultInvocationJobTest {
 

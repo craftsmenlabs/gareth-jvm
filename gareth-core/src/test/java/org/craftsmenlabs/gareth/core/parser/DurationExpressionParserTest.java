@@ -23,14 +23,13 @@ public class DurationExpressionParserTest {
     LocalDateTime now = LocalDateTime.parse("01-02-2016 12:00", formatter);
     @Mock
     DateTimeService dateTimeService;
+    private DurationExpressionParser parser;
 
     @Before
     public void setup() throws Exception {
         Mockito.when(dateTimeService.now()).thenReturn(now);
         parser = new DurationExpressionParser(dateTimeService);
     }
-
-    private DurationExpressionParser parser;
 
     @Test
     public void testValidValues() throws Exception {

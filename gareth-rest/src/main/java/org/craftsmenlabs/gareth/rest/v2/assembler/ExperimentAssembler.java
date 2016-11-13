@@ -24,7 +24,8 @@ public class ExperimentAssembler implements Assembler<ExperimentContext, Experim
             experiment.setTimeGlueLine(inbound.getTimeGlueLine());
             experiment.setSuccessGlueLine(inbound.getSuccessGlueLine());
             experiment.setFailureGlueLine(inbound.getFailureGlueLine());
-            experiment.setLinks(Collections.singletonList(Link.fromUri("http://localhost:8001/v2/experimentruns/" + inbound.getHash() + ".json").build()));
+            experiment.setLinks(Collections.singletonList(Link
+                    .fromUri("http://localhost:8001/v2/experimentruns/" + inbound.getHash() + ".json").build()));
         }
         return experiment;
     }

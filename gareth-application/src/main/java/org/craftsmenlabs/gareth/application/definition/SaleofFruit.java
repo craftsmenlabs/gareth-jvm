@@ -1,6 +1,10 @@
 package org.craftsmenlabs.gareth.application.definition;
 
-import org.craftsmenlabs.gareth.api.annotation.*;
+import org.craftsmenlabs.gareth.api.annotation.Assume;
+import org.craftsmenlabs.gareth.api.annotation.Baseline;
+import org.craftsmenlabs.gareth.api.annotation.Failure;
+import org.craftsmenlabs.gareth.api.annotation.Success;
+import org.craftsmenlabs.gareth.api.annotation.Time;
 import org.craftsmenlabs.gareth.core.storage.DefaultStorage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

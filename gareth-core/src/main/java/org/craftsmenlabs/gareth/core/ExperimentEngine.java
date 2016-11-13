@@ -11,8 +11,8 @@ import org.craftsmenlabs.gareth.core.context.ExperimentContext;
 import org.craftsmenlabs.gareth.core.context.ExperimentRunContext;
 import org.craftsmenlabs.gareth.core.factory.ExperimentFactory;
 import org.craftsmenlabs.gareth.core.observer.DefaultObserver;
-import org.craftsmenlabs.gareth.core.parser.ParsedDefinitionFactory;
 import org.craftsmenlabs.gareth.core.parser.ParsedDefinition;
+import org.craftsmenlabs.gareth.core.parser.ParsedDefinitionFactory;
 import org.craftsmenlabs.gareth.core.persist.ExperimentEnginePersistence;
 import org.craftsmenlabs.gareth.core.registry.DefinitionRegistry;
 import org.craftsmenlabs.gareth.core.registry.ExperimentRegistry;
@@ -222,13 +222,13 @@ public class ExperimentEngine {
 
     private void addParsedDefinitionToRegistry(final ParsedDefinition parsedDefinition) {
         parsedDefinition.getBaselineDefinitions()
-                .forEach((k, v) -> definitionRegistry.addMethodDescriptorForBaseline(k, v));
+                        .forEach((k, v) -> definitionRegistry.addMethodDescriptorForBaseline(k, v));
         parsedDefinition.getAssumeDefinitions()
-                .forEach((k, v) -> definitionRegistry.addMethodDescriptorForAssume(k, v));
+                        .forEach((k, v) -> definitionRegistry.addMethodDescriptorForAssume(k, v));
         parsedDefinition.getFailureDefinitions()
-                .forEach((k, v) -> definitionRegistry.addMethodDescriptorForFailure(k, v));
+                        .forEach((k, v) -> definitionRegistry.addMethodDescriptorForFailure(k, v));
         parsedDefinition.getSuccessDefinitions()
-                .forEach((k, v) -> definitionRegistry.addMethodDescriptorForSuccess(k, v));
+                        .forEach((k, v) -> definitionRegistry.addMethodDescriptorForSuccess(k, v));
         parsedDefinition.getTimeDefinitions().forEach((k, v) -> definitionRegistry.addDurationForTime(k, v));
     }
 }

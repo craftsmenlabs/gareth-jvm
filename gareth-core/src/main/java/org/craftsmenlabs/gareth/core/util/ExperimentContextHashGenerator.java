@@ -32,8 +32,8 @@ public class ExperimentContextHashGenerator {
         final StringBuilder stringBuilder = new StringBuilder("");
         Optional.ofNullable(unhashedSurrogateKey).ifPresent(key -> {
             Arrays.stream(unhashedSurrogateKey)
-                    .map(e -> Optional.ofNullable(e).orElse("-"))
-                    .forEach(e -> stringBuilder.append(e));
+                  .map(e -> Optional.ofNullable(e).orElse("-"))
+                  .forEach(e -> stringBuilder.append(e));
         });
         return stringBuilder.toString();
     }

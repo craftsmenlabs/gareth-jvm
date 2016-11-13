@@ -23,7 +23,8 @@ public class RegexAnnotatedMethodAdapterTest {
     @Test
     public void withStorage() throws NoSuchMethodException {
         RegexAnnotatedMethodAdapter line =
-                new RegexAnnotatedMethodAdapter(WithStorage.class.getMethod("line", DefaultStorage.class), "withStorage");
+                new RegexAnnotatedMethodAdapter(WithStorage.class
+                        .getMethod("line", DefaultStorage.class), "withStorage");
         assertThat(line.getNonStorageParameters()).isEmpty();
         assertThat(line.getPattern()).isEqualTo("withStorage");
     }

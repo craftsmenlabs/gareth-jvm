@@ -4,16 +4,12 @@ import org.craftsmenlabs.gareth.application.definition.AnotherDefinition;
 import org.craftsmenlabs.gareth.application.definition.RestDefinitionFactory;
 import org.craftsmenlabs.gareth.application.definition.SaleofFruit;
 import org.craftsmenlabs.gareth.application.definition.SampleDefinition;
-import org.craftsmenlabs.gareth.core.ExperimentEngineConfig;
 import org.craftsmenlabs.gareth.core.ExperimentEngine;
 import org.craftsmenlabs.gareth.core.ExperimentEngineBuilder;
+import org.craftsmenlabs.gareth.core.ExperimentEngineConfig;
 import org.craftsmenlabs.gareth.json.persist.JsonExperimentEnginePersistence;
-import org.craftsmenlabs.gareth.rest.config.RestConfiguration;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Import;
-import org.springframework.web.cors.CorsConfiguration;
 
 @Configuration
 public class ApplicationConfiguration {
@@ -26,13 +22,13 @@ public class ApplicationConfiguration {
                 .addDefinitionClass(AnotherDefinition.class)
                 .addDefinitionClass(SaleofFruit.class)
                 .addInputStreams(this.getClass()
-                        .getResourceAsStream("/experiments/businessgoal-01.experiment"))
+                                     .getResourceAsStream("/experiments/businessgoal-01.experiment"))
                 .setIgnoreInvocationExceptions(true)
                 .build();
     }
 
     @Bean
-    ExperimentEngine experimentEngine(ExperimentEngineConfig experimentEngineConfig){
+    ExperimentEngine experimentEngine(ExperimentEngineConfig experimentEngineConfig) {
         return new ExperimentEngineBuilder(experimentEngineConfig)
                 .addCustomDefinitionFactory(new RestDefinitionFactory())
                 .setExperimentEnginePersistence(new JsonExperimentEnginePersistence())

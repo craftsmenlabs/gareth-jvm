@@ -4,7 +4,13 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import org.craftsmenlabs.gareth.api.model.GlueLineType;
 
-import java.util.*;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.Set;
 import java.util.function.Predicate;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;

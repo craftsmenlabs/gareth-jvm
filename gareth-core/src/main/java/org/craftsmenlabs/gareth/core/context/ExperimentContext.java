@@ -68,11 +68,9 @@ public class ExperimentContext {
         private final String experimentName;
 
         private final AssumptionBlock assumptionBlock;
-
-        private MethodDescriptor baseline, assume, success, failure;
-
-        private Duration time;
         public int weight;
+        private MethodDescriptor baseline, assume, success, failure;
+        private Duration time;
 
         public Builder(final String experimentName, final AssumptionBlock assumptionBlock) {
             this.experimentName = experimentName;

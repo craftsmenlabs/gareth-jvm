@@ -171,7 +171,7 @@ public class ExperimentFactoryTest {
     @Test
     public void testEmptyExperiment() {
         Assertions.assertThatThrownBy(() -> parseFailureExperiment("experiment-failure-0001.experiment"))
-            .isInstanceOf(GarethExperimentParseException.class);
+                  .isInstanceOf(GarethExperimentParseException.class);
     }
 
     @Test

@@ -1,17 +1,17 @@
 package org.craftsmenlabs.gareth.core;
 
 import org.craftsmenlabs.gareth.api.exception.GarethUnknownExperimentException;
-import org.craftsmenlabs.gareth.core.invoker.MethodDescriptor;
-import org.craftsmenlabs.gareth.core.persist.listener.ExperimentStateChangeListener;
 import org.craftsmenlabs.gareth.api.model.AssumptionBlock;
 import org.craftsmenlabs.gareth.api.model.Experiment;
-import org.craftsmenlabs.gareth.core.persist.ExperimentEnginePersistence;
 import org.craftsmenlabs.gareth.core.context.ExperimentContext;
 import org.craftsmenlabs.gareth.core.context.ExperimentRunContext;
 import org.craftsmenlabs.gareth.core.factory.ExperimentFactory;
+import org.craftsmenlabs.gareth.core.invoker.MethodDescriptor;
 import org.craftsmenlabs.gareth.core.invoker.MethodInvoker;
-import org.craftsmenlabs.gareth.core.parser.ParsedDefinitionFactory;
 import org.craftsmenlabs.gareth.core.parser.ParsedDefinition;
+import org.craftsmenlabs.gareth.core.parser.ParsedDefinitionFactory;
+import org.craftsmenlabs.gareth.core.persist.ExperimentEnginePersistence;
+import org.craftsmenlabs.gareth.core.persist.listener.ExperimentStateChangeListener;
 import org.craftsmenlabs.gareth.core.registry.DefinitionRegistry;
 import org.craftsmenlabs.gareth.core.registry.ExperimentRegistry;
 import org.craftsmenlabs.gareth.core.scheduler.DefaultAssumeScheduler;
@@ -26,8 +26,15 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.*;
-import static org.mockito.Mockito.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
+import static org.mockito.Mockito.any;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 public class ExperimentEngineTest {
 

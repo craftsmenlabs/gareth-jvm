@@ -3,8 +3,8 @@ package org.craftsmenlabs.gareth.core.registry;
 import lombok.Getter;
 import org.craftsmenlabs.gareth.api.exception.GarethAlreadyKnownDefinitionException;
 import org.craftsmenlabs.gareth.api.exception.GarethUnknownDefinitionException;
-import org.craftsmenlabs.gareth.core.invoker.MethodDescriptor;
 import org.craftsmenlabs.gareth.api.model.GlueLineType;
+import org.craftsmenlabs.gareth.core.invoker.MethodDescriptor;
 import org.craftsmenlabs.gareth.core.parser.DurationExpressionParser;
 
 import java.time.Duration;
@@ -77,16 +77,16 @@ public class DefinitionRegistry {
 
     private MethodDescriptor getDefinition(final Map<String, MethodDescriptor> valueMap, final String experimentLine) {
         Optional<MethodDescriptor> match = valueMap.values().stream()
-                .filter(md -> matchesPattern(experimentLine, md
-                        .getRegexPatternForGlueLine())).findFirst();
+                                                   .filter(md -> matchesPattern(experimentLine, md
+                                                           .getRegexPatternForGlueLine())).findFirst();
         return match.orElseThrow(() -> new GarethUnknownDefinitionException(String
                 .format("No definition found for glue line '%s'", experimentLine)));
     }
 
     private <T> T getTimeDefinition(final Map<String, T> valueMap, final String experimentLine) {
         final Optional<String> match = valueMap.keySet().stream()
-                .filter(annotationPattern -> matchesPattern(experimentLine, annotationPattern))
-                .findFirst();
+                                               .filter(annotationPattern -> matchesPattern(experimentLine, annotationPattern))
+                                               .findFirst();
         if (match.isPresent()) {
             return valueMap.get(match.get());
         } else {

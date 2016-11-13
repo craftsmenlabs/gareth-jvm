@@ -1,6 +1,10 @@
 package org.craftsmenlabs.gareth.core.factory;
 
-import org.antlr.v4.runtime.*;
+import org.antlr.v4.runtime.ANTLRInputStream;
+import org.antlr.v4.runtime.BaseErrorListener;
+import org.antlr.v4.runtime.CommonTokenStream;
+import org.antlr.v4.runtime.RecognitionException;
+import org.antlr.v4.runtime.Recognizer;
 import org.apache.commons.io.IOUtils;
 import org.craftsmenlabs.gareth.GarethLexer;
 import org.craftsmenlabs.gareth.GarethParser;

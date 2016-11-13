@@ -1,8 +1,8 @@
 package org.craftsmenlabs.gareth.core.observer;
 
 import org.craftsmenlabs.gareth.api.exception.GarethStateWriteException;
-import org.craftsmenlabs.gareth.core.persist.listener.ExperimentStateChangeListener;
 import org.craftsmenlabs.gareth.core.ExperimentEngine;
+import org.craftsmenlabs.gareth.core.persist.listener.ExperimentStateChangeListener;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
