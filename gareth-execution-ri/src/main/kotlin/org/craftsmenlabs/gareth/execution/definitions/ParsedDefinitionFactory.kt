@@ -11,7 +11,7 @@ import java.time.Duration
 
 class ParsedDefinitionFactory(val definitionFactory: DefinitionFactory) {
 
-    private val LOGGER = LoggerFactory.getLogger(ParsedDefinitionFactory::class.java)
+    private val log = LoggerFactory.getLogger(ParsedDefinitionFactory::class.java)
 
     fun parse(clazz: Class<*>): ParsedDefinition {
         val parsedDefinition = ParsedDefinition()
@@ -50,10 +50,9 @@ class ParsedDefinitionFactory(val definitionFactory: DefinitionFactory) {
     }
 
     fun <T> getAnnotation(method: Method, annotationClass: Class<T>): T? {
-        return method.declaredAnnotations.filter { an -> an.annotationClass.simpleName.equals(annotationClass.simpleName) }.firstOrNull() as T
+        return method.declaredAnnotations.filter { it.annotationClass.simpleName.equals(annotationClass.simpleName) }.firstOrNull() as T
     }
 
-    @Throws(GarethDefinitionParseException::class)
     private fun createMethod(method: Method, glueLine: String, expectBoolean: Boolean = false): InvokableMethod {
         val isBoolean = method.returnType == Boolean::class.java
         val isVoid = method.returnType != Void::class.java || method.returnType != Void.TYPE

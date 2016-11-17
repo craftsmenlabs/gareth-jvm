@@ -34,7 +34,7 @@ class RunContext(private var data: MutableMap<String, Item>) {
 
     fun toExecutionResult(status: ExecutionStatus): ExecutionResultDTO {
         val env = ExperimentRunEnvironmentDTO(data.values.toList())
-        return ExecutionResultDTO.create(status, env)
+        return ExecutionResultDTO(status, env)
     }
 
     companion object {

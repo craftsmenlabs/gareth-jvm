@@ -20,16 +20,6 @@ class ExperimentRunEnvironmentDTO(val items: List<Item> = listOf()) {
             }
         }
 
-        fun parseItem(item: Item): Any {
-            val value = when (item.type) {
-                ItemType.LONG -> item.value.toLong()
-                ItemType.BOOLEAN -> item.value == "true"
-                ItemType.DOUBLE -> item.value.toDouble()
-                ItemType.STRING -> item.value
-            }
-            return value
-        }
-
         fun createEmpty(): ExperimentRunEnvironmentDTO = createFromMap(mapOf())
 
         fun createFromMap(data: Map<String, Any>): ExperimentRunEnvironmentDTO {
@@ -39,9 +29,7 @@ class ExperimentRunEnvironmentDTO(val items: List<Item> = listOf()) {
     }
 }
 
-data class Item(val key: String, val value: String, val type: ItemType) {
-
-}
+data class Item(val key: String, val value: String, val type: ItemType)
 
 enum class ItemType {
     STRING, LONG, DOUBLE, BOOLEAN
