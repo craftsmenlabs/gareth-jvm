@@ -11,11 +11,8 @@ public class SaleOfFruit {
     private MockDB mockDB;
 
     @Assume(glueLine = "^sale of fruit has risen by (\\d+?) per cent$")
-    public void hasRisenByPercent(final int percentage) {
-        //long baseLine = context.getLong("fruit");
-        if (percentage < 60) {
-            throw new RuntimeException("Expected percentage > 60");
-        }
+    public boolean hasRisenByPercent(final int percentage) {
+        return percentage > 80;
     }
 
 }

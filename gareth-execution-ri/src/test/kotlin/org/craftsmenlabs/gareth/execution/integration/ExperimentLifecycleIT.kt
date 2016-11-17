@@ -32,9 +32,15 @@ class ExperimentLifecycleIT {
     }
 
     @Test
-    fun testAssume() {
-        val request = createRequest("sale of fruit has risen by 80 per cent", ExperimentRunEnvironmentDTO.createEmpty())
+    fun testSuccessfulAssume() {
+        val request = createRequest("sale of fruit has risen by 81 per cent", ExperimentRunEnvironmentDTO.createEmpty())
         assertThat(doPut("${path}assume", request).status).isEqualTo(ExecutionStatus.SUCCESS)
+    }
+
+    @Test
+    fun testFailedAssume() {
+        val request = createRequest("sale of fruit has risen by 79 per cent", ExperimentRunEnvironmentDTO.createEmpty())
+        assertThat(doPut("${path}assume", request).status).isEqualTo(ExecutionStatus.FAILURE)
     }
 
     @Test

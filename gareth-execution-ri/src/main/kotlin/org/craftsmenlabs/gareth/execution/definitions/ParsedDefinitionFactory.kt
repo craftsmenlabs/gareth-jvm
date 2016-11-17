@@ -3,13 +3,13 @@ package org.craftsmenlabs.gareth.execution.definitions
 import org.craftsmenlabs.gareth.api.annotation.*
 import org.craftsmenlabs.gareth.api.exception.GarethDefinitionParseException
 import org.craftsmenlabs.gareth.execution.RunContext
+import org.craftsmenlabs.gareth.execution.services.DefinitionFactory
 import org.slf4j.LoggerFactory
 import java.lang.reflect.InvocationTargetException
 import java.lang.reflect.Method
 import java.time.Duration
 
-
-class ParsedDefinitionFactory(private val definitionFactory: DefinitionFactory) {
+class ParsedDefinitionFactory(val definitionFactory: DefinitionFactory) {
 
     private val LOGGER = LoggerFactory.getLogger(ParsedDefinitionFactory::class.java)
 
@@ -33,7 +33,7 @@ class ParsedDefinitionFactory(private val definitionFactory: DefinitionFactory) 
         }
         val assume = getAnnotation(method, Assume::class.java)
         if (assume != null) {
-            definition.assumeDefinitions.put(assume.glueLine, createMethod(method, assume.glueLine))
+            definition.assumeDefinitions.put(assume.glueLine, createMethod(method, assume.glueLine, true))
         }
         val sucess = getAnnotation(method, Success::class.java)
         if (sucess != null) {
@@ -53,14 +53,19 @@ class ParsedDefinitionFactory(private val definitionFactory: DefinitionFactory) 
         return method.declaredAnnotations.filter { an -> an.annotationClass.simpleName.equals(annotationClass.simpleName) }.firstOrNull() as T
     }
 
-    private fun createMethod(method: Method, glueLine: String): InvokableMethod {
-        if (isValidMethod(method)) {
-            LOGGER.info("Found valid method {} for glueline {}", method.name, glueLine)
-            return InvokableMethod(glueLine, method, hasRunContextParameter(method))
-
-        } else {
-            throw IllegalStateException(String.format("Method %s with glue line '%s' is not a valid method (no void return type)", method.name, glueLine))
+    private fun createMethod(method: Method, glueLine: String, isBooleanReturntype: Boolean = false): InvokableMethod {
+        fun assertBooleanReturnType() {
+            if (method.returnType != Boolean::class.java)
+                throw GarethDefinitionParseException("Method ${method.name} must have a boolean return type")
         }
+
+        fun assertVoidReturnType() {
+            if (method.returnType != Void::class.java && method.returnType != Void.TYPE)
+                throw GarethDefinitionParseException("Method ${method.name} must have a void return type")
+        }
+
+        if (isBooleanReturntype) assertBooleanReturnType() else assertVoidReturnType()
+        return InvokableMethod(glueLine, method, hasRunContextParameter(method))
     }
 
     /**
@@ -90,9 +95,6 @@ class ParsedDefinitionFactory(private val definitionFactory: DefinitionFactory) 
         }
     }
 
-    private fun isValidMethod(method: Method): Boolean {
-        return method.returnType == Void::class.java || method.returnType == Void.TYPE
-    }
 
     private fun hasRunContextParameter(method: Method): Boolean {
         val hasParam = method.parameterCount > 0 && method.parameterTypes[0] == RunContext::class.java// == "org.craftsmenlabs.gareth.execution.RunContext"

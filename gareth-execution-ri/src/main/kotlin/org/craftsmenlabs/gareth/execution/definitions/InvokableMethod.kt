@@ -39,18 +39,17 @@ class InvokableMethod {
         return method.declaringClass.name
     }
 
-    fun invokeWith(glueLineInExperiment: String, declaringClassInstance: Any, runContext: RunContext) {
+    fun invokeWith(glueLineInExperiment: String, declaringClassInstance: Any, runContext: RunContext): Any? {
         val arguments = ArrayList<Any>()
         if (hasRunContext())
             arguments.add(runContext!!)
         val argumentValuesFromInputString = getArgumentValuesFromInputString(glueLineInExperiment)
         arguments.addAll(argumentValuesFromInputString)
         try {
-            method.invoke(declaringClassInstance, *arguments.toArray())
+            return method.invoke(declaringClassInstance, *arguments.toArray())
         } catch (e: Exception) {
             throw GarethInvocationException(e)
         }
-
     }
 
     fun getRegexPatternForGlueLine(): String {

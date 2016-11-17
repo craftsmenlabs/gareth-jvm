@@ -4,7 +4,7 @@ import io.swagger.annotations.Api
 import io.swagger.annotations.ApiOperation
 import org.craftsmenlabs.gareth.execution.definitions.ExecutionType
 import org.craftsmenlabs.gareth.execution.dto.DurationDTO
-import org.craftsmenlabs.gareth.execution.services.DefinitionInfoService
+import org.craftsmenlabs.gareth.execution.services.DefinitionService
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.RequestMapping
@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.RestController
 @RestController
 @RequestMapping("gareth/v1/")
 @Api("Endpoint for definitions")
-class DefinitionsEndpoint @Autowired constructor(val definitionService: DefinitionInfoService) {
+class DefinitionsEndpoint @Autowired constructor(val definitionService: DefinitionService) {
 
     @RequestMapping(value = "definitions/baseline/{glueline}", method = arrayOf(RequestMethod.GET))
     @ApiOperation(value = "Gets the result of the match for the user and the given perspective")
@@ -35,7 +35,7 @@ class DefinitionsEndpoint @Autowired constructor(val definitionService: Definiti
 
     @RequestMapping(value = "definitions/time/{glueline}", method = arrayOf(RequestMethod.GET))
     fun getDurationByGlueline(@PathVariable("glueline") glueLine: String): DurationDTO =
-            definitionService.getDurationByGlueline(glueLine)
+            definitionService.getTime(glueLine)
 
 }
 

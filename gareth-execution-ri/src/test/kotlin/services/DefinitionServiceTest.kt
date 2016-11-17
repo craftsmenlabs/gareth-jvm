@@ -4,7 +4,7 @@ import mockit.Injectable
 import mockit.Tested
 import mockit.integration.junit4.JMockit
 import org.assertj.core.api.Assertions.assertThat
-import org.craftsmenlabs.gareth.execution.definitions.DefinitionFactory
+import org.craftsmenlabs.gareth.execution.services.DefinitionFactory
 import org.craftsmenlabs.gareth.execution.services.DefinitionService
 import org.junit.Before
 import org.junit.Test
@@ -25,7 +25,6 @@ class DefinitionServiceTest {
 
     @Test
     fun testCorrectDuration() {
-        _registry.init()
         assertThat(_registry.getTime("1 hour")).isEqualTo(3600000)
         assertThat(_registry.getTime("next Easter")).isEqualTo(10000)
 

@@ -4,8 +4,6 @@ import mockit.Expectations
 import mockit.Injectable
 import mockit.Tested
 import mockit.integration.junit4.JMockit
-import org.craftsmenlabs.gareth.execution.dto.ExecutionRequestDTO
-import org.craftsmenlabs.gareth.execution.services.DefinitionExecutorService
 import org.craftsmenlabs.gareth.execution.services.DefinitionService
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -14,7 +12,6 @@ import org.junit.runner.RunWith
 class DefinitionExecutorServiceTest {
 
     @Tested
-    lateinit var _service: DefinitionExecutorService
     @Injectable
     lateinit var _definitionService: DefinitionService
 
@@ -27,7 +24,6 @@ class DefinitionExecutorServiceTest {
                 //     gluelineCodeRegistry.executeByType(withEqual("sale of bananas"))
             }
         }
-        _service.executeBaseline(ExecutionRequestDTO.create("sale of bananas"))
     }
 
     @Test
@@ -61,7 +57,6 @@ class DefinitionExecutorServiceTest {
                 // gluelineCodeRegistry.executeSuccess(withEqual("send sweets"),withInstanceOf(ExecutionRequestDTO::class.java))
             }
         }
-        _service.executeSuccess(ExecutionRequestDTO.create("send sweets"))
     }
 
     @Test
@@ -72,7 +67,6 @@ class DefinitionExecutorServiceTest {
                 //  gluelineCodeRegistry.executeFailure(withEqual("Fire the suits"), withInstanceOf(ExecutionRequestDTO::class.java))
             }
         }
-        _service.executeFailure(ExecutionRequestDTO.create("Fire the suits"))
     }
 
     @Test
@@ -83,7 +77,6 @@ class DefinitionExecutorServiceTest {
                 _definitionService.getTime(withEqual("2 weeks"))
             }
         }
-        _service.getTime(ExecutionRequestDTO.create("2 weeks"))
     }
 
 }
