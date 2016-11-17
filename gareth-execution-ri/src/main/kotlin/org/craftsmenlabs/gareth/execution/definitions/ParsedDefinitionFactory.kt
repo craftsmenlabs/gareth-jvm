@@ -53,18 +53,14 @@ class ParsedDefinitionFactory(val definitionFactory: DefinitionFactory) {
         return method.declaredAnnotations.filter { an -> an.annotationClass.simpleName.equals(annotationClass.simpleName) }.firstOrNull() as T
     }
 
-    private fun createMethod(method: Method, glueLine: String, isBooleanReturntype: Boolean = false): InvokableMethod {
-        fun assertBooleanReturnType() {
-            if (method.returnType != Boolean::class.java)
-                throw GarethDefinitionParseException("Method ${method.name} must have a boolean return type")
-        }
-
-        fun assertVoidReturnType() {
-            if (method.returnType != Void::class.java && method.returnType != Void.TYPE)
-                throw GarethDefinitionParseException("Method ${method.name} must have a void return type")
-        }
-
-        if (isBooleanReturntype) assertBooleanReturnType() else assertVoidReturnType()
+    @Throws(GarethDefinitionParseException::class)
+    private fun createMethod(method: Method, glueLine: String, expectBoolean: Boolean = false): InvokableMethod {
+        val isBoolean = method.returnType == Boolean::class.java
+        val isVoid = method.returnType != Void::class.java || method.returnType != Void.TYPE
+        if (expectBoolean && !isBoolean)
+            throw GarethDefinitionParseException("Method return type must be boolean but is ${method.returnType}")
+        if (!expectBoolean && !isVoid)
+            throw GarethDefinitionParseException("Method return type must be void but is ${method.returnType}")
         return InvokableMethod(glueLine, method, hasRunContextParameter(method))
     }
 

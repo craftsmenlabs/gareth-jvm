@@ -7,7 +7,7 @@ public class GarethDefinitionParseException extends RuntimeException {
         super(cause);
     }
 
-    public GarethDefinitionParseException(String message) {
+    public GarethDefinitionParseException(final String message) {
         super(message);
     }
 }

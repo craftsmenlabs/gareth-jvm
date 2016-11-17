@@ -64,7 +64,7 @@ class ExperimentLifecycleIT {
 
 
     fun createRequest(glueLine: String, environment: ExperimentRunEnvironmentDTO): ExecutionRequestDTO {
-        return ExecutionRequestDTO.create(glueLine, environment)
+        return ExecutionRequestDTO(environment, glueLine)
     }
 
     fun doPut(path: String, dto: ExecutionRequestDTO): ExecutionResultDTO {
