@@ -34,7 +34,7 @@ open class DefinitionService @Autowired constructor(definitionFactory: Definitio
     fun executeByType(glueline: String, type: ExecutionType, request: ExecutionRequestDTO): RunContext =
             definitionRegistry.invokeMethodByType(glueline, type, request)
 
-    fun getDuration(glueline: String): DurationDTO = DurationDTO.createForMinutes(definitionRegistry.getDurationForGlueline(glueline))
+    fun getTime(glueline: String): DurationDTO = DurationDTO.createForMinutes(definitionRegistry.getTimeForGlueline(glueline))
 
     private fun getClassesInPackage(packageName: String): List<Class<*>> {
         val classesInfo = ClassPath.from(ClassLoader.getSystemClassLoader()).getTopLevelClassesRecursive(packageName)

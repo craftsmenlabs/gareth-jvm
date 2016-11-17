@@ -37,8 +37,8 @@ class DefinitionExecutorService @Autowired constructor(val definitionService: De
     }
 
 
-    fun getDuration(dto: ExecutionRequestDTO) =
-            definitionService.getDuration(dto.glueline)
+    fun getTime(dto: ExecutionRequestDTO) =
+            definitionService.getTime(dto.glueline)
 
 
 }

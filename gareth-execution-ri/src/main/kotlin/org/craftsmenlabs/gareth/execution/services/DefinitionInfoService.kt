@@ -13,7 +13,7 @@ open class DefinitionInfoService
 @Autowired constructor(val definitionService: DefinitionService) {
 
     fun getDurationByGlueline(glueLine: String): DurationDTO =
-            definitionService.getDuration(glueLine)
+            definitionService.getTime(glueLine)
 
     fun getInfoByType(dto: ExecutionRequestDTO, type: ExecutionType) = definitionInfo(definitionService.getMethodForType(dto.glueline, type))
 

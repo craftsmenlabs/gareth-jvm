@@ -49,7 +49,7 @@ class DefinitionRegistry(val definitionFactory: DefinitionFactory) {
         parsedDefinition.timeDefinitions.forEach { entry -> addDefinition(timeDefinitions, entry.key, entry.value) }
     }
 
-    fun getDurationForGlueline(glueLine: String): Duration = getTimeDefinition(timeDefinitions, glueLine)
+    fun getTimeForGlueline(glueLine: String): Duration = getTimeDefinition(timeDefinitions, glueLine)
 
     fun invokeMethodByType(glueLine: String, type: ExecutionType, request: ExecutionRequestDTO): RunContext {
         val method = getMethodDescriptorForExecutionType(glueLine, type)

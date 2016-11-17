@@ -26,8 +26,8 @@ class DefinitionServiceTest {
     @Test
     fun testCorrectDuration() {
         _registry.init()
-        assertThat(_registry.getDuration("1 hour")).isEqualTo(3600000)
-        assertThat(_registry.getDuration("next Easter")).isEqualTo(10000)
+        assertThat(_registry.getTime("1 hour")).isEqualTo(3600000)
+        assertThat(_registry.getTime("next Easter")).isEqualTo(10000)
 
     }
 }

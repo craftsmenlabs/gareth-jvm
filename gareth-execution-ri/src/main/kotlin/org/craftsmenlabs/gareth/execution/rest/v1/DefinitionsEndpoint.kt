@@ -17,24 +17,24 @@ import org.springframework.web.bind.annotation.RestController
 @Api("Endpoint for definitions")
 class DefinitionsEndpoint @Autowired constructor(val definitionService: DefinitionInfoService) {
 
-    @RequestMapping(value = "definitions/baseline", method = arrayOf(RequestMethod.GET))
+    @RequestMapping(value = "definitions/baseline", method = arrayOf(RequestMethod.PUT))
     @ApiOperation(value = "Gets the result of the match for the user and the given perspective")
     fun getBaselineByGlueline(@RequestBody dto: ExecutionRequestDTO) =
             definitionService.getInfoByType(dto, ExecutionType.BASELINE)
 
-    @RequestMapping(value = "definitions/assume", method = arrayOf(RequestMethod.GET))
+    @RequestMapping(value = "definitions/assume", method = arrayOf(RequestMethod.PUT))
     fun getAssumeByGlueline(@RequestBody dto: ExecutionRequestDTO) =
             definitionService.getInfoByType(dto, ExecutionType.ASSUME)
 
-    @RequestMapping(value = "definitions/success", method = arrayOf(RequestMethod.GET))
+    @RequestMapping(value = "definitions/success", method = arrayOf(RequestMethod.PUT))
     fun getSuccessByGlueline(@RequestBody dto: ExecutionRequestDTO) =
             definitionService.getInfoByType(dto, ExecutionType.SUCCESS)
 
-    @RequestMapping(value = "definitions/failure", method = arrayOf(RequestMethod.GET))
+    @RequestMapping(value = "definitions/failure", method = arrayOf(RequestMethod.PUT))
     fun getFailureByGlueline(@RequestBody dto: ExecutionRequestDTO) =
             definitionService.getInfoByType(dto, ExecutionType.FAILURE)
 
-    @RequestMapping(value = "definitions/time", method = arrayOf(RequestMethod.GET))
+    @RequestMapping(value = "definitions/time", method = arrayOf(RequestMethod.PUT))
     fun getDurationByGlueline(@RequestBody dto: ExecutionRequestDTO): DurationDTO =
             definitionService.getDurationByGlueline(dto.glueline)
 

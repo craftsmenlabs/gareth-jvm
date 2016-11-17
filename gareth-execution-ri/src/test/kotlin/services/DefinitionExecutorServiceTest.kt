@@ -80,10 +80,10 @@ class DefinitionExecutorServiceTest {
 
         object : Expectations() {
             init {
-                _definitionService.getDuration(withEqual("2 weeks"))
+                _definitionService.getTime(withEqual("2 weeks"))
             }
         }
-        _service.getDuration(ExecutionRequestDTO.create("2 weeks"))
+        _service.getTime(ExecutionRequestDTO.create("2 weeks"))
     }
 
 }

@@ -23,7 +23,7 @@ class ExecutionEndPoint @Autowired constructor(val definitionExecutionService: D
     fun executeBaseline(@ApiParam("") @RequestBody dto: ExecutionRequestDTO): ExecutionResultDTO = definitionExecutionService.executeBaseline(dto)
 
     @ApiOperation("After the time interval has passed as specified by the call to the /duration endpoint, this call establishes whether the assumption passes or fails.")
-    @RequestMapping(value = "assumption", method = arrayOf(RequestMethod.PUT))
+    @RequestMapping(value = "assume", method = arrayOf(RequestMethod.PUT))
     fun executeAssumption(@RequestBody dto: ExecutionRequestDTO): ExecutionResultDTO {
         return definitionExecutionService.executeAssumption(dto)
     }
@@ -41,9 +41,9 @@ class ExecutionEndPoint @Autowired constructor(val definitionExecutionService: D
     }
 
     @ApiOperation("Resolves the number of milliseconds")
-    @RequestMapping(value = "duration", method = arrayOf(RequestMethod.PUT))
-    fun getDuration(@RequestBody dto: ExecutionRequestDTO): DurationDTO {
-        return definitionExecutionService.getDuration(dto)
+    @RequestMapping(value = "time", method = arrayOf(RequestMethod.PUT))
+    fun getTime(@RequestBody dto: ExecutionRequestDTO): DurationDTO {
+        return definitionExecutionService.getTime(dto)
     }
 
 }

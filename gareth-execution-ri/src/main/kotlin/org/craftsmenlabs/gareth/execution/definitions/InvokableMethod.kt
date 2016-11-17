@@ -28,6 +28,56 @@ class InvokableMethod {
         }
     }
 
+    fun hasRunContext(): Boolean {
+        return this.runcontextParameter
+    }
+
+    fun getMethodName(): String {
+        return method.name
+    }
+
+    fun getClassName(): String {
+        return method.declaringClass.name
+    }
+
+    fun invokeWith(glueLineInExperiment: String, declaringClassInstance: Any, storage: RunContext) {
+        val arguments = ArrayList<Any>()
+        if (hasRunContext())
+            arguments.add(storage)
+        val argumentValuesFromInputString = getArgumentValuesFromInputString(glueLineInExperiment)
+        arguments.addAll(argumentValuesFromInputString)
+        try {
+            method.invoke(declaringClassInstance, arguments)
+        } catch (e: InvocationTargetException) {
+            throw GarethInvocationException(e)
+        } catch (e: IllegalAccessException) {
+            throw GarethInvocationException(e)
+        }
+
+    }
+
+    fun getRegexPatternForGlueLine(): String {
+        return pattern.pattern()
+    }
+
+    fun getRegularParameters() =
+            parameters.filter({ p -> p !== RunContext::class.java })
+
+
+    fun getPattern(): String {
+        return pattern.pattern()
+    }
+
+    private fun getArgumentValuesFromInputString(input: String): List<Any> {
+        val parametersFromPattern = getParametersFromPattern(input.trim { it <= ' ' })
+        val parameters = ArrayList<Any>()
+        for (i in parametersFromPattern.indices) {
+            val cls = getRegularParameters()[i]
+            parameters.add(getValueFromString(cls, parametersFromPattern[i]))
+        }
+        return parameters
+    }
+
     private fun parseMethod() {
         for (parameter in method.parameters) {
             val cls = parameter.type
@@ -47,61 +97,6 @@ class InvokableMethod {
                 || type.typeName == "double"
     }
 
-
-    fun hasRunContext(): Boolean {
-        return this.runcontextParameter
-    }
-
-    fun getMethodName(): String {
-        return method.name
-    }
-
-    fun getClassName(): String {
-        return method.declaringClass.name
-    }
-
-    fun invokeWith(glueLineInExperiment: String, declaringClassInstance: Any, storage: RunContext) {
-        val arguments = ArrayList<Any>()
-        if (hasRunContext())
-            arguments.add(storage)
-        val argumentValuesFromInputString = getArgumentValuesFromInputString(glueLineInExperiment)
-        arguments.addAll(argumentValuesFromInputString)
-        invokeWith(declaringClassInstance, arguments)
-    }
-
-    fun getRegexPatternForGlueLine(): String {
-        return pattern.pattern()
-    }
-
-
-    fun invokeWith(receiver: Any, params: List<Any>) {
-        try {
-            method.invoke(receiver, *params.toTypedArray())
-        } catch (e: InvocationTargetException) {
-            throw GarethInvocationException(e)
-        } catch (e: IllegalAccessException) {
-            throw GarethInvocationException(e)
-        }
-
-    }
-
-    fun getRegularParameters() =
-            parameters.filter({ p -> p !== RunContext::class.java })
-
-
-    fun getPattern(): String {
-        return pattern.pattern()
-    }
-
-    fun getArgumentValuesFromInputString(input: String): List<Any> {
-        val parametersFromPattern = getParametersFromPattern(input.trim { it <= ' ' })
-        val parameters = ArrayList<Any>()
-        for (i in parametersFromPattern.indices) {
-            val cls = getRegularParameters()[i]
-            parameters.add(getValueFromString(cls, parametersFromPattern[i]))
-        }
-        return parameters
-    }
 
     private fun getValueFromString(cls: Class<*>, stringVal: String): Any {
         if (cls == String::class.java) {

@@ -1,6 +1,6 @@
 package org.craftsmenlabs.gareth.execution.dto
 
-class ExperimentRunEnvironmentDTO(val items: List<Item>) {
+class ExperimentRunEnvironmentDTO(val items: List<Item> = listOf()) {
 
     companion object {
 
@@ -38,7 +38,9 @@ class ExperimentRunEnvironmentDTO(val items: List<Item>) {
     }
 }
 
-data class Item(val key: String, val value: String, val type: ItemType)
+data class Item(val key: String, val value: String, val type: ItemType) {
+
+}
 
 enum class ItemType {
     STRING, LONG, DOUBLE, BOOLEAN

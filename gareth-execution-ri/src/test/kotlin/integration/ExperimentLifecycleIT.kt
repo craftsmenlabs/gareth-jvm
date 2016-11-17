@@ -2,67 +2,71 @@ package integration
 
 import org.assertj.core.api.Assertions.assertThat
 import org.craftsmenlabs.gareth.execution.Application
-import org.craftsmenlabs.gareth.execution.dto.ExecutionRequestDTO
-import org.craftsmenlabs.gareth.execution.dto.ExecutionStatus
-import org.craftsmenlabs.gareth.execution.rest.v1.ExecutionEndPoint
-import org.craftsmenlabs.gareth.execution.spi.MockDB
+import org.craftsmenlabs.gareth.execution.dto.*
 import org.junit.FixMethodOrder
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.MethodSorters
-import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
+import org.springframework.http.HttpMethod
+import org.springframework.http.MediaType
+import org.springframework.http.RequestEntity
+import org.springframework.test.context.ActiveProfiles
 import org.springframework.test.context.junit4.SpringRunner
+import org.springframework.web.client.RestTemplate
+import java.net.URI
 
 @RunWith(SpringRunner::class)
 @SpringBootTest(classes = arrayOf(Application::class), webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
+@ActiveProfiles("Test")
 class ExperimentLifecycleIT {
 
-    @Autowired
-    lateinit var endpoint: ExecutionEndPoint
-    @Autowired
-    lateinit var mockDB: MockDB
+    val path = "http://localhost:8090/gareth/v1/"
+    val template = RestTemplate()
 
     @Test
     fun testBaseline() {
-        assertThat(endpoint.executeBaseline(ExecutionRequestDTO.create("sale of fruit")).status).isEqualTo(ExecutionStatus.RUNNING)
-        endpoint.executeBaseline(ExecutionRequestDTO.create("sale of widgets"))
+        val request = createRequest("sale of fruit", ExperimentRunEnvironmentDTO.createEmpty())
+        assertThat(doPut("${path}baseline", request).status).isEqualTo(ExecutionStatus.RUNNING)
     }
 
     @Test
     fun testAssume() {
-        assertThat(endpoint.executeAssumption(ExecutionRequestDTO.create("sale of fruit has risen by 70 per cent")).status)
-                .isEqualTo(ExecutionStatus.RUNNING)
-        assertThat(endpoint.executeAssumption(ExecutionRequestDTO.create("sale of fruit has risen by 50 per cent")).status)
-                .isEqualTo(ExecutionStatus.RUNNING)
-
+        val request = createRequest("sale of fruit has risen by 80 per cent", ExperimentRunEnvironmentDTO.createEmpty())
+        assertThat(doPut("${path}assume", request).status).isEqualTo(ExecutionStatus.SUCCESS)
     }
 
     @Test
     fun testDuration() {
-        assertThat(endpoint.getDuration(ExecutionRequestDTO.create("3 weeks"))).isEqualTo(21 * 86400 * 1000)
-        assertThat(endpoint.getDuration(ExecutionRequestDTO.create("next Easter"))).isEqualTo(10 * 1000)
+        val request = RequestEntity(createRequest("next Easter", ExperimentRunEnvironmentDTO.createEmpty()), HttpMethod.PUT, URI(path))
+        val response = template.exchange(request, DurationDTO::class.java)
+        assertThat(response.body.amount).isEqualTo(10)
     }
 
     @Test
     fun testSuccess() {
-        assertThat(endpoint.executeSuccess(ExecutionRequestDTO.create("send email to john@wcc.nl")).status).isEqualTo(ExecutionStatus.SUCCESS)
-        assertThat(endpoint.executeSuccess(ExecutionRequestDTO.create("send text to 06-12341234")))
+        val request = createRequest("send email to John", ExperimentRunEnvironmentDTO.createEmpty())
+        assertThat(doPut("${path}success", request).status).isEqualTo(ExecutionStatus.SUCCESS)
     }
 
     @Test
     fun testFailure() {
-        assertThat(endpoint.executeFailure(ExecutionRequestDTO.create("send email to john@wcc.nl")).status).isEqualTo(ExecutionStatus.FAILURE)
-        assertThat(endpoint.executeFailure(ExecutionRequestDTO.create("send text to 06-12341234")))
+        val request = createRequest("send email to Bob", ExperimentRunEnvironmentDTO.createEmpty())
+        assertThat(doPut("${path}failure", request).status).isEqualTo(ExecutionStatus.FAILURE)
     }
 
-    @Test
-    fun testLifeCycle() {
-        endpoint.executeBaseline(ExecutionRequestDTO.create("sale of apples"))
-        endpoint.executeAssumption(ExecutionRequestDTO.create("sale of fruit has risen by 21 per cent"))
-        endpoint.executeSuccess(ExecutionRequestDTO.create("send email to john@wcc.nl"));
-        assertThat(mockDB.value).isEqualTo("run10. success email for apples")
+
+    fun createRequest(glueLine: String, environment: ExperimentRunEnvironmentDTO): ExecutionRequestDTO {
+        return ExecutionRequestDTO.create(glueLine, environment)
+    }
+
+    fun doPut(path: String, dto: ExecutionRequestDTO): ExecutionResultDTO {
+        val builder = RequestEntity.put(URI(path)).contentType(MediaType.APPLICATION_JSON).body(dto)
+        val response = template.exchange(builder, ExecutionResultDTO::class.java)
+        assertThat(response.statusCode.is2xxSuccessful).isTrue()
+        println(response.body)
+        return response.body
     }
 
 }
