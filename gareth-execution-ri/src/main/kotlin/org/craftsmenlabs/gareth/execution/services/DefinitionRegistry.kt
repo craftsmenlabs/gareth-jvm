@@ -90,7 +90,11 @@ open class DefinitionRegistry @Autowired constructor(val definitionFactory: Defi
         parsedDefinition.timeDefinitions.forEach { addDefinition(timeDefinitions, it.key, it.value) }
     }
 
-    fun getTimeForGlueline(glueLine: String): Duration = getTimeDefinition(timeDefinitions, glueLine)
+    fun getTimeForGlueline(glueLine: String): Duration {
+        val match = timeDefinitions.keys.filter({ annotationPattern -> matchesPattern(glueLine, annotationPattern) }).firstOrNull()
+        return timeDefinitions[match] ?: throw GarethUnknownDefinitionException("No time definition found for glue line $glueLine")
+    }
+
 
     fun invokeAssumptionMethod(glueLine: String, request: ExecutionRequestDTO): Pair<Boolean, RunContext> {
         val context = RunContext.create(request)
@@ -119,18 +123,6 @@ open class DefinitionRegistry @Autowired constructor(val definitionFactory: Defi
         val match = valueMap.values.filter({ md -> matchesPattern(experimentLine, md.getRegexPatternForGlueLine()) }).firstOrNull()
         return match ?: throw GarethUnknownDefinitionException("No definition found for glue line '$experimentLine'")
     }
-
-    private fun <T> getTimeDefinition(valueMap: Map<String, T>, experimentLine: String): T {
-        val match = valueMap.keys.filter({ annotationPattern -> matchesPattern(experimentLine, annotationPattern) }).firstOrNull()
-        if (match != null) {
-            return valueMap[match]!!
-        } else {
-            //if no custom Time method is available, try to parse the experiment glueline to a common expression
-            val duration = durationExpressionParser.parse(experimentLine)
-            return duration.orElseThrow { GarethUnknownDefinitionException("No time definition found for glue line $experimentLine") } as T
-        }
-    }
-
 
     private fun matchesPattern(experimentLine: String, pattern: String): Boolean {
         if (experimentLine == null || pattern == null) {
