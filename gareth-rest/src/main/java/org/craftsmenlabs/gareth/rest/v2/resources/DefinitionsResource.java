@@ -6,11 +6,7 @@ import org.craftsmenlabs.gareth.rest.v2.entity.Experiment;
 import org.craftsmenlabs.gareth.rest.v2.entity.ExperimentToModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.ws.rs.core.MediaType;
 import java.util.List;
@@ -40,8 +36,8 @@ public class DefinitionsResource {
             value = "",
             method = RequestMethod.POST,
             consumes = {MediaType.APPLICATION_JSON})
-    public String createNewExperimentRun(final Experiment experiment) {
-        return experimentEngine.runExperiment(mapper.map(experiment));
+    public String createNewExperimentRun(@RequestBody final Experiment experiment) {
+            return experimentEngine.runExperiment(mapper.map(experiment));
     }
 
     @RequestMapping(
