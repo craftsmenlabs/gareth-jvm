@@ -1,10 +1,9 @@
 package org.craftsmenlabs.gareth2.time
 
-import org.springframework.stereotype.Service
-
+import org.springframework.stereotype.Component
 import java.time.LocalDateTime
 
-@Service
+@Component
 class DateTimeService {
     fun now(): LocalDateTime {
         return LocalDateTime.now()
