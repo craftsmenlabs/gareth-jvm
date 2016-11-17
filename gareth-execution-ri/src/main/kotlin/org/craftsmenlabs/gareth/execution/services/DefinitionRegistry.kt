@@ -6,7 +6,6 @@ import org.craftsmenlabs.gareth.api.exception.GarethInvocationException
 import org.craftsmenlabs.gareth.api.exception.GarethUnknownDefinitionException
 import org.craftsmenlabs.gareth.api.model.GlueLineType
 import org.craftsmenlabs.gareth.execution.RunContext
-import org.craftsmenlabs.gareth.execution.definitions.DurationExpressionParser
 import org.craftsmenlabs.gareth.execution.definitions.ExecutionType
 import org.craftsmenlabs.gareth.execution.definitions.InvokableMethod
 import org.craftsmenlabs.gareth.execution.definitions.ParsedDefinitionFactory
@@ -30,7 +29,6 @@ open class DefinitionRegistry @Autowired constructor(val definitionFactory: Defi
 
     val factory = ParsedDefinitionFactory(definitionFactory)
     private val regexes = HashMap<String, Pattern>()
-    private val durationExpressionParser = DurationExpressionParser()
     private val baselineDefinitions = HashMap<String, InvokableMethod>()
     private val assumeDefinitions = HashMap<String, InvokableMethod>()
     private val successDefinitions = HashMap<String, InvokableMethod>()
