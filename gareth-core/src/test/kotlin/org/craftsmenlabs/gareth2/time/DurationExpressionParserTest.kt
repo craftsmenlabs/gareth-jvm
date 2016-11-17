@@ -22,6 +22,13 @@ class DurationExpressionParserTest {
 
     @Test
     fun testValidValues() {
+        object : Expectations() {
+            init {
+                dateTimeService.now()
+                result = LocalDateTime.parse("01-02-2016 12:00", formatter)
+            }
+        }
+
         assertThat(parser.parse("4 seconds")).isEqualTo(Duration.of(4, ChronoUnit.SECONDS))
         assertThat(parser.parse("1 SECOND")).isEqualTo(Duration.of(1, ChronoUnit.SECONDS))
         assertThat(parser.parse("1 minute")).isEqualTo(Duration.of(1, ChronoUnit.MINUTES))

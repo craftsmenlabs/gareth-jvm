@@ -44,6 +44,10 @@ class ExperimentPersistence @Autowired constructor(val experimentStorage: Experi
                 .firstOrNull()
     }
 
+    fun save(experiment: Experiment) {
+        experimentStorage.save(experiment)
+    }
+
     fun save(experimentRun: ExperimentRun) {
         experimentStorage.save(experimentRun)
     }
