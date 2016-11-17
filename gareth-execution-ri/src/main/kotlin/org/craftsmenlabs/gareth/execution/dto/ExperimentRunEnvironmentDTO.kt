@@ -2,6 +2,8 @@ package org.craftsmenlabs.gareth.execution.dto
 
 class ExperimentRunEnvironmentDTO(val items: List<Item> = listOf()) {
 
+    fun getValueByKey(key: String): Any? = items.filter { it.key == key }.map { it.value }.firstOrNull()
+
     companion object {
 
         fun createItem(key: String, value: Any): Item {
@@ -34,7 +36,6 @@ class ExperimentRunEnvironmentDTO(val items: List<Item> = listOf()) {
             val entries = data.map { entry -> createItem(entry.key, entry.value) }
             return ExperimentRunEnvironmentDTO(entries)
         }
-
     }
 }
 

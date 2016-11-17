@@ -6,29 +6,24 @@ import org.craftsmenlabs.gareth.execution.RunContext;
 import org.springframework.stereotype.Service;
 
 @Service
-public class ResultSteps
-{
+public class ResultSteps {
 
-	@Success(glueLine = "^send email to (.*?)$")
-	public void sendEmail(RunContext runContext, String recipient)
-	{
-		runContext.storeString("emailtext", "success" + runContext.getLong("bananas"));
-	}
+    @Success(glueLine = "^send email to (.*?)$")
+    public void sendEmail(RunContext runContext, String recipient) {
+        runContext.storeString("emailtext", "sending mail to " + recipient);
+    }
 
-	@Success(glueLine = "^send text to (.*?)$")
-	public void sendText(RunContext runContext, String recipient)
-	{
-	}
+    @Success(glueLine = "^send text to (.*?)$")
+    public void sendText(RunContext runContext, String recipient) {
+    }
 
-	@Failure(glueLine = "^send email to (.*?)$")
-	public void sendFailureEmail(RunContext runContext, String recipient)
-	{
-	}
+    @Failure(glueLine = "^send email to (.*?)$")
+    public void sendFailureEmail(RunContext runContext, String recipient) {
+    }
 
-	@Failure(glueLine = "^send text to (.*?)$")
-	public void sendFailureText(RunContext runContext, String recipient)
-	{
+    @Failure(glueLine = "^send text to (.*?)$")
+    public void sendFailureText(RunContext runContext, String recipient) {
 
-	}
+    }
 
 }

@@ -1,8 +1,7 @@
-package integration
+package org.craftsmenlabs.gareth.execution.integration
 
 import org.assertj.core.api.Assertions.assertThat
 import org.craftsmenlabs.gareth.execution.Application
-import org.craftsmenlabs.gareth.execution.dto.ExecutionRequestDTO
 import org.craftsmenlabs.gareth.execution.rest.v1.DefinitionsEndpoint
 import org.junit.FixMethodOrder
 import org.junit.Test
@@ -22,7 +21,7 @@ class DefinitionInfoIT {
 
     @Test
     fun testBaseline() {
-        val info = endpoint.getBaselineByGlueline(ExecutionRequestDTO.create("sale of fruit"))
+        val info = endpoint.getBaselineByGlueline("sale of fruit")
         assertThat(info.glueline).isEqualTo("^sale of (.*?)$")
         assertThat(info.method).isEqualTo("getSaleOfItem")
         assertThat(info.className).isEqualTo("org.craftsmenlabs.gareth.execution.spi.GetSaleAmounts")
@@ -30,14 +29,14 @@ class DefinitionInfoIT {
 
     @Test
     fun testDuration() {
-        val duration = endpoint.getDurationByGlueline(ExecutionRequestDTO.create("next Easter"))
+        val duration = endpoint.getDurationByGlueline("next Easter")
         assertThat(duration.unit).isEqualTo("MINUTES")
         assertThat(duration.amount).isEqualTo(14400)
     }
 
     @Test
     fun testAssumptionInfo() {
-        val info = endpoint.getAssumeByGlueline(ExecutionRequestDTO.create("sale of fruit has risen by 5 per cent"))
+        val info = endpoint.getAssumeByGlueline("sale of fruit has risen by 5 per cent")
         assertThat(info.glueline).isEqualTo("^sale of fruit has risen by (\\d+?) per cent$")
         assertThat(info.method).isEqualTo("hasRisenByPercent")
         assertThat(info.className).isEqualTo("org.craftsmenlabs.gareth.execution.spi.SaleOfFruit")
@@ -45,7 +44,7 @@ class DefinitionInfoIT {
 
     @Test
     fun testSuccessInfo() {
-        val info = endpoint.getSuccessByGlueline(ExecutionRequestDTO.create("send email to bob"))
+        val info = endpoint.getSuccessByGlueline("send email to bob")
         assertThat(info.glueline).isEqualTo("^send email to (.*?)$")
         assertThat(info.method).isEqualTo("sendEmail")
         assertThat(info.className).isEqualTo("org.craftsmenlabs.gareth.execution.spi.ResultSteps")
@@ -53,7 +52,7 @@ class DefinitionInfoIT {
 
     @Test
     fun testFailureInfo() {
-        val info = endpoint.getFailureByGlueline(ExecutionRequestDTO.create("send email to John"))
+        val info = endpoint.getFailureByGlueline("send email to John")
         assertThat(info.glueline).isEqualTo("^send email to (.*?)$")
         assertThat(info.method).isEqualTo("sendFailureEmail")
         assertThat(info.className).isEqualTo("org.craftsmenlabs.gareth.execution.spi.ResultSteps")

@@ -4,7 +4,6 @@ import org.craftsmenlabs.gareth.execution.definitions.ExecutionType
 import org.craftsmenlabs.gareth.execution.definitions.InvokableMethod
 import org.craftsmenlabs.gareth.execution.dto.DefinitionInfo
 import org.craftsmenlabs.gareth.execution.dto.DurationDTO
-import org.craftsmenlabs.gareth.execution.dto.ExecutionRequestDTO
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
 
@@ -15,7 +14,7 @@ open class DefinitionInfoService
     fun getDurationByGlueline(glueLine: String): DurationDTO =
             definitionService.getTime(glueLine)
 
-    fun getInfoByType(dto: ExecutionRequestDTO, type: ExecutionType) = definitionInfo(definitionService.getMethodForType(dto.glueline, type))
+    fun getInfoByType(glueLine: String, type: ExecutionType) = definitionInfo(definitionService.getMethodForType(glueLine, type))
 
     private fun definitionInfo(method: InvokableMethod) =
             DefinitionInfo(method.getRegexPatternForGlueLine(), method.getMethodName(), method.getClassName())

@@ -3,7 +3,6 @@ package org.craftsmenlabs.gareth.execution.definitions
 import org.craftsmenlabs.gareth.api.exception.GarethDefinitionParseException
 import org.craftsmenlabs.gareth.api.exception.GarethInvocationException
 import org.craftsmenlabs.gareth.execution.RunContext
-import java.lang.reflect.InvocationTargetException
 import java.lang.reflect.Method
 import java.lang.reflect.Type
 import java.util.*
@@ -40,17 +39,15 @@ class InvokableMethod {
         return method.declaringClass.name
     }
 
-    fun invokeWith(glueLineInExperiment: String, declaringClassInstance: Any, storage: RunContext) {
+    fun invokeWith(glueLineInExperiment: String, declaringClassInstance: Any, runContext: RunContext) {
         val arguments = ArrayList<Any>()
         if (hasRunContext())
-            arguments.add(storage)
+            arguments.add(runContext!!)
         val argumentValuesFromInputString = getArgumentValuesFromInputString(glueLineInExperiment)
         arguments.addAll(argumentValuesFromInputString)
         try {
-            method.invoke(declaringClassInstance, arguments)
-        } catch (e: InvocationTargetException) {
-            throw GarethInvocationException(e)
-        } catch (e: IllegalAccessException) {
+            method.invoke(declaringClassInstance, *arguments.toArray())
+        } catch (e: Exception) {
             throw GarethInvocationException(e)
         }
 
@@ -101,12 +98,12 @@ class InvokableMethod {
     private fun getValueFromString(cls: Class<*>, stringVal: String): Any {
         if (cls == String::class.java) {
             return stringVal
-        } else if (cls == Integer.TYPE) {
-            return Integer.valueOf(stringVal)
+        } else if (cls == java.lang.Integer.TYPE) {
+            return java.lang.Integer.valueOf(stringVal).toInt()
         } else if (cls == java.lang.Long.TYPE) {
-            return java.lang.Long.valueOf(stringVal)
+            return java.lang.Long.valueOf(stringVal).toLong()
         } else if (cls == java.lang.Double.TYPE) {
-            return java.lang.Double.valueOf(stringVal)
+            return java.lang.Double.valueOf(stringVal).toDouble()
         }
         throw IllegalArgumentException("Parameter must be of class String, Int, Long or Double")
     }

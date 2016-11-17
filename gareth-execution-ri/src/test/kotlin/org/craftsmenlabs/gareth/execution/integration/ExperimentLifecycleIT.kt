@@ -1,4 +1,4 @@
-package integration
+package org.craftsmenlabs.gareth.execution.integration
 
 import org.assertj.core.api.Assertions.assertThat
 import org.craftsmenlabs.gareth.execution.Application
@@ -17,7 +17,7 @@ import org.springframework.web.client.RestTemplate
 import java.net.URI
 
 @RunWith(SpringRunner::class)
-@SpringBootTest(classes = arrayOf(Application::class), webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@SpringBootTest(classes = arrayOf(Application::class), webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 @ActiveProfiles("Test")
 class ExperimentLifecycleIT {
@@ -39,15 +39,15 @@ class ExperimentLifecycleIT {
 
     @Test
     fun testDuration() {
-        val request = RequestEntity(createRequest("next Easter", ExperimentRunEnvironmentDTO.createEmpty()), HttpMethod.PUT, URI(path))
+        val request = RequestEntity(createRequest("next Easter", ExperimentRunEnvironmentDTO.createEmpty()), HttpMethod.PUT, URI("${path}time"))
         val response = template.exchange(request, DurationDTO::class.java)
-        assertThat(response.body.amount).isEqualTo(10)
+        assertThat(response.body.amount).isEqualTo(14400L)
     }
 
     @Test
     fun testSuccess() {
         val request = createRequest("send email to John", ExperimentRunEnvironmentDTO.createEmpty())
-        assertThat(doPut("${path}success", request).status).isEqualTo(ExecutionStatus.SUCCESS)
+        assertThat(doPut("${path}success", request).environment.getValueByKey("emailtext")).isEqualTo("sending mail to John")
     }
 
     @Test
