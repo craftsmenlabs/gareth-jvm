@@ -29,7 +29,7 @@ public class DefinitionsResource {
         this.mapper = mapper;
 
         this.glueLineMatcher.init(experimentEngine.getDefinitionRegistry()
-                                                  .getGlueLinesPerCategory());
+                .getGlueLinesPerCategory());
     }
 
     @RequestMapping(
@@ -37,7 +37,7 @@ public class DefinitionsResource {
             method = RequestMethod.POST,
             consumes = {MediaType.APPLICATION_JSON})
     public String createNewExperimentRun(@RequestBody final Experiment experiment) {
-            return experimentEngine.runExperiment(mapper.map(experiment));
+        return experimentEngine.runExperiment(mapper.map(experiment));
     }
 
     @RequestMapping(
@@ -48,7 +48,6 @@ public class DefinitionsResource {
         if (!glueLineMatcher.getGlueLineType(key).isPresent()) {
             throw new IllegalArgumentException("final part of path must be baseline, assumption, success, failure or time");
         }
-
         return glueLineMatcher.getMatches(key, value);
     }
 }
