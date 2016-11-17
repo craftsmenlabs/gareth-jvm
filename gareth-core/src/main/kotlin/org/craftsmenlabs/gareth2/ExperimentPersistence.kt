@@ -10,9 +10,11 @@ import java.time.LocalDateTime
 class ExperimentPersistence @Autowired constructor(val experimentStorage: ExperimentStorage) {
 
     fun getAllRunningExperiments(): List<Pair<Experiment, ExperimentRun>> {
+        val allRuns = experimentStorage.loadAllRuns()
+
         return experimentStorage.loadAllExperiments()
                 .map { exp ->
-                    Pair(exp, experimentStorage.loadAllRuns()
+                    Pair(exp, allRuns
                             .filter { it.experimentId == exp.id }
                             .filter { it.assumptionPlanned.isAfter(LocalDateTime.now()) }
                             .firstOrNull())
@@ -24,9 +26,11 @@ class ExperimentPersistence @Autowired constructor(val experimentStorage: Experi
     }
 
     fun getAllFinalizingExperiments(): List<Pair<Experiment, ExperimentRun>> {
+        val allRuns = experimentStorage.loadAllRuns()
+
         return experimentStorage.loadAllExperiments()
                 .map { exp ->
-                    Pair(exp, experimentStorage.loadAllRuns()
+                    Pair(exp, allRuns
                             .filter { it.experimentId == exp.id }
                             .filter { it.assumptionExecuted != null }
                             .filter { it.completionExecuted == null }
