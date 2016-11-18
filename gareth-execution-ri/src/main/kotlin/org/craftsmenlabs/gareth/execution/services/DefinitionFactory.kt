@@ -1,4 +1,4 @@
-package org.craftsmenlabs.gareth.execution.definitions
+package org.craftsmenlabs.gareth.execution.services
 
 import org.springframework.beans.factory.BeanExpressionException
 import org.springframework.beans.factory.annotation.Autowired
@@ -7,9 +7,7 @@ import org.springframework.stereotype.Service
 import java.lang.reflect.Constructor
 
 @Service
-open class DefinitionFactory {
-    @Autowired
-    lateinit var applicationContext: ApplicationContext
+open class DefinitionFactory @Autowired constructor(val applicationContext: ApplicationContext) {
 
     fun getInstanceForClass(clazz: Class<*>): Any = getDefinitionFromContext(clazz) ?: createDefinitionByReflection(clazz)
 

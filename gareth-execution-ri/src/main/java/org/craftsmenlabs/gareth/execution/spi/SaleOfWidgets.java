@@ -9,25 +9,19 @@ import java.time.Duration;
 import java.time.temporal.ChronoUnit;
 
 @Service
-public class SaleOfWidgets
-{
+public class SaleOfWidgets {
 
-	@Autowired
-	private MockDB mockDB;
+    @Autowired
+    private MockDB mockDB;
 
-	@Assume(glueLine = "^sale of widgets has risen by (\\d+?) per cent$")
-	public void hasRisenByPercent(final int percentage)
-	{
-		if (percentage < 20)
-		{
-			throw new RuntimeException("Expected percentage > 20");
-		}
-	}
+    @Assume(glueLine = "^sale of widgets has risen by (\\d+?) per cent$")
+    public boolean hasRisenByPercent(final int percentage) {
+        return percentage > 20;
+    }
 
-	@Time(glueLine = "next Easter")
-	public Duration nextEaster()
-	{
-		return Duration.of(10L, ChronoUnit.DAYS);
-	}
+    @Time(glueLine = "next Easter")
+    public Duration nextEaster() {
+        return Duration.of(10L, ChronoUnit.DAYS);
+    }
 
 }

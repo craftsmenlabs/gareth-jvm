@@ -1,4 +1,4 @@
-package integration
+package org.craftsmenlabs.gareth.execution.integration
 
 import org.assertj.core.api.Assertions.assertThat
 import org.craftsmenlabs.gareth.execution.Application
@@ -17,7 +17,7 @@ import org.springframework.web.client.RestTemplate
 import java.net.URI
 
 @RunWith(SpringRunner::class)
-@SpringBootTest(classes = arrayOf(Application::class), webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@SpringBootTest(classes = arrayOf(Application::class), webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 @ActiveProfiles("Test")
 class ExperimentLifecycleIT {
@@ -32,22 +32,28 @@ class ExperimentLifecycleIT {
     }
 
     @Test
-    fun testAssume() {
-        val request = createRequest("sale of fruit has risen by 80 per cent", ExperimentRunEnvironmentDTO.createEmpty())
+    fun testSuccessfulAssume() {
+        val request = createRequest("sale of fruit has risen by 81 per cent", ExperimentRunEnvironmentDTO.createEmpty())
         assertThat(doPut("${path}assume", request).status).isEqualTo(ExecutionStatus.SUCCESS)
     }
 
     @Test
+    fun testFailedAssume() {
+        val request = createRequest("sale of fruit has risen by 79 per cent", ExperimentRunEnvironmentDTO.createEmpty())
+        assertThat(doPut("${path}assume", request).status).isEqualTo(ExecutionStatus.FAILURE)
+    }
+
+    @Test
     fun testDuration() {
-        val request = RequestEntity(createRequest("next Easter", ExperimentRunEnvironmentDTO.createEmpty()), HttpMethod.PUT, URI(path))
+        val request = RequestEntity(createRequest("next Easter", ExperimentRunEnvironmentDTO.createEmpty()), HttpMethod.PUT, URI("${path}time"))
         val response = template.exchange(request, DurationDTO::class.java)
-        assertThat(response.body.amount).isEqualTo(10)
+        assertThat(response.body.amount).isEqualTo(14400L)
     }
 
     @Test
     fun testSuccess() {
         val request = createRequest("send email to John", ExperimentRunEnvironmentDTO.createEmpty())
-        assertThat(doPut("${path}success", request).status).isEqualTo(ExecutionStatus.SUCCESS)
+        assertThat(doPut("${path}success", request).environment.getValueByKey("emailtext")).isEqualTo("sending mail to John")
     }
 
     @Test
@@ -58,7 +64,7 @@ class ExperimentLifecycleIT {
 
 
     fun createRequest(glueLine: String, environment: ExperimentRunEnvironmentDTO): ExecutionRequestDTO {
-        return ExecutionRequestDTO.create(glueLine, environment)
+        return ExecutionRequestDTO(environment, glueLine)
     }
 
     fun doPut(path: String, dto: ExecutionRequestDTO): ExecutionResultDTO {
