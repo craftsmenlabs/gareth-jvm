@@ -21,7 +21,7 @@ class ExperimentPersistenceTest {
     @Test
     fun saveShouldForwardToStorage_whenSaveExperimentInvoked(@Injectable experiment: Experiment) {
 
-        persistence.save(experiment);
+        persistence.saveExperiment(experiment);
 
         object : Verifications() {
             init {
@@ -33,7 +33,7 @@ class ExperimentPersistenceTest {
     @Test
     fun saveShouldForwardToStorage_whenSaveExperimentRunInvoked(@Injectable experimentRun: ExperimentRun) {
 
-        persistence.save(experimentRun);
+        persistence.saveExperimentRun(experimentRun);
 
         object : Verifications() {
             init {

@@ -2,18 +2,22 @@ package org.craftsmenlabs.gareth2
 
 import org.craftsmenlabs.gareth2.model.Experiment
 import org.craftsmenlabs.gareth2.model.ExperimentRun
+import org.craftsmenlabs.gareth2.rx.KSchedulers
+import org.craftsmenlabs.gareth2.time.DateTimeService
 import org.craftsmenlabs.gareth2.time.DurationCalculator
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
 import rx.lang.kotlin.toSingletonObservable
-import rx.schedulers.Schedulers
-import java.time.LocalDateTime
 import java.time.temporal.ChronoUnit
 import java.util.concurrent.TimeUnit
 import javax.annotation.PostConstruct
 
 @Service
-class ExperimentPlanner @Autowired constructor(val experimentPersistence: ExperimentPersistence, val glueLineExecutor: GlueLineExecutor, val durationCalculator: DurationCalculator) {
+class ExperimentPlanner @Autowired constructor(
+        private val experimentPersistence: ExperimentPersistence,
+        private val glueLineExecutor: GlueLineExecutor,
+        private val durationCalculator: DurationCalculator,
+        private val dateTimeService: DateTimeService) {
 
     @PostConstruct
     fun planStoredRunningExperiments() {
@@ -27,27 +31,27 @@ class ExperimentPlanner @Autowired constructor(val experimentPersistence: Experi
         }
 
         toSingletonObservable()
-                .observeOn(Schedulers.io())
+                .observeOn(KSchedulers.io())
                 .subscribe {
                     val duration = durationCalculator.getDuration(experiment)
                     glueLineExecutor.executeBaseline(experiment)
-                    val experimentRun = ExperimentRun(experiment.id, LocalDateTime.now(), LocalDateTime.now().plus(duration))
-                    experimentPersistence.save(experimentRun)
+                    val experimentRun = ExperimentRun(experiment.id, dateTimeService.now(), dateTimeService.now().plus(duration))
+                    experimentPersistence.saveExperimentRun(experimentRun)
                     continueExperiment(experiment, experimentRun)
                 }
     }
 
-    private fun continueExperiment(experiment: Experiment, experimentRun: ExperimentRun) {
-        val secondsToGo = ChronoUnit.SECONDS.between(LocalDateTime.now(), experimentRun.assumptionPlanned)
+    internal fun continueExperiment(experiment: Experiment, experimentRun: ExperimentRun) {
+        val secondsToGo = ChronoUnit.SECONDS.between(dateTimeService.now(), experimentRun.assumptionPlanned)
 
         toSingletonObservable()
                 .delay(secondsToGo, TimeUnit.SECONDS)
-                .observeOn(Schedulers.io())
+                .observeOn(KSchedulers.io())
                 .subscribe {
                     val success = glueLineExecutor.executeAssumption(experiment)
-                    experimentRun.assumptionExecuted = LocalDateTime.now()
+                    experimentRun.assumptionExecuted = dateTimeService.now()
                     experimentRun.success = success
-                    experimentPersistence.save(experimentRun)
+                    experimentPersistence.saveExperimentRun(experimentRun)
 
                     finalizeExperiment(experiment, experimentRun)
                 }
@@ -57,7 +61,7 @@ class ExperimentPlanner @Autowired constructor(val experimentPersistence: Experi
         val success = experimentRun.success ?: return
 
         toSingletonObservable()
-                .observeOn(Schedulers.io())
+                .observeOn(KSchedulers.io())
                 .subscribe {
                     if (success) {
                         glueLineExecutor.executeSuccess(experiment)
@@ -65,8 +69,8 @@ class ExperimentPlanner @Autowired constructor(val experimentPersistence: Experi
                         glueLineExecutor.executeFailure(experiment)
                     }
 
-                    experimentRun.completionExecuted = LocalDateTime.now()
-                    experimentPersistence.save(experimentRun)
+                    experimentRun.completionExecuted = dateTimeService.now()
+                    experimentPersistence.saveExperimentRun(experimentRun)
                 }
     }
 }
