@@ -10,7 +10,7 @@ import java.time.Duration
 class DurationCalculator @Autowired constructor(private val durationExpressionParser: DurationExpressionParser, private  val executor: GlueLineExecutor) {
 
     fun getDuration(experiment: Experiment): Duration {
-        val time = durationExpressionParser.parse(experiment.time)
+        val time = durationExpressionParser.parse(experiment.details.time)
         if (time != null) {
             return time
         } else {
