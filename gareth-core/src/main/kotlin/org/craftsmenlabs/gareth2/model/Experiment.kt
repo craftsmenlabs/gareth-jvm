@@ -58,7 +58,7 @@ data class ExperimentTiming(
 )
 
 data class ExperimentResults(
-        var success: Boolean?
+        var success: Boolean? = null
 )
 
 enum class ExperimentState {
