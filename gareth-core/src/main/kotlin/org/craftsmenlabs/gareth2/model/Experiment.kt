@@ -20,7 +20,7 @@ data class Experiment(
             return ExperimentState.WAITING_FOR_BASELINE
         } else if (timing.waitingForAssume == null) {
             return ExperimentState.BASELINE_EXECUTED
-        } else if (timing.assmueExected == null) {
+        } else if (timing.assumeExecuted == null) {
             return ExperimentState.WAITING_FOR_ASSUME
         } else if (timing.waitingFinalizing == null) {
             return ExperimentState.ASSUME_EXECUTED
@@ -51,9 +51,10 @@ data class ExperimentTiming(
         var waitingForBaseline: LocalDateTime? = null,
         var baselineExecuted: LocalDateTime? = null,
         var waitingForAssume: LocalDateTime? = null,
-        var assmueExected: LocalDateTime? = null,
+        var assumeExecuted: LocalDateTime? = null,
         var waitingFinalizing: LocalDateTime? = null,
-        var finalizingExecuted: LocalDateTime? = null
+        var finalizingExecuted: LocalDateTime? = null,
+        var completed: LocalDateTime? = null
 )
 
 data class ExperimentResults(
@@ -63,4 +64,4 @@ data class ExperimentResults(
 enum class ExperimentState {
     NEW, READY, STARTED, WAITING_FOR_BASELINE, BASELINE_EXECUTED,
     WAITING_FOR_ASSUME, ASSUME_EXECUTED, WAITING_FOR_FINALISATION, FINALISATION_EXECUTED
-} // TODO: Use state instead of many providers
+}
