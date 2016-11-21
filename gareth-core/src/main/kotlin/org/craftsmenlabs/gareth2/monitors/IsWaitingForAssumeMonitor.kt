@@ -17,17 +17,24 @@ class IsWaitingForAssumeMonitor @Autowired constructor(
         durationCalculator: DurationCalculator,
         experimentStorage: ExperimentStorage) {
 
+    private val delayedExperiments = mutableListOf<String>()
+
     init {
         runningExperimentProvider.observable
                 .subscribeOn(Schedulers.io())
+                .filter { !delayedExperiments.contains(it.id) }
                 .delay {
                     val duration = durationCalculator.getDuration(it)
                     val assumePlanned = it.timing.baselineExecuted?.plus(duration)
                     val delayInSeconds = ChronoUnit.SECONDS.between(LocalDateTime.now(), assumePlanned)
+                    delayedExperiments.add(it.id)
                     return@delay Observable.just(it).delay(delayInSeconds, TimeUnit.SECONDS)
                 }
                 .map { it.apply { it.timing.waitingForAssume = LocalDateTime.now() } }
                 .observeOn(Schedulers.computation())
-                .subscribe { experimentStorage.save(it) }
+                .subscribe {
+                    experimentStorage.save(it)
+                    delayedExperiments.remove(it.id)
+                }
     }
 }
