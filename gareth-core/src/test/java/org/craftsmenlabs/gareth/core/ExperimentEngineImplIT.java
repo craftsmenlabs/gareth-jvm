@@ -39,12 +39,6 @@ public class ExperimentEngineImplIT {
             allJobNames.forEach(SundialJobScheduler::removeJob);
         }
 
-//        final ArrayList<Experiment> objects = new ArrayList<>();
-//        new Verifications(){{
-//            final Experiment experiment = withCapture(objects);
-//            experimentStorage.save(experiment);
-//        }};
-
         if (engine != null) {
             engine.stop();
         }
