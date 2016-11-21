@@ -2,9 +2,9 @@ package org.craftsmenlabs.gareth2.providers
 
 import org.craftsmenlabs.gareth2.ExperimentStorage
 import org.craftsmenlabs.gareth2.model.Experiment
-import org.craftsmenlabs.gareth2.rx.KSchedulers
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
+import rx.schedulers.Schedulers
 import rx.subjects.BehaviorSubject
 
 @Service
@@ -24,5 +24,5 @@ class AllExperimentListProvider @Autowired constructor(private val experimentSto
     }
 
     val observable = behaviourSubject
-            .subscribeOn(KSchedulers.computation())
+            .subscribeOn(Schedulers.computation())
 }

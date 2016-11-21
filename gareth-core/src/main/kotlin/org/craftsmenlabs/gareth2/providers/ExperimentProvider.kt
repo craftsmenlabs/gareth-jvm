@@ -2,10 +2,10 @@ package org.craftsmenlabs.gareth2.providers
 
 import org.craftsmenlabs.gareth2.ExperimentStorage
 import org.craftsmenlabs.gareth2.model.Experiment
-import org.craftsmenlabs.gareth2.rx.KSchedulers
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
 import rx.lang.kotlin.toObservable
+import rx.schedulers.Schedulers
 import rx.subjects.PublishSubject
 import java.util.concurrent.TimeUnit
 
@@ -33,5 +33,5 @@ class ExperimentProvider @Autowired constructor(
     // Waiting for assume has counter measures, but all other monitors do not.
 
     val observable = publishSubject
-            .subscribeOn(KSchedulers.computation())
+            .subscribeOn(Schedulers.computation())
 }
