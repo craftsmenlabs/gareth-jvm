@@ -1,8 +1,8 @@
 package org.craftsmenlabs.gareth.execution.integration
 
 import org.assertj.core.api.Assertions.assertThat
+import org.craftsmenlabs.gareth.api.execution.GlueLineSearchResult
 import org.craftsmenlabs.gareth.execution.Application
-import org.craftsmenlabs.gareth.execution.dto.GlueLineSearchResultDTO
 import org.junit.FixMethodOrder
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -50,8 +50,8 @@ class GlueLineSearchIT {
         assertThat(get("${path}failure", "send").suggestions).contains("send email to *", "send text to *")
     }
 
-    fun get(path: String, glueLine: String): GlueLineSearchResultDTO {
-        val response = template.getForEntity(path + "/" + glueLine, GlueLineSearchResultDTO::class.java)
+    fun get(path: String, glueLine: String): GlueLineSearchResult {
+        val response = template.getForEntity(path + "/" + glueLine, GlueLineSearchResult::class.java)
         assertThat(response.statusCode.is2xxSuccessful).isTrue()
         return response.body
     }

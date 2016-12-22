@@ -5,9 +5,9 @@ import mockit.Injectable
 import mockit.Tested
 import mockit.integration.junit4.JMockit
 import org.assertj.core.api.Assertions.assertThat
+import org.craftsmenlabs.gareth.api.execution.*
 import org.craftsmenlabs.gareth.execution.RunContext
 import org.craftsmenlabs.gareth.execution.definitions.ExecutionType
-import org.craftsmenlabs.gareth.execution.dto.*
 import org.junit.Test
 import org.junit.runner.RunWith
 
@@ -20,11 +20,11 @@ class DefinitionServiceTest {
     @Tested
     lateinit var definitionService: DefinitionService
 
-    val environment = ExperimentRunEnvironmentDTO(listOf(Item("sale", "42", ItemType.LONG)))
+    val environment = ExperimentRunEnvironment(listOf(EnvironmentItem("sale", "42", ItemType.LONG)))
 
     @Test
     fun testBaseline() {
-        var request = ExecutionRequestDTO(environment, "sale of apples")
+        var request = ExecutionRequest(environment, "sale of apples")
         object : Expectations() {
             init {
                 registry.invokeVoidMethodByType("sale of apples", ExecutionType.BASELINE, request)
@@ -38,7 +38,7 @@ class DefinitionServiceTest {
 
     @Test
     fun testSuccessAssume() {
-        var request = ExecutionRequestDTO(environment, "has risen")
+        var request = ExecutionRequest(environment, "has risen")
         object : Expectations() {
             init {
                 registry.invokeAssumptionMethod("has risen", request)
@@ -52,7 +52,7 @@ class DefinitionServiceTest {
 
     @Test
     fun testFailureAssume() {
-        var request = ExecutionRequestDTO(environment, "has risen")
+        var request = ExecutionRequest(environment, "has risen")
         object : Expectations() {
             init {
                 registry.invokeAssumptionMethod("has risen", request)
@@ -65,7 +65,7 @@ class DefinitionServiceTest {
 
     @Test
     fun testSuccess() {
-        var request = ExecutionRequestDTO(environment, "send cake")
+        var request = ExecutionRequest(environment, "send cake")
         object : Expectations() {
             init {
                 registry.invokeVoidMethodByType("send cake", ExecutionType.SUCCESS, request)
@@ -78,7 +78,7 @@ class DefinitionServiceTest {
 
     @Test
     fun testFailure() {
-        var request = ExecutionRequestDTO(environment, "fire the culprit")
+        var request = ExecutionRequest(environment, "fire the culprit")
         object : Expectations() {
             init {
                 registry.invokeVoidMethodByType("fire the culprit", ExecutionType.FAILURE, request)

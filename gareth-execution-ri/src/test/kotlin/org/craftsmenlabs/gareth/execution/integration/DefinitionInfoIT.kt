@@ -9,11 +9,13 @@ import org.junit.runner.RunWith
 import org.junit.runners.MethodSorters
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
+import org.springframework.test.context.ActiveProfiles
 import org.springframework.test.context.junit4.SpringRunner
 
 @RunWith(SpringRunner::class)
-@SpringBootTest(classes = arrayOf(Application::class), webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@SpringBootTest(classes = arrayOf(Application::class), webEnvironment = SpringBootTest.WebEnvironment.NONE)
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
+@ActiveProfiles("Test")
 class DefinitionInfoIT {
 
     @Autowired
@@ -56,6 +58,7 @@ class DefinitionInfoIT {
         assertThat(info.glueline).isEqualTo("^send email to (.*?)$")
         assertThat(info.method).isEqualTo("sendFailureEmail")
         assertThat(info.className).isEqualTo("org.craftsmenlabs.gareth.execution.spi.ResultSteps")
+
     }
 
 }

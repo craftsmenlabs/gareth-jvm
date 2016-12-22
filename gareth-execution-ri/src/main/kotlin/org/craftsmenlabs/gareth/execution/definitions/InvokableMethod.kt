@@ -2,7 +2,7 @@ package org.craftsmenlabs.gareth.execution.definitions
 
 import org.craftsmenlabs.gareth.api.exception.GarethDefinitionParseException
 import org.craftsmenlabs.gareth.api.exception.GarethInvocationException
-import org.craftsmenlabs.gareth.execution.RunContext
+import org.craftsmenlabs.gareth.api.execution.ExecutionRunContext
 import java.lang.reflect.Method
 import java.lang.reflect.Type
 import java.util.*
@@ -39,10 +39,10 @@ class InvokableMethod {
         return method.declaringClass.name
     }
 
-    fun invokeWith(glueLineInExperiment: String, declaringClassInstance: Any, runContext: RunContext): Any? {
+    fun invokeWith(glueLineInExperiment: String, declaringClassInstance: Any, runContext: ExecutionRunContext): Any? {
         val arguments = ArrayList<Any>()
         if (hasRunContext())
-            arguments.add(runContext!!)
+            arguments.add(runContext)
         val argumentValuesFromInputString = getArgumentValuesFromInputString(glueLineInExperiment)
         arguments.addAll(argumentValuesFromInputString)
         try {
@@ -57,7 +57,7 @@ class InvokableMethod {
     }
 
     fun getRegularParameters() =
-            parameters.filter({ p -> p !== RunContext::class.java })
+            parameters.filter({ !isContextParameter(it) })
 
 
     fun getPattern(): String {
@@ -77,7 +77,7 @@ class InvokableMethod {
     private fun parseMethod() {
         for (parameter in method.parameters) {
             val cls = parameter.type
-            if (parameter.parameterizedType !== RunContext::class.java) {
+            if (isValidType(parameter.parameterizedType)) {
                 if (!isValidType(cls)) {
                     throw IllegalStateException("Parameter type $cls is not supported")
                 }
@@ -109,7 +109,7 @@ class InvokableMethod {
 
     private fun getParametersFromPattern(s: String): List<String> {
         val output = ArrayList<String>()
-        val matcher = pattern!!.matcher(s)
+        val matcher = pattern.matcher(s)
         if (!matcher.matches()) {
             throw IllegalArgumentException("Input string " + s + " could not be matched against pattern " + getPattern())
         }
@@ -122,5 +122,9 @@ class InvokableMethod {
             output.add(matcher.group(i))
         }
         return output
+    }
+
+    companion object {
+        fun isContextParameter(parameterClass: Class<*>) = ExecutionRunContext::class.java.isAssignableFrom(parameterClass)
     }
 }

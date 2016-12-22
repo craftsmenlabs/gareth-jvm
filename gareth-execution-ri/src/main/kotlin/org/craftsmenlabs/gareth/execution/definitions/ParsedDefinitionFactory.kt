@@ -2,10 +2,9 @@ package org.craftsmenlabs.gareth.execution.definitions
 
 import org.craftsmenlabs.gareth.api.annotation.*
 import org.craftsmenlabs.gareth.api.exception.GarethDefinitionParseException
-import org.craftsmenlabs.gareth.execution.RunContext
+import org.craftsmenlabs.gareth.api.exception.GarethInvocationException
 import org.craftsmenlabs.gareth.execution.services.DefinitionFactory
 import org.slf4j.LoggerFactory
-import java.lang.reflect.InvocationTargetException
 import java.lang.reflect.Method
 import java.time.Duration
 
@@ -74,17 +73,17 @@ class ParsedDefinitionFactory(val definitionFactory: DefinitionFactory) {
      */
     private fun registerDuration(method: Method, glueLine: String, durationMap: MutableMap<String, Duration>) {
         if (isTimeMethod(method)) {
+            val tmpDefinition: Any?
             try {
-                val tmpDefinition = definitionFactory.getInstanceForClass(method.declaringClass)
-                durationMap.put(glueLine, method.invoke(tmpDefinition) as Duration)
-            } catch (e: IllegalAccessException) {
-                throw GarethDefinitionParseException(e)
-            } catch (e: InstantiationException) {
-                throw GarethDefinitionParseException(e)
-            } catch (e: InvocationTargetException) {
-                throw GarethDefinitionParseException(e)
+                tmpDefinition = definitionFactory.getInstanceForClass(method.declaringClass)
+            } catch(e: Exception) {
+                throw GarethDefinitionParseException("Could not instantiate instance for class ${method.declaringClass}")
             }
-
+            try {
+                durationMap.put(glueLine, method.invoke(tmpDefinition) as Duration)
+            } catch (e: Exception) {
+                throw GarethInvocationException(e)
+            }
         } else {
             throw IllegalStateException(String.format("Method %s with glue line '%s' is not a valid method (no duration return type)", method.name, glueLine))
         }
@@ -92,7 +91,7 @@ class ParsedDefinitionFactory(val definitionFactory: DefinitionFactory) {
 
 
     private fun hasRunContextParameter(method: Method): Boolean {
-        val hasParam = method.parameterCount > 0 && method.parameterTypes[0] == RunContext::class.java// == "org.craftsmenlabs.gareth.execution.RunContext"
+        val hasParam = method.parameterCount > 0 && InvokableMethod.isContextParameter(method.parameterTypes[0])// == "org.craftsmenlabs.gareth.execution.RunContext"
         println(method.parameterTypes[0].name)
         return hasParam
     }

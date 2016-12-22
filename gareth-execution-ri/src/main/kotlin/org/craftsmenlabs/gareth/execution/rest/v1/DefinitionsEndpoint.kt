@@ -2,8 +2,8 @@ package org.craftsmenlabs.gareth.execution.rest.v1
 
 import io.swagger.annotations.Api
 import io.swagger.annotations.ApiOperation
+import org.craftsmenlabs.gareth.api.model.Duration
 import org.craftsmenlabs.gareth.execution.definitions.ExecutionType
-import org.craftsmenlabs.gareth.execution.dto.DurationDTO
 import org.craftsmenlabs.gareth.execution.services.DefinitionService
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.web.bind.annotation.PathVariable
@@ -34,7 +34,7 @@ class DefinitionsEndpoint @Autowired constructor(val definitionService: Definiti
             definitionService.getInfoByType(glueLine, ExecutionType.FAILURE)
 
     @RequestMapping(value = "definitions/time/{glueline}", method = arrayOf(RequestMethod.GET))
-    fun getDurationByGlueline(@PathVariable("glueline") glueLine: String): DurationDTO =
+    fun getDurationByGlueline(@PathVariable("glueline") glueLine: String): Duration =
             definitionService.getTime(glueLine)
 
 }

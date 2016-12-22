@@ -4,12 +4,13 @@ import com.google.common.reflect.ClassPath
 import org.craftsmenlabs.gareth.api.exception.GarethAlreadyKnownDefinitionException
 import org.craftsmenlabs.gareth.api.exception.GarethInvocationException
 import org.craftsmenlabs.gareth.api.exception.GarethUnknownDefinitionException
+import org.craftsmenlabs.gareth.api.execution.ExecutionRequest
+import org.craftsmenlabs.gareth.api.execution.ExecutionRunContext
 import org.craftsmenlabs.gareth.api.model.GlueLineType
 import org.craftsmenlabs.gareth.execution.RunContext
 import org.craftsmenlabs.gareth.execution.definitions.ExecutionType
 import org.craftsmenlabs.gareth.execution.definitions.InvokableMethod
 import org.craftsmenlabs.gareth.execution.definitions.ParsedDefinitionFactory
-import org.craftsmenlabs.gareth.execution.dto.ExecutionRequestDTO
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
@@ -94,19 +95,19 @@ open class DefinitionRegistry @Autowired constructor(val definitionFactory: Defi
     }
 
 
-    fun invokeAssumptionMethod(glueLine: String, request: ExecutionRequestDTO): Pair<Boolean, RunContext> {
+    fun invokeAssumptionMethod(glueLine: String, request: ExecutionRequest): Pair<Boolean, ExecutionRunContext> {
         val context = RunContext.create(request)
         val result = invokeMethodByType(glueLine, ExecutionType.ASSUME, context) as Boolean
         return Pair(result, context)
     }
 
-    fun invokeVoidMethodByType(glueLine: String, type: ExecutionType, request: ExecutionRequestDTO): RunContext {
+    fun invokeVoidMethodByType(glueLine: String, type: ExecutionType, request: ExecutionRequest): ExecutionRunContext {
         val context = RunContext.create(request)
         invokeMethodByType(glueLine, type, context)
         return context
     }
 
-    fun invokeMethodByType(glueLine: String, type: ExecutionType, context: RunContext): Any? {
+    fun invokeMethodByType(glueLine: String, type: ExecutionType, context: ExecutionRunContext): Any? {
         val method = getMethodDescriptorForExecutionType(glueLine, type)
         try {
             val declaringClass = getMethodDescriptorForExecutionType(glueLine, type).method.declaringClass
@@ -123,9 +124,8 @@ open class DefinitionRegistry @Autowired constructor(val definitionFactory: Defi
     }
 
     private fun matchesPattern(experimentLine: String, pattern: String): Boolean {
-        if (experimentLine == null || pattern == null) {
-            return false
-        }
+        if (pattern.isBlank())
+            return false;
         return getGlueLinePattern(pattern).matcher(experimentLine).matches()
     }
 
