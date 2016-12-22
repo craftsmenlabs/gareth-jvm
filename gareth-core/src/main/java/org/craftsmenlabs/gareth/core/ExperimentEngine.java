@@ -11,10 +11,7 @@ import org.craftsmenlabs.gareth.core.context.ExperimentContext;
 import org.craftsmenlabs.gareth.core.context.ExperimentRunContext;
 import org.craftsmenlabs.gareth.core.factory.ExperimentFactory;
 import org.craftsmenlabs.gareth.core.observer.DefaultObserver;
-import org.craftsmenlabs.gareth.core.parser.ParsedDefinition;
-import org.craftsmenlabs.gareth.core.parser.ParsedDefinitionFactory;
 import org.craftsmenlabs.gareth.core.persist.ExperimentEnginePersistence;
-import org.craftsmenlabs.gareth.core.registry.DefinitionRegistry;
 import org.craftsmenlabs.gareth.core.registry.ExperimentRegistry;
 import org.craftsmenlabs.gareth.core.storage.DefaultStorageFactory;
 import org.slf4j.Logger;
@@ -29,11 +26,6 @@ import java.util.stream.Collectors;
 public class ExperimentEngine {
 
     private final static Logger logger = LoggerFactory.getLogger(ExperimentEngine.class);
-
-    @Getter
-    private final DefinitionRegistry definitionRegistry;
-
-    private final ParsedDefinitionFactory parsedDefinitionFactory;
 
     private final ExperimentFactory experimentFactory;
 
@@ -63,8 +55,6 @@ public class ExperimentEngine {
 
     protected ExperimentEngine(final ExperimentEngineBuilder builder) {
         this.experimentEngineConfig = builder.experimentEngineConfig;
-        this.definitionRegistry = builder.definitionRegistry;
-        this.parsedDefinitionFactory = builder.parsedDefinitionFactory;
         this.experimentFactory = builder.experimentFactory;
         this.experimentRegistry = builder.experimentRegistry;
         this.storageFactory = builder.storageFactory;
@@ -74,11 +64,6 @@ public class ExperimentEngine {
         experimentRunner = new ExperimentRunner(builder.methodInvoker, builder.assumeScheduler, experimentEngineConfig
                 .isIgnoreInvocationExceptions());
 
-    }
-
-    private void registerDefinition(final Class clazz) throws GarethDefinitionParseException {
-        final ParsedDefinition parsedDefinition = parsedDefinitionFactory.parse(clazz);
-        addParsedDefinitionToRegistry(parsedDefinition);
     }
 
     private void registerExperiment(final InputStream inputStream) {
@@ -220,15 +205,4 @@ public class ExperimentEngine {
         }
     }
 
-    private void addParsedDefinitionToRegistry(final ParsedDefinition parsedDefinition) {
-        parsedDefinition.getBaselineDefinitions()
-                        .forEach((k, v) -> definitionRegistry.addMethodDescriptorForBaseline(k, v));
-        parsedDefinition.getAssumeDefinitions()
-                        .forEach((k, v) -> definitionRegistry.addMethodDescriptorForAssume(k, v));
-        parsedDefinition.getFailureDefinitions()
-                        .forEach((k, v) -> definitionRegistry.addMethodDescriptorForFailure(k, v));
-        parsedDefinition.getSuccessDefinitions()
-                        .forEach((k, v) -> definitionRegistry.addMethodDescriptorForSuccess(k, v));
-        parsedDefinition.getTimeDefinitions().forEach((k, v) -> definitionRegistry.addDurationForTime(k, v));
-    }
 }

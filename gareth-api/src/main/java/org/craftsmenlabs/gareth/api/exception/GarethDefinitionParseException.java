@@ -1,7 +1,7 @@
 package org.craftsmenlabs.gareth.api.exception;
 
 
-public class GarethDefinitionParseException extends RuntimeException {
+public class GarethDefinitionParseException extends GarethException {
 
     public GarethDefinitionParseException(final Throwable cause) {
         super(cause);

@@ -34,7 +34,7 @@
 		<mockserver-netty.version>3.10.2</mockserver-netty.version>
 		<guava.version>19.0</guava.version>
 		<spring.version>1.4.0.RELEASE</spring.version>
-		<kotlin.version>1.0.4</kotlin.version>
+		<kotlin.version>1.0.5-2</kotlin.version>
 		<swagger.version>2.6.0</swagger.version>
 	</properties>
 
@@ -383,7 +383,18 @@
 			<version>3.4.0</version>
 			<scope>test</scope>
 		</dependency>
-	</dependencies>
+        <dependency>
+            <groupId>org.jetbrains.kotlin</groupId>
+            <artifactId>kotlin-stdlib</artifactId>
+            <version>${kotlin.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.jetbrains.kotlin</groupId>
+            <artifactId>kotlin-test</artifactId>
+            <version>${kotlin.version}</version>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
 
 	<build>
 		<plugins>
@@ -442,7 +453,28 @@
 				<artifactId>spring-boot-maven-plugin</artifactId>
 				<version>${spring.version}</version>
 			</plugin>
-		</plugins>
+            <plugin>
+                <groupId>org.jetbrains.kotlin</groupId>
+                <artifactId>kotlin-maven-plugin</artifactId>
+                <version>${kotlin.version}</version>
+                <executions>
+                    <execution>
+                        <id>compile</id>
+                        <phase>compile</phase>
+                        <goals>
+                            <goal>compile</goal>
+                        </goals>
+                    </execution>
+                    <execution>
+                        <id>test-compile</id>
+                        <phase>test-compile</phase>
+                        <goals>
+                            <goal>test-compile</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
 	</build>
 
 

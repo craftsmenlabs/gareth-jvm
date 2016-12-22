@@ -1,7 +1,7 @@
 package org.craftsmenlabs.gareth.api.exception;
 
 
-public class GarethStateWriteException extends Exception {
+public class GarethStateWriteException extends GarethException {
 
     public GarethStateWriteException(final Throwable cause) {
         super(cause);

@@ -5,7 +5,6 @@ import org.craftsmenlabs.gareth.api.annotation.Baseline;
 import org.craftsmenlabs.gareth.api.annotation.Failure;
 import org.craftsmenlabs.gareth.api.annotation.Success;
 import org.craftsmenlabs.gareth.api.annotation.Time;
-import org.craftsmenlabs.gareth.core.storage.DefaultStorage;
 
 import java.time.Duration;
 import java.time.temporal.ChronoUnit;
