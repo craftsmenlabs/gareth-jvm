@@ -43,7 +43,7 @@ class IsReadyMonitorTest {
 
     @Before
     fun setUp() {
-        monitor = IsReadyMonitor(experimentProvider, dateTimeService, gluelineLookup, experimentStorage)
+        monitor = IsReadyMonitor(experimentProvider, dateTimeService, experimentStorage, gluelineLookup)
     }
 
     @Test

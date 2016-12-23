@@ -26,10 +26,10 @@ data class Experiment(
             return ExperimentState.ASSUME_EXECUTED
         } else if (timing.finalizingExecuted == null) {
             return ExperimentState.WAITING_FOR_FINALISATION
-        } else if (timing.started == null) {
-            return ExperimentState.READY
-        } else {
+        } else if (timing.completed == null) {
             return ExperimentState.FINALISATION_EXECUTED
+        } else{
+            return ExperimentState.COMPLETED
         }
     }
 }
@@ -63,5 +63,5 @@ data class ExperimentResults(
 
 enum class ExperimentState {
     NEW, READY, STARTED, WAITING_FOR_BASELINE, BASELINE_EXECUTED,
-    WAITING_FOR_ASSUME, ASSUME_EXECUTED, WAITING_FOR_FINALISATION, FINALISATION_EXECUTED
+    WAITING_FOR_ASSUME, ASSUME_EXECUTED, WAITING_FOR_FINALISATION, FINALISATION_EXECUTED, COMPLETED
 }

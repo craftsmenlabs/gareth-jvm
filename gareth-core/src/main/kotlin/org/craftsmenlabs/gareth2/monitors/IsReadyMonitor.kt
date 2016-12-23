@@ -2,29 +2,26 @@ package org.craftsmenlabs.gareth2.monitors
 
 import org.craftsmenlabs.gareth2.ExperimentStorage
 import org.craftsmenlabs.gareth2.GluelineLookup
+import org.craftsmenlabs.gareth2.model.Experiment
 import org.craftsmenlabs.gareth2.model.ExperimentState
 import org.craftsmenlabs.gareth2.providers.ExperimentProvider
 import org.craftsmenlabs.gareth2.time.DateTimeService
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
-import rx.schedulers.Schedulers
-import javax.annotation.PostConstruct
+import rx.Observable
 
 @Service
 class IsReadyMonitor @Autowired constructor(
-        private val experimentProvider: ExperimentProvider,
-        private val dateTimeService: DateTimeService,
-        private val gluelineLookup: GluelineLookup,
-        private val experimentStorage: ExperimentStorage) {
+        experimentProvider: ExperimentProvider,
+        dateTimeService: DateTimeService,
+        experimentStorage: ExperimentStorage,
+        private val gluelineLookup: GluelineLookup)
+    : BaseMonitor(
+        experimentProvider, dateTimeService, experimentStorage, ExperimentState.NEW) {
 
-    @PostConstruct
-    fun start() {
-        experimentProvider.observable
-                .subscribeOn(Schedulers.io())
-                .filter { it.getState() == ExperimentState.NEW }
+    override fun extend(observable: Observable<Experiment>): Observable<Experiment> {
+        return observable
                 .filter { gluelineLookup.isExperimentReady(it) }
                 .map { it.apply { it.timing.ready = dateTimeService.now() } }
-                .observeOn(Schedulers.computation())
-                .subscribe { experimentStorage.save(it) }
     }
 }
