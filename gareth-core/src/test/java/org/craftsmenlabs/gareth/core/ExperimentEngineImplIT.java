@@ -1,17 +1,14 @@
 package org.craftsmenlabs.gareth.core;
 
 import com.xeiam.sundial.SundialJobScheduler;
-import org.craftsmenlabs.gareth.api.annotation.Assume;
-import org.craftsmenlabs.gareth.api.annotation.Baseline;
-import org.craftsmenlabs.gareth.api.annotation.Failure;
-import org.craftsmenlabs.gareth.api.annotation.Success;
-import org.craftsmenlabs.gareth.api.annotation.Time;
+import org.craftsmenlabs.gareth.api.annotation.*;
 import org.craftsmenlabs.gareth.api.context.ExperimentPartState;
 import org.craftsmenlabs.gareth.api.model.GlueLineType;
 import org.craftsmenlabs.gareth.core.context.ExperimentContext;
 import org.craftsmenlabs.gareth.core.context.ExperimentRunContext;
 import org.craftsmenlabs.gareth.core.registry.DefinitionRegistry;
 import org.craftsmenlabs.gareth.core.storage.DefaultStorage;
+import org.craftsmenlabs.gareth2.ExperimentStorage;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -19,24 +16,17 @@ import org.junit.Test;
 import java.io.File;
 import java.time.Duration;
 import java.time.temporal.ChronoUnit;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 public class ExperimentEngineImplIT {
 
     private ExperimentEngine engine;
-
+     ExperimentStorage experimentStorage;
     @Before
     public void setUp() throws Exception {
         clearStorage();

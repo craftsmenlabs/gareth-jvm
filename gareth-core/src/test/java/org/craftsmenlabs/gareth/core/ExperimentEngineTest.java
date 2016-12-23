@@ -1,5 +1,6 @@
 package org.craftsmenlabs.gareth.core;
 
+import mockit.Verifications;
 import org.craftsmenlabs.gareth.api.exception.GarethUnknownExperimentException;
 import org.craftsmenlabs.gareth.api.model.AssumptionBlock;
 import org.craftsmenlabs.gareth.api.model.Experiment;
@@ -93,6 +94,11 @@ public class ExperimentEngineTest {
     public void testStartValidateParseDefinition() throws Exception {
         final Class clazz = Object.class;
         final Class[] definitionClasses = new Class[]{clazz};
+
+        List<Class> classList = new ArrayList<>();
+        new Verifications(){{
+            mockParsedDefinitionFactory.parse(withCapture(classList));
+        }};
 
         when(mockExperimentEngineConfig.getDefinitionClasses()).thenReturn(definitionClasses);
 

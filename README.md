@@ -15,7 +15,7 @@ Gareth is platform that allows you to make business goal validation part of your
 		- [Running Gareth (without REST interface)](#running-gareth-without-rest-interface)
 		- [Running Gareth (with REST interface)](#running-gareth-with-rest-interface)
 - [Matching glue lines to definition methods](#matching-glue-lines-to-definition-methods)
-- [Specifying duration](#specifying-duration)
+- [Specifying expected](#specifying-expected)
 	- [Contribute](#contribute)
 		- [Help wanted!](#help-wanted)
 
@@ -350,15 +350,15 @@ It's a powerful mechanism, but there are some rules to the game:
 
 * Permitted arguments types are String, Integer, Long, Double and their corresponding primitive types. Use of other types in definition methods will cause an error. Gareth must be able to convert parse the regex matches (always String) to a valid Java type.
 
-# Specifying duration
-The regex mechanism as described above is not available for the Time glue line, meaning that the @Time annotated definition method cannot be configured with arguments. However, you may leave it out entirely if your Time glue line follows the pattern of [number] [duration], where duration is one of second, minute, hour, day, week, month, year, or their corresponding plurals:
+# Specifying expected
+The regex mechanism as described above is not available for the Time glue line, meaning that the @Time annotated definition method cannot be configured with arguments. However, you may leave it out entirely if your Time glue line follows the pattern of [number] [expected], where expected is one of second, minute, hour, day, week, month, year, or their corresponding plurals:
 * Time: 48 hours
 * Time: 3 weeks
 * Time: 42 days
 * Time: 1 month
 * Time: 1 year
 
-Note that month is always 30 days and year is 365 days. Running the experiment with 1 month duration on the 1st of February will check the assumption on the 3rd of March, ignoring leap years. If you want specific behaviour you can still write your own implementation:
+Note that month is always 30 days and year is 365 days. Running the experiment with 1 month expected on the 1st of February will check the assumption on the 3rd of March, ignoring leap years. If you want specific behaviour you can still write your own implementation:
 ```shell
 Time: Tuesday after next Easter
 @Time(glueLine = "Tuesday after next Easter")
