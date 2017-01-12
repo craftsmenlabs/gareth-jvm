@@ -38,7 +38,7 @@ The Gareth framework must be fed with two pieces of information, the 'experiment
 #### Experiment
 
 The experiments describes the assumptions somebody has when they have certain functionality build. For example a certain
-functionality is build is build to reduce failed logins. (The why) Within a experiment you can describe this in a
+functionality is build to reduce failed logins. (The why) Within a experiment you can describe this in a
 structured manner.
 
 ```
