@@ -509,10 +509,6 @@
 		<module>gareth-antlr</module>
 		<module>gareth-api</module>
 		<module>gareth-core</module>
-		<module>gareth-rest</module>
-		<module>gareth-json-persistence</module>
-		<module>gareth-http-json-persistence</module>
-		<module>gareth-application</module>
 		<module>gareth-execution-ri</module>
 	</modules>
 
