@@ -21,7 +21,7 @@ class ExecuteAssumeMonitor @Autowired constructor(
 
     override fun extend(observable: Observable<Experiment>): Observable<Experiment> {
         return observable
-                .map { it.apply { it.results.success = glueLineExecutor.executeAssumption(it) } }
-                .map { it.apply { it.timing.assumeExecuted = dateTimeService.now() } }
+                .map { it.copy(results = it.results.copy(success = glueLineExecutor.executeAssumption(it))) }
+                .map { it.copy(timing = it.timing.copy(assumeExecuted = dateTimeService.now())) }
     }
 }

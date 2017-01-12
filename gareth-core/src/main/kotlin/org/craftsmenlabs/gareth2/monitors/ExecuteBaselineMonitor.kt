@@ -22,6 +22,6 @@ class ExecuteBaselineMonitor @Autowired constructor(
     override fun extend(observable: Observable<Experiment>): Observable<Experiment> {
         return observable
                 .map { it.apply { glueLineExecutor.executeBaseline(it) } }
-                .map { it.apply { it.timing.baselineExecuted = dateTimeService.now() } }
+                .map { it.copy(timing = it.timing.copy(baselineExecuted = dateTimeService.now())) }
     }
 }

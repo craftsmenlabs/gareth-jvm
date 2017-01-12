@@ -77,7 +77,7 @@ class MonitorIT {
     @Before
     fun setUp() {
 
-        object : Expectations(){
+        object : Expectations() {
             init {
                 dateTimeService.now()
                 returns(localDateTimeReady_21,
@@ -183,8 +183,9 @@ class MonitorIT {
         waitForPipeline()
 
         val storedExperiment = getStoredExperiment()
-        storedExperiment.timing.started = wrappedDateTimeService.now();
-        experimentStorage.save(storedExperiment)
+        var copiedExp = storedExperiment.copy(timing = storedExperiment.timing.copy(started = wrappedDateTimeService.now()))
+
+        experimentStorage.save(copiedExp)
 
         waitForAssumePlanning()
 
@@ -232,8 +233,9 @@ class MonitorIT {
         waitForPipeline()
 
         val storedExperiment = getStoredExperiment()
-        storedExperiment.timing.started = wrappedDateTimeService.now();
-        experimentStorage.save(storedExperiment)
+        var copiedExp = storedExperiment.copy(timing = storedExperiment.timing.copy(started = wrappedDateTimeService.now()))
+
+        experimentStorage.save(copiedExp)
 
         waitForAssumePlanning()
 

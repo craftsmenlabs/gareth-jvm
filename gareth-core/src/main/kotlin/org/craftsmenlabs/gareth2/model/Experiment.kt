@@ -46,19 +46,19 @@ data class ExperimentDetails(
 
 data class ExperimentTiming(
         val created: LocalDateTime = LocalDateTime.now(),
-        var ready: LocalDateTime? = null,
-        var started: LocalDateTime? = null,
-        var waitingForBaseline: LocalDateTime? = null,
-        var baselineExecuted: LocalDateTime? = null,
-        var waitingForAssume: LocalDateTime? = null,
-        var assumeExecuted: LocalDateTime? = null,
-        var waitingFinalizing: LocalDateTime? = null,
-        var finalizingExecuted: LocalDateTime? = null,
-        var completed: LocalDateTime? = null
+        val ready: LocalDateTime? = null,
+        val started: LocalDateTime? = null,
+        val waitingForBaseline: LocalDateTime? = null,
+        val baselineExecuted: LocalDateTime? = null,
+        val waitingForAssume: LocalDateTime? = null,
+        val assumeExecuted: LocalDateTime? = null,
+        val waitingFinalizing: LocalDateTime? = null,
+        val finalizingExecuted: LocalDateTime? = null,
+        val completed: LocalDateTime? = null
 )
 
 data class ExperimentResults(
-        var success: Boolean? = null
+        val success: Boolean? = null
 )
 
 enum class ExperimentState {

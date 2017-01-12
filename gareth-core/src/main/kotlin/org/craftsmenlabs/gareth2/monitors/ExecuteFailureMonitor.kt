@@ -23,6 +23,6 @@ class ExecuteFailureMonitor @Autowired constructor(
         return observable
                 .filter { it.results.success == false }
                 .map { it.apply { glueLineExecutor.executeFailure(it) } }
-                .map { it.apply { it.timing.finalizingExecuted = dateTimeService.now() } }
+                .map { it.copy(timing = it.timing.copy(finalizingExecuted = dateTimeService.now())) }
     }
 }

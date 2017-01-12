@@ -23,6 +23,6 @@ class ExecuteSuccessMonitor @Autowired constructor(
         return observable
                 .filter { it.results.success == true }
                 .map { it.apply { glueLineExecutor.executeSuccess(it) } }
-                .map { it.apply { it.timing.finalizingExecuted = dateTimeService.now() } }
+                .map { it.copy(timing = it.timing.copy(finalizingExecuted = dateTimeService.now())) }
     }
 }

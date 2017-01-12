@@ -35,7 +35,7 @@ class IsWaitingForAssumeMonitor @Autowired constructor(
                     val delay = Observable.just(it).delay(delayInSeconds, TimeUnit.SECONDS)
                     return@delay delay
                 }
-                .map { it.apply { it.timing.waitingForAssume = dateTimeService.now() } }
+                .map { it.copy(timing = it.timing.copy(waitingForAssume = dateTimeService.now())) }
     }
 }
 

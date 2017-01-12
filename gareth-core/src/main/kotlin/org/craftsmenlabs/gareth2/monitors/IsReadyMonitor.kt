@@ -22,6 +22,6 @@ class IsReadyMonitor @Autowired constructor(
     override fun extend(observable: Observable<Experiment>): Observable<Experiment> {
         return observable
                 .filter { glueLineLookup.isExperimentReady(it) }
-                .map { it.apply { it.timing.ready = dateTimeService.now() } }
+                .map { it.copy(timing = it.timing.copy(ready = dateTimeService.now())) }
     }
 }

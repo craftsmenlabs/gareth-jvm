@@ -18,6 +18,7 @@ class IsCompletedMonitor @Autowired constructor(
         experimentProvider, dateTimeService, experimentStorage, ExperimentState.FINALISATION_EXECUTED) {
 
     override fun extend(observable: Observable<Experiment>): Observable<Experiment> {
-        return observable.map { it.apply { it.timing.completed = dateTimeService.now() } }
+        return observable
+                .map { it.copy(timing = it.timing.copy(completed = dateTimeService.now())) }
     }
 }
