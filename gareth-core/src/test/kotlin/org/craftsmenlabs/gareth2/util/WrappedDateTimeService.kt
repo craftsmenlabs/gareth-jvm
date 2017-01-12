@@ -9,7 +9,7 @@ import java.time.LocalDateTime
 @Profile("test")
 open class WrappedDateTimeService : DateTimeService {
 
-    lateinit var mock: DateTimeService
+    lateinit var mock : DateTimeService
 
     override fun now(): LocalDateTime {
         return mock.now()

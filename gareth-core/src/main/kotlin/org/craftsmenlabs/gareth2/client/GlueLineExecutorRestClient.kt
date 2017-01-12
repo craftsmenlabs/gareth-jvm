@@ -2,8 +2,12 @@ package org.craftsmenlabs.gareth2.client
 
 import org.craftsmenlabs.gareth2.GlueLineExecutor
 import org.craftsmenlabs.gareth2.model.Experiment
+import org.springframework.context.annotation.Profile
+import org.springframework.stereotype.Service
 import java.time.Duration
 
+@Service
+@Profile("!test")
 class GlueLineExecutorRestClient : GlueLineExecutor {
 
     override fun executeBaseline(experiment: Experiment) {

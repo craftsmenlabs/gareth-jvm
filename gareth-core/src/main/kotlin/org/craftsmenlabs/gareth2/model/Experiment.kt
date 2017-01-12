@@ -45,7 +45,7 @@ data class ExperimentDetails(
 )
 
 data class ExperimentTiming(
-        val created: LocalDateTime,
+        val created: LocalDateTime = LocalDateTime.now(),
         var ready: LocalDateTime? = null,
         var started: LocalDateTime? = null,
         var waitingForBaseline: LocalDateTime? = null,
