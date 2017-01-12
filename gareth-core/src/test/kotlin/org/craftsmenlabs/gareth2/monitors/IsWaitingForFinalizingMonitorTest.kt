@@ -5,7 +5,7 @@ import mockit.Injectable
 import mockit.Verifications
 import org.assertj.core.api.Assertions.assertThat
 import org.craftsmenlabs.gareth2.ExperimentStorage
-import org.craftsmenlabs.gareth2.GluelineLookup
+import org.craftsmenlabs.gareth2.GlueLineLookup
 import org.craftsmenlabs.gareth2.model.Experiment
 import org.craftsmenlabs.gareth2.model.ExperimentDetails
 import org.craftsmenlabs.gareth2.model.ExperimentResults
@@ -45,7 +45,7 @@ class IsWaitingForFinalizingMonitorTest {
     lateinit var dateTimeService: DateTimeService
 
     @Injectable
-    lateinit var gluelineLookup: GluelineLookup
+    lateinit var glueLineLookup: GlueLineLookup
 
     @Injectable
     lateinit var experimentStorage: ExperimentStorage

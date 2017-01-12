@@ -6,7 +6,7 @@ import mockit.Mocked
 import mockit.Verifications
 import org.assertj.core.api.Assertions.assertThat
 import org.craftsmenlabs.gareth2.ExperimentStorage
-import org.craftsmenlabs.gareth2.GluelineLookup
+import org.craftsmenlabs.gareth2.GlueLineLookup
 import org.craftsmenlabs.gareth2.model.Experiment
 import org.craftsmenlabs.gareth2.model.ExperimentDetails
 import org.craftsmenlabs.gareth2.model.ExperimentResults
@@ -34,7 +34,7 @@ class IsReadyMonitorTest {
     lateinit var dateTimeService: DateTimeService
 
     @Injectable
-    lateinit var gluelineLookup: GluelineLookup
+    lateinit var glueLineLookup: GlueLineLookup
 
     @Injectable
     lateinit var experimentStorage: ExperimentStorage
@@ -43,7 +43,7 @@ class IsReadyMonitorTest {
 
     @Before
     fun setUp() {
-        monitor = IsReadyMonitor(experimentProvider, dateTimeService, experimentStorage, gluelineLookup)
+        monitor = IsReadyMonitor(experimentProvider, dateTimeService, experimentStorage, glueLineLookup)
     }
 
     @Test
@@ -67,10 +67,10 @@ class IsReadyMonitorTest {
 
         object : Verifications() {
             init {
-                gluelineLookup.isExperimentReady(experimentNew)
+                glueLineLookup.isExperimentReady(experimentNew)
                 times = 1
 
-                gluelineLookup.isExperimentReady(experimentReady)
+                glueLineLookup.isExperimentReady(experimentReady)
                 times = 0
             }
         }
@@ -91,10 +91,10 @@ class IsReadyMonitorTest {
                 experimentProvider.observable
                 result = experiments.toObservable()
 
-                gluelineLookup.isExperimentReady(experiment1)
+                glueLineLookup.isExperimentReady(experiment1)
                 result = false
 
-                gluelineLookup.isExperimentReady(experiment2)
+                glueLineLookup.isExperimentReady(experiment2)
                 result = true
 
                 dateTimeService.now()
@@ -128,7 +128,7 @@ class IsReadyMonitorTest {
                 experimentProvider.observable
                 result = experiments.toObservable()
 
-                gluelineLookup.isExperimentReady(experiment)
+                glueLineLookup.isExperimentReady(experiment)
                 result = true
 
                 dateTimeService.now()
