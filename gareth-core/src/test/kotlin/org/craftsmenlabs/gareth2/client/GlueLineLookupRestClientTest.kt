@@ -56,7 +56,7 @@ class GlueLineLookupRestClientTest {
             init {
                 experiment.details
                 result = details
-                details.assumption
+                details.assume
                 result = "A"
                 details.baseline
                 result = "B"

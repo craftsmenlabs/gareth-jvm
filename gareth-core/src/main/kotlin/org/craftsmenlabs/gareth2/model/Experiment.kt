@@ -7,7 +7,8 @@ data class Experiment(
         val details: ExperimentDetails,
         val timing: ExperimentTiming,
         val results: ExperimentResults,
-        val id: String = UUID.randomUUID().toString()) {
+        val id: String = UUID.randomUUID().toString(),
+        val environment: Map<String, Any> = mapOf()) {
 
     fun getState(): ExperimentState {
         if (timing.ready == null) {
@@ -28,7 +29,7 @@ data class Experiment(
             return ExperimentState.WAITING_FOR_FINALISATION
         } else if (timing.completed == null) {
             return ExperimentState.FINALISATION_EXECUTED
-        } else{
+        } else {
             return ExperimentState.COMPLETED
         }
     }
@@ -36,7 +37,7 @@ data class Experiment(
 
 data class ExperimentDetails(
         val baseline: String,
-        val assumption: String,
+        val assume: String,
         val time: String,
         val success: String,
         val failure: String,

@@ -26,6 +26,5 @@ object ExperimentRunEnvironmentBuilder {
         val entries = data.map { entry -> createItem(entry.key, entry.value) }
         return ExperimentRunEnvironment(entries)
     }
-
 }
 

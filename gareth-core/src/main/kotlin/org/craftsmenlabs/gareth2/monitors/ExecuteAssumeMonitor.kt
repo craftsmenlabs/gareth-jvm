@@ -22,7 +22,7 @@ class ExecuteAssumeMonitor @Autowired constructor(
         experimentProvider.observable
                 .subscribeOn(Schedulers.io())
                 .filter { it.getState() == ExperimentState.WAITING_FOR_ASSUME }
-                .map { it.apply { it.results.success = glueLineExecutor.executeAssumption(it) } }
+                .map { it.apply { it.results.success = glueLineExecutor.executeAssume(it) } }
                 .map { it.apply { it.timing.assumeExecuted = dateTimeService.now() } }
                 .observeOn(Schedulers.computation())
                 .subscribe { experimentStorage.save(it) }

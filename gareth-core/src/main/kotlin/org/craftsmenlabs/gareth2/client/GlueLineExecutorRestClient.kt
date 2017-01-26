@@ -1,28 +1,37 @@
 package org.craftsmenlabs.gareth2.client
 
+import org.craftsmenlabs.gareth.api.execution.ExecutionStatus
+import org.craftsmenlabs.gareth.api.model.GlueLineType
 import org.craftsmenlabs.gareth2.GlueLineExecutor
 import org.craftsmenlabs.gareth2.model.Experiment
+import org.springframework.beans.factory.annotation.Autowired
 import java.time.Duration
+import java.time.temporal.ChronoUnit
 
-class GlueLineExecutorRestClient : GlueLineExecutor {
+class GlueLineExecutorRestClient(@Autowired private val restClient: ExecutionRestClient) : GlueLineExecutor {
+
+    private val requestFactory = ExecutionRequestFactory()
 
     override fun executeBaseline(experiment: Experiment) {
-        throw UnsupportedOperationException("not implemented") //To change body of created functions use File | Settings | File Templates.
+        restClient.executeLifeCycleStage(GlueLineType.BASELINE, requestFactory.createForGluelineType(GlueLineType.BASELINE, experiment))
     }
 
-    override fun executeAssumption(experiment: Experiment): Boolean {
-        throw UnsupportedOperationException("not implemented") //To change body of created functions use File | Settings | File Templates.
+    override fun executeAssume(experiment: Experiment): Boolean {
+        val result = restClient.executeLifeCycleStage(GlueLineType.ASSUME, requestFactory.createForGluelineType(GlueLineType.ASSUME, experiment))
+        return result.status == ExecutionStatus.SUCCESS
     }
 
     override fun getDuration(experiment: Experiment): Duration {
-        throw UnsupportedOperationException("not implemented") //To change body of created functions use File | Settings | File Templates.
+        val duration = restClient.getDuration(requestFactory.createForGluelineType(GlueLineType.ASSUME, experiment))
+        return Duration.of(duration.amount, ChronoUnit.valueOf(duration.unit))
     }
 
     override fun executeSuccess(experiment: Experiment) {
-        throw UnsupportedOperationException("not implemented") //To change body of created functions use File | Settings | File Templates.
+        restClient.executeLifeCycleStage(GlueLineType.SUCCESS, requestFactory.createForGluelineType(GlueLineType.SUCCESS, experiment))
     }
 
     override fun executeFailure(experiment: Experiment) {
-        throw UnsupportedOperationException("not implemented") //To change body of created functions use File | Settings | File Templates.
+        restClient.executeLifeCycleStage(GlueLineType.FAILURE, requestFactory.createForGluelineType(GlueLineType.FAILURE, experiment))
     }
+
 }

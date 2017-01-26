@@ -48,7 +48,7 @@ class IsReadyMonitorTest {
 
     @Test
     fun shouldOnlyOperateOnNewExperiments() {
-        val details = ExperimentDetails("baseline", "assumption", "time", "success", "failure", 111, "id")
+        val details = ExperimentDetails("baseline", "assume", "time", "success", "failure", 111, "id")
         val timingNew = ExperimentTiming(localDateTime1)
         val timingReady = ExperimentTiming(localDateTime2, localDateTime3)
         val results = ExperimentResults()
@@ -78,7 +78,7 @@ class IsReadyMonitorTest {
 
     @Test
     fun shouldOnlyUpdateExperimentsWithGluelines() {
-        val details = ExperimentDetails("baseline", "assumption", "time", "success", "failure", 111, "id")
+        val details = ExperimentDetails("baseline", "assume", "time", "success", "failure", 111, "id")
         val timingNew1 = ExperimentTiming(localDateTime1)
         val timingNew2 = ExperimentTiming(localDateTime2)
         val results = ExperimentResults()
@@ -117,7 +117,7 @@ class IsReadyMonitorTest {
 
     @Test
     fun shouldUpdateReadyTimestampWhenReady(@Mocked schedulers: Schedulers) {
-        val details = ExperimentDetails("baseline", "assumption", "time", "success", "failure", 111, "id")
+        val details = ExperimentDetails("baseline", "assume", "time", "success", "failure", 111, "id")
         val timingNew = ExperimentTiming(localDateTime1)
         val results = ExperimentResults()
         val experiment = Experiment(details, timingNew, results)

@@ -2,8 +2,10 @@ package org.craftsmenlabs.gareth.api.model;
 
 import lombok.Value;
 
+import java.io.Serializable;
+
 @Value
-public class DefinitionInfo {
+public class DefinitionInfo implements Serializable {
 
     private String glueline;
 

@@ -26,7 +26,7 @@ class GlueLineMatcherEndpoint @Autowired constructor(val glueLineMatcher: GlueLi
     @RequestMapping(value = "search/assume/{glueline}", method = arrayOf(RequestMethod.GET))
     @ApiOperation(value = "Returns assumption definition matches for the given (partial) glueline")
     fun getAssumeByGlueline(@PathVariable("glueline") glueLine: String): GlueLineSearchResult =
-            glueLineMatcher.getMatches(GlueLineType.ASSUMPTION, glueLine)
+            glueLineMatcher.getMatches(GlueLineType.ASSUME, glueLine)
 
     @RequestMapping(value = "search/success/{glueline}", method = arrayOf(RequestMethod.GET))
     @ApiOperation(value = "Returns success definition matches for the given (partial) glueline")

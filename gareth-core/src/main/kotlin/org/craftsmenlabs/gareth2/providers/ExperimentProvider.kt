@@ -29,7 +29,7 @@ class ExperimentProvider @Autowired constructor(
         }
     }
 
-    // TODO: Some how we should not emit the same event twice whitin the time it take to process an call to the executor.
+    // TODO: Somehow we should not emit the same event twice whitin the time it take to process a call to the executor.
     // Waiting for assume has counter measures, but all other monitors do not.
 
     val observable = publishSubject

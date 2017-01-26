@@ -24,8 +24,8 @@ public class AssumptionBlockTest {
 
     @Test
     public void testSetGetAssumption() throws Exception {
-        assumptionBlock.setAssumption("assumption1");
-        assertEquals("assumption1", assumptionBlock.getAssumption());
+        assumptionBlock.setAssume("assumption1");
+        assertEquals("assumption1", assumptionBlock.getAssume());
     }
 
     @Test
@@ -53,7 +53,7 @@ public class AssumptionBlockTest {
 
     @Test
     public void testGetAssumption() throws Exception {
-        assertNull(assumptionBlock.getAssumption());
+        assertNull(assumptionBlock.getAssume());
     }
 
     @Test

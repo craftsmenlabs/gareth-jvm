@@ -3,7 +3,7 @@ grammar Gareth;
 experiment: 'Experiment:' expirementName=GlueLine;
 weight: 'Weight:' experimentWeight=GlueLine;
 baseline: 'Baseline:' baselineGlueLine=GlueLine;
-assumption: 'Assumption:' assumptionGlueLine=GlueLine;
+assume: 'Assumption:' assumptionGlueLine=GlueLine;
 time: 'Time:' timeGlueLine=GlueLine;
 success: 'Success:' successGlueLine=GlueLine;
 failure: 'Failure:' failureGlueLine=GlueLine;
@@ -25,7 +25,7 @@ successOrFailure:
 
 assumptionBlock:
     ((NL)+ baseline)
-    ((NL)+ assumption)
+    ((NL)+ assume)
     ((NL)+ time)
     (successOrFailure)?
     (NL)*;

@@ -3,7 +3,7 @@ package org.craftsmenlabs.gareth.api.model;
 import java.util.Optional;
 
 public enum GlueLineType {
-    BASELINE, ASSUMPTION, TIME, SUCCESS, FAILURE,;
+    BASELINE, ASSUME, TIME, SUCCESS, FAILURE,;
 
     public static Optional<GlueLineType> safeValueOf(String key) {
         try {

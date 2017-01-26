@@ -358,7 +358,7 @@ The regex mechanism as described above is not available for the Time glue line, 
 * Time: 1 month
 * Time: 1 year
 
-Note that month is always 30 days and year is 365 days. Running the experiment with 1 month expected on the 1st of February will check the assumption on the 3rd of March, ignoring leap years. If you want specific behaviour you can still write your own implementation:
+Note that month is always 30 days and year is 365 days. Running the experiment with 1 month expected on the 1st of February will check the assume on the 3rd of March, ignoring leap years. If you want specific behaviour you can still write your own implementation:
 ```shell
 Time: Tuesday after next Easter
 @Time(glueLine = "Tuesday after next Easter")

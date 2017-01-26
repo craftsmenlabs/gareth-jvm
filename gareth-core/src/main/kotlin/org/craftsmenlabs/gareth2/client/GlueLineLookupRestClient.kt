@@ -18,7 +18,7 @@ class GlueLineLookupRestClient : GluelineLookup {
     override fun isExperimentReady(experiment: Experiment): Boolean {
         val details = experiment.details
         val lines = mapOf<String, String>(
-                Pair("assume", details.assumption),
+                Pair("assume", details.assume),
                 Pair("baseline", details.baseline),
                 Pair("failure", details.failure),
                 Pair("success", details.success),

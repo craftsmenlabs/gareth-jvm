@@ -54,7 +54,7 @@ open class DefinitionRegistry @Autowired constructor(val definitionFactory: Defi
 
     fun getGlueLinesPerCategory(): Map<GlueLineType, Set<String>> {
         val allPatterns = HashMap<GlueLineType, Set<String>>()
-        allPatterns.put(GlueLineType.ASSUMPTION, assumeDefinitions.keys)
+        allPatterns.put(GlueLineType.ASSUME, assumeDefinitions.keys)
         allPatterns.put(GlueLineType.BASELINE, baselineDefinitions.keys)
         allPatterns.put(GlueLineType.SUCCESS, successDefinitions.keys)
         allPatterns.put(GlueLineType.FAILURE, failureDefinitions.keys)
