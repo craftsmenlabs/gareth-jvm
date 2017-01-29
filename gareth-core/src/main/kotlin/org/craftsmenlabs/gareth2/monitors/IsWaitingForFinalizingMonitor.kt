@@ -18,6 +18,7 @@ class IsWaitingForFinalizingMonitor @Autowired constructor(
         experimentProvider, dateTimeService, experimentStorage, ExperimentState.ASSUME_EXECUTED) {
 
     override fun extend(observable: Observable<Experiment>): Observable<Experiment> {
-        return observable.map { it.apply { it.timing.waitingFinalizing = dateTimeService.now() } }
+        return observable
+                .map { it.copy(timing = it.timing.copy(waitingFinalizing = dateTimeService.now())) }
     }
 }

@@ -11,13 +11,17 @@ import org.craftsmenlabs.gareth2.model.ExperimentResults
 import org.craftsmenlabs.gareth2.model.ExperimentTiming
 import org.craftsmenlabs.gareth2.providers.ExperimentProvider
 import org.craftsmenlabs.gareth2.time.DateTimeService
+import org.craftsmenlabs.gareth2.time.DurationCalculator
 import org.junit.Before
 import org.junit.Ignore
+import org.junit.Test
 import rx.lang.kotlin.toObservable
+import java.time.Duration
 import java.time.LocalDateTime
 
-class IsWaitingForBaselineMonitorTest {
+class IsWaitingForAssumeMonitorTest {
 
+    val MILLTI_DELAY: Long = 3
     val localDateTime1 = LocalDateTime.now().minusHours(1)
     val localDateTime2 = LocalDateTime.now().minusHours(2)
     val localDateTime3 = LocalDateTime.now().minusHours(3)
@@ -26,6 +30,10 @@ class IsWaitingForBaselineMonitorTest {
     val localDateTime6 = LocalDateTime.now().minusHours(6)
     val localDateTime7 = LocalDateTime.now().minusHours(7)
     val localDateTime8 = LocalDateTime.now().minusHours(8)
+    val localDateTime9 = LocalDateTime.now().minusHours(8)
+    val localDateTime10 = LocalDateTime.now().minusHours(10)
+    val localDateTime11 = LocalDateTime.now().minusHours(11)
+    val localDateTime12 = LocalDateTime.now().minusHours(12)
 
     @Injectable
     lateinit var experimentProvider: ExperimentProvider
@@ -36,22 +44,31 @@ class IsWaitingForBaselineMonitorTest {
     @Injectable
     lateinit var experimentStorage: ExperimentStorage
 
-    lateinit var monitor: IsWaitingForBaselineMonitor
+    @Injectable
+    lateinit var durationCalculator: DurationCalculator
+
+    lateinit var monitor: IsWaitingForAssumeMonitor
 
     @Before
     fun setUp() {
-        monitor = IsWaitingForBaselineMonitor(experimentProvider, dateTimeService, experimentStorage)
+        monitor = IsWaitingForAssumeMonitor(experimentProvider, dateTimeService, experimentStorage, durationCalculator)
     }
 
+    @Test
     @Ignore("You have to fix _all_ unit test, because experiments became immutable. the IT test works though :)")
     fun shouldOnlyOperateOnStartedExperiments() {
-        val details = ExperimentDetails("name", "baseline", "assume", "time", "success", "failure", 111)
-        val timingStarted = ExperimentTiming(localDateTime1, localDateTime2, localDateTime3)
-        val timingWaitingForBaseline = ExperimentTiming(localDateTime4, localDateTime5, localDateTime6, localDateTime7)
+        val details = ExperimentDetails("id", "baseline", "assumption", "time", "success", "failure", 111)
+
+        val timingBaselineExecuted = ExperimentTiming(localDateTime1, localDateTime2, localDateTime3, localDateTime4, localDateTime5)
+        val timingWaitingForAssume = ExperimentTiming(localDateTime6, localDateTime7, localDateTime8, localDateTime9, localDateTime10, localDateTime11)
+
         val results = ExperimentResults()
-        val experimentStarted = Experiment(details, timingStarted, results, "42")
-        val experimentWaitingForBaseline = Experiment(details, timingWaitingForBaseline, results, "42")
-        val experiments = listOf(experimentStarted, experimentWaitingForBaseline)
+        val experimentBaseline = Experiment(details, timingBaselineExecuted, results, "id")
+        val experimentWaitingForAssume = Experiment(details, timingWaitingForAssume, results, "id")
+        val experiments = listOf(experimentBaseline, experimentWaitingForAssume)
+
+
+        val duration = Duration.ofMillis(MILLTI_DELAY)
 
         object : Expectations() {
             init {
@@ -59,22 +76,27 @@ class IsWaitingForBaselineMonitorTest {
                 result = experiments.toObservable()
 
                 dateTimeService.now()
-                result = localDateTime8
+                result = arrayListOf(localDateTime5, localDateTime12)
+
+                durationCalculator.getDuration(experimentBaseline)
+                result = duration
             }
         }
 
         monitor.start();
 
+        Thread.sleep(MILLTI_DELAY * 20)
+
         object : Verifications() {
             init {
-                experimentStorage.save(experimentStarted)
+                experimentStorage.save(experimentBaseline)
                 times = 1
 
-                experimentStorage.save(experimentWaitingForBaseline)
+                experimentStorage.save(experimentWaitingForAssume)
                 times = 0
             }
         }
 
-        assertThat(experimentStarted.timing.waitingForBaseline).isSameAs(localDateTime8)
+        assertThat(experimentBaseline.timing.waitingForAssume).isSameAs(localDateTime12)
     }
 }

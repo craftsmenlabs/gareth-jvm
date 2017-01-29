@@ -1,15 +1,17 @@
 package org.craftsmenlabs.gareth2.client
 
-import org.craftsmenlabs.gareth2.GluelineLookup
+import org.craftsmenlabs.gareth2.GlueLineLookup
 import org.craftsmenlabs.gareth2.model.Experiment
 import org.craftsmenlabs.gareth2.time.DurationExpressionParser
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.context.annotation.Profile
 import org.springframework.stereotype.Service
 
 @Service
-class GlueLineLookupRestClient : GluelineLookup {
+@Profile("!test")
+class GlueLineLookupRestClient : GlueLineLookup {
 
     val log: Logger = LoggerFactory.getLogger(GlueLineLookupRestClient::class.java)
 
@@ -28,9 +30,5 @@ class GlueLineLookupRestClient : GluelineLookup {
                 Pair("success", details.success))
         val isValidTime = durationExpressionParser.parse(details.time) != null || client.isValidTimeGlueLine(details.time)
         return isValidTime && lines.all { client.isValidGlueLine(it.key, it.value) }
-    }
-
-    override fun isLineReady(glueline: String): Boolean {
-        return true;
     }
 }

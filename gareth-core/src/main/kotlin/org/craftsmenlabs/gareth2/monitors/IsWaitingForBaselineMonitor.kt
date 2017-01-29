@@ -18,6 +18,7 @@ class IsWaitingForBaselineMonitor @Autowired constructor(
         experimentProvider, dateTimeService, experimentStorage, ExperimentState.STARTED) {
 
     override fun extend(observable: Observable<Experiment>): Observable<Experiment> {
-        return observable.map { it.apply { it.timing.waitingForBaseline = dateTimeService.now() } }
+        return observable
+                .map { it.copy(timing = it.timing.copy(waitingForBaseline = dateTimeService.now())) }
     }
 }

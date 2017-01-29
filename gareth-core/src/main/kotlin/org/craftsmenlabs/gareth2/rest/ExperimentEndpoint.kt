@@ -31,8 +31,8 @@ class ExperimentEndpoint constructor(@Autowired val experimentStorage: Experimen
     @RequestMapping(value = "{id}/start", method = arrayOf(RequestMethod.PUT))
     fun start(@PathVariable("id") id: String): ExperimentDTO {
         val experiment = experimentStorage.getById(id)
-        experiment.timing.started = dateTimeService.now()
-        experimentStorage.save(experiment)
+        val updated = experiment.copy(timing = experiment.timing.copy(started = dateTimeService.now()))
+        experimentStorage.save(updated)
         return converter.createDTO(experiment)
     }
 }

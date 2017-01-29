@@ -7,17 +7,17 @@ import java.time.ZoneOffset
 import java.util.*
 
 @Component
-class DateTimeService {
-    fun now(): LocalDateTime {
+class DateTimeService : TimeService {
+    override fun now(): LocalDateTime {
         return LocalDateTime.now()
     }
 
-    fun toDate(dateTime: LocalDateTime): Date {
+    override fun toDate(dateTime: LocalDateTime): Date {
         val instant = dateTime.toInstant(ZoneOffset.UTC)
         return Date.from(instant)
     }
 
-    fun fromDate(dateTime: Date): LocalDateTime {
+    override fun fromDate(dateTime: Date): LocalDateTime {
         val instant = Instant.ofEpochMilli(dateTime.getTime())
         return LocalDateTime.ofInstant(instant, ZoneOffset.UTC)
     }
