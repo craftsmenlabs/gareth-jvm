@@ -6,7 +6,9 @@ import mockit.Tested
 import org.assertj.core.api.Assertions.assertThat
 import org.craftsmenlabs.gareth2.model.Experiment
 import org.craftsmenlabs.gareth2.model.ExperimentDetails
+import org.craftsmenlabs.gareth2.time.DurationExpressionParser
 import org.junit.Test
+import java.time.Duration
 
 class GlueLineLookupRestClientTest {
     @Injectable
@@ -17,6 +19,9 @@ class GlueLineLookupRestClientTest {
     private lateinit var client: ExecutionRestClient
     @Tested
     private lateinit var glueLineClient: GlueLineLookupRestClient
+
+    @Injectable
+    private lateinit var durationExpressionParser: DurationExpressionParser
 
     @Test
     fun testexperimentReady() {
@@ -31,8 +36,8 @@ class GlueLineLookupRestClientTest {
                 result = true
                 client.isValidGlueLine("failure", "F")
                 result = true
-                client.isValidGlueLine("time", "T")
-                result = true
+                durationExpressionParser.parse("T")
+                result = Duration.ZERO
             }
         }
         assertThat(glueLineClient.isExperimentReady(experiment)).isTrue()

@@ -5,9 +5,11 @@ import org.craftsmenlabs.gareth.api.model.GlueLineType
 import org.craftsmenlabs.gareth2.GlueLineExecutor
 import org.craftsmenlabs.gareth2.model.Experiment
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.stereotype.Service
 import java.time.Duration
 import java.time.temporal.ChronoUnit
 
+@Service
 class GlueLineExecutorRestClient(@Autowired private val restClient: ExecutionRestClient) : GlueLineExecutor {
 
     private val requestFactory = ExecutionRequestFactory()

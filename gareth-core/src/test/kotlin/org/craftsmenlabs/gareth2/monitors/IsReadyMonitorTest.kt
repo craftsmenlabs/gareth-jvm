@@ -48,12 +48,12 @@ class IsReadyMonitorTest {
 
     @Test
     fun shouldOnlyOperateOnNewExperiments() {
-        val details = ExperimentDetails("baseline", "assume", "time", "success", "failure", 111, "id")
+        val details = ExperimentDetails("name", "baseline", "assume", "time", "success", "failure", 111)
         val timingNew = ExperimentTiming(localDateTime1)
         val timingReady = ExperimentTiming(localDateTime2, localDateTime3)
         val results = ExperimentResults()
-        val experimentNew = Experiment(details, timingNew, results)
-        val experimentReady = Experiment(details, timingReady, results)
+        val experimentNew = Experiment(details, timingNew, results, "42")
+        val experimentReady = Experiment(details, timingReady, results, "42")
         val experiments = listOf(experimentNew, experimentReady)
 
         object : Expectations() {
@@ -78,12 +78,12 @@ class IsReadyMonitorTest {
 
     @Test
     fun shouldOnlyUpdateExperimentsWithGluelines() {
-        val details = ExperimentDetails("baseline", "assume", "time", "success", "failure", 111, "id")
+        val details = ExperimentDetails("name", "baseline", "assume", "time", "success", "failure", 111)
         val timingNew1 = ExperimentTiming(localDateTime1)
         val timingNew2 = ExperimentTiming(localDateTime2)
         val results = ExperimentResults()
-        val experiment1 = Experiment(details, timingNew1, results)
-        val experiment2 = Experiment(details, timingNew2, results)
+        val experiment1 = Experiment(details, timingNew1, results, "42")
+        val experiment2 = Experiment(details, timingNew2, results, "42")
         val experiments = listOf(experiment1, experiment2)
 
         object : Expectations() {
@@ -117,10 +117,10 @@ class IsReadyMonitorTest {
 
     @Test
     fun shouldUpdateReadyTimestampWhenReady(@Mocked schedulers: Schedulers) {
-        val details = ExperimentDetails("baseline", "assume", "time", "success", "failure", 111, "id")
+        val details = ExperimentDetails("name", "baseline", "assume", "time", "success", "failure", 111)
         val timingNew = ExperimentTiming(localDateTime1)
         val results = ExperimentResults()
-        val experiment = Experiment(details, timingNew, results)
+        val experiment = Experiment(details, timingNew, results, "42")
         val experiments = listOf(experiment)
 
         object : Expectations() {

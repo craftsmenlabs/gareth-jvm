@@ -1,62 +1,127 @@
 package org.craftsmenlabs.gareth2.atdd
 
-import com.jayway.awaitility.Awaitility
-import org.springframework.boot.context.event.ApplicationReadyEvent
-import org.springframework.context.ApplicationEvent
-import org.springframework.context.ApplicationListener
-import org.springframework.context.ConfigurableApplicationContext
-import org.springframework.context.event.ContextClosedEvent
-import java.util.concurrent.TimeUnit
-import java.util.stream.Stream
+import org.craftsmenlabs.gareth.rest.BasicAuthenticationRestClient
+import org.json.JSONObject
+import org.slf4j.LoggerFactory
+import java.io.InputStream
+import java.io.InputStreamReader
+import java.nio.charset.Charset
+import java.util.*
+import java.util.concurrent.Callable
 
 
-abstract class SpringApplicationWrapper : ApplicationListener<ApplicationEvent> {
+class SpringApplicationWrapper(val managementUrl: String, val executable: String, val configuration: GarethServerEnvironment.ConfBuilder) {
 
-    private lateinit var context: ConfigurableApplicationContext
-    private var isReady: Boolean = false
-    private var isStopped: Boolean = false
-    fun close() {
-        if (context != null)
-            context.close()
+    enum class Status {
+        IDLE, STARTING, STARTED, STOPPING, STOPPED
     }
 
-    fun setContext(context: ConfigurableApplicationContext) {
-        this.context = context
-        context.addApplicationListener(this)
-    }
+    private var status: Status = Status.IDLE
 
-    override fun onApplicationEvent(event: ApplicationEvent) {
-        if (event is ApplicationReadyEvent)
-            isReady = true
-        if (event is ContextClosedEvent)
-            isStopped = true
-    }
+    private val log = LoggerFactory.getLogger("SpringApplicationWrapper")
 
-    fun isReady(): Boolean {
-        return isReady
+    val restClient = BasicAuthenticationRestClient("user", "secret")
+    val startupMonitor = StartupMonitor()
+    val shutdownMonitor = ShutDownMonitor()
+
+
+    fun isStarted(): Boolean {
+        return status == Status.IDLE
     }
 
     fun isStopped(): Boolean {
-        return isStopped
+        return status == Status.STOPPED
     }
 
-    companion object {
-        fun closeAll(vararg multiple: SpringApplicationWrapper) {
-            Stream.of<SpringApplicationWrapper>(*multiple).filter { i -> i != null }.forEach { app -> app.close() }
+    fun start() {
+        if (status != Status.IDLE) {
+            log.info("Cannot start service. status is $status")
+            return;
+        }
+        status = Status.STARTING
+        val arguments: MutableList<String> = mutableListOf("java", "-jar")
+        //arguments.addAll(configuration.build())
+        arguments.add(executable)
+        val pBuilder = ProcessBuilder(arguments)
+        val process = pBuilder.start()
+        //java -jar -Dserver.port=8090 -Dendpoints.shutdown.sensitive=false -Dendpoints.shutdown.enabled=true
+        // -Dmanagement.context-path=/manage -Dmanagement.security.enabled=false
+        // /Users/jasper/dev/gareth-jvm/gareth-core/target/gareth-core-0.8.7-SNAPSHOT.jar
+
+        fun readStream(input: InputStream) {
+            val scanner = Scanner(InputStreamReader(input, Charset.forName("UTF-8")))
+            StreamMonitor(process, scanner, false).start()
+        }
+
+        readStream(process.inputStream)
+        readStream(process.errorStream)
+        if (!process.isAlive) {
+            throw IllegalStateException("Not started")
+        }
+        try {
+            return waitUntil(30, startupMonitor)
+        } catch (e: Exception) {
+            throw IllegalStateException("Failed to start server")
+        }
+        log.info("Server is up")
+    }
+
+
+    fun shutdown() {
+        if (status != Status.STARTED) {
+            log.error("Can only shut down running server, but status is $status")
+        }
+        status = Status.STOPPING
+        try {
+            return waitUntil(60, shutdownMonitor)
+        } catch (e: Exception) {
+            throw IllegalStateException("Failed to close server")
+        }
+    }
+
+    private fun waitUntil(atMost: Long, condition: Callable<Boolean>) {
+        Thread.sleep(3000)
+        var counter: Int = 0
+        while (counter < atMost) {
+            if (condition.call()) {
+                return;
+            }
+            Thread.sleep(1000)
+            counter = counter + 1
+        }
+        throw IllegalStateException("Could not execute within given time")
+    }
+
+    inner class StartupMonitor : Callable<Boolean> {
+        override fun call(): Boolean {
             try {
-                return Awaitility
-                        .await()
-                        .pollInterval(1, TimeUnit.SECONDS)
-                        .and()
-                        .with()
-                        .pollDelay(2, TimeUnit.SECONDS)
-                        .atMost(Math.max(30, 6).toLong(), TimeUnit.SECONDS)
-                        .until({ Stream.of<SpringApplicationWrapper>(*multiple).allMatch { app -> app == null || app.isStopped() } })
-            } catch (e: Exception) {
-                throw IllegalStateException("Failed to close servers")
+                val response = restClient.getAsEntity(JSONObject::class.java, "$managementUrl/mappings")
+                val isStarted = response != null && response.statusCode.is2xxSuccessful
+                log.info("Waiting for instance to start: $isStarted")
+                if (isStarted) {
+                    status = Status.STARTED
+                }
+                return isStarted
+            } catch(e: Exception) {
+                return false;
             }
         }
     }
 
+    inner class ShutDownMonitor : Callable<Boolean> {
+        override fun call(): Boolean {
+            try {
+                val response = restClient.postAsEntity("", JSONObject::class.java, "$managementUrl/shutdown")
+                log.info("Waiting for instance to shutdown: $response")
+                val isStopped = response != null && response.statusCode.is2xxSuccessful
+                if (isStopped) {
+                    status = Status.STOPPED
+                }
+                return isStopped
+            } catch(e: Exception) {
+                return false;
+            }
+        }
+    }
 
 }

@@ -2,7 +2,6 @@ package org.craftsmenlabs.gareth2.atdd
 
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.context.ApplicationContext
-import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.context.event.ContextClosedEvent
 import org.springframework.context.event.ContextRefreshedEvent
@@ -16,19 +15,12 @@ open class CucumberConfig {
 
     @EventListener
     fun handleContextRefresh(event: ContextRefreshedEvent) {
-        getEnvironment().start()
+        GarethServerEnvironment.refresh()
     }
 
     @EventListener
     fun handleContextClosed(event: ContextClosedEvent) {
-        getEnvironment().shutDown()
+        GarethServerEnvironment.shutDown()
     }
-
-    @Bean
-    open fun garethServerEnvironment(): GarethServerEnvironment {
-        return GarethServerEnvironment();
-    }
-
-    private fun getEnvironment(): GarethServerEnvironment = context.getBean(GarethServerEnvironment::class.java)
 
 }

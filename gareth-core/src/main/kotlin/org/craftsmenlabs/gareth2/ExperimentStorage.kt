@@ -7,4 +7,5 @@ interface ExperimentStorage {
     fun loadAllExperiments(): List<Experiment>
     fun save(experiment: Experiment)
     fun setListener(listener: ((Experiment) -> Unit)?)
+    fun getById(id: String): Experiment
 }

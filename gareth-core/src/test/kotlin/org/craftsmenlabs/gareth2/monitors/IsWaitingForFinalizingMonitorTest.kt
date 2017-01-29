@@ -59,7 +59,7 @@ class IsWaitingForFinalizingMonitorTest {
 
     @Test
     fun shouldOnlyOperateOnStartedExperiments() {
-        val details = ExperimentDetails("baseline", "assume", "time", "success", "failure", 111, "id")
+        val details = ExperimentDetails("name", "baseline", "assume", "time", "success", "failure", 111)
         val timingAssumeExecuted = ExperimentTiming(
                 localDateTime1,
                 localDateTime2,
@@ -79,8 +79,8 @@ class IsWaitingForFinalizingMonitorTest {
                 localDateTime16
         )
         val results = ExperimentResults()
-        val experimentAssumeExecuted = Experiment(details, timingAssumeExecuted, results)
-        val experimentWaitingForFinalisation = Experiment(details, timingWaitingForFinalisation, results)
+        val experimentAssumeExecuted = Experiment(details, timingAssumeExecuted, results, "42")
+        val experimentWaitingForFinalisation = Experiment(details, timingWaitingForFinalisation, results, "42")
         val experiments = listOf(experimentAssumeExecuted, experimentWaitingForFinalisation)
 
         object : Expectations() {

@@ -16,9 +16,10 @@ class ExecutionRequestFactoryTest {
     val factory = ExecutionRequestFactory()
 
     private val experiment: Experiment = Experiment(
-            details = ExperimentDetails("B", "A", "T", "S", "F", 42, "UUID"),
+            details = ExperimentDetails("name", "B", "A", "T", "S", "F", 42),
             timing = ExperimentTiming(created = LocalDateTime.now()),
             results = ExperimentResults(false),
+            id = "42",
             environment = mapOf(Pair("age", 42), Pair("married", true), Pair("name", "John"), Pair("rate", 12.5))
     )
 

@@ -1,3 +1,4 @@
+@execution
 Feature: Run the default experiment in gareth-execution
 
   Scenario: Run default experiment with failed assumption

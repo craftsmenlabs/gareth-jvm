@@ -10,21 +10,18 @@
     <modelVersion>4.0.0</modelVersion>
 
     <artifactId>gareth-atdd</artifactId>
-    <dependencies>
-        <dependency>
-            <groupId>org.craftsmenlabs.gareth</groupId>
-            <artifactId>gareth-execution-ri</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.craftsmenlabs.gareth</groupId>
-            <artifactId>gareth-core</artifactId>
-            <version>${project.version}</version>
-        </dependency>
+
+	<properties>
+		<kotlin.version>1.0.6</kotlin.version>
+	</properties>
+
+
+	<dependencies>
         <dependency>
             <groupId>org.craftsmenlabs.gareth</groupId>
             <artifactId>gareth-api</artifactId>
             <version>${project.version}</version>
+	        <scope>test</scope>
         </dependency>
 
         <!-- Cucumber dependencies -->
@@ -47,5 +44,50 @@
             <version>1.7.0</version>
             <scope>provided</scope>
         </dependency>
-    </dependencies>
+		<dependency>
+			<groupId>org.jetbrains.kotlin</groupId>
+			<artifactId>kotlin-stdlib</artifactId>
+			<version>${kotlin.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.jetbrains.kotlin</groupId>
+			<artifactId>kotlin-test</artifactId>
+			<version>${kotlin.version}</version>
+			<scope>test</scope>
+		</dependency>
+	</dependencies>
+
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.jetbrains.kotlin</groupId>
+				<artifactId>kotlin-maven-plugin</artifactId>
+				<version>${kotlin.version}</version>
+				<executions>
+					<execution>
+						<id>compile</id>
+						<phase>compile</phase>
+						<goals>
+							<goal>compile</goal>
+						</goals>
+					</execution>
+					<execution>
+						<id>test-compile</id>
+						<phase>test-compile</phase>
+						<goals>
+							<goal>test-compile</goal>
+						</goals>
+						<configuration>
+							<sourceDirs>
+								<source>src/test/java</source>
+								<source>src/test/kotlin</source>
+							</sourceDirs>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+		</plugins>
+	</build>
+
+
 </project>

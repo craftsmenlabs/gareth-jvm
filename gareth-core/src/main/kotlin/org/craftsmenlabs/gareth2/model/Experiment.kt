@@ -1,14 +1,14 @@
 package org.craftsmenlabs.gareth2.model
 
+import java.io.Serializable
 import java.time.LocalDateTime
-import java.util.*
 
 data class Experiment(
         val details: ExperimentDetails,
         val timing: ExperimentTiming,
         val results: ExperimentResults,
-        val id: String = UUID.randomUUID().toString(),
-        val environment: Map<String, Any> = mapOf()) {
+        val id: String,
+        val environment: Map<String, Any> = mapOf()) : Serializable {
 
     fun getState(): ExperimentState {
         if (timing.ready == null) {
@@ -35,14 +35,14 @@ data class Experiment(
     }
 }
 
-data class ExperimentDetails(
+data class ExperimentDetails (
+        val name: String,
         val baseline: String,
         val assume: String,
         val time: String,
         val success: String,
         val failure: String,
-        val value: Int,
-        val id: String
+        val value: Int
 )
 
 data class ExperimentTiming(

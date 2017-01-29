@@ -1,30 +1,53 @@
 package org.craftsmenlabs.gareth2.atdd
 
-import org.craftsmenlabs.gareth.execution.Application
 import org.slf4j.LoggerFactory
 
 
-class GarethServerEnvironment {
+object GarethServerEnvironment {
 
     val log = LoggerFactory.getLogger("garethServerEnvironment")
-    val executionServer: GarethExecutionServer = GarethExecutionServer()
+    val garethInstance: SpringApplicationWrapper = createGarethInstance()
+    val executionInstance: SpringApplicationWrapper = createExecutionInstance()
 
-    class GarethExecutionServer : SpringApplicationWrapper() {
-        val args = arrayOf("--server.port=8091", "--logging.level.org.springframework=WARN", "--logging.level.springfox=WARN", "--logging.level.org.hibernate=WARN")
-        fun start() {
-            setContext(Application.run(args))
-        }
+    fun refresh() {
+        garethInstance.start()
+        executionInstance.start()
     }
 
-    fun start() {
-        log.info("Starting gareth environment")
-        executionServer.start()
+    private fun createGarethInstance(): SpringApplicationWrapper {
+        val conf = ConfBuilder(port = 8090)
+        return SpringApplicationWrapper("http://localhost:8090/manage", "/Users/jasper/dev/gareth-jvm/gareth-core/target/gareth-core-0.8.7-SNAPSHOT.jar", conf)
+    }
+
+    private fun createExecutionInstance(): SpringApplicationWrapper {
+        val conf = ConfBuilder(port = 8091)
+        return SpringApplicationWrapper("http://localhost:8091/manage", "/Users/jasper/dev/gareth-jvm/gareth-execution-ri/target/gareth-execution-ri-0.8.7-SNAPSHOT.jar", conf)
     }
 
     fun shutDown() {
         log.info("Shutting down gareth environment")
-        SpringApplicationWrapper.closeAll(executionServer)
+        garethInstance.shutdown();
+        executionInstance.shutdown()
     }
 
+    class ConfBuilder(var port: Int) {
+
+        fun build(): List<String> {
+            val items = mutableListOf<String>()
+            fun add(key: String, value: String) {
+                val sb = StringBuilder()
+                sb.append("-D").append(key).append("=").append(value).append(" ")
+                items.add(sb.toString())
+            }
+            add("server.port", port.toString())
+            add("endpoints.shutdown.sensitive", "false")
+            add("endpoints.shutdown.enabled", "true")
+            add("management.context-path", "/manage")
+            add("management.security.enabled", "false")
+            add("logging.level.org.springframework", "WARN")
+            //add("logging.level.org.hibernate", "WARN")
+            return items;
+        }
+    }
 
 }
