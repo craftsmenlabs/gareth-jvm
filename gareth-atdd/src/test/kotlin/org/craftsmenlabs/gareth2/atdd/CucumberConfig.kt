@@ -15,12 +15,12 @@ open class CucumberConfig {
 
     @EventListener
     fun handleContextRefresh(event: ContextRefreshedEvent) {
-        GarethServerEnvironment.refresh()
+        //GarethServerEnvironment.refresh()
     }
 
     @EventListener
     fun handleContextClosed(event: ContextClosedEvent) {
-        GarethServerEnvironment.shutDown()
+       // GarethServerEnvironment.shutDown()
     }
 
 }

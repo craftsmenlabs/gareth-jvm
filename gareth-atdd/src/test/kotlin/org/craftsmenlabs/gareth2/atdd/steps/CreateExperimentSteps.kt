@@ -1,13 +1,11 @@
 package org.craftsmenlabs.gareth2.atdd.steps
 
-import com.jayway.awaitility.Awaitility
 import cucumber.api.java.en.When
 import org.assertj.core.api.Assertions.assertThat
 import org.craftsmenlabs.gareth.api.model.ExperimentCreateDTO
 import org.craftsmenlabs.gareth.api.model.ExperimentDTO
 import org.craftsmenlabs.gareth.rest.BasicAuthenticationRestClient
 import org.slf4j.LoggerFactory
-import java.util.concurrent.TimeUnit
 
 open class CreateExperimentSteps {
 
@@ -16,9 +14,10 @@ open class CreateExperimentSteps {
     lateinit var currentExperiment: ExperimentDTO
     lateinit var experiment: ExperimentCreateDTO
 
-    @When("^I want to create an experiment$")
-    fun iCreateAnExperiment() {
+    @When("^I want to create an experiment named (.*?)$")
+    fun iCreateAnExperiment(name: String) {
         experiment = ExperimentCreateDTO()
+        experiment.name = name
     }
 
     @When("^the baseline is (.*?)$")
@@ -58,16 +57,19 @@ open class CreateExperimentSteps {
 
     @When("^the experiment is ready$")
     fun theExperimentIsReady() {
+        refresh()
         assertThat(currentExperiment.ready).isNotNull()
     }
 
     @When("^the experiment is started$")
     fun theExperimentIsStarted() {
+        refresh()
         assertThat(currentExperiment.started).isNotNull()
     }
 
     @When("^the experiment is completed$")
     fun theExperimentIsCompleted() {
+        refresh()
         assertThat(currentExperiment.completed).isNotNull()
     }
 
@@ -76,9 +78,19 @@ open class CreateExperimentSteps {
         currentExperiment = client.put(experiment, ExperimentDTO::class.java, url("${currentExperiment.id}/start"))
     }
 
+    private fun refresh() {
+        currentExperiment = client.get(ExperimentDTO::class.java, url("/" + currentExperiment.id))
+    }
+
     @When("^I wait (\\d+) seconds$")
-    fun iWaitSeconds() {
-        Awaitility.waitAtMost(7, TimeUnit.SECONDS)
+    fun iWaitSeconds(seconds: Int) {
+        Thread.sleep(1000 * seconds.toLong())
+    }
+
+    @When("^the environment key (.*?) has value (.*?)$")
+    fun validateKeyAndValue(key: String, value: String) {
+        refresh()
+        assertThat(currentExperiment.environment).describedAs("No key $key with value $value found").containsEntry(key, value)
     }
 
     private fun url(path: String) = "http://localhost:8090/gareth/v1/experiments/$path"

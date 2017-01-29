@@ -1,4 +1,4 @@
-package org.craftsmenlabs.gareth.execution.security
+package org.craftsmenlabs.gareth2.security
 
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.context.annotation.Bean

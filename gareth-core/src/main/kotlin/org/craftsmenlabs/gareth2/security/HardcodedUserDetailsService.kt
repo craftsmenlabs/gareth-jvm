@@ -1,4 +1,4 @@
-package org.craftsmenlabs.gareth.execution.security
+package org.craftsmenlabs.gareth2.security
 
 import org.springframework.security.core.authority.AuthorityUtils
 import org.springframework.security.core.userdetails.User

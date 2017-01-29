@@ -3,7 +3,6 @@ package org.craftsmenlabs.gareth2.rest
 import org.craftsmenlabs.gareth.api.model.ExperimentCreateDTO
 import org.craftsmenlabs.gareth.api.model.ExperimentDTO
 import org.craftsmenlabs.gareth2.ExperimentStorage
-import org.craftsmenlabs.gareth2.model.Experiment
 import org.craftsmenlabs.gareth2.model.ExperimentDTOConverter
 import org.craftsmenlabs.gareth2.time.DateTimeService
 import org.springframework.beans.factory.annotation.Autowired
@@ -17,10 +16,10 @@ class ExperimentEndpoint constructor(@Autowired val experimentStorage: Experimen
 
 
     @RequestMapping(method = arrayOf(RequestMethod.PUT))
-    fun upsert(@RequestBody dto: ExperimentCreateDTO): Experiment {
+    fun upsert(@RequestBody dto: ExperimentCreateDTO): ExperimentDTO {
         val experiment = converter.createExperiment(dto)
         experimentStorage.save(experiment)
-        return experiment
+        return converter.createDTO(experiment)
     }
 
     @RequestMapping(value = "{id}", method = arrayOf(RequestMethod.GET))
