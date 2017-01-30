@@ -1,12 +1,11 @@
 package org.craftsmenlabs.gareth.api.execution;
 
+import java.util.List;
 import lombok.Value;
 
-import java.io.Serializable;
-import java.util.List;
-
 @Value
-public class ExperimentRunEnvironment implements Serializable {
+public class ExperimentRunEnvironment
+{
 
-    private List<EnvironmentItem> items;
+	private List<EnvironmentItem> items;
 }

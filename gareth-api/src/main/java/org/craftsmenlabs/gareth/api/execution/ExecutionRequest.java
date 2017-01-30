@@ -2,13 +2,12 @@ package org.craftsmenlabs.gareth.api.execution;
 
 import lombok.Value;
 
-import java.io.Serializable;
-
 @Value
-public class ExecutionRequest implements Serializable {
+public class ExecutionRequest
+{
 
-    private ExperimentRunEnvironment environment;
+	private ExperimentRunEnvironment environment;
 
-    private String glueLine;
+	private String glueLine;
 
 }

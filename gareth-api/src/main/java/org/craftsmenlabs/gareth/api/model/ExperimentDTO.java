@@ -6,7 +6,7 @@ import java.util.Map;
 import lombok.Data;
 
 @Data
-public class ExperimentDTO implements Serializable
+public class ExperimentDTO
 {
 	private String id;
 	private String name;

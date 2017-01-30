@@ -15,12 +15,15 @@ open class CucumberConfig {
 
     @EventListener
     fun handleContextRefresh(event: ContextRefreshedEvent) {
+        //TODO disabled for now until the mechanism to start/stop the environment works properly
+        // you have to make sure both gareth servers are running for the atdd test to succeed
         //GarethServerEnvironment.refresh()
     }
 
     @EventListener
     fun handleContextClosed(event: ContextClosedEvent) {
-       // GarethServerEnvironment.shutDown()
+        //TODO disabled for now: you have to make sure both gareth servers are running for the atdd test to succeed
+        // GarethServerEnvironment.shutDown()
     }
 
 }
