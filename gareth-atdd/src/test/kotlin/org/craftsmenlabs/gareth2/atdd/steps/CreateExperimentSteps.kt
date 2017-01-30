@@ -90,7 +90,8 @@ open class CreateExperimentSteps {
     @When("^the environment key (.*?) has value (.*?)$")
     fun validateKeyAndValue(key: String, value: String) {
         refresh()
-        assertThat(currentExperiment.environment).describedAs("No key $key with value $value found").containsEntry(key, value)
+        val find = currentExperiment.environment.items.find { it.key == key && it.value == value }
+        assertThat(find).describedAs("No key $key with value $value found").isNotNull()
     }
 
     private fun url(path: String) = "http://localhost:8090/gareth/v1/experiments/$path"

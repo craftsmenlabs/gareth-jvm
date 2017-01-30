@@ -23,7 +23,7 @@ abstract class BaseMonitor constructor(
     fun start() {
         experimentProvider.observable
                 .subscribeOn(Schedulers.computation())
-                .map { Experiment(it.details.copy(), it.timing.copy(), it.results.copy(), it.id) }
+                .map { Experiment(it.details.copy(), it.timing.copy(), it.results.copy(), it.id, it.environment) }
                 .filter { it.getState() == experimentState }
                 .run { extend(this) }
                 .observeOn(Schedulers.computation())

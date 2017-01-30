@@ -22,7 +22,7 @@ class ExecuteFailureMonitor @Autowired constructor(
     override fun extend(observable: Observable<Experiment>): Observable<Experiment> {
         return observable
                 .filter { it.results.success == false }
-                .map { it.apply { glueLineExecutor.executeFailure(it) } }
+                .map { it.copy(environment = glueLineExecutor.executeFailure(it).environment) }
                 .map { it.copy(timing = it.timing.copy(finalizingExecuted = dateTimeService.now())) }
     }
 }

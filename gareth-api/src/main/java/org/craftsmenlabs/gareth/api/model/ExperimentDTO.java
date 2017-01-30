@@ -1,8 +1,7 @@
 package org.craftsmenlabs.gareth.api.model;
 
-import java.io.Serializable;
 import java.util.Date;
-import java.util.Map;
+import org.craftsmenlabs.gareth.api.execution.ExperimentRunEnvironment;
 import lombok.Data;
 
 @Data
@@ -24,6 +23,6 @@ public class ExperimentDTO
 	private Date completed;
 	private boolean result;
 
-	private Map<String, Serializable> environment;
+	private ExperimentRunEnvironment environment;
 
 }

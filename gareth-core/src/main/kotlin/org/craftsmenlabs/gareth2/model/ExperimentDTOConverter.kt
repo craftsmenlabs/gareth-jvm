@@ -5,7 +5,6 @@ import org.craftsmenlabs.gareth.api.model.ExperimentDTO
 import org.craftsmenlabs.gareth2.time.DateTimeService
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
-import java.io.Serializable
 import java.time.LocalDateTime
 import java.util.*
 
@@ -48,8 +47,7 @@ class ExperimentDTOConverter constructor(@Autowired val dateTimeService: DateTim
         dto.baselineExecuted = nullSafeDate(experiment.timing.baselineExecuted)
         dto.completed = nullSafeDate(experiment.timing.completed)
 
-        dto.environment = mutableMapOf()
-        experiment.environment.forEach { dto.environment[it.key] = it.value as Serializable }
+        dto.environment = experiment.environment
         return dto;
     }
 

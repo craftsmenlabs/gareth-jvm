@@ -23,7 +23,7 @@ open class CucumberConfig {
     @EventListener
     fun handleContextClosed(event: ContextClosedEvent) {
         //TODO disabled for now: you have to make sure both gareth servers are running for the atdd test to succeed
-        // GarethServerEnvironment.shutDown()
+        //GarethServerEnvironment.shutDown()
     }
 
 }

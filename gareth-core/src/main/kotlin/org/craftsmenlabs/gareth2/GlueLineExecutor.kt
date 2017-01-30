@@ -1,12 +1,13 @@
 package org.craftsmenlabs.gareth2
 
+import org.craftsmenlabs.gareth.api.execution.ExecutionResult
 import org.craftsmenlabs.gareth2.model.Experiment
 import java.time.Duration
 
 interface GlueLineExecutor {
-    fun executeBaseline(experiment: Experiment)
-    fun executeAssume(experiment: Experiment): Boolean
+    fun executeBaseline(experiment: Experiment): ExecutionResult
+    fun executeAssume(experiment: Experiment): ExecutionResult
     fun getDuration(experiment: Experiment): Duration
-    fun executeSuccess(experiment: Experiment)
-    fun executeFailure(experiment: Experiment)
+    fun executeSuccess(experiment: Experiment): ExecutionResult
+    fun executeFailure(experiment: Experiment): ExecutionResult
 }

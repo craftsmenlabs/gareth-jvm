@@ -1,6 +1,8 @@
 package org.craftsmenlabs.gareth2.client
 
 import org.assertj.core.api.Assertions.assertThat
+import org.craftsmenlabs.gareth.api.execution.EnvironmentItem
+import org.craftsmenlabs.gareth.api.execution.ExperimentRunEnvironment
 import org.craftsmenlabs.gareth.api.execution.ItemType
 import org.craftsmenlabs.gareth.api.model.GlueLineType
 import org.craftsmenlabs.gareth2.model.Experiment
@@ -20,8 +22,10 @@ class ExecutionRequestFactoryTest {
             timing = ExperimentTiming(created = LocalDateTime.now()),
             results = ExperimentResults(false),
             id = "42",
-            environment = mapOf(Pair("age", 42), Pair("married", true), Pair("name", "John"), Pair("rate", 12.5))
+            environment = ExperimentRunEnvironment(listOf<EnvironmentItem>(EnvironmentItem("age", "42", ItemType.LONG), EnvironmentItem("married", "true", ItemType.BOOLEAN),
+                    EnvironmentItem("name", "John", ItemType.STRING), EnvironmentItem("rate", "12.5", ItemType.DOUBLE)))
     )
+
 
     @Test
     fun shouldcreateEnvironmentForAssume() {

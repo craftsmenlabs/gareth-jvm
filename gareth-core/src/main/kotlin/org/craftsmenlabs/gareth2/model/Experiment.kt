@@ -1,6 +1,6 @@
 package org.craftsmenlabs.gareth2.model
 
-import java.io.Serializable
+import org.craftsmenlabs.gareth.api.execution.ExperimentRunEnvironment
 import java.time.LocalDateTime
 
 data class Experiment(
@@ -8,7 +8,7 @@ data class Experiment(
         val timing: ExperimentTiming,
         val results: ExperimentResults,
         val id: String,
-        val environment: Map<String, Any> = mapOf()) : Serializable {
+        val environment: ExperimentRunEnvironment = ExperimentRunEnvironment(listOf())) {
 
     fun getState(): ExperimentState {
         if (timing.ready == null) {
@@ -35,7 +35,7 @@ data class Experiment(
     }
 }
 
-data class ExperimentDetails (
+data class ExperimentDetails(
         val name: String,
         val baseline: String,
         val assume: String,
