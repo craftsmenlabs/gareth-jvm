@@ -4,6 +4,7 @@ import cucumber.api.java.en.When
 import org.assertj.core.api.Assertions.assertThat
 import org.craftsmenlabs.gareth.model.ExperimentCreateDTO
 import org.craftsmenlabs.gareth.model.ExperimentDTO
+import org.craftsmenlabs.gareth.model.ExperimentRunEnvironment
 import org.craftsmenlabs.gareth.rest.BasicAuthenticationRestClient
 import org.craftsmenlabs.gareth2.atdd.GarethServerEnvironment
 import org.slf4j.LoggerFactory
@@ -17,31 +18,32 @@ open class CreateExperimentSteps {
 
     @When("^I want to create an experiment named (.*?)$")
     fun iCreateAnExperiment(name: String) {
+        experiment = ExperimentCreateDTO(name = name, environment = ExperimentRunEnvironment(), baseline = "", assume = "", success = "", failure = "", time = "")
     }
 
     @When("^the baseline is (.*?)$")
     fun theBaselineIs(baseline: String) {
-        experiment.baseline == baseline
+        experiment = experiment.copy(baseline = baseline)
     }
 
     @When("^the assume is (.*?)$")
     fun theAssumeIs(assume: String) {
-        experiment.assume == assume
+        experiment = experiment.copy(assume = assume)
     }
 
     @When("^the success is (.*?)$")
     fun theSuccessIs(success: String) {
-        experiment.success == success
+        experiment = experiment.copy(success = success)
     }
 
     @When("^the failure is (.*?)$")
     fun theFailureIs(failure: String) {
-        experiment.failure == failure
+        experiment = experiment.copy(failure = failure)
     }
 
     @When("^the time is (\\d+) seconds$")
     fun theTimeIs(seconds: Int) {
-        experiment.time == "$seconds seconds"
+        experiment = experiment.copy(time = "$seconds seconds")
     }
 
     @When("^I submit the experiment$")
