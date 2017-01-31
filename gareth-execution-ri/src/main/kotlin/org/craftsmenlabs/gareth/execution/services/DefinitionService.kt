@@ -1,13 +1,8 @@
 package org.craftsmenlabs.gareth.execution.services
 
-import org.craftsmenlabs.gareth.api.execution.ExecutionRequest
-import org.craftsmenlabs.gareth.api.execution.ExecutionResult
-import org.craftsmenlabs.gareth.api.execution.ExecutionRunContext
-import org.craftsmenlabs.gareth.api.execution.ExecutionStatus
-import org.craftsmenlabs.gareth.api.model.DefinitionInfo
-import org.craftsmenlabs.gareth.api.model.Duration
 import org.craftsmenlabs.gareth.execution.definitions.ExecutionType
 import org.craftsmenlabs.gareth.execution.dto.DurationBuilder
+import org.craftsmenlabs.gareth.model.*
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired

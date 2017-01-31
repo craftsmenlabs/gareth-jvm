@@ -535,6 +535,7 @@
 		<module>gareth-execution-ri</module>
 		<module>gareth-atdd</module>
 		<module>gareth-acme</module>
+		<module>gareth-jpa-persistence</module>
 	</modules>
 
 

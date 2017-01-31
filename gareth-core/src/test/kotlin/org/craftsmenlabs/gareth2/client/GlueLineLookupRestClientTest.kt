@@ -4,8 +4,8 @@ import mockit.Expectations
 import mockit.Injectable
 import mockit.Tested
 import org.assertj.core.api.Assertions.assertThat
-import org.craftsmenlabs.gareth2.model.Experiment
-import org.craftsmenlabs.gareth2.model.ExperimentDetails
+import org.craftsmenlabs.gareth.model.Experiment
+import org.craftsmenlabs.gareth.model.ExperimentDetails
 import org.craftsmenlabs.gareth2.time.DurationExpressionParser
 import org.junit.Test
 import java.time.Duration

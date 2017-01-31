@@ -1,8 +1,8 @@
 package org.craftsmenlabs.gareth2.monitors
 
-import org.craftsmenlabs.gareth2.ExperimentStorage
-import org.craftsmenlabs.gareth2.model.Experiment
-import org.craftsmenlabs.gareth2.model.ExperimentState
+import org.craftsmenlabs.gareth.ExperimentStorage
+import org.craftsmenlabs.gareth.model.Experiment
+import org.craftsmenlabs.gareth.model.ExperimentState
 import org.craftsmenlabs.gareth2.providers.ExperimentProvider
 import org.craftsmenlabs.gareth2.time.DateTimeService
 import org.craftsmenlabs.gareth2.time.DurationCalculator

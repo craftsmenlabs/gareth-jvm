@@ -1,8 +1,8 @@
 package org.craftsmenlabs.gareth.execution.services
 
 import com.google.common.collect.Lists
-import org.craftsmenlabs.gareth.api.execution.GlueLineSearchResult
-import org.craftsmenlabs.gareth.api.model.GlueLineType
+import org.craftsmenlabs.gareth.model.GlueLineSearchResultDTO
+import org.craftsmenlabs.gareth.model.GlueLineType
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
 import java.util.regex.Pattern
@@ -21,14 +21,14 @@ open class GlueLineMatcherService @Autowired constructor(val definitionRegistry:
         timeGlueLines.addAll(glueLinesPerCategory[GlueLineType.TIME].orEmpty())
     }
 
-    fun getMatches(glueLineType: GlueLineType, line: String?): GlueLineSearchResult {
+    fun getMatches(glueLineType: GlueLineType, line: String?): GlueLineSearchResultDTO {
         if (line == null || line.isEmpty()) {
-            return GlueLineSearchResult(listOf<String>(), null)
+            return GlueLineSearchResultDTO(listOf<String>(), null)
         }
         val patternsPerGlueLineType = if (glueLineType == GlueLineType.TIME) timeGlueLines else glueLinesPerCategory[glueLineType]
         val suggestions = getMatchingGlueLines(patternsPerGlueLineType, { it.contains(line) || isPartialMatch(it, line) })
         val exact = getMatchingGlueLines(patternsPerGlueLineType, { isFullMatch(it, line) }).firstOrNull()
-        return GlueLineSearchResult(suggestions, exact)
+        return GlueLineSearchResultDTO(suggestions, exact)
     }
 
     private fun getMatchingGlueLines(patterns: Set<String>?, filter: (String) -> Boolean): List<String> {

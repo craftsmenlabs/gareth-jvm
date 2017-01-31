@@ -1,6 +1,6 @@
-package org.craftsmenlabs.gareth2
+package org.craftsmenlabs.gareth
 
-import org.craftsmenlabs.gareth2.model.Experiment
+import org.craftsmenlabs.gareth.model.Experiment
 
 
 interface ExperimentStorage {

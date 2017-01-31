@@ -4,12 +4,12 @@ import mockit.Expectations
 import mockit.Injectable
 import mockit.Verifications
 import org.assertj.core.api.Assertions.assertThat
-import org.craftsmenlabs.gareth2.ExperimentStorage
+import org.craftsmenlabs.gareth.ExperimentStorage
+import org.craftsmenlabs.gareth.model.Experiment
+import org.craftsmenlabs.gareth.model.ExperimentDetails
+import org.craftsmenlabs.gareth.model.ExperimentResults
+import org.craftsmenlabs.gareth.model.ExperimentTiming
 import org.craftsmenlabs.gareth2.GlueLineLookup
-import org.craftsmenlabs.gareth2.model.Experiment
-import org.craftsmenlabs.gareth2.model.ExperimentDetails
-import org.craftsmenlabs.gareth2.model.ExperimentResults
-import org.craftsmenlabs.gareth2.model.ExperimentTiming
 import org.craftsmenlabs.gareth2.providers.ExperimentProvider
 import org.craftsmenlabs.gareth2.time.DateTimeService
 import org.junit.Before

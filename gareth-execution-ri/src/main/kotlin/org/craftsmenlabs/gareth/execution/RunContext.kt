@@ -1,6 +1,6 @@
 package org.craftsmenlabs.gareth.execution
 
-import org.craftsmenlabs.gareth.api.execution.*
+import org.craftsmenlabs.gareth.model.*
 
 class RunContext(private var data: MutableMap<String, EnvironmentItem>) : ExecutionRunContext {
 

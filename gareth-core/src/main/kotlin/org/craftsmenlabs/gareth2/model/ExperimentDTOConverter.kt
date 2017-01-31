@@ -1,7 +1,6 @@
 package org.craftsmenlabs.gareth2.model
 
-import org.craftsmenlabs.gareth.api.model.ExperimentCreateDTO
-import org.craftsmenlabs.gareth.api.model.ExperimentDTO
+import org.craftsmenlabs.gareth.model.*
 import org.craftsmenlabs.gareth2.time.DateTimeService
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
@@ -30,24 +29,22 @@ class ExperimentDTOConverter constructor(@Autowired val dateTimeService: DateTim
     }
 
     fun createDTO(experiment: Experiment): ExperimentDTO {
-        val dto = ExperimentDTO()
-        dto.assume = experiment.details.assume
-        dto.baseline = experiment.details.baseline
-        dto.success = experiment.details.success
-        dto.failure = experiment.details.failure
-        dto.time = experiment.details.time
-        dto.id = experiment.id
-        dto.name = experiment.details.name
-
         fun nullSafeDate(dt: LocalDateTime?): Date? = if (dt == null) null else dateTimeService.toDate(dt)
 
-        dto.created = nullSafeDate(experiment.timing.created)
-        dto.ready = nullSafeDate(experiment.timing.ready)
-        dto.started = nullSafeDate(experiment.timing.started)
-        dto.baselineExecuted = nullSafeDate(experiment.timing.baselineExecuted)
-        dto.completed = nullSafeDate(experiment.timing.completed)
-
-        dto.environment = experiment.environment
+        val dto = ExperimentDTO(
+                assume = experiment.details.assume,
+                baseline = experiment.details.baseline,
+                success = experiment.details.success,
+                failure = experiment.details.failure,
+                time = experiment.details.time,
+                id = experiment.id,
+                name = experiment.details.name,
+                created = nullSafeDate(experiment.timing.created) ?: throw IllegalArgumentException("create date is mandatory"),
+                ready = nullSafeDate(experiment.timing.ready),
+                started = nullSafeDate(experiment.timing.started),
+                baselineExecuted = nullSafeDate(experiment.timing.baselineExecuted),
+                completed = nullSafeDate(experiment.timing.completed),
+                environment = experiment.environment)
         return dto;
     }
 

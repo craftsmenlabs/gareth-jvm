@@ -2,9 +2,9 @@ package org.craftsmenlabs.gareth.execution.rest.v1
 
 import io.swagger.annotations.Api
 import io.swagger.annotations.ApiOperation
-import org.craftsmenlabs.gareth.api.execution.GlueLineSearchResult
-import org.craftsmenlabs.gareth.api.model.GlueLineType
 import org.craftsmenlabs.gareth.execution.services.GlueLineMatcherService
+import org.craftsmenlabs.gareth.model.GlueLineSearchResultDTO
+import org.craftsmenlabs.gareth.model.GlueLineType
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.RequestMapping
@@ -20,27 +20,27 @@ class GlueLineMatcherEndpoint @Autowired constructor(val glueLineMatcher: GlueLi
 
     @RequestMapping(value = "search/baseline/{glueline}", method = arrayOf(RequestMethod.GET))
     @ApiOperation(value = "Returns baseline definition matches for the given (partial) glueline")
-    fun getBaselineByGlueline(@PathVariable("glueline") glueLine: String): GlueLineSearchResult =
+    fun getBaselineByGlueline(@PathVariable("glueline") glueLine: String): GlueLineSearchResultDTO =
             glueLineMatcher.getMatches(GlueLineType.BASELINE, glueLine)
 
     @RequestMapping(value = "search/assume/{glueline}", method = arrayOf(RequestMethod.GET))
     @ApiOperation(value = "Returns assumption definition matches for the given (partial) glueline")
-    fun getAssumeByGlueline(@PathVariable("glueline") glueLine: String): GlueLineSearchResult =
+    fun getAssumeByGlueline(@PathVariable("glueline") glueLine: String): GlueLineSearchResultDTO =
             glueLineMatcher.getMatches(GlueLineType.ASSUME, glueLine)
 
     @RequestMapping(value = "search/success/{glueline}", method = arrayOf(RequestMethod.GET))
     @ApiOperation(value = "Returns success definition matches for the given (partial) glueline")
-    fun getSuccessByGlueline(@PathVariable("glueline") glueLine: String): GlueLineSearchResult =
+    fun getSuccessByGlueline(@PathVariable("glueline") glueLine: String): GlueLineSearchResultDTO =
             glueLineMatcher.getMatches(GlueLineType.SUCCESS, glueLine)
 
     @RequestMapping(value = "search/failure/{glueline}", method = arrayOf(RequestMethod.GET))
     @ApiOperation(value = "Returns failure definition matches for the given (partial) glueline")
-    fun getFailureByGlueline(@PathVariable("glueline") glueLine: String): GlueLineSearchResult =
+    fun getFailureByGlueline(@PathVariable("glueline") glueLine: String): GlueLineSearchResultDTO =
             glueLineMatcher.getMatches(GlueLineType.FAILURE, glueLine)
 
     @RequestMapping(value = "search/time/{glueline}", method = arrayOf(RequestMethod.GET))
     @ApiOperation(value = "Returns time definition matches for the given (partial) glueline")
-    fun getDurationByGlueline(@PathVariable("glueline") glueLine: String): GlueLineSearchResult =
+    fun getDurationByGlueline(@PathVariable("glueline") glueLine: String): GlueLineSearchResultDTO =
             glueLineMatcher.getMatches(GlueLineType.TIME, glueLine)
 
 }

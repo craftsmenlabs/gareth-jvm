@@ -4,13 +4,13 @@ import com.google.common.reflect.ClassPath
 import org.craftsmenlabs.gareth.api.exception.GarethAlreadyKnownDefinitionException
 import org.craftsmenlabs.gareth.api.exception.GarethInvocationException
 import org.craftsmenlabs.gareth.api.exception.GarethUnknownDefinitionException
-import org.craftsmenlabs.gareth.api.execution.ExecutionRequest
-import org.craftsmenlabs.gareth.api.execution.ExecutionRunContext
-import org.craftsmenlabs.gareth.api.model.GlueLineType
 import org.craftsmenlabs.gareth.execution.RunContext
 import org.craftsmenlabs.gareth.execution.definitions.ExecutionType
 import org.craftsmenlabs.gareth.execution.definitions.InvokableMethod
 import org.craftsmenlabs.gareth.execution.definitions.ParsedDefinitionFactory
+import org.craftsmenlabs.gareth.model.ExecutionRequest
+import org.craftsmenlabs.gareth.model.ExecutionRunContext
+import org.craftsmenlabs.gareth.model.GlueLineType
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired

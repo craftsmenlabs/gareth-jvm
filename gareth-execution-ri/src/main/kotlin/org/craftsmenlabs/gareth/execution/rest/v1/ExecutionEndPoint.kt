@@ -3,10 +3,10 @@ package org.craftsmenlabs.gareth.execution.rest.v1
 import io.swagger.annotations.Api
 import io.swagger.annotations.ApiOperation
 import io.swagger.annotations.ApiParam
-import org.craftsmenlabs.gareth.api.execution.ExecutionRequest
-import org.craftsmenlabs.gareth.api.execution.ExecutionResult
-import org.craftsmenlabs.gareth.api.model.Duration
 import org.craftsmenlabs.gareth.execution.services.DefinitionService
+import org.craftsmenlabs.gareth.model.Duration
+import org.craftsmenlabs.gareth.model.ExecutionRequest
+import org.craftsmenlabs.gareth.model.ExecutionResult
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping

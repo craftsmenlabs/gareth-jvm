@@ -2,9 +2,10 @@ package org.craftsmenlabs.gareth2.atdd.steps
 
 import cucumber.api.java.en.When
 import org.assertj.core.api.Assertions.assertThat
-import org.craftsmenlabs.gareth.api.execution.*
+import org.craftsmenlabs.gareth.model.*
 import org.craftsmenlabs.gareth.rest.BasicAuthenticationRestClient
 import org.craftsmenlabs.gareth2.atdd.CucumberConfig
+import org.craftsmenlabs.gareth2.atdd.GarethServerEnvironment
 import org.slf4j.LoggerFactory
 import org.springframework.test.context.ContextConfiguration
 
@@ -49,6 +50,6 @@ open class ExecuteExperimentSteps {
         assertThat(find).describedAs("No key $key with value $value found").isNotNull()
     }
 
-    private fun url(path: String) = "http://localhost:8091/gareth/v1/$path"
+    private fun url(path: String) = "http://localhost:${GarethServerEnvironment.executionPort}/gareth/v1/$path"
 
 }

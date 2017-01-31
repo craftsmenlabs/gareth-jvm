@@ -1,8 +1,8 @@
 package org.craftsmenlabs.gareth.execution.dto
 
-import org.craftsmenlabs.gareth.api.execution.EnvironmentItem
-import org.craftsmenlabs.gareth.api.execution.ExperimentRunEnvironment
-import org.craftsmenlabs.gareth.api.execution.ItemType
+import org.craftsmenlabs.gareth.model.EnvironmentItem
+import org.craftsmenlabs.gareth.model.ExperimentRunEnvironment
+import org.craftsmenlabs.gareth.model.ItemType
 
 object ExperimentRunEnvironmentBuilder {
 

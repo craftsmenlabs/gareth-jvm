@@ -1,8 +1,8 @@
 package org.craftsmenlabs.gareth2.rest
 
-import org.craftsmenlabs.gareth.api.model.ExperimentCreateDTO
-import org.craftsmenlabs.gareth.api.model.ExperimentDTO
-import org.craftsmenlabs.gareth2.ExperimentStorage
+import org.craftsmenlabs.gareth.ExperimentStorage
+import org.craftsmenlabs.gareth.model.ExperimentCreateDTO
+import org.craftsmenlabs.gareth.model.ExperimentDTO
 import org.craftsmenlabs.gareth2.model.ExperimentDTOConverter
 import org.craftsmenlabs.gareth2.time.DateTimeService
 import org.springframework.beans.factory.annotation.Autowired

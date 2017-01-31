@@ -1,9 +1,9 @@
 package org.craftsmenlabs.gareth2.client
 
-import org.craftsmenlabs.gareth.api.execution.ExecutionRequest
-import org.craftsmenlabs.gareth.api.model.GlueLineType
-import org.craftsmenlabs.gareth2.model.Experiment
-import org.craftsmenlabs.gareth2.model.ExperimentDetails
+import org.craftsmenlabs.gareth.model.ExecutionRequest
+import org.craftsmenlabs.gareth.model.Experiment
+import org.craftsmenlabs.gareth.model.ExperimentDetails
+import org.craftsmenlabs.gareth.model.GlueLineType
 
 class ExecutionRequestFactory {
 

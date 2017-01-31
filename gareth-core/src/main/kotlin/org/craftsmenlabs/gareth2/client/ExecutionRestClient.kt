@@ -1,10 +1,6 @@
 package org.craftsmenlabs.gareth2.client
 
-import org.craftsmenlabs.gareth.api.execution.ExecutionRequest
-import org.craftsmenlabs.gareth.api.execution.ExecutionResult
-import org.craftsmenlabs.gareth.api.model.DefinitionInfo
-import org.craftsmenlabs.gareth.api.model.Duration
-import org.craftsmenlabs.gareth.api.model.GlueLineType
+import org.craftsmenlabs.gareth.model.*
 import org.craftsmenlabs.gareth.rest.BasicAuthenticationRestClient
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.http.ResponseEntity

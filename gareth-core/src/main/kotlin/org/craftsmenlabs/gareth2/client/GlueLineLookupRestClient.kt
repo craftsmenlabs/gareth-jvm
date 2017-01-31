@@ -1,7 +1,7 @@
 package org.craftsmenlabs.gareth2.client
 
+import org.craftsmenlabs.gareth.model.Experiment
 import org.craftsmenlabs.gareth2.GlueLineLookup
-import org.craftsmenlabs.gareth2.model.Experiment
 import org.craftsmenlabs.gareth2.time.DurationExpressionParser
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory

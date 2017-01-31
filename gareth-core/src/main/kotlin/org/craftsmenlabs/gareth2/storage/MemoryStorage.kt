@@ -1,7 +1,7 @@
 package org.craftsmenlabs.gareth2.storage
 
-import org.craftsmenlabs.gareth2.ExperimentStorage
-import org.craftsmenlabs.gareth2.model.Experiment
+import org.craftsmenlabs.gareth.ExperimentStorage
+import org.craftsmenlabs.gareth.model.Experiment
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
 

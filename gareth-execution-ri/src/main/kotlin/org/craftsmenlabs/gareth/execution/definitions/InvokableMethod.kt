@@ -2,7 +2,7 @@ package org.craftsmenlabs.gareth.execution.definitions
 
 import org.craftsmenlabs.gareth.api.exception.GarethDefinitionParseException
 import org.craftsmenlabs.gareth.api.exception.GarethInvocationException
-import org.craftsmenlabs.gareth.api.execution.ExecutionRunContext
+import org.craftsmenlabs.gareth.model.ExecutionRunContext
 import java.lang.reflect.Method
 import java.lang.reflect.Type
 import java.util.*

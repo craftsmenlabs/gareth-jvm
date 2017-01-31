@@ -3,10 +3,10 @@ package org.craftsmenlabs.gareth2.monitors
 import mockit.Expectations
 import mockit.Injectable
 import org.assertj.core.api.Assertions.assertThat
-import org.craftsmenlabs.gareth2.ExperimentStorage
+import org.craftsmenlabs.gareth.ExperimentStorage
+import org.craftsmenlabs.gareth.model.*
 import org.craftsmenlabs.gareth2.GlueLineExecutor
 import org.craftsmenlabs.gareth2.GlueLineLookup
-import org.craftsmenlabs.gareth2.model.*
 import org.craftsmenlabs.gareth2.time.DateTimeService
 import org.craftsmenlabs.gareth2.util.TestApplication
 import org.craftsmenlabs.gareth2.util.WrappedDateTimeService

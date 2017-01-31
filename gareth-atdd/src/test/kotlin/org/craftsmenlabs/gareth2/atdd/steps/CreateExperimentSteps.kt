@@ -2,9 +2,10 @@ package org.craftsmenlabs.gareth2.atdd.steps
 
 import cucumber.api.java.en.When
 import org.assertj.core.api.Assertions.assertThat
-import org.craftsmenlabs.gareth.api.model.ExperimentCreateDTO
-import org.craftsmenlabs.gareth.api.model.ExperimentDTO
+import org.craftsmenlabs.gareth.model.ExperimentCreateDTO
+import org.craftsmenlabs.gareth.model.ExperimentDTO
 import org.craftsmenlabs.gareth.rest.BasicAuthenticationRestClient
+import org.craftsmenlabs.gareth2.atdd.GarethServerEnvironment
 import org.slf4j.LoggerFactory
 
 open class CreateExperimentSteps {
@@ -16,33 +17,31 @@ open class CreateExperimentSteps {
 
     @When("^I want to create an experiment named (.*?)$")
     fun iCreateAnExperiment(name: String) {
-        experiment = ExperimentCreateDTO()
-        experiment.name = name
     }
 
     @When("^the baseline is (.*?)$")
     fun theBaselineIs(baseline: String) {
-        experiment.baseline = baseline
+        experiment.baseline == baseline
     }
 
     @When("^the assume is (.*?)$")
     fun theAssumeIs(assume: String) {
-        experiment.assume = assume
+        experiment.assume == assume
     }
 
     @When("^the success is (.*?)$")
     fun theSuccessIs(success: String) {
-        experiment.success = success
+        experiment.success == success
     }
 
     @When("^the failure is (.*?)$")
     fun theFailureIs(failure: String) {
-        experiment.failure = failure
+        experiment.failure == failure
     }
 
     @When("^the time is (\\d+) seconds$")
     fun theTimeIs(seconds: Int) {
-        experiment.time = "$seconds seconds"
+        experiment.time == "$seconds seconds"
     }
 
     @When("^I submit the experiment$")
@@ -94,6 +93,6 @@ open class CreateExperimentSteps {
         assertThat(find).describedAs("No key $key with value $value found").isNotNull()
     }
 
-    private fun url(path: String) = "http://localhost:8090/gareth/v1/experiments/$path"
+    private fun url(path: String) = "http://localhost:${GarethServerEnvironment.garethPort}/gareth/v1/experiments/$path"
 
 }

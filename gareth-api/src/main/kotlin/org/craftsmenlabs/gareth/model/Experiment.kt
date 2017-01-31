@@ -1,6 +1,5 @@
-package org.craftsmenlabs.gareth2.model
+package org.craftsmenlabs.gareth.model
 
-import org.craftsmenlabs.gareth.api.execution.ExperimentRunEnvironment
 import java.time.LocalDateTime
 
 data class Experiment(
@@ -8,7 +7,7 @@ data class Experiment(
         val timing: ExperimentTiming,
         val results: ExperimentResults,
         val id: String,
-        val environment: ExperimentRunEnvironment = ExperimentRunEnvironment(listOf())) {
+        val environment: ExperimentRunEnvironment = ExperimentRunEnvironment()) {
 
     fun getState(): ExperimentState {
         if (timing.ready == null) {

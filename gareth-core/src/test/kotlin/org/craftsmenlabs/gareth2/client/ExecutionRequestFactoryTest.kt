@@ -1,14 +1,7 @@
 package org.craftsmenlabs.gareth2.client
 
 import org.assertj.core.api.Assertions.assertThat
-import org.craftsmenlabs.gareth.api.execution.EnvironmentItem
-import org.craftsmenlabs.gareth.api.execution.ExperimentRunEnvironment
-import org.craftsmenlabs.gareth.api.execution.ItemType
-import org.craftsmenlabs.gareth.api.model.GlueLineType
-import org.craftsmenlabs.gareth2.model.Experiment
-import org.craftsmenlabs.gareth2.model.ExperimentDetails
-import org.craftsmenlabs.gareth2.model.ExperimentResults
-import org.craftsmenlabs.gareth2.model.ExperimentTiming
+import org.craftsmenlabs.gareth.model.*
 import org.junit.Test
 import java.time.LocalDateTime
 

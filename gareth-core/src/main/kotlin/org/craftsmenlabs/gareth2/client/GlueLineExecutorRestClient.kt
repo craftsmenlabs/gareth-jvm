@@ -1,9 +1,9 @@
 package org.craftsmenlabs.gareth2.client
 
-import org.craftsmenlabs.gareth.api.execution.ExecutionResult
-import org.craftsmenlabs.gareth.api.model.GlueLineType
+import org.craftsmenlabs.gareth.model.ExecutionResult
+import org.craftsmenlabs.gareth.model.Experiment
+import org.craftsmenlabs.gareth.model.GlueLineType
 import org.craftsmenlabs.gareth2.GlueLineExecutor
-import org.craftsmenlabs.gareth2.model.Experiment
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
 import java.time.Duration
