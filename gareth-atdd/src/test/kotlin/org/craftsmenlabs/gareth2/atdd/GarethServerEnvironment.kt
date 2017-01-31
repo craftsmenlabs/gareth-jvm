@@ -27,6 +27,7 @@ object GarethServerEnvironment {
 
     fun createExecutionInstance(): SpringApplicationWrapper {
         val conf = ConfBuilder(port = executionPort)
+        conf.add("definitions.package", "org.craftsmenlabs.gareth.execution.spi")
         return SpringApplicationWrapper("http://localhost:$executionPort/manage", "/Users/jasper/dev/gareth-jvm/gareth-execution-ri/target/gareth-execution-ri-0.8.7-SNAPSHOT.jar", conf)
     }
 

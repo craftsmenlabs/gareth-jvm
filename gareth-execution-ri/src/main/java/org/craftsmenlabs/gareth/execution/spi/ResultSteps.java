@@ -1,12 +1,13 @@
 package org.craftsmenlabs.gareth.execution.spi;
 
+import org.craftsmenlabs.ExperimentDefinition;
 import org.craftsmenlabs.gareth.api.annotation.Failure;
 import org.craftsmenlabs.gareth.api.annotation.Success;
 import org.craftsmenlabs.gareth.model.ExecutionRunContext;
 import org.springframework.stereotype.Service;
 
 @Service
-public class ResultSteps
+public class ResultSteps implements ExperimentDefinition
 {
 
 	@Success(glueLine = "^send email to (.*?)$")

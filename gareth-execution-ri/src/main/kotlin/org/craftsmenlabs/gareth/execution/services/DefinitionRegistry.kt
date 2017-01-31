@@ -1,6 +1,7 @@
 package org.craftsmenlabs.gareth.execution.services
 
 import com.google.common.reflect.ClassPath
+import org.craftsmenlabs.ExperimentDefinition
 import org.craftsmenlabs.gareth.api.exception.GarethAlreadyKnownDefinitionException
 import org.craftsmenlabs.gareth.api.exception.GarethInvocationException
 import org.craftsmenlabs.gareth.api.exception.GarethUnknownDefinitionException
@@ -14,7 +15,6 @@ import org.craftsmenlabs.gareth.model.GlueLineType
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Service
 import java.time.Duration
 import java.util.*
@@ -22,11 +22,8 @@ import java.util.regex.Pattern
 import javax.annotation.PostConstruct
 
 @Service
-open class DefinitionRegistry @Autowired constructor(val definitionFactory: DefinitionFactory) {
+open class DefinitionRegistry @Autowired constructor(val definitionFactory: DefinitionFactory, val definitions: List<ExperimentDefinition>) {
     val log: Logger = LoggerFactory.getLogger(DefinitionService::class.java)
-
-    @Value("\${definitions.package:org.craftsmenlabs.gareth.execution.spi}")
-    lateinit var definitionsPackage: String
 
     val factory = ParsedDefinitionFactory(definitionFactory)
     private val regexes = HashMap<String, Pattern>()
@@ -36,10 +33,10 @@ open class DefinitionRegistry @Autowired constructor(val definitionFactory: Defi
     private val failureDefinitions = HashMap<String, InvokableMethod>()
     private val timeDefinitions = HashMap<String, Duration>()
 
-
     @PostConstruct
     fun init() {
-        val classes = getClassesInPackage(definitionsPackage)
+        val classes = definitions.map { it.javaClass }
+        log.info("Found ${classes.size} classes.")
         classes.forEach { clz ->
             log.info("Parsing class ${clz.name}")
             addParsedDefinition(clz)
@@ -48,7 +45,7 @@ open class DefinitionRegistry @Autowired constructor(val definitionFactory: Defi
     }
 
     private fun getClassesInPackage(packageName: String): List<Class<*>> {
-        val classesInfo = ClassPath.from(ClassLoader.getSystemClassLoader()).getTopLevelClassesRecursive(packageName)
+        val classesInfo = ClassPath.from(Thread.currentThread().getContextClassLoader()).getTopLevelClassesRecursive(packageName)
         return classesInfo.map { Class.forName(it.name) }
     }
 

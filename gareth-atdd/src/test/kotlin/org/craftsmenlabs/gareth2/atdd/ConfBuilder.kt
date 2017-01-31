@@ -4,14 +4,15 @@ class ConfBuilder(var port: Int,
                   val executionClientUrl: String? = null,
                   val executionClientUser: String? = null,
                   val executionClientPassword: String? = null) {
+    val items = mutableListOf<String>()
+
+    fun add(key: String, value: String) {
+        val sb = StringBuilder()
+        sb.append("--").append(key).append("=").append(value)
+        items.add(sb.toString())
+    }
 
     fun build(): List<String> {
-        val items = mutableListOf<String>()
-        fun add(key: String, value: String) {
-            val sb = StringBuilder()
-            sb.append("--").append(key).append("=").append(value)
-            items.add(sb.toString())
-        }
         add("server.port", port.toString())
         add("endpoints.shutdown.sensitive", "false")
         add("endpoints.shutdown.enabled", "true")

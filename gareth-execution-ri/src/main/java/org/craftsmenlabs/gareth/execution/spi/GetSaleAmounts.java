@@ -1,12 +1,13 @@
 package org.craftsmenlabs.gareth.execution.spi;
 
+import org.craftsmenlabs.ExperimentDefinition;
 import org.craftsmenlabs.gareth.api.annotation.Baseline;
 import org.craftsmenlabs.gareth.model.ExecutionRunContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
-public class GetSaleAmounts
+public class GetSaleAmounts implements ExperimentDefinition
 {
 
 	@Autowired
