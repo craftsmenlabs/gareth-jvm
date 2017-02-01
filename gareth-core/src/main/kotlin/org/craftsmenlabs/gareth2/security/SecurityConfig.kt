@@ -35,7 +35,10 @@ open class SecurityConfig : WebSecurityConfigurerAdapter() {
 
     @Throws(Exception::class)
     override fun configure(http: HttpSecurity) {
-        http.headers().disable().authorizeRequests().antMatchers("/**/*").authenticated().and().httpBasic().and().userDetailsService(userService).csrf().disable()
+        http.headers().disable().authorizeRequests().antMatchers("/**/*").authenticated()
+                .and().authorizeRequests().antMatchers("/console/**").permitAll()
+                .and().httpBasic().and().userDetailsService(userService).csrf().disable()
+        http.headers().frameOptions().disable();
     }
 
 }

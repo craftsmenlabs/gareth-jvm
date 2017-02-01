@@ -1,6 +1,7 @@
 package org.craftsmenlabs.gareth2.monitors
 
 import org.craftsmenlabs.gareth.ExperimentStorage
+import org.craftsmenlabs.gareth.model.ExecutionStatus
 import org.craftsmenlabs.gareth.model.Experiment
 import org.craftsmenlabs.gareth.model.ExperimentState
 import org.craftsmenlabs.gareth2.GlueLineExecutor
@@ -21,7 +22,7 @@ class ExecuteFailureMonitor @Autowired constructor(
 
     override fun extend(observable: Observable<Experiment>): Observable<Experiment> {
         return observable
-                .filter { it.results.success == false }
+                .filter { it.results.status == ExecutionStatus.FAILURE }
                 .map { it.copy(environment = glueLineExecutor.executeFailure(it).environment) }
                 .map { it.copy(timing = it.timing.copy(finalizingExecuted = dateTimeService.now())) }
     }

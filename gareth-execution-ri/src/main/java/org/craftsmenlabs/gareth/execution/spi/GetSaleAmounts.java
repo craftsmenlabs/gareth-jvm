@@ -16,13 +16,16 @@ public class GetSaleAmounts implements ExperimentDefinition
 	@Baseline(glueLine = "^sale of (.*?)$")
 	public void getSaleOfItem(final ExecutionRunContext context, final String item)
 	{
-		if (item == "fruit")
+		context.storeString("getting value for ", item);
+		if (item.equals("fruit"))
 		{
+
 			context.storeLong("fruit", 42);
 		}
 
-		if (item == "widgets")
+		if (item.equals("widgets"))
 		{
+			
 			context.storeLong("peaches", 50);
 		}
 	}

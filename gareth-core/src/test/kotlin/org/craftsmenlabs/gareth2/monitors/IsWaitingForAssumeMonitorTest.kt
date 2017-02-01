@@ -63,8 +63,8 @@ class IsWaitingForAssumeMonitorTest {
         val timingWaitingForAssume = ExperimentTiming(localDateTime6, localDateTime7, localDateTime8, localDateTime9, localDateTime10, localDateTime11)
 
         val results = ExperimentResults()
-        val experimentBaseline = Experiment(details, timingBaselineExecuted, results, "id")
-        val experimentWaitingForAssume = Experiment(details, timingWaitingForAssume, results, "id")
+        val experimentBaseline = Experiment(details, timingBaselineExecuted, results)
+        val experimentWaitingForAssume = Experiment(details, timingWaitingForAssume, results)
         val experiments = listOf(experimentBaseline, experimentWaitingForAssume)
 
 

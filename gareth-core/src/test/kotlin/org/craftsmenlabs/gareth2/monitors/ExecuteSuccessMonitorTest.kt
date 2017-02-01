@@ -5,10 +5,7 @@ import mockit.Injectable
 import mockit.Verifications
 import org.assertj.core.api.Assertions
 import org.craftsmenlabs.gareth.ExperimentStorage
-import org.craftsmenlabs.gareth.model.Experiment
-import org.craftsmenlabs.gareth.model.ExperimentDetails
-import org.craftsmenlabs.gareth.model.ExperimentResults
-import org.craftsmenlabs.gareth.model.ExperimentTiming
+import org.craftsmenlabs.gareth.model.*
 import org.craftsmenlabs.gareth2.GlueLineExecutor
 import org.craftsmenlabs.gareth2.providers.ExperimentProvider
 import org.craftsmenlabs.gareth2.time.DateTimeService
@@ -84,11 +81,11 @@ class ExecuteSuccessMonitorTest {
         )
 
         val failResults = ExperimentResults()
-        val successResults = ExperimentResults(true)
+        val successResults = ExperimentResults(ExecutionStatus.SUCCESS)
 
-        val failedExperimentWaitingForFinalisation = Experiment(details, timingFinalisationExecuted, failResults, "id")
-        val succeededExperimentWaitingForFinalisation = Experiment(details, timingFinalisationExecuted, successResults, "id")
-        val experimentFinalisationExecuted = Experiment(details, timingCompleted, successResults, "id")
+        val failedExperimentWaitingForFinalisation = Experiment(details, timingFinalisationExecuted, failResults)
+        val succeededExperimentWaitingForFinalisation = Experiment(details, timingFinalisationExecuted, successResults)
+        val experimentFinalisationExecuted = Experiment(details, timingCompleted, successResults)
         val experiments = listOf(failedExperimentWaitingForFinalisation, succeededExperimentWaitingForFinalisation, experimentFinalisationExecuted)
 
         object : Expectations() {

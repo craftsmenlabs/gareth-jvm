@@ -26,7 +26,8 @@
 		<logback.version>1.1.3</logback.version>
 		<jersey2.version>2.22.1</jersey2.version>
 		<jetty.version>9.3.2.v20150730</jetty.version>
-		<jmockit.version>1.28</jmockit.version> <!-- We need to wait for 1.31 to be released due to a bug with returning Duration, see JMockit issue #265 -->
+		<jmockit.version>1.28
+		</jmockit.version> <!-- We need to wait for 1.31 to be released due to a bug with returning Duration, see JMockit issue #265 -->
 		<slf4j.version>1.7.12</slf4j.version>
 		<jackson.version>2.8.2</jackson.version>
 		<jacoco-maven-plugin.version>0.7.5.201505241946</jacoco-maven-plugin.version>
@@ -39,6 +40,7 @@
 		<kotlin.version>1.0.5-2</kotlin.version>
 		<swagger.version>2.6.0</swagger.version>
 		<cucumber.version>1.2.3</cucumber.version>
+		<h2.version>1.4.193</h2.version>
 	</properties>
 
 	<organization>
@@ -155,7 +157,7 @@
 			<!-- Gareth stuff -->
 			<dependency>
 				<groupId>org.craftsmenlabs.gareth</groupId>
-				<artifactId>gareth-antlr</artifactId>
+				<artifactId>gareth-api</artifactId>
 				<version>${project.version}</version>
 			</dependency>
 			<dependency>
@@ -169,15 +171,17 @@
 				<version>${project.version}</version>
 			</dependency>
 			<dependency>
-				<groupId>org.craftsmenlabs.gareth.rest</groupId>
-				<artifactId>gareth-rest</artifactId>
-				<version>${project.version}</version>
-			</dependency>
-			<dependency>
 				<groupId>org.craftsmenlabs.gareth</groupId>
-				<artifactId>gareth-json-persistence</artifactId>
+				<artifactId>gareth-jpa-persistence</artifactId>
 				<version>${project.version}</version>
 			</dependency>
+
+			<dependency>
+				<groupId>com.h2database</groupId>
+				<artifactId>h2</artifactId>
+				<version>${h2.version}</version>
+			</dependency>
+
 
 			<!-- ANTLR -->
 			<dependency>
@@ -535,7 +539,6 @@
 		<module>gareth-execution-ri</module>
 		<module>gareth-atdd</module>
 		<module>gareth-acme</module>
-		<module>gareth-jpa-persistence</module>
 	</modules>
 
 

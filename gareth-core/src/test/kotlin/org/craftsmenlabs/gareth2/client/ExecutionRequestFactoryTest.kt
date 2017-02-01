@@ -13,8 +13,7 @@ class ExecutionRequestFactoryTest {
     private val experiment: Experiment = Experiment(
             details = ExperimentDetails("name", "B", "A", "T", "S", "F", 42),
             timing = ExperimentTiming(created = LocalDateTime.now()),
-            results = ExperimentResults(false),
-            id = "42",
+            results = ExperimentResults(),
             environment = ExperimentRunEnvironment(listOf<EnvironmentItem>(EnvironmentItem("age", "42", ItemType.LONG), EnvironmentItem("married", "true", ItemType.BOOLEAN),
                     EnvironmentItem("name", "John", ItemType.STRING), EnvironmentItem("rate", "12.5", ItemType.DOUBLE)))
     )

@@ -68,8 +68,8 @@ class ExecuteBaselineMonitorTest {
         )
 
         val results = ExperimentResults()
-        val waitingForbaseline = Experiment(details, timingFinalisationExecuted, results, "id")
-        val baselineExecuted = Experiment(details, timingCompleted, results, "id")
+        val waitingForbaseline = Experiment(details, timingFinalisationExecuted, results)
+        val baselineExecuted = Experiment(details, timingCompleted, results)
         val experiments = listOf(waitingForbaseline, baselineExecuted)
 
         object : Expectations() {

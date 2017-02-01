@@ -6,7 +6,7 @@ data class Experiment(
         val details: ExperimentDetails,
         val timing: ExperimentTiming,
         val results: ExperimentResults,
-        val id: String,
+        val id: Long? = null,
         val environment: ExperimentRunEnvironment = ExperimentRunEnvironment()) {
 
     fun getState(): ExperimentState {
@@ -57,8 +57,7 @@ data class ExperimentTiming(
         val completed: LocalDateTime? = null
 )
 
-data class ExperimentResults(
-        val success: Boolean? = null
+data class ExperimentResults(val status: ExecutionStatus = ExecutionStatus.RUNNING
 )
 
 enum class ExperimentState {

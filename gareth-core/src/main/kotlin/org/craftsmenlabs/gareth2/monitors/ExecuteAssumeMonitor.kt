@@ -1,7 +1,6 @@
 package org.craftsmenlabs.gareth2.monitors
 
 import org.craftsmenlabs.gareth.ExperimentStorage
-import org.craftsmenlabs.gareth.model.ExecutionStatus
 import org.craftsmenlabs.gareth.model.Experiment
 import org.craftsmenlabs.gareth.model.ExperimentState
 import org.craftsmenlabs.gareth2.GlueLineExecutor
@@ -24,7 +23,7 @@ class ExecuteAssumeMonitor @Autowired constructor(
         return observable
                 .map {
                     val result = glueLineExecutor.executeAssume(it);
-                    it.copy(results = it.results.copy(success = result.status == ExecutionStatus.SUCCESS), environment = result.environment)
+                    it.copy(results = it.results.copy(status = result.status), environment = result.environment)
                 }
                 .map { it.copy(timing = it.timing.copy(assumeExecuted = dateTimeService.now())) }
     }

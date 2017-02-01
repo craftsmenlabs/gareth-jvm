@@ -18,17 +18,17 @@ class ExperimentEndpoint constructor(@Autowired val experimentStorage: Experimen
     @RequestMapping(method = arrayOf(RequestMethod.PUT))
     fun upsert(@RequestBody dto: ExperimentCreateDTO): ExperimentDTO {
         val experiment = converter.createExperiment(dto)
-        experimentStorage.save(experiment)
-        return converter.createDTO(experiment)
+        val saved = experimentStorage.save(experiment)
+        return converter.createDTO(saved)
     }
 
     @RequestMapping(value = "{id}", method = arrayOf(RequestMethod.GET))
-    fun get(@PathVariable("id") id: String): ExperimentDTO {
+    fun get(@PathVariable("id") id: Long): ExperimentDTO {
         return converter.createDTO(experimentStorage.getById(id))
     }
 
     @RequestMapping(value = "{id}/start", method = arrayOf(RequestMethod.PUT))
-    fun start(@PathVariable("id") id: String): ExperimentDTO {
+    fun start(@PathVariable("id") id: Long): ExperimentDTO {
         val experiment = experimentStorage.getById(id)
         val updated = experiment.copy(timing = experiment.timing.copy(started = dateTimeService.now()))
         experimentStorage.save(updated)

@@ -76,8 +76,8 @@ class ExecuteAssumeMonitorTest {
         )
 
         val results = ExperimentResults()
-        val waitingForassume = Experiment(details, timingFinalisationExecuted, results, "id")
-        val assumeExecuted = Experiment(details, timingCompleted, results, "id")
+        val waitingForassume = Experiment(details, timingFinalisationExecuted, results)
+        val assumeExecuted = Experiment(details, timingCompleted, results)
         val experiments = listOf(waitingForassume, assumeExecuted)
 
         object : Expectations() {

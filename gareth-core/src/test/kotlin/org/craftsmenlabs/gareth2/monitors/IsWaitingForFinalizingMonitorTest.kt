@@ -79,8 +79,8 @@ class IsWaitingForFinalizingMonitorTest {
                 localDateTime16
         )
         val results = ExperimentResults()
-        val experimentAssumeExecuted = Experiment(details, timingAssumeExecuted, results, "42")
-        val experimentWaitingForFinalisation = Experiment(details, timingWaitingForFinalisation, results, "42")
+        val experimentAssumeExecuted = Experiment(details, timingAssumeExecuted, results)
+        val experimentWaitingForFinalisation = Experiment(details, timingWaitingForFinalisation, results)
         val experiments = listOf(experimentAssumeExecuted, experimentWaitingForFinalisation)
 
         object : Expectations() {

@@ -110,7 +110,7 @@ class MonitorIT {
         )
         val timing = ExperimentTiming(localDateTimeCreated_20)
         val results = ExperimentResults()
-        experiment = Experiment(details, timing, results, "id")
+        experiment = Experiment(details, timing, results)
     }
 
     @Test

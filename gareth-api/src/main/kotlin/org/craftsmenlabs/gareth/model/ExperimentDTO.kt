@@ -2,7 +2,7 @@ package org.craftsmenlabs.gareth.model
 
 import java.util.*
 
-data class ExperimentDTO(val id: String,
+data class ExperimentDTO(val id: Long,
                          val name: String,
                          val weight: Int = 0,
                          val baseline: String,

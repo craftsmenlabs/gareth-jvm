@@ -49,8 +49,8 @@ class IsWaitingForBaselineMonitorTest {
         val timingStarted = ExperimentTiming(localDateTime1, localDateTime2, localDateTime3)
         val timingWaitingForBaseline = ExperimentTiming(localDateTime4, localDateTime5, localDateTime6, localDateTime7)
         val results = ExperimentResults()
-        val experimentStarted = Experiment(details, timingStarted, results, "42")
-        val experimentWaitingForBaseline = Experiment(details, timingWaitingForBaseline, results, "42")
+        val experimentStarted = Experiment(details, timingStarted, results)
+        val experimentWaitingForBaseline = Experiment(details, timingWaitingForBaseline, results)
         val experiments = listOf(experimentStarted, experimentWaitingForBaseline)
 
         object : Expectations() {

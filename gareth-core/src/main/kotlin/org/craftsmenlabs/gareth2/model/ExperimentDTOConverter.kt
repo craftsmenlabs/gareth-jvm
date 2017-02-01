@@ -11,7 +11,6 @@ import java.util.*
 class ExperimentDTOConverter constructor(@Autowired val dateTimeService: DateTimeService) {
 
     fun createExperiment(dto: ExperimentCreateDTO): Experiment {
-        val id = UUID.randomUUID().toString()
         val details = ExperimentDetails(
                 name = dto.name,
                 baseline = dto.baseline,
@@ -22,9 +21,8 @@ class ExperimentDTOConverter constructor(@Autowired val dateTimeService: DateTim
                 value = dto.weight)
         val experiment = Experiment(
                 details = details,
-                id = id,
                 timing = ExperimentTiming(dateTimeService.now()),
-                results = ExperimentResults(false))
+                results = ExperimentResults())
         return experiment
     }
 
@@ -37,7 +35,7 @@ class ExperimentDTOConverter constructor(@Autowired val dateTimeService: DateTim
                 success = experiment.details.success,
                 failure = experiment.details.failure,
                 time = experiment.details.time,
-                id = experiment.id,
+                id = experiment.id!!,
                 name = experiment.details.name,
                 created = nullSafeDate(experiment.timing.created) ?: throw IllegalArgumentException("create date is mandatory"),
                 ready = nullSafeDate(experiment.timing.ready),

@@ -21,7 +21,7 @@ class IsWaitingForAssumeMonitor @Autowired constructor(
     : BaseMonitor(
         experimentProvider, dateTimeService, experimentStorage, ExperimentState.BASELINE_EXECUTED) {
 
-    private val delayedExperiments = mutableListOf<String>()
+    private val delayedExperiments = mutableListOf<Long>()
 
     override fun extend(observable: Observable<Experiment>): Observable<Experiment> {
         return observable
@@ -31,7 +31,7 @@ class IsWaitingForAssumeMonitor @Autowired constructor(
                     val assumePlanned = it.timing.baselineExecuted?.plus(duration)
                     val now = dateTimeService.now()
                     val delayInSeconds = ChronoUnit.SECONDS.between(now, assumePlanned)
-                    delayedExperiments.add(it.id)
+                    delayedExperiments.add(it.id!!)
                     val delay = Observable.just(it).delay(delayInSeconds, TimeUnit.SECONDS)
                     return@delay delay
                 }
