@@ -1,11 +1,8 @@
-package org.craftsmenlabs.gareth.execution.rest.v1
+package org.craftsmenlabs.integration
 
-import io.swagger.annotations.Api
-import io.swagger.annotations.ApiOperation
-import org.craftsmenlabs.gareth.execution.definitions.ExecutionType
-import org.craftsmenlabs.gareth.execution.services.DefinitionService
+import org.craftsmenlabs.gareth.model.DefinitionInfo
 import org.craftsmenlabs.gareth.model.Duration
-import org.springframework.beans.factory.annotation.Autowired
+import org.craftsmenlabs.gareth.rest.BadRequestException
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RequestMethod
@@ -13,28 +10,28 @@ import org.springframework.web.bind.annotation.RestController
 
 @RestController
 @RequestMapping("gareth/v1/")
-@Api("Endpoint for definitions")
-class DefinitionsEndpoint @Autowired constructor(val definitionService: DefinitionService) {
+class MockExecutionDefinitionEndPoint {
 
     @RequestMapping(value = "definitions/baseline/{glueline}", method = arrayOf(RequestMethod.GET))
-    @ApiOperation(value = "Gets the result of the match for the user and the given perspective")
-    fun getBaselineByGlueline(@PathVariable("glueline") glueLine: String) =
-            definitionService.getInfoByType(glueLine, ExecutionType.BASELINE)
+    fun getBaselineByGlueline(@PathVariable("glueline") glueLine: String): DefinitionInfo {
+        if (!glueLine.equals("sale of fruit"))
+            throw BadRequestException("not a valid glueline")
+        return DefinitionInfo(glueline = "^sale of (.*?)$", method = "getSaleOfItem", className = "org.craftsmenlabs.gareth.execution.definitions.SaleOfFruit")
+    }
 
     @RequestMapping(value = "definitions/assume/{glueline}", method = arrayOf(RequestMethod.GET))
     fun getAssumeByGlueline(@PathVariable("glueline") glueLine: String) =
-            definitionService.getInfoByType(glueLine, ExecutionType.ASSUME)
+            DefinitionInfo(glueline = "^sale of fruit has risen by (\\d+?) per cent$", method = "hasRisenByPercent", className = "org.craftsmenlabs.gareth.execution.definitions.SaleOfFruit")
 
     @RequestMapping(value = "definitions/success/{glueline}", method = arrayOf(RequestMethod.GET))
     fun getSuccessByGlueline(@PathVariable("glueline") glueLine: String) =
-            definitionService.getInfoByType(glueLine, ExecutionType.SUCCESS)
+            DefinitionInfo(glueline = "^send email to (.*?)$", method = "sendText", className = "org.craftsmenlabs.gareth.execution.definitions.SaleOfFruit")
 
     @RequestMapping(value = "definitions/failure/{glueline}", method = arrayOf(RequestMethod.GET))
     fun getFailureByGlueline(@PathVariable("glueline") glueLine: String) =
-            definitionService.getInfoByType(glueLine, ExecutionType.FAILURE)
+            DefinitionInfo(glueline = "^send email to (.*?)$", method = "sendText", className = "org.craftsmenlabs.gareth.execution.definitions.SaleOfFruit")
 
     @RequestMapping(value = "definitions/time/{glueline}", method = arrayOf(RequestMethod.GET))
     fun getDurationByGlueline(@PathVariable("glueline") glueLine: String): Duration =
-            definitionService.getTime(glueLine)
+            Duration("SECONDS", 2)
 }
-

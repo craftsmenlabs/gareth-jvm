@@ -5,9 +5,9 @@ import mockit.Injectable
 import mockit.Tested
 import mockit.integration.junit4.JMockit
 import org.assertj.core.api.Assertions.assertThat
-import org.craftsmenlabs.gareth.api.execution.*
 import org.craftsmenlabs.gareth.execution.RunContext
 import org.craftsmenlabs.gareth.execution.definitions.ExecutionType
+import org.craftsmenlabs.gareth.model.*
 import org.junit.Test
 import org.junit.runner.RunWith
 

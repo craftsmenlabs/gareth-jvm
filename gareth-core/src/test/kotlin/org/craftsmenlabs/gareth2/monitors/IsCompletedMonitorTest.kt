@@ -11,7 +11,7 @@ import org.craftsmenlabs.gareth.model.ExperimentResults
 import org.craftsmenlabs.gareth.model.ExperimentTiming
 import org.craftsmenlabs.gareth2.GlueLineLookup
 import org.craftsmenlabs.gareth2.providers.ExperimentProvider
-import org.craftsmenlabs.gareth2.time.DateTimeService
+import org.craftsmenlabs.gareth2.time.TimeService
 import org.junit.Before
 import org.junit.Ignore
 import org.junit.Test
@@ -43,7 +43,7 @@ class IsCompletedMonitorTest {
     lateinit var experimentProvider: ExperimentProvider
 
     @Injectable
-    lateinit var dateTimeService: DateTimeService
+    lateinit var dateTimeService: TimeService
 
     @Injectable
     lateinit var glueLineLookup: GlueLineLookup

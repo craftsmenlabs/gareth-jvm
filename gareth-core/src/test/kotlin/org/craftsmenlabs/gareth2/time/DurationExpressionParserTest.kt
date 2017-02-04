@@ -15,7 +15,7 @@ class DurationExpressionParserTest {
     val formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm")
 
     @Injectable
-    lateinit var dateTimeService: DateTimeService
+    lateinit var dateTimeService: TimeService
 
     @Tested
     lateinit var parser: DurationExpressionParser

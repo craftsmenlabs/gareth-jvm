@@ -5,7 +5,7 @@ import org.craftsmenlabs.gareth.model.Experiment
 import org.craftsmenlabs.gareth.model.ExperimentState
 import org.craftsmenlabs.gareth2.GlueLineExecutor
 import org.craftsmenlabs.gareth2.providers.ExperimentProvider
-import org.craftsmenlabs.gareth2.time.DateTimeService
+import org.craftsmenlabs.gareth2.time.TimeService
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
 import rx.Observable
@@ -13,7 +13,7 @@ import rx.Observable
 @Service
 class ExecuteAssumeMonitor @Autowired constructor(
         experimentProvider: ExperimentProvider,
-        dateTimeService: DateTimeService,
+        dateTimeService: TimeService,
         experimentStorage: ExperimentStorage,
         private val glueLineExecutor: GlueLineExecutor)
     : BaseMonitor(

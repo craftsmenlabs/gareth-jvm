@@ -24,15 +24,22 @@ class MemoryStorage : ExperimentStorage {
     }
 
     override fun save(experiment: Experiment): Experiment {
-        cache[experiment.id!!] = experiment
-        log.info("saved experiment ${experiment.id}")
+        val withId =
+                if (experiment.id == null) experiment.copy(id = MemoryStorage.nextID()) else experiment
+        cache[withId.id!!] = withId
+        log.info("saved experiment ${withId.id}")
         if (saveListener != null) {
-            saveListener!!.invoke(experiment)
+            saveListener!!.invoke(withId)
         }
-        return experiment
+        return withId
     }
 
     override fun setListener(listener: ((Experiment) -> Unit)?) {
         saveListener = listener
+    }
+
+    companion object {
+        var ID: Long = 1
+        fun nextID(): Long = ++ID
     }
 }

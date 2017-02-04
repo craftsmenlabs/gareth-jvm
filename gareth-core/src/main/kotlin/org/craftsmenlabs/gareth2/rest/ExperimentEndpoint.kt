@@ -4,7 +4,7 @@ import org.craftsmenlabs.gareth.ExperimentStorage
 import org.craftsmenlabs.gareth.model.ExperimentCreateDTO
 import org.craftsmenlabs.gareth.model.ExperimentDTO
 import org.craftsmenlabs.gareth2.model.ExperimentDTOConverter
-import org.craftsmenlabs.gareth2.time.DateTimeService
+import org.craftsmenlabs.gareth2.time.TimeService
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.web.bind.annotation.*
 
@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.*
 @RequestMapping("gareth/v1/experiments")
 class ExperimentEndpoint constructor(@Autowired val experimentStorage: ExperimentStorage,
                                      @Autowired val converter: ExperimentDTOConverter,
-                                     @Autowired val dateTimeService: DateTimeService) {
+                                     @Autowired val dateTimeService: TimeService) {
 
 
     @RequestMapping(method = arrayOf(RequestMethod.PUT))

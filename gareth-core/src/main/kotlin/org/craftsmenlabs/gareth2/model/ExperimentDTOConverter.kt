@@ -1,14 +1,14 @@
 package org.craftsmenlabs.gareth2.model
 
 import org.craftsmenlabs.gareth.model.*
-import org.craftsmenlabs.gareth2.time.DateTimeService
+import org.craftsmenlabs.gareth2.time.TimeService
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
 import java.time.LocalDateTime
 import java.util.*
 
 @Service
-class ExperimentDTOConverter constructor(@Autowired val dateTimeService: DateTimeService) {
+class ExperimentDTOConverter constructor(@Autowired val dateTimeService: TimeService) {
 
     fun createExperiment(dto: ExperimentCreateDTO): Experiment {
         val details = ExperimentDetails(

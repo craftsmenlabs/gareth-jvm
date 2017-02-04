@@ -5,9 +5,9 @@ import mockit.Injectable
 import mockit.Tested
 import mockit.integration.junit4.JMockit
 import org.assertj.core.api.Assertions.assertThat
-import org.craftsmenlabs.gareth.api.model.GlueLineType
 import org.craftsmenlabs.gareth.execution.services.DefinitionRegistry
 import org.craftsmenlabs.gareth.execution.services.GlueLineMatcherService
+import org.craftsmenlabs.gareth.model.GlueLineType
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith

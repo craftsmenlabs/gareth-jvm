@@ -11,7 +11,7 @@ import java.util.regex.Pattern
  * Utility to parse common time expression to a Duration, e.g. 1 minute, 5 hours, 3 days
  */
 @Component
-open class DurationExpressionParser constructor(@Autowired val dateTimeService: DateTimeService) {
+open class DurationExpressionParser constructor(@Autowired val dateTimeService: TimeService) {
 
     private val PATTERN = Pattern.compile("(\\d{1,5}) ?([a-zA-Z]{3,7})")
 

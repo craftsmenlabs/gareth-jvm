@@ -1,7 +1,6 @@
 package org.craftsmenlabs.gareth.execution.definitions
 
 import org.craftsmenlabs.gareth.execution.RunContext
-import org.craftsmenlabs.gareth.execution.spi.SaleOfFruit
 import org.junit.Test
 
 class InvokableMethodTest {

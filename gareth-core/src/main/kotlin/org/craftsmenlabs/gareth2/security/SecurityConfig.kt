@@ -15,7 +15,7 @@ import org.springframework.security.core.userdetails.UserDetailsService
 @Configuration
 @EnableWebSecurity
 @EnableGlobalMethodSecurity(securedEnabled = true)
-@Profile("!Test")
+@Profile("!test")
 open class SecurityConfig : WebSecurityConfigurerAdapter() {
 
     @Autowired

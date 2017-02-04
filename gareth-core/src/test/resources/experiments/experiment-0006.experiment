@@ -1,8 +1,0 @@
-Experiment: Reduce failed logins (with success and failure flipped)
-Weight: 6
-
-Baseline: Failed logins are read from log
-Assumption: By showing a caps-lock warning the failed logins are reduced by 5%
-Time: 5 days
-Failure: this is a failure
-Success: this is a success
