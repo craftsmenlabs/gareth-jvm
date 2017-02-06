@@ -2,20 +2,26 @@ package org.craftsmenlabs.gareth2.jpa
 
 import org.craftsmenlabs.gareth.ExperimentStorage
 import org.craftsmenlabs.gareth.model.Experiment
+import org.craftsmenlabs.gareth2.time.TimeService
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.context.annotation.Profile
 import org.springframework.stereotype.Service
+import java.time.LocalDateTime
 
 @Service
 @Profile("!test")
-class JPAExperimentStorage : ExperimentStorage {
-
-    @Autowired
-    private lateinit var converter: EntityConverter
-    @Autowired
-    private lateinit var dao: ExperimentDao
+class JPAExperimentStorage @Autowired constructor(val converter: EntityConverter,
+                                                  val dao: ExperimentDao,
+                                                  val dateTimeService: TimeService) : ExperimentStorage {
 
     var saveListener: ((Experiment) -> Unit)? = null
+
+    override fun getFiltered(createdAfter: LocalDateTime?, onlyFinished: Boolean?): List<Experiment> {
+        val creationFilter: (ExperimentEntity) -> Boolean = { createdAfter == null || it.dateCreated.after(dateTimeService.toDate(createdAfter)) }
+        val finishedFilter: (ExperimentEntity) -> Boolean = { onlyFinished == null || it.dateCompleted != null }
+        return dao.findAll().filter { creationFilter.invoke(it) && finishedFilter.invoke(it) }.map { converter.toDTO(it) }
+    }
+
     override fun loadAllExperiments(): List<Experiment> {
         return dao.findAll().map { converter.toDTO(it) }
     }

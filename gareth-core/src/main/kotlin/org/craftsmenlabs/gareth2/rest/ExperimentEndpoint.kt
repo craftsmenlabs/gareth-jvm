@@ -27,6 +27,13 @@ class ExperimentEndpoint constructor(@Autowired val experimentStorage: Experimen
         return converter.createDTO(experimentStorage.getById(id))
     }
 
+    @RequestMapping(method = arrayOf(RequestMethod.GET))
+    fun getFiltered(@RequestParam("created") ddMMYYYY: String?,
+                    @RequestParam("completed") completed: Boolean?): List<ExperimentDTO> {
+        val createdSince = if (ddMMYYYY == null) null else dateTimeService.parse_ddMMYYY(ddMMYYYY)
+        return experimentStorage.getFiltered(createdSince, completed).map { converter.createDTO(it) }
+    }
+
     @RequestMapping(value = "{id}/start", method = arrayOf(RequestMethod.PUT))
     fun start(@PathVariable("id") id: Long): ExperimentDTO {
         val experiment = experimentStorage.getById(id)

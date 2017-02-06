@@ -536,6 +536,8 @@
         <module>gareth-api</module>
         <module>gareth-core</module>
         <module>gareth-execution-ri</module>
+        <module>gareth-atdd</module>
+        <module>gareth-acme</module>
     </modules>
 
 

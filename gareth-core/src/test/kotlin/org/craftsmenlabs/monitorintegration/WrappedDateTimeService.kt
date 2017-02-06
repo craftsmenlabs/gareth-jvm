@@ -10,6 +10,10 @@ import java.util.*
 @Profile("mock")
 open class WrappedDateTimeService : TimeService {
 
+    override fun parse_ddMMYYY(input: String): LocalDateTime {
+        return mock.parse_ddMMYYY(input)
+    }
+
     override fun toDate(dateTime: LocalDateTime): Date {
         return mock.toDate(dateTime)
     }

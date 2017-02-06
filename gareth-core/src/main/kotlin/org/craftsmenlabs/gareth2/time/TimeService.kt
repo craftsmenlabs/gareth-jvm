@@ -10,4 +10,6 @@ interface TimeService {
     fun toDate(dateTime: LocalDateTime): Date
 
     fun fromDate(dateTime: Date): LocalDateTime
+
+    fun parse_ddMMYYY(input: String): LocalDateTime
 }

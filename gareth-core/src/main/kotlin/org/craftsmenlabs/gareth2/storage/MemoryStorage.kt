@@ -5,17 +5,25 @@ import org.craftsmenlabs.gareth.model.Experiment
 import org.slf4j.LoggerFactory
 import org.springframework.context.annotation.Profile
 import org.springframework.stereotype.Service
+import java.time.LocalDateTime
 
 @Service
 @Profile("test")
 class MemoryStorage : ExperimentStorage {
 
-    override fun getById(id: Long): Experiment {
-        return cache[id] ?: throw IllegalArgumentException("Not a valid id $id")
-    }
 
     val log = LoggerFactory.getLogger("MemoryStorage")
     val cache: MutableMap<Long, Experiment> = mutableMapOf()
+
+    override fun getFiltered(createdAfter: LocalDateTime?, onlyFinished: Boolean?): List<Experiment> {
+        val creationFilter: (Experiment) -> Boolean = { createdAfter == null || it.timing.created.isAfter(createdAfter) }
+        val finishedFilter: (Experiment) -> Boolean = { onlyFinished == null || it.timing.completed != null }
+        return cache.values.filter { creationFilter.invoke(it) && finishedFilter.invoke(it) }
+    }
+
+    override fun getById(id: Long): Experiment {
+        return cache[id] ?: throw IllegalArgumentException("Not a valid id $id")
+    }
 
     var saveListener: ((Experiment) -> Unit)? = null
 

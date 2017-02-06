@@ -5,6 +5,7 @@ import org.springframework.stereotype.Component
 import java.time.Instant
 import java.time.LocalDateTime
 import java.time.ZoneOffset
+import java.time.format.DateTimeFormatter
 import java.util.*
 
 @Component
@@ -22,6 +23,10 @@ class DateTimeService : TimeService {
     override fun fromDate(dateTime: Date): LocalDateTime {
         val instant = Instant.ofEpochMilli(dateTime.getTime())
         return LocalDateTime.ofInstant(instant, ZoneOffset.UTC)
+    }
+
+    override fun parse_ddMMYYY(input: String): LocalDateTime {
+        return LocalDateTime.parse(input, DateTimeFormatter.ofPattern("ddMMYYYY", Locale.ENGLISH))
     }
 
 }
