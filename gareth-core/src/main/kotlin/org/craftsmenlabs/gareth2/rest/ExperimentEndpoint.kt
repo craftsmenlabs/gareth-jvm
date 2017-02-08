@@ -10,9 +10,9 @@ import org.springframework.web.bind.annotation.*
 
 @RestController
 @RequestMapping("gareth/v1/experiments")
-class ExperimentEndpoint constructor(@Autowired val experimentStorage: ExperimentStorage,
-                                     @Autowired val converter: ExperimentDTOConverter,
-                                     @Autowired val dateTimeService: TimeService) {
+class ExperimentEndpoint @Autowired constructor(val experimentStorage: ExperimentStorage,
+                                                val converter: ExperimentDTOConverter,
+                                                val dateTimeService: TimeService) {
 
 
     @RequestMapping(method = arrayOf(RequestMethod.PUT))
@@ -39,7 +39,7 @@ class ExperimentEndpoint constructor(@Autowired val experimentStorage: Experimen
         val experiment = experimentStorage.getById(id)
         val updated = experiment.copy(timing = experiment.timing.copy(started = dateTimeService.now()))
         experimentStorage.save(updated)
-        return converter.createDTO(experiment)
+        return converter.createDTO(updated)
     }
 }
 
