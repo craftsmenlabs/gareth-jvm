@@ -32,6 +32,15 @@ data class Experiment(
             return ExperimentState.COMPLETED
         }
     }
+
+    companion object {
+        fun createDefault(): Experiment {
+            return Experiment(details = ExperimentDetails("TEST", "baseline", "assume", "5 seonds", "success", "failure", 1),
+                    timing = ExperimentTiming(),
+                    results = ExperimentResults(),
+                    environment = ExperimentRunEnvironment())
+        }
+    }
 }
 
 data class ExperimentDetails(
