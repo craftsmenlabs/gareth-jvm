@@ -5,8 +5,6 @@ import org.craftsmenlabs.gareth.model.Experiment
 import org.craftsmenlabs.gareth.model.ExperimentState
 import org.craftsmenlabs.gareth.providers.ExperimentProvider
 import org.craftsmenlabs.gareth.time.TimeService
-import org.slf4j.Logger
-import org.slf4j.LoggerFactory
 import rx.Observable
 import rx.schedulers.Schedulers
 import javax.annotation.PostConstruct
@@ -16,8 +14,6 @@ abstract class BaseMonitor constructor(
         protected val dateTimeService: TimeService,
         protected val experimentStorage: ExperimentStorage,
         private val experimentState: ExperimentState) {
-
-    val log: Logger = LoggerFactory.getLogger(BaseMonitor::class.java)
 
     @PostConstruct
     fun start() {
