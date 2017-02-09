@@ -5,19 +5,15 @@ import org.craftsmenlabs.gareth.execution.GarethExecutionApplication
 import org.craftsmenlabs.gareth.execution.definitions.SaleOfFruit
 import org.craftsmenlabs.gareth.execution.dto.ExperimentRunEnvironmentBuilder
 import org.craftsmenlabs.gareth.model.*
+import org.craftsmenlabs.gareth.rest.BasicAuthenticationRestClient
 import org.junit.FixMethodOrder
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.MethodSorters
 import org.springframework.boot.test.context.SpringBootTest
-import org.springframework.http.HttpMethod
-import org.springframework.http.MediaType
-import org.springframework.http.RequestEntity
 import org.springframework.test.context.ActiveProfiles
 import org.springframework.test.context.TestPropertySource
 import org.springframework.test.context.junit4.SpringRunner
-import org.springframework.web.client.RestTemplate
-import java.net.URI
 
 @RunWith(SpringRunner::class)
 @SpringBootTest(classes = arrayOf(GarethExecutionApplication::class, SaleOfFruit::class), webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
@@ -27,7 +23,7 @@ import java.net.URI
 class ExperimentLifecycleIntegrationTest {
 
     val path = "http://localhost:8101/gareth/v1/"
-    val template = RestTemplate()
+    val restClient = BasicAuthenticationRestClient("user", "secret")
 
     @Test
     fun testBaseline() {
@@ -49,8 +45,8 @@ class ExperimentLifecycleIntegrationTest {
 
     @Test
     fun testDuration() {
-        val request = RequestEntity(createRequest("next Easter", ExperimentRunEnvironmentBuilder.createEmpty()), HttpMethod.PUT, URI("${path}time"))
-        val response = template.exchange(request, Duration::class.java)
+        val request = createRequest("next Easter", ExperimentRunEnvironmentBuilder.createEmpty())
+        val response = restClient.putAsEntity(request, Duration::class.java, "${path}time")
         assertThat(response.body.amount).isEqualTo(14400L)
     }
 
@@ -73,8 +69,7 @@ class ExperimentLifecycleIntegrationTest {
     }
 
     fun doPut(path: String, dto: ExecutionRequest): ExecutionResult {
-        val builder = RequestEntity.put(URI(path)).contentType(MediaType.APPLICATION_JSON).body(dto)
-        val response = template.exchange(builder, ExecutionResult::class.java)
+        val response = restClient.putAsEntity(dto, ExecutionResult::class.java, path)
         assertThat(response.statusCode.is2xxSuccessful).isTrue()
         println(response.body)
         return response.body
