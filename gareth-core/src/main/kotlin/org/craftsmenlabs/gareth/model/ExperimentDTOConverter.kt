@@ -17,7 +17,7 @@ class ExperimentDTOConverter constructor(@Autowired val dateTimeService: TimeSer
                 time = dto.time,
                 success = dto.success,
                 failure = dto.failure,
-                value = dto.weight)
+                value = dto.value)
         val experiment = Experiment(
                 details = details,
                 environment = dto.environment,

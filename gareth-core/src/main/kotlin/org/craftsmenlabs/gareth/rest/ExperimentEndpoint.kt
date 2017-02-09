@@ -15,7 +15,6 @@ class ExperimentEndpoint @Autowired constructor(val experimentStorage: Experimen
                                                 val converter: ExperimentDTOConverter,
                                                 val dateTimeService: TimeService) {
 
-
     @RequestMapping(method = arrayOf(RequestMethod.PUT))
     fun upsert(@RequestBody dto: ExperimentCreateDTO): ExperimentDTO {
         val experiment = converter.createExperiment(dto)
@@ -43,5 +42,3 @@ class ExperimentEndpoint @Autowired constructor(val experimentStorage: Experimen
         return converter.createDTO(updated)
     }
 }
-
-

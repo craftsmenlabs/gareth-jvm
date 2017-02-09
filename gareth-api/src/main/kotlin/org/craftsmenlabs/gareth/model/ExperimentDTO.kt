@@ -5,7 +5,7 @@ import java.util.*
 
 data class ExperimentDTO(val id: Long,
                          val name: String,
-                         val weight: Int = 0,
+                         val value: Int = 0,
                          val baseline: String,
                          val assume: String,
                          val success: String,
@@ -26,12 +26,10 @@ data class ExperimentDTO(val id: Long,
 
 data class ExperimentCreateDTO(
         val name: String,
-        val weight: Int = 0,
+        val value: Int = 0,
         val baseline: String,
         val assume: String,
         val success: String,
         val failure: String,
         val time: String,
-        val environment: ExperimentRunEnvironment)
-
-
+        val environment: ExperimentRunEnvironment = ExperimentRunEnvironment())

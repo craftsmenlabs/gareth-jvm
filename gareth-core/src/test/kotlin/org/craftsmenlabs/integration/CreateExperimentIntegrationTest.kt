@@ -57,10 +57,10 @@ class CreateExperimentIntegrationTest {
         assertThat(saved.timing.ready).isNotNull()
         assertThat(saved.environment.items[0].key).isEqualTo("fruit")
         assertThat(saved.environment.items[0].value).isEqualTo("apples")
-        /* assertThat(searchExperiment(date = today, completed = false)).hasSize(1)
-         assertThat(searchExperiment(date = today, completed = true)).isEmpty()
-         assertThat(searchExperiment(date = tomorrow)).isEmpty()
-         assertThat(searchExperiment()).hasSize(1)*/
+       /* assertThat(searchExperiment(date = today, completed = false)).hasSize(1)
+        assertThat(searchExperiment(date = today, completed = true)).isEmpty()
+        assertThat(searchExperiment(date = tomorrow)).isEmpty()
+        assertThat(searchExperiment()).hasSize(1)*/
     }
 
     @Test
@@ -104,7 +104,7 @@ class CreateExperimentIntegrationTest {
                 time = "2 seconds",
                 success = "send email to Sam",
                 failure = "send email to Moos",
-                weight = 42,
+                value = 42,
                 environment = ExperimentRunEnvironment(listOf(EnvironmentItem("fruit", "apples", ItemType.STRING))))
     }
 
