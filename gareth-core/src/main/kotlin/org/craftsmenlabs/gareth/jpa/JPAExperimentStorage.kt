@@ -4,12 +4,10 @@ import org.craftsmenlabs.gareth.ExperimentStorage
 import org.craftsmenlabs.gareth.model.Experiment
 import org.craftsmenlabs.gareth.time.TimeService
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.context.annotation.Profile
 import org.springframework.stereotype.Service
 import java.time.LocalDateTime
 
 @Service
-@Profile("!test")
 class JPAExperimentStorage @Autowired constructor(val converter: EntityConverter,
                                                   val dao: ExperimentDao,
                                                   val dateTimeService: TimeService) : ExperimentStorage {
@@ -17,9 +15,17 @@ class JPAExperimentStorage @Autowired constructor(val converter: EntityConverter
     var saveListener: ((Experiment) -> Unit)? = null
 
     override fun getFiltered(createdAfter: LocalDateTime?, onlyFinished: Boolean?): List<Experiment> {
-        val creationFilter: (ExperimentEntity) -> Boolean = { createdAfter == null || it.dateCreated.after(dateTimeService.toDate(createdAfter)) }
-        val finishedFilter: (ExperimentEntity) -> Boolean = { onlyFinished == null || it.dateCompleted != null }
-        return dao.findAll().filter { creationFilter.invoke(it) && finishedFilter.invoke(it) }.map { converter.toDTO(it) }
+        val creationFilter: (ExperimentEntity) -> Boolean = {
+            createdAfter == null || it.dateCreated.isAfter(createdAfter)
+        }
+        val finishedFilter: (ExperimentEntity) -> Boolean = {
+            onlyFinished == null || it.dateCompleted != null
+        }
+        return dao.findAll().filter {
+            val filterCreated = creationFilter.invoke(it)
+            val finished = finishedFilter.invoke(it)
+            filterCreated && finished
+        }.map { converter.toDTO(it) }
     }
 
     override fun loadAllExperiments(): List<Experiment> {

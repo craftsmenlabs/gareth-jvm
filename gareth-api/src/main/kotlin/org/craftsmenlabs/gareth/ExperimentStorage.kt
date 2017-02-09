@@ -9,5 +9,5 @@ interface ExperimentStorage {
     fun save(experiment: Experiment): Experiment
     fun setListener(listener: ((Experiment) -> Unit)?)
     fun getById(id: Long): Experiment
-    fun getFiltered(createdAfter: LocalDateTime? = null, onlyFinished: Boolean? = false): List<Experiment>
+    fun getFiltered(createdAfter: LocalDateTime? = null, onlyFinished: Boolean? = null): List<Experiment>
 }

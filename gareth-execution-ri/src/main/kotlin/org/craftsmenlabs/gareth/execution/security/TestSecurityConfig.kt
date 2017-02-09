@@ -15,27 +15,29 @@ import org.springframework.security.core.userdetails.UserDetailsService
 @Configuration
 @EnableWebSecurity
 @EnableGlobalMethodSecurity(securedEnabled = true)
-@Profile("!test")
-open class SecurityConfig : WebSecurityConfigurerAdapter() {
+@Profile("test")
+open class TestSecurityConfig : WebSecurityConfigurerAdapter() {
 
     @Autowired
     lateinit var userService: UserDetailsService
 
     @Bean
-    @Throws(Exception::class)
     override fun authenticationManagerBean(): AuthenticationManager {
         return super.authenticationManagerBean()
     }
 
     @Autowired
-    @Throws(Exception::class)
     fun configureGlobal(auth: AuthenticationManagerBuilder) {
         auth.userDetailsService<UserDetailsService>(userService)
     }
 
-    @Throws(Exception::class)
     override fun configure(http: HttpSecurity) {
-        http.headers().disable().authorizeRequests().antMatchers("**/*.html").permitAll().antMatchers("/**/*").authenticated().and().httpBasic().and().userDetailsService(userService).csrf().disable()
+        http.headers().disable().authorizeRequests().antMatchers("**/*.html")
+                .permitAll().antMatchers("/**/*").authenticated()
+                .and().httpBasic()
+                .and().userDetailsService(userService)
+                .csrf().disable()
     }
+
 
 }

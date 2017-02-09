@@ -1,7 +1,7 @@
 package org.craftsmenlabs.gareth.jpa
 
 import org.craftsmenlabs.gareth.model.ExecutionStatus
-import java.sql.Timestamp
+import java.time.LocalDateTime
 import javax.persistence.*
 
 @Entity(name = "EXPERIMENT")
@@ -14,18 +14,28 @@ data class ExperimentEntity(@Id
     lateinit var success: String
     lateinit var failure: String
     lateinit var timeline: String
-    lateinit var dateCreated: Timestamp
+    @Convert(converter = DateTimeConverter::class)
+    lateinit var dateCreated: LocalDateTime
     @Enumerated(EnumType.ORDINAL)
     lateinit var result: ExecutionStatus
-    var dateReady: Timestamp? = null
-    var dateStarted: Timestamp? = null
-    var dateWaitingForBaseline: Timestamp? = null
-    var dateBaselineExecuted: Timestamp? = null
-    var dateWaitingForAssume: Timestamp? = null
-    var dateAssumeExecuted: Timestamp? = null
-    var dateWaitingFinalizing: Timestamp? = null
-    var dateFinalizingExecuted: Timestamp? = null
-    var dateCompleted: Timestamp? = null
-    @OneToMany(cascade = arrayOf(CascadeType.ALL), fetch = FetchType.EAGER)
-    lateinit var environment: List<ExperimentEnvironmentItem>
+    @Convert(converter = DateTimeConverter::class)
+    var dateReady: LocalDateTime? = null
+    @Convert(converter = DateTimeConverter::class)
+    var dateStarted: LocalDateTime? = null
+    @Convert(converter = DateTimeConverter::class)
+    var dateWaitingForBaseline: LocalDateTime? = null
+    @Convert(converter = DateTimeConverter::class)
+    var dateBaselineExecuted: LocalDateTime? = null
+    @Convert(converter = DateTimeConverter::class)
+    var dateWaitingForAssume: LocalDateTime? = null
+    @Convert(converter = DateTimeConverter::class)
+    var dateAssumeExecuted: LocalDateTime? = null
+    @Convert(converter = DateTimeConverter::class)
+    var dateWaitingFinalizing: LocalDateTime? = null
+    @Convert(converter = DateTimeConverter::class)
+    var dateFinalizingExecuted: LocalDateTime? = null
+    @Convert(converter = DateTimeConverter::class)
+    var dateCompleted: LocalDateTime? = null
+    @OneToMany(cascade = arrayOf(CascadeType.ALL), fetch = FetchType.EAGER, mappedBy = "experiment")
+    lateinit var environment: Set<ExperimentEnvironmentItem>
 }

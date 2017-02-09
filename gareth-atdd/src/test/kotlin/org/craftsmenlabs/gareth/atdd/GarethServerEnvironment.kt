@@ -33,6 +33,7 @@ object GarethServerEnvironment {
 
     fun createExecutionInstance(): SpringApplicationWrapper {
         val conf = ConfBuilder(port = executionPort)
+        conf.add("spring.profiles.active", "test")
         val jarFilePath = getJarfile(getProjectRootDir() + "gareth-acme/target")
         return SpringApplicationWrapper("http://localhost:$executionPort/manage", jarFilePath, conf)
     }

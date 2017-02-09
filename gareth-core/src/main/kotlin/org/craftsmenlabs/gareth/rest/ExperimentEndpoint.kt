@@ -4,6 +4,7 @@ import org.craftsmenlabs.gareth.ExperimentStorage
 import org.craftsmenlabs.gareth.model.ExperimentCreateDTO
 import org.craftsmenlabs.gareth.model.ExperimentDTO
 import org.craftsmenlabs.gareth.model.ExperimentDTOConverter
+import org.craftsmenlabs.gareth.time.DateFormatUtils
 import org.craftsmenlabs.gareth.time.TimeService
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.web.bind.annotation.*
@@ -30,7 +31,7 @@ class ExperimentEndpoint @Autowired constructor(val experimentStorage: Experimen
     @RequestMapping(method = arrayOf(RequestMethod.GET))
     fun getFiltered(@RequestParam("created", required = false) ddMMYYYY: String?,
                     @RequestParam("completed", required = false) completed: Boolean?): List<ExperimentDTO> {
-        val createdSince = if (ddMMYYYY == null) null else dateTimeService.parse_ddMMYYY(ddMMYYYY)
+        val createdSince = if (ddMMYYYY == null) null else DateFormatUtils.parseDateStringToMidnight(ddMMYYYY)
         return experimentStorage.getFiltered(createdSince, completed).map { converter.createDTO(it) }
     }
 

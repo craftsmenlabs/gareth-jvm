@@ -149,7 +149,7 @@ class MonitorIntegrationTest {
         waitForPipeline()
 
         val resultExp = getStoredExperiment()
-        assertThat(resultExp.timing.ready).isSameAs(localDateTimeReady_21)
+        assertThat(resultExp.timing.ready).isEqualTo(localDateTimeReady_21)
         assertThat(resultExp.getState()).isEqualTo(ExperimentState.READY)
     }
 
@@ -241,16 +241,16 @@ class MonitorIntegrationTest {
         waitForAssumePlanning()
 
         val resultExp = getStoredExperiment()
-        assertThat(resultExp.timing.created).isSameAs(localDateTimeCreated_20)
-        assertThat(resultExp.timing.ready).isSameAs(localDateTimeReady_21)
-        assertThat(resultExp.timing.started).isSameAs(localDateTimeStarted_22)
-        assertThat(resultExp.timing.waitingForBaseline).isSameAs(localDateTimeWaitBaseline_23)
-        assertThat(resultExp.timing.baselineExecuted).isSameAs(localDateTimeExecBaseline_now1)
-        assertThat(resultExp.timing.waitingForAssume).isSameAs(localDateTimeWaitAssume_01)
-        assertThat(resultExp.timing.assumeExecuted).isSameAs(localDateTimeExecAssume_02)
-        assertThat(resultExp.timing.waitingFinalizing).isSameAs(localDateTimeWaitFinalize_03)
-        assertThat(resultExp.timing.finalizingExecuted).isSameAs(localDateTimeExecFinalize_04)
-        assertThat(resultExp.timing.completed).isSameAs(localDateTimeCompleted_05)
+        assertThat(resultExp.timing.created).isEqualTo(localDateTimeCreated_20)
+        assertThat(resultExp.timing.ready).isEqualTo(localDateTimeReady_21)
+        assertThat(resultExp.timing.started).isEqualTo(localDateTimeStarted_22)
+        assertThat(resultExp.timing.waitingForBaseline).isEqualTo(localDateTimeWaitBaseline_23)
+        assertThat(resultExp.timing.baselineExecuted).isEqualTo(localDateTimeExecBaseline_now1)
+        assertThat(resultExp.timing.waitingForAssume).isEqualTo(localDateTimeWaitAssume_01)
+        assertThat(resultExp.timing.assumeExecuted).isEqualTo(localDateTimeExecAssume_02)
+        assertThat(resultExp.timing.waitingFinalizing).isEqualTo(localDateTimeWaitFinalize_03)
+        assertThat(resultExp.timing.finalizingExecuted).isEqualTo(localDateTimeExecFinalize_04)
+        assertThat(resultExp.timing.completed).isEqualTo(localDateTimeCompleted_05)
     }
 
     private fun waitForPipeline() {

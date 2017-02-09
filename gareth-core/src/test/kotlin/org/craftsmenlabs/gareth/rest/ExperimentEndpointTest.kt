@@ -74,10 +74,7 @@ class ExperimentEndpointTest {
     fun testGetFilteredByDate() {
         object : Expectations() {
             init {
-                dateTimeService.parse_ddMMYYY("10102016")
-                result = now
-
-                experimentStorage.getFiltered(now, null)
+                experimentStorage.getFiltered(withInstanceOf(LocalDateTime::class.java), null)
                 result = listOf(experiment)
 
                 converter.createDTO(experiment)

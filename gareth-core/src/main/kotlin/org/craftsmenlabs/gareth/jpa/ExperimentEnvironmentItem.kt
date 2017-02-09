@@ -11,6 +11,8 @@ class ExperimentEnvironmentItem(@Id
     lateinit var value: String
     @Enumerated(EnumType.STRING)
     lateinit var itemType: ItemType
+    @ManyToOne(cascade = arrayOf(CascadeType.ALL), optional = false)
+    lateinit var experiment: ExperimentEntity
 }
 
 

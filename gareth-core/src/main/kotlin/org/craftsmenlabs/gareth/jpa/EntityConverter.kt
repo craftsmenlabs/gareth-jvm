@@ -20,16 +20,16 @@ class EntityConverter {
         entity.failure = experiment.details.failure
         entity.timeline = experiment.details.time
         val timing = experiment.timing
-        entity.dateCreated = toDate(timing.created)!!
-        entity.dateReady = toDate(timing.ready)
-        entity.dateStarted = toDate(timing.started)
-        entity.dateWaitingForBaseline = toDate(timing.waitingForBaseline)
-        entity.dateBaselineExecuted = toDate(timing.baselineExecuted)
-        entity.dateWaitingForAssume = toDate(timing.waitingForAssume)
-        entity.dateAssumeExecuted = toDate(timing.assumeExecuted)
-        entity.dateWaitingFinalizing = toDate(timing.waitingFinalizing)
-        entity.dateFinalizingExecuted = toDate(timing.finalizingExecuted)
-        entity.dateCompleted = toDate(timing.completed)
+        entity.dateCreated = timing.created!!
+        entity.dateReady = timing.ready
+        entity.dateStarted = timing.started
+        entity.dateWaitingForBaseline = timing.waitingForBaseline
+        entity.dateBaselineExecuted = timing.baselineExecuted
+        entity.dateWaitingForAssume = timing.waitingForAssume
+        entity.dateAssumeExecuted = timing.assumeExecuted
+        entity.dateWaitingFinalizing = timing.waitingFinalizing
+        entity.dateFinalizingExecuted = timing.finalizingExecuted
+        entity.dateCompleted = timing.completed
         entity.result = experiment.results.status
 
         val environment: List<ExperimentEnvironmentItem> = experiment.environment.items.map {
@@ -39,7 +39,7 @@ class EntityConverter {
             item.itemType = it.itemType
             item
         }
-        entity.environment = environment
+        entity.environment = environment.toSet()
         return entity
     }
 
@@ -53,16 +53,16 @@ class EntityConverter {
                 value = 0)
 
         val timing = ExperimentTiming(
-                created = toLocalDateTime(entity.dateCreated)!!,
-                ready = toLocalDateTime(entity.dateReady),
-                started = toLocalDateTime(entity.dateStarted),
-                waitingForBaseline = toLocalDateTime(entity.dateWaitingForBaseline),
-                baselineExecuted = toLocalDateTime(entity.dateBaselineExecuted),
-                waitingForAssume = toLocalDateTime(entity.dateWaitingForAssume),
-                assumeExecuted = toLocalDateTime(entity.dateAssumeExecuted),
-                waitingFinalizing = toLocalDateTime(entity.dateWaitingFinalizing),
-                finalizingExecuted = toLocalDateTime(entity.dateFinalizingExecuted),
-                completed = toLocalDateTime(entity.dateCompleted))
+                created = entity.dateCreated!!,
+                ready = entity.dateReady,
+                started = entity.dateStarted,
+                waitingForBaseline = entity.dateWaitingForBaseline,
+                baselineExecuted = entity.dateBaselineExecuted,
+                waitingForAssume = entity.dateWaitingForAssume,
+                assumeExecuted = entity.dateAssumeExecuted,
+                waitingFinalizing = entity.dateWaitingFinalizing,
+                finalizingExecuted = entity.dateFinalizingExecuted,
+                completed = entity.dateCompleted)
         val environmentItems = entity.environment.map { EnvironmentItem(it.key, it.value, it.itemType) }
         return Experiment(id = entity.id!!,
                 details = details,

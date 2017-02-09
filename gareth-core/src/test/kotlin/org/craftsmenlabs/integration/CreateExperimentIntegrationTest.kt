@@ -4,11 +4,14 @@ import org.assertj.core.api.Assertions.assertThat
 import org.craftsmenlabs.gareth.Application
 import org.craftsmenlabs.gareth.ExperimentStorage
 import org.craftsmenlabs.gareth.integration.TestConfig
-import org.craftsmenlabs.gareth.model.*
+import org.craftsmenlabs.gareth.model.ExecutionStatus
+import org.craftsmenlabs.gareth.model.ExperimentCreateDTO
+import org.craftsmenlabs.gareth.model.ExperimentDTO
+import org.craftsmenlabs.gareth.model.ExperimentRunEnvironment
+import org.craftsmenlabs.gareth.time.DateFormatUtils
 import org.craftsmenlabs.gareth.time.TimeService
 import org.junit.Before
 import org.junit.FixMethodOrder
-import org.junit.Ignore
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.MethodSorters
@@ -20,8 +23,6 @@ import org.springframework.test.context.ActiveProfiles
 import org.springframework.test.context.junit4.SpringRunner
 import org.springframework.web.client.RestTemplate
 import java.net.URI
-import java.time.format.DateTimeFormatter
-import java.util.*
 
 @RunWith(SpringRunner::class)
 @SpringBootTest(classes = arrayOf(Application::class, TestConfig::class), webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
@@ -36,30 +37,19 @@ class CreateExperimentIntegrationTest {
     lateinit var storage: ExperimentStorage
 
     @Autowired
-    lateinit var converter: ExperimentDTOConverter
-
-    @Autowired
     lateinit var timeService: TimeService
 
     lateinit var today: String
+    lateinit var tomorrow: String
 
     @Before
-    fun prepare() {
-        val experiment = converter.createExperiment(createDTO()).copy(id = 42)
-        today = timeService.now().format(DateTimeFormatter.ofPattern("ddMMYYYY", Locale.ENGLISH))
+    fun setup() {
+        today = DateFormatUtils.formatToDateString(timeService.midnight())
+        tomorrow = DateFormatUtils.formatToDateString(timeService.midnight().plusDays(1))
     }
 
     @Test
-    @Ignore
-    fun getAllExperiments() {
-        val request = RequestEntity.get(URI("$path/42")).build()
-        val response = template.exchange(request, ExperimentDTO::class.java)
-        assertThat(response.body.id).isEqualTo(42)
-    }
-
-    @Test
-    @Ignore
-    fun createExperiment() {
+    fun a_createExperiment() {
         val dto = createDTO()
         val created = doPut(path, dto)
         Thread.sleep(2000)
@@ -68,22 +58,26 @@ class CreateExperimentIntegrationTest {
         assertThat(saved.details.name).isEqualTo("Hello world")
         assertThat(saved.timing.created).isNotNull()
         assertThat(saved.timing.ready).isNotNull()
-        assertThat(searchExperiment(date = today, completed = false)).hasSize(1)
-        assertThat(searchExperiment()).hasSize(1)
+
+       /* assertThat(searchExperiment(date = today, completed = false)).hasSize(1)
+        assertThat(searchExperiment(date = today, completed = true)).isEmpty()
+        assertThat(searchExperiment(date = tomorrow)).isEmpty()
+        assertThat(searchExperiment()).hasSize(1)*/
     }
 
     @Test
-    fun createExperimentWithFaultyBaseline() {
+    fun b_createExperimentWithFaultyBaseline() {
         val dto = createDTO().copy(baseline = "sale of computers")
         val created = doPut(path, dto)
         val saved = storage.getById(created.id)
         assertThat(saved.details.name).isEqualTo("Hello world")
         assertThat(saved.timing.created).isNotNull()
         assertThat(saved.timing.ready).isNull()
+        /*  assertThat(searchExperiment(date = today, completed = false)).hasSize(1)*/
     }
 
     @Test
-    fun createAndStartExperiment() {
+    fun c_createAndStartExperiment() {
         val dto = createDTO()
         val created = doPut(path, dto)
         val builder = RequestEntity.put(URI("$path/${created.id}/start")).contentType(MediaType.APPLICATION_JSON)
@@ -126,7 +120,7 @@ class CreateExperimentIntegrationTest {
     fun searchExperiment(date: String? = null, completed: Boolean? = null): List<ExperimentDTO> {
         val completedQuery = if (completed != null) "completed=$completed" else "";
         val createdQuery = if (date != null) "created=$date" else ""
-        val url = "$path?$completedQuery;$createdQuery"
+        val url = "$path?$createdQuery&$completedQuery"
         val builder = RequestEntity.get(URI(url)).build()
         val response = template.exchange(builder, Array<ExperimentDTO>::class.java)
         assertThat(response.statusCode.is2xxSuccessful).isTrue()
