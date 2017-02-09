@@ -2,17 +2,20 @@ package org.craftsmenlabs.gareth.monitors
 
 import mockit.Expectations
 import mockit.Injectable
-import mockit.Verifications
+import mockit.Mocked
 import org.assertj.core.api.Assertions
+import org.craftsmenlabs.Captors
 import org.craftsmenlabs.gareth.ExperimentStorage
 import org.craftsmenlabs.gareth.GlueLineExecutor
 import org.craftsmenlabs.gareth.model.*
 import org.craftsmenlabs.gareth.providers.ExperimentProvider
 import org.craftsmenlabs.gareth.time.TimeService
+import org.craftsmenlabs.monitorintegration.computationTestOverride
+import org.craftsmenlabs.monitorintegration.ioTestOverride
 import org.junit.Before
-import org.junit.Ignore
 import org.junit.Test
 import rx.lang.kotlin.toObservable
+import rx.schedulers.Schedulers
 import java.time.LocalDateTime
 
 class ExecuteFailureMonitorTest {
@@ -50,13 +53,21 @@ class ExecuteFailureMonitorTest {
 
     lateinit var monitor: ExecuteFailureMonitor
 
+    @Injectable
+    lateinit var experimentRunEnvironment: ExperimentRunEnvironment
+
+    @Mocked
+    lateinit var schedulers: Schedulers;
+
     @Before
     fun setUp() {
+        schedulers.ioTestOverride()
+        schedulers.computationTestOverride()
+
         monitor = ExecuteFailureMonitor(experimentProvider, dateTimeService, experimentStorage, glueLineExecutor)
     }
 
     @Test
-    @Ignore("You have to fix _all_ unit test, because experiments became immutable. the IT test works though :)")
     fun shouldOnlyOperateOnStartedExperiments() {
         val details = ExperimentDetails("id", "baseline", "assumption", "time", "success", "failure", 111)
         val timingFinalisationExecuted = ExperimentTiming(
@@ -93,6 +104,9 @@ class ExecuteFailureMonitorTest {
                 experimentProvider.observable
                 result = experiments.toObservable()
 
+                glueLineExecutor.executeFailure(withAny(experimentFinalisationExecuted))
+                result = ExecutionResult(experimentRunEnvironment, ExecutionStatus.FAILURE)
+
                 dateTimeService.now()
                 result = localDateTime18
             }
@@ -100,28 +114,19 @@ class ExecuteFailureMonitorTest {
 
         monitor.start();
 
-        object : Verifications() {
-            init {
-                glueLineExecutor.executeFailure(succeededExperimentWaitingForFinalisation)
-                times = 0
+        val storageCaptor = Captors.experimentStorage_save(experimentStorage)
+        val glueLineExecutorCaptor = Captors.glueLineExecutor_executeFailure(glueLineExecutor)
 
-                glueLineExecutor.executeFailure(failedExperimentWaitingForFinalisation)
-                times = 1
+        Assertions.assertThat(glueLineExecutorCaptor).hasSize(1)
+        Assertions.assertThat(glueLineExecutorCaptor[0].id).isEqualTo(failedExperimentWaitingForFinalisation.id)
+        Assertions.assertThat(glueLineExecutorCaptor[0].timing.finalizingExecuted).isNull()
 
-                glueLineExecutor.executeFailure(experimentFinalisationExecuted)
-                times = 0
+        Assertions.assertThat(storageCaptor).hasSize(1)
+        Assertions.assertThat(storageCaptor[0].id).isEqualTo(failedExperimentWaitingForFinalisation.id)
 
-                experimentStorage.save(succeededExperimentWaitingForFinalisation)
-                times = 0
-
-                experimentStorage.save(failedExperimentWaitingForFinalisation)
-                times = 1
-
-                experimentStorage.save(experimentFinalisationExecuted)
-                times = 0
-            }
-        }
-
-        Assertions.assertThat(failedExperimentWaitingForFinalisation.timing.finalizingExecuted).isSameAs(localDateTime18)
+        Assertions.assertThat(storageCaptor[0]).isEqualTo(
+                failedExperimentWaitingForFinalisation.copy(
+                        timing = failedExperimentWaitingForFinalisation.timing.copy(finalizingExecuted = localDateTime18),
+                        environment = experimentRunEnvironment))
     }
 }

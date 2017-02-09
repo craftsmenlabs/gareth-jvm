@@ -12,7 +12,6 @@ import org.craftsmenlabs.gareth.monitors.BaseMonitor
 import org.craftsmenlabs.gareth.time.TimeService
 import org.junit.Before
 import org.junit.FixMethodOrder
-import org.junit.Ignore
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.MethodSorters
@@ -76,7 +75,6 @@ class MonitorIntegrationTest {
 
     @Before
     fun setUp() {
-
         object : Expectations() {
             init {
                 dateTimeService.now()
@@ -154,7 +152,6 @@ class MonitorIntegrationTest {
     }
 
     @Test
-    @Ignore
     fun shouldExecuteSuccessPipeline_whenExecutorReturnImmediateAndWithSuccess() {
 
         object : Expectations() {
@@ -169,7 +166,7 @@ class MonitorIntegrationTest {
                 times = 0
 
                 glueLineExecutor.executeAssume(withAny(experiment))
-                result = ExecutionResult(environment = ExperimentRunEnvironment(), status = ExecutionStatus.SUCCESS)
+                result = ExecutionResult(status = ExecutionStatus.SUCCESS, environment = ExperimentRunEnvironment())
                 times = 1
 
                 glueLineExecutor.executeSuccess(withAny(experiment))
@@ -262,5 +259,5 @@ class MonitorIntegrationTest {
     }
 
     private fun getStoredExperiment() = experimentStorage.loadAllExperiments()
-            .find { it.id == experiment.id }!!
+            .find { it.id == experiment.id!! }!!
 }

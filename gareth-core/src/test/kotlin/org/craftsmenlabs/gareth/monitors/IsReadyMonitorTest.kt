@@ -5,6 +5,7 @@ import mockit.Injectable
 import mockit.Mocked
 import mockit.Verifications
 import org.assertj.core.api.Assertions.assertThat
+import org.craftsmenlabs.Captors
 import org.craftsmenlabs.gareth.ExperimentStorage
 import org.craftsmenlabs.gareth.GlueLineLookup
 import org.craftsmenlabs.gareth.model.Experiment
@@ -16,7 +17,6 @@ import org.craftsmenlabs.gareth.time.TimeService
 import org.craftsmenlabs.monitorintegration.computationTestOverride
 import org.craftsmenlabs.monitorintegration.ioTestOverride
 import org.junit.Before
-import org.junit.Ignore
 import org.junit.Test
 import rx.lang.kotlin.toObservable
 import rx.schedulers.Schedulers
@@ -42,13 +42,18 @@ class IsReadyMonitorTest {
 
     lateinit var monitor: IsReadyMonitor
 
+    @Mocked
+    lateinit var schedulers: Schedulers;
+
     @Before
     fun setUp() {
+        schedulers.ioTestOverride()
+        schedulers.computationTestOverride()
+
         monitor = IsReadyMonitor(experimentProvider, dateTimeService, experimentStorage, glueLineLookup)
     }
 
     @Test
-    @Ignore("You have to fix _all_ unit test, because experiments became immutable. the IT test works though :)")
     fun shouldOnlyOperateOnNewExperiments() {
         val details = ExperimentDetails("name", "baseline", "assume", "time", "success", "failure", 111)
         val timingNew = ExperimentTiming(localDateTime1)
@@ -79,7 +84,6 @@ class IsReadyMonitorTest {
     }
 
     @Test
-    @Ignore("You have to fix _all_ unit test, because experiments became immutable. the IT test works though :)")
     fun shouldOnlyUpdateExperimentsWithGluelines() {
         val details = ExperimentDetails("name", "baseline", "assume", "time", "success", "failure", 111)
         val timingNew1 = ExperimentTiming(localDateTime1)
@@ -107,20 +111,14 @@ class IsReadyMonitorTest {
 
         monitor.start();
 
-        object : Verifications() {
-            init {
-                experimentStorage.save(experiment1)
-                times = 0
+        val captor = Captors.experimentStorage_save(experimentStorage)
 
-                experimentStorage.save(experiment2)
-                times = 1
-            }
-        }
+        assertThat(captor).hasSize(1);
+        assertThat(captor[0]).isEqualTo(experiment2.copy(timing = experiment2.timing.copy(ready = localDateTime3)))
     }
 
     @Test
-    @Ignore("You have to fix _all_ unit test, because experiments became immutable. the IT test works though :)")
-    fun shouldUpdateReadyTimestampWhenReady(@Mocked schedulers: Schedulers) {
+    fun shouldUpdateReadyTimestampWhenReady() {
         val details = ExperimentDetails("name", "baseline", "assume", "time", "success", "failure", 111)
         val timingNew = ExperimentTiming(localDateTime1)
         val results = ExperimentResults()
@@ -140,11 +138,14 @@ class IsReadyMonitorTest {
             }
         }
 
-        schedulers.ioTestOverride()
-        schedulers.computationTestOverride()
-
         monitor.start();
 
-        assertThat(experiment.timing.ready).isSameAs(localDateTime2)
+        val storageCaptor = Captors.experimentStorage_save(experimentStorage)
+
+        assertThat(storageCaptor).hasSize(1);
+
+        assertThat(storageCaptor[0]).isEqualTo(
+                experiment.copy(
+                        timing = experiment.timing.copy(ready = localDateTime2)))
     }
 }

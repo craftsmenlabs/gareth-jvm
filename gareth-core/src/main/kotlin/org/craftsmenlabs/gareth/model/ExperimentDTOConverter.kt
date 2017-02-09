@@ -44,5 +44,4 @@ class ExperimentDTOConverter constructor(@Autowired val dateTimeService: TimeSer
                 environment = experiment.environment)
         return dto;
     }
-
 }
