@@ -21,11 +21,7 @@ class JPAExperimentStorage @Autowired constructor(val converter: EntityConverter
         val finishedFilter: (ExperimentEntity) -> Boolean = {
             onlyFinished == null || onlyFinished == (it.dateCompleted != null)
         }
-        return dao.findAll().filter {
-            val filterCreated = creationFilter.invoke(it)
-            val finished = finishedFilter.invoke(it)
-            filterCreated && finished
-        }.map { converter.toDTO(it) }
+        return dao.findAll().filter { creationFilter.invoke(it) && finishedFilter.invoke(it) }.map { converter.toDTO(it) }
     }
 
     override fun loadAllExperiments(): List<Experiment> {
