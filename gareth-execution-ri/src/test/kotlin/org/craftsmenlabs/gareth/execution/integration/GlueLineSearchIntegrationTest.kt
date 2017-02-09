@@ -4,6 +4,7 @@ import org.assertj.core.api.Assertions.assertThat
 import org.craftsmenlabs.gareth.execution.GarethExecutionApplication
 import org.craftsmenlabs.gareth.execution.definitions.SaleOfFruit
 import org.craftsmenlabs.gareth.model.GlueLineSearchResultDTO
+import org.craftsmenlabs.gareth.rest.BasicAuthenticationRestClient
 import org.junit.FixMethodOrder
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -12,7 +13,6 @@ import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.test.context.ActiveProfiles
 import org.springframework.test.context.TestPropertySource
 import org.springframework.test.context.junit4.SpringRunner
-import org.springframework.web.client.RestTemplate
 
 @RunWith(SpringRunner::class)
 @SpringBootTest(classes = arrayOf(GarethExecutionApplication::class, SaleOfFruit::class), webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
@@ -22,7 +22,7 @@ import org.springframework.web.client.RestTemplate
 class GlueLineSearchIntegrationTest {
 
     val path = "http://localhost:8101/gareth/v1/search/"
-    val template = RestTemplate()
+    val restClient = BasicAuthenticationRestClient("user", "secret")
 
     @Test
     fun testBaseline() {
@@ -54,7 +54,7 @@ class GlueLineSearchIntegrationTest {
     }
 
     fun get(path: String, glueLine: String): GlueLineSearchResultDTO {
-        val response = template.getForEntity(path + "/" + glueLine, GlueLineSearchResultDTO::class.java)
+        val response = restClient.getAsEntity(GlueLineSearchResultDTO::class.java, "$path/$glueLine")
         assertThat(response.statusCode.is2xxSuccessful).isTrue()
         return response.body
     }
