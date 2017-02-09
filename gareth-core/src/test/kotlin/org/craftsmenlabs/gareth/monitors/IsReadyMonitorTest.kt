@@ -140,9 +140,12 @@ class IsReadyMonitorTest {
 
         monitor.start();
 
-        val captor = Captors.experimentStorage_save(experimentStorage)
+        val storageCaptor = Captors.experimentStorage_save(experimentStorage)
 
-        assertThat(captor).hasSize(1);
-        assertThat(captor[0].timing.ready).isSameAs(localDateTime2)
+        assertThat(storageCaptor).hasSize(1);
+
+        assertThat(storageCaptor[0]).isEqualTo(
+                experiment.copy(
+                        timing = experiment.timing.copy(ready = localDateTime2)))
     }
 }

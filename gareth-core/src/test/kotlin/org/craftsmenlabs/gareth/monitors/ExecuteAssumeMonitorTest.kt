@@ -7,10 +7,7 @@ import org.assertj.core.api.Assertions.assertThat
 import org.craftsmenlabs.Captors
 import org.craftsmenlabs.gareth.ExperimentStorage
 import org.craftsmenlabs.gareth.GlueLineExecutor
-import org.craftsmenlabs.gareth.model.Experiment
-import org.craftsmenlabs.gareth.model.ExperimentDetails
-import org.craftsmenlabs.gareth.model.ExperimentResults
-import org.craftsmenlabs.gareth.model.ExperimentTiming
+import org.craftsmenlabs.gareth.model.*
 import org.craftsmenlabs.gareth.providers.ExperimentProvider
 import org.craftsmenlabs.gareth.time.TimeService
 import org.craftsmenlabs.monitorintegration.computationTestOverride
@@ -50,6 +47,9 @@ class ExecuteAssumeMonitorTest {
     @Injectable
     lateinit var experimentStorage: ExperimentStorage
 
+    @Injectable
+    lateinit var experimentRunEnvironment: ExperimentRunEnvironment
+
     lateinit var monitor: ExecuteAssumeMonitor
 
     @Mocked
@@ -84,14 +84,18 @@ class ExecuteAssumeMonitorTest {
         )
 
         val results = ExperimentResults()
-        val waitingForassume = Experiment(details, timingFinalisationExecuted, results)
+        val waitingForAssume = Experiment(details, timingFinalisationExecuted, results)
         val assumeExecuted = Experiment(details, timingCompleted, results)
-        val experiments = listOf(waitingForassume, assumeExecuted)
+        val experiments = listOf(waitingForAssume, assumeExecuted)
+        val status = ExecutionStatus.SUCCESS
 
         object : Expectations() {
             init {
                 experimentProvider.observable
                 result = experiments.toObservable()
+
+                glueLineExecutor.executeAssume(withAny(waitingForAssume))
+                result = ExecutionResult(experimentRunEnvironment, status)
 
                 dateTimeService.now()
                 result = localDateTime14
@@ -104,11 +108,16 @@ class ExecuteAssumeMonitorTest {
         val glueLineExecutorCaptor = Captors.glueLineExecutor_executeAssume(glueLineExecutor)
 
         assertThat(glueLineExecutorCaptor).hasSize(1)
-        assertThat(glueLineExecutorCaptor[0].id).isEqualTo(waitingForassume.id)
+        assertThat(glueLineExecutorCaptor[0].id).isEqualTo(waitingForAssume.id)
         assertThat(glueLineExecutorCaptor[0].timing.assumeExecuted).isNull()
 
         assertThat(storageCaptor).hasSize(1)
-        assertThat(storageCaptor[0].id).isEqualTo(waitingForassume.id)
-        assertThat(storageCaptor[0].timing.assumeExecuted).isSameAs(localDateTime14)
+        assertThat(storageCaptor[0].id).isEqualTo(waitingForAssume.id)
+
+        assertThat(storageCaptor[0]).isEqualTo(
+                waitingForAssume.copy(
+                        timing = waitingForAssume.timing.copy(assumeExecuted = localDateTime14),
+                        results = waitingForAssume.results.copy(status = status),
+                        environment = experimentRunEnvironment))
     }
 }

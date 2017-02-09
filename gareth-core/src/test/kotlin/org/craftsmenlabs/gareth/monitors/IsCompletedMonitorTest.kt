@@ -2,8 +2,9 @@ package org.craftsmenlabs.gareth.monitors
 
 import mockit.Expectations
 import mockit.Injectable
-import mockit.Verifications
-import org.assertj.core.api.Assertions.assertThat
+import mockit.Mocked
+import org.assertj.core.api.Assertions
+import org.craftsmenlabs.Captors
 import org.craftsmenlabs.gareth.ExperimentStorage
 import org.craftsmenlabs.gareth.GlueLineLookup
 import org.craftsmenlabs.gareth.model.Experiment
@@ -12,10 +13,12 @@ import org.craftsmenlabs.gareth.model.ExperimentResults
 import org.craftsmenlabs.gareth.model.ExperimentTiming
 import org.craftsmenlabs.gareth.providers.ExperimentProvider
 import org.craftsmenlabs.gareth.time.TimeService
+import org.craftsmenlabs.monitorintegration.computationTestOverride
+import org.craftsmenlabs.monitorintegration.ioTestOverride
 import org.junit.Before
-import org.junit.Ignore
 import org.junit.Test
 import rx.lang.kotlin.toObservable
+import rx.schedulers.Schedulers
 import java.time.LocalDateTime
 
 class IsCompletedMonitorTest {
@@ -53,13 +56,18 @@ class IsCompletedMonitorTest {
 
     lateinit var monitor: IsCompletedMonitor
 
+    @Mocked
+    lateinit var schedulers: Schedulers;
+
     @Before
     fun setUp() {
+        schedulers.ioTestOverride()
+        schedulers.computationTestOverride()
+
         monitor = IsCompletedMonitor(experimentProvider, dateTimeService, experimentStorage)
     }
 
     @Test
-    @Ignore("You have to fix _all_ unit test, because experiments became immutable. the IT test works though :)")
     fun shouldOnlyOperateOnStartedExperiments() {
         val details = ExperimentDetails("name", "baseline", "assume", "time", "success", "failure", 111)
         val timingFinalisationExecuted = ExperimentTiming(
@@ -101,16 +109,13 @@ class IsCompletedMonitorTest {
 
         monitor.start();
 
-        object : Verifications() {
-            init {
-                experimentStorage.save(experimentAssumeExecuted)
-                times = 1
+        val storageCaptor = Captors.experimentStorage_save(experimentStorage)
 
-                experimentStorage.save(experimentWaitingForFinalisation)
-                times = 0
-            }
-        }
+        Assertions.assertThat(storageCaptor).hasSize(1)
+        Assertions.assertThat(storageCaptor[0].id).isEqualTo(experimentAssumeExecuted.id)
 
-        assertThat(experimentAssumeExecuted.timing.completed).isSameAs(localDateTime18)
+        Assertions.assertThat(storageCaptor[0]).isEqualTo(
+                experimentAssumeExecuted.copy(
+                        timing = experimentAssumeExecuted.timing.copy(completed = localDateTime18)))
     }
 }

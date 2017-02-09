@@ -1,9 +1,11 @@
 package org.craftsmenlabs.gareth.monitors
 
+import mockit.Deencapsulation
 import mockit.Expectations
 import mockit.Injectable
-import mockit.Verifications
+import mockit.Mocked
 import org.assertj.core.api.Assertions.assertThat
+import org.craftsmenlabs.Captors
 import org.craftsmenlabs.gareth.ExperimentStorage
 import org.craftsmenlabs.gareth.model.Experiment
 import org.craftsmenlabs.gareth.model.ExperimentDetails
@@ -12,16 +14,18 @@ import org.craftsmenlabs.gareth.model.ExperimentTiming
 import org.craftsmenlabs.gareth.providers.ExperimentProvider
 import org.craftsmenlabs.gareth.time.DurationCalculator
 import org.craftsmenlabs.gareth.time.TimeService
+import org.craftsmenlabs.monitorintegration.computationTestOverride
+import org.craftsmenlabs.monitorintegration.ioTestOverride
 import org.junit.Before
-import org.junit.Ignore
 import org.junit.Test
 import rx.lang.kotlin.toObservable
+import rx.schedulers.Schedulers
 import java.time.Duration
 import java.time.LocalDateTime
 
 class IsWaitingForAssumeMonitorTest {
 
-    val MILLTI_DELAY: Long = 3
+    val MILLI_DELAY: Long = 15
     val localDateTime1 = LocalDateTime.now().minusHours(1)
     val localDateTime2 = LocalDateTime.now().minusHours(2)
     val localDateTime3 = LocalDateTime.now().minusHours(3)
@@ -34,6 +38,8 @@ class IsWaitingForAssumeMonitorTest {
     val localDateTime10 = LocalDateTime.now().minusHours(10)
     val localDateTime11 = LocalDateTime.now().minusHours(11)
     val localDateTime12 = LocalDateTime.now().minusHours(12)
+    private val ID1 = 111L
+    private val ID2 = 222L
 
     @Injectable
     lateinit var experimentProvider: ExperimentProvider
@@ -55,20 +61,20 @@ class IsWaitingForAssumeMonitorTest {
     }
 
     @Test
-    @Ignore("You have to fix _all_ unit test, because experiments became immutable. the IT test works though :)")
-    fun shouldOnlyOperateOnStartedExperiments() {
-        val details = ExperimentDetails("id", "baseline", "assumption", "time", "success", "failure", 111)
+    fun shouldOnlyOperateOnStartedExperiments(@Mocked schedulers: Schedulers) {
+        schedulers.ioTestOverride()
+        schedulers.computationTestOverride()
+        val details = ExperimentDetails("id", "baseline", "assumption", "time", "success", "failure", 666)
 
         val timingBaselineExecuted = ExperimentTiming(localDateTime1, localDateTime2, localDateTime3, localDateTime4, localDateTime5)
         val timingWaitingForAssume = ExperimentTiming(localDateTime6, localDateTime7, localDateTime8, localDateTime9, localDateTime10, localDateTime11)
 
         val results = ExperimentResults()
-        val experimentBaseline = Experiment(details, timingBaselineExecuted, results)
-        val experimentWaitingForAssume = Experiment(details, timingWaitingForAssume, results)
+        val experimentBaseline = Experiment(details, timingBaselineExecuted, results, ID1)
+        val experimentWaitingForAssume = Experiment(details, timingWaitingForAssume, results, ID2)
         val experiments = listOf(experimentBaseline, experimentWaitingForAssume)
 
-
-        val duration = Duration.ofMillis(MILLTI_DELAY)
+        val duration = Duration.ofMillis(MILLI_DELAY)
 
         object : Expectations() {
             init {
@@ -85,18 +91,43 @@ class IsWaitingForAssumeMonitorTest {
 
         monitor.start();
 
-        Thread.sleep(MILLTI_DELAY * 20)
+        val storageCaptor = Captors.experimentStorage_save(experimentStorage)
 
-        object : Verifications() {
+        assertThat(storageCaptor[0]).isEqualTo(
+                experimentBaseline.copy(
+                        timing = experimentBaseline.timing.copy(waitingForAssume = localDateTime12)))
+    }
+
+    @Test
+    fun shouldOnlyOperateOnStartedExperimentsOnce() {
+        val details = ExperimentDetails("id", "baseline", "assumption", "time", "success", "failure", 666)
+
+        val timingBaselineExecuted = ExperimentTiming(localDateTime1, localDateTime2, localDateTime3, localDateTime4, localDateTime5)
+
+        val results = ExperimentResults()
+        val experimentBaseline = Experiment(details, timingBaselineExecuted, results, ID1)
+        val experiments = listOf(experimentBaseline)
+
+        val duration = Duration.ofMillis(MILLI_DELAY)
+
+        val delayedExperiments:MutableList<Long> = Deencapsulation.getField(monitor, "delayedExperiments")
+        delayedExperiments.add(ID1)
+
+        object : Expectations() {
             init {
-                experimentStorage.save(experimentBaseline)
-                times = 1
+                experimentProvider.observable
+                result = experiments.toObservable()
 
-                experimentStorage.save(experimentWaitingForAssume)
-                times = 0
+                dateTimeService.now()
+                result = arrayListOf(localDateTime5, localDateTime12)
+                maxTimes = 0
+
+                durationCalculator.getDuration(experimentBaseline)
+                result = duration
+                maxTimes = 0
             }
         }
 
-        assertThat(experimentBaseline.timing.waitingForAssume).isSameAs(localDateTime12)
+        monitor.start();
     }
 }

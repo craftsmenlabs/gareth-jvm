@@ -2,17 +2,21 @@ package org.craftsmenlabs.gareth.monitors
 
 import mockit.Expectations
 import mockit.Injectable
-import mockit.Verifications
+import mockit.Mocked
 import org.assertj.core.api.Assertions
+import org.craftsmenlabs.Captors
 import org.craftsmenlabs.gareth.ExperimentStorage
 import org.craftsmenlabs.gareth.GlueLineExecutor
 import org.craftsmenlabs.gareth.model.*
 import org.craftsmenlabs.gareth.providers.ExperimentProvider
 import org.craftsmenlabs.gareth.time.TimeService
+import org.craftsmenlabs.monitorintegration.computationTestOverride
+import org.craftsmenlabs.monitorintegration.ioTestOverride
 import org.junit.Before
 import org.junit.Ignore
 import org.junit.Test
 import rx.lang.kotlin.toObservable
+import rx.schedulers.Schedulers
 import java.time.LocalDateTime
 
 class ExecuteSuccessMonitorTest {
@@ -50,8 +54,17 @@ class ExecuteSuccessMonitorTest {
 
     lateinit var monitor: ExecuteSuccessMonitor
 
+    @Injectable
+    lateinit var experimentRunEnvironment: ExperimentRunEnvironment
+
+    @Mocked
+    lateinit var schedulers: Schedulers;
+
     @Before
     fun setUp() {
+        schedulers.ioTestOverride()
+        schedulers.computationTestOverride()
+
         monitor = ExecuteSuccessMonitor(experimentProvider, dateTimeService, experimentStorage, glueLineExecutor)
     }
 
@@ -93,6 +106,9 @@ class ExecuteSuccessMonitorTest {
                 experimentProvider.observable
                 result = experiments.toObservable()
 
+                glueLineExecutor.executeSuccess(withAny(experimentFinalisationExecuted))
+                result = ExecutionResult(experimentRunEnvironment, ExecutionStatus.SUCCESS)
+
                 dateTimeService.now()
                 result = localDateTime18
             }
@@ -100,28 +116,19 @@ class ExecuteSuccessMonitorTest {
 
         monitor.start();
 
-        object : Verifications() {
-            init {
-                glueLineExecutor.executeSuccess(succeededExperimentWaitingForFinalisation)
-                times = 1
+        val storageCaptor = Captors.experimentStorage_save(experimentStorage)
+        val glueLineExecutorCaptor = Captors.glueLineExecutor_executeSuccess(glueLineExecutor)
 
-                glueLineExecutor.executeSuccess(failedExperimentWaitingForFinalisation)
-                times = 0
+        Assertions.assertThat(glueLineExecutorCaptor).hasSize(1)
+        Assertions.assertThat(glueLineExecutorCaptor[0].id).isEqualTo(succeededExperimentWaitingForFinalisation.id)
+        Assertions.assertThat(glueLineExecutorCaptor[0].timing.finalizingExecuted).isNull()
 
-                glueLineExecutor.executeSuccess(experimentFinalisationExecuted)
-                times = 0
+        Assertions.assertThat(storageCaptor).hasSize(1)
+        Assertions.assertThat(storageCaptor[0].id).isEqualTo(succeededExperimentWaitingForFinalisation.id)
 
-                experimentStorage.save(succeededExperimentWaitingForFinalisation)
-                times = 1
-
-                experimentStorage.save(failedExperimentWaitingForFinalisation)
-                times = 0
-
-                experimentStorage.save(experimentFinalisationExecuted)
-                times = 0
-            }
-        }
-
-        Assertions.assertThat(succeededExperimentWaitingForFinalisation.timing.finalizingExecuted).isSameAs(localDateTime18)
+        Assertions.assertThat(storageCaptor[0]).isEqualTo(
+                succeededExperimentWaitingForFinalisation.copy(
+                        timing = succeededExperimentWaitingForFinalisation.timing.copy(finalizingExecuted = localDateTime18),
+                        environment = experimentRunEnvironment))
     }
 }

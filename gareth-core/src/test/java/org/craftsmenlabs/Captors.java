@@ -18,10 +18,34 @@ public class Captors {
         return captor;
     }
 
+    public static List<Experiment> glueLineExecutor_executeBaseline(GlueLineExecutor glueLineExecutor) {
+        final List<Experiment> captor = new ArrayList<>();
+        new Verifications() {{
+            glueLineExecutor.executeBaseline(withCapture(captor));
+        }};
+        return captor;
+    }
+
     public static List<Experiment> glueLineExecutor_executeAssume(GlueLineExecutor glueLineExecutor) {
         final List<Experiment> captor = new ArrayList<>();
         new Verifications() {{
             glueLineExecutor.executeAssume(withCapture(captor));
+        }};
+        return captor;
+    }
+
+    public static List<Experiment> glueLineExecutor_executeSuccess(GlueLineExecutor glueLineExecutor) {
+        final List<Experiment> captor = new ArrayList<>();
+        new Verifications() {{
+            glueLineExecutor.executeSuccess(withCapture(captor));
+        }};
+        return captor;
+    }
+
+    public static List<Experiment> glueLineExecutor_executeFailure(GlueLineExecutor glueLineExecutor) {
+        final List<Experiment> captor = new ArrayList<>();
+        new Verifications() {{
+            glueLineExecutor.executeFailure(withCapture(captor));
         }};
         return captor;
     }
