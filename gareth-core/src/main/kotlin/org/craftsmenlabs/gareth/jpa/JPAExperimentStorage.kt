@@ -37,10 +37,8 @@ class JPAExperimentStorage @Autowired constructor(val converter: EntityConverter
 
         val savedEntity = dao.save(entity)
         val saved = converter.toDTO(savedEntity)
-        if (saveListener != null) {
-            saveListener!!.invoke(saved)
-        }
-        return saved;
+        saveListener?.invoke(saved)
+        return saved
     }
 
     override fun setListener(listener: ((Experiment) -> Unit)?) {
