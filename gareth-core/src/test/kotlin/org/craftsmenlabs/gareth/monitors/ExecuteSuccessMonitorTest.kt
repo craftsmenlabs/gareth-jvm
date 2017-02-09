@@ -13,7 +13,6 @@ import org.craftsmenlabs.gareth.time.TimeService
 import org.craftsmenlabs.monitorintegration.computationTestOverride
 import org.craftsmenlabs.monitorintegration.ioTestOverride
 import org.junit.Before
-import org.junit.Ignore
 import org.junit.Test
 import rx.lang.kotlin.toObservable
 import rx.schedulers.Schedulers
@@ -69,7 +68,6 @@ class ExecuteSuccessMonitorTest {
     }
 
     @Test
-    @Ignore("You have to fix _all_ unit test, because experiments became immutable. the IT test works though :)")
     fun shouldOnlyOperateOnStartedExperiments() {
         val details = ExperimentDetails("id", "baseline", "assumption", "time", "success", "failure", 111)
         val timingFinalisationExecuted = ExperimentTiming(
