@@ -19,7 +19,7 @@ class JPAExperimentStorage @Autowired constructor(val converter: EntityConverter
             createdAfter == null || it.dateCreated.isAfter(createdAfter)
         }
         val finishedFilter: (ExperimentEntity) -> Boolean = {
-            onlyFinished == null || it.dateCompleted != null
+            onlyFinished == null || onlyFinished == (it.dateCompleted != null)
         }
         return dao.findAll().filter {
             val filterCreated = creationFilter.invoke(it)

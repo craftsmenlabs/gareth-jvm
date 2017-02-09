@@ -9,6 +9,7 @@ import org.craftsmenlabs.gareth.time.DateFormatUtils
 import org.craftsmenlabs.gareth.time.TimeService
 import org.junit.Before
 import org.junit.FixMethodOrder
+import org.junit.Ignore
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.MethodSorters
@@ -25,6 +26,7 @@ import java.net.URI
 @SpringBootTest(classes = arrayOf(Application::class, TestConfig::class), webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 @ActiveProfiles(profiles = arrayOf("test"))
+@Ignore
 class CreateExperimentIntegrationTest {
 
     val path = "http://localhost:8100/gareth/v1/experiments"
@@ -57,10 +59,11 @@ class CreateExperimentIntegrationTest {
         assertThat(saved.timing.ready).isNotNull()
         assertThat(saved.environment.items[0].key).isEqualTo("fruit")
         assertThat(saved.environment.items[0].value).isEqualTo("apples")
-       /* assertThat(searchExperiment(date = today, completed = false)).hasSize(1)
-        assertThat(searchExperiment(date = today, completed = true)).isEmpty()
+        assertThat(searchExperiment(completed = false)).hasSize(1)
+        assertThat(searchExperiment(date = today, completed = false)).hasSize(1)
+        assertThat(searchExperiment(completed = true)).isEmpty()
         assertThat(searchExperiment(date = tomorrow)).isEmpty()
-        assertThat(searchExperiment()).hasSize(1)*/
+        assertThat(searchExperiment()).hasSize(1)
     }
 
     @Test

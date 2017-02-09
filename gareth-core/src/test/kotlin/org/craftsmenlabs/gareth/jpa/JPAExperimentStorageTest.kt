@@ -6,7 +6,6 @@ import org.assertj.core.api.Assertions.assertThat
 import org.craftsmenlabs.gareth.model.ExecutionStatus
 import org.craftsmenlabs.gareth.time.DateTimeService
 import org.junit.Before
-import org.junit.Ignore
 import org.junit.Test
 import java.time.LocalDateTime
 
@@ -40,15 +39,16 @@ class JPAExperimentStorageTest {
     }
 
     @Test
-    @Ignore
     fun testFiltering() {
         val now = dateTimeService.now()
-        val yesterday = now.minusDays(1)
+        val dayBeforeYesterday = now.minusDays(2)
         assertThat(storage.getFiltered()).hasSize(4)
         assertThat(storage.getFiltered(onlyFinished = true)).hasSize(2)
         assertThat(storage.getFiltered(onlyFinished = false)).hasSize(2)
-        assertThat(storage.getFiltered(createdAfter = yesterday)).hasSize(4)
+        assertThat(storage.getFiltered(createdAfter = dayBeforeYesterday)).hasSize(4)
         assertThat(storage.getFiltered(createdAfter = now)).hasSize(2)
+        assertThat(storage.getFiltered(createdAfter = now, onlyFinished = true)).hasSize(1)
+        assertThat(storage.getFiltered(createdAfter = now, onlyFinished = false)).hasSize(1)
     }
 
     private fun createEntity(created: LocalDateTime, completed: LocalDateTime? = null): ExperimentEntity {
