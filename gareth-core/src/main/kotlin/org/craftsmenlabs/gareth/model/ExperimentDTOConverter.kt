@@ -3,8 +3,6 @@ package org.craftsmenlabs.gareth.model
 import org.craftsmenlabs.gareth.time.TimeService
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
-import java.time.LocalDateTime
-import java.util.*
 
 @Service
 class ExperimentDTOConverter constructor(@Autowired val dateTimeService: TimeService) {
@@ -27,8 +25,6 @@ class ExperimentDTOConverter constructor(@Autowired val dateTimeService: TimeSer
     }
 
     fun createDTO(experiment: Experiment): ExperimentDTO {
-        fun nullSafeDate(dt: LocalDateTime?): Date? = if (dt == null) null else dateTimeService.toDate(dt)
-
         val dto = ExperimentDTO(
                 assume = experiment.details.assume,
                 baseline = experiment.details.baseline,
@@ -37,11 +33,11 @@ class ExperimentDTOConverter constructor(@Autowired val dateTimeService: TimeSer
                 time = experiment.details.time,
                 id = experiment.id!!,
                 name = experiment.details.name,
-                created = nullSafeDate(experiment.timing.created) ?: throw IllegalArgumentException("create date is mandatory"),
-                ready = nullSafeDate(experiment.timing.ready),
-                started = nullSafeDate(experiment.timing.started),
-                baselineExecuted = nullSafeDate(experiment.timing.baselineExecuted),
-                completed = nullSafeDate(experiment.timing.completed),
+                created = experiment.timing.created,
+                ready = experiment.timing.ready,
+                started = experiment.timing.started,
+                baselineExecuted = experiment.timing.baselineExecuted,
+                completed = experiment.timing.completed,
                 environment = experiment.environment)
         return dto;
     }

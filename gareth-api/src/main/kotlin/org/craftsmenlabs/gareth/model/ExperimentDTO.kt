@@ -1,7 +1,6 @@
 package org.craftsmenlabs.gareth.model
 
-import com.fasterxml.jackson.annotation.JsonFormat
-import java.util.*
+import java.time.LocalDateTime
 
 data class ExperimentDTO(val id: Long,
                          val name: String,
@@ -11,16 +10,11 @@ data class ExperimentDTO(val id: Long,
                          val success: String,
                          val failure: String,
                          val time: String,
-                         @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", timezone = "GMT")
-                         val created: Date,
-                         @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", timezone = "GMT")
-                         val ready: Date? = null,
-                         @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", timezone = "GMT")
-                         val started: Date? = null,
-                         @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", timezone = "GMT")
-                         val baselineExecuted: Date? = null,
-                         @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", timezone = "GMT")
-                         val completed: Date? = null,
+                         val created: LocalDateTime,
+                         val ready: LocalDateTime? = null,
+                         val started: LocalDateTime? = null,
+                         val baselineExecuted: LocalDateTime? = null,
+                         val completed: LocalDateTime? = null,
                          val result: Boolean = false,
                          val environment: ExperimentRunEnvironment)
 
