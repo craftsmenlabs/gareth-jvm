@@ -4,10 +4,7 @@ import org.assertj.core.api.Assertions.assertThat
 import org.craftsmenlabs.gareth.Application
 import org.craftsmenlabs.gareth.ExperimentStorage
 import org.craftsmenlabs.gareth.integration.TestConfig
-import org.craftsmenlabs.gareth.model.ExecutionStatus
-import org.craftsmenlabs.gareth.model.ExperimentCreateDTO
-import org.craftsmenlabs.gareth.model.ExperimentDTO
-import org.craftsmenlabs.gareth.model.ExperimentRunEnvironment
+import org.craftsmenlabs.gareth.model.*
 import org.craftsmenlabs.gareth.time.DateFormatUtils
 import org.craftsmenlabs.gareth.time.TimeService
 import org.junit.Before
@@ -58,11 +55,12 @@ class CreateExperimentIntegrationTest {
         assertThat(saved.details.name).isEqualTo("Hello world")
         assertThat(saved.timing.created).isNotNull()
         assertThat(saved.timing.ready).isNotNull()
-
-       /* assertThat(searchExperiment(date = today, completed = false)).hasSize(1)
-        assertThat(searchExperiment(date = today, completed = true)).isEmpty()
-        assertThat(searchExperiment(date = tomorrow)).isEmpty()
-        assertThat(searchExperiment()).hasSize(1)*/
+        assertThat(saved.environment.items[0].key).isEqualTo("fruit")
+        assertThat(saved.environment.items[0].value).isEqualTo("apples")
+        /* assertThat(searchExperiment(date = today, completed = false)).hasSize(1)
+         assertThat(searchExperiment(date = today, completed = true)).isEmpty()
+         assertThat(searchExperiment(date = tomorrow)).isEmpty()
+         assertThat(searchExperiment()).hasSize(1)*/
     }
 
     @Test
@@ -107,7 +105,7 @@ class CreateExperimentIntegrationTest {
                 success = "send email to Sam",
                 failure = "send email to Moos",
                 weight = 42,
-                environment = ExperimentRunEnvironment())
+                environment = ExperimentRunEnvironment(listOf(EnvironmentItem("fruit", "apples", ItemType.STRING))))
     }
 
     fun doPut(path: String, dto: ExperimentCreateDTO): ExperimentDTO {

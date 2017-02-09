@@ -34,6 +34,7 @@ class JPAExperimentStorage @Autowired constructor(val converter: EntityConverter
 
     override fun save(experiment: Experiment): Experiment {
         val entity = converter.toEntity(experiment)
+
         val savedEntity = dao.save(entity)
         val saved = converter.toDTO(savedEntity)
         if (saveListener != null) {

@@ -7,3 +7,9 @@ import org.springframework.stereotype.Repository
 interface ExperimentDao : CrudRepository<ExperimentEntity, Long> {
     fun findByName(name: String): ExperimentEntity?
 }
+
+@Repository
+interface ExperimentEnvironmentDao : CrudRepository<ExperimentEnvironmentItem, Long> {
+    fun findByExperimentId(name: String): ExperimentEntity?
+}
+

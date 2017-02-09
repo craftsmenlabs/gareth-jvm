@@ -37,6 +37,7 @@ class EntityConverter {
             item.key = it.key
             item.value = it.value
             item.itemType = it.itemType
+            item.experiment = entity
             item
         }
         entity.environment = environment.toSet()

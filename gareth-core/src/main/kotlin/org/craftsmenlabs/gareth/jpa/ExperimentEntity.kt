@@ -36,6 +36,6 @@ data class ExperimentEntity(@Id
     var dateFinalizingExecuted: LocalDateTime? = null
     @Convert(converter = DateTimeConverter::class)
     var dateCompleted: LocalDateTime? = null
-    @OneToMany(cascade = arrayOf(CascadeType.ALL), fetch = FetchType.EAGER, mappedBy = "experiment")
+    @OneToMany(cascade = arrayOf(CascadeType.ALL), fetch = FetchType.EAGER, mappedBy = "experiment", orphanRemoval = true)
     lateinit var environment: Set<ExperimentEnvironmentItem>
 }
