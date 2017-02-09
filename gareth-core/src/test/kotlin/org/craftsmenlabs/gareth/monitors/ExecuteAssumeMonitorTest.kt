@@ -2,8 +2,9 @@ package org.craftsmenlabs.gareth.monitors
 
 import mockit.Expectations
 import mockit.Injectable
-import mockit.Verifications
-import org.assertj.core.api.Assertions
+import mockit.Mocked
+import org.assertj.core.api.Assertions.assertThat
+import org.craftsmenlabs.Captors
 import org.craftsmenlabs.gareth.ExperimentStorage
 import org.craftsmenlabs.gareth.GlueLineExecutor
 import org.craftsmenlabs.gareth.model.Experiment
@@ -12,10 +13,12 @@ import org.craftsmenlabs.gareth.model.ExperimentResults
 import org.craftsmenlabs.gareth.model.ExperimentTiming
 import org.craftsmenlabs.gareth.providers.ExperimentProvider
 import org.craftsmenlabs.gareth.time.TimeService
+import org.craftsmenlabs.monitorintegration.computationTestOverride
+import org.craftsmenlabs.monitorintegration.ioTestOverride
 import org.junit.Before
-import org.junit.Ignore
 import org.junit.Test
 import rx.lang.kotlin.toObservable
+import rx.schedulers.Schedulers
 import java.time.LocalDateTime
 
 class ExecuteAssumeMonitorTest {
@@ -49,13 +52,18 @@ class ExecuteAssumeMonitorTest {
 
     lateinit var monitor: ExecuteAssumeMonitor
 
+    @Mocked
+    lateinit var schedulers: Schedulers;
+
     @Before
     fun setUp() {
+        schedulers.ioTestOverride()
+        schedulers.computationTestOverride()
+
         monitor = ExecuteAssumeMonitor(experimentProvider, dateTimeService, experimentStorage, glueLineExecutor)
     }
 
     @Test
-    @Ignore("You have to fix _all_ unit test, because experiments became immutable. the IT test works though :)")
     fun shouldOnlyOperateOnStartedExperiments() {
         val details = ExperimentDetails("id", "baseline", "assumption", "time", "success", "failure", 111)
         val timingFinalisationExecuted = ExperimentTiming(
@@ -92,22 +100,15 @@ class ExecuteAssumeMonitorTest {
 
         monitor.start();
 
-        object : Verifications() {
-            init {
-                glueLineExecutor.executeAssume(waitingForassume)
-                times = 1
+        val storageCaptor = Captors.experimentStorage_save(experimentStorage)
+        val glueLineExecutorCaptor = Captors.glueLineExecutor_executeAssume(glueLineExecutor)
 
-                glueLineExecutor.executeAssume(assumeExecuted)
-                times = 0
+        assertThat(glueLineExecutorCaptor).hasSize(1)
+        assertThat(glueLineExecutorCaptor[0].id).isEqualTo(waitingForassume.id)
+        assertThat(glueLineExecutorCaptor[0].timing.assumeExecuted).isNull()
 
-                experimentStorage.save(waitingForassume)
-                times = 1
-
-                experimentStorage.save(assumeExecuted)
-                times = 0
-            }
-        }
-
-        Assertions.assertThat(waitingForassume.timing.assumeExecuted).isSameAs(localDateTime14)
+        assertThat(storageCaptor).hasSize(1)
+        assertThat(storageCaptor[0].id).isEqualTo(waitingForassume.id)
+        assertThat(storageCaptor[0].timing.assumeExecuted).isSameAs(localDateTime14)
     }
 }
