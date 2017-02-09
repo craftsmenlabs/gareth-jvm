@@ -13,6 +13,6 @@ Feature: Run ACME experiment
     Then the experiment is ready
     When I start the experiment
     Then the experiment is started
-    #When I wait 7 seconds
+    #When I wait 15 seconds
     #Then the experiment is completed
     #And the environment key result has value sending success mail to Moos
