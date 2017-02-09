@@ -1,6 +1,6 @@
 package org.craftsmenlabs.monitorintegration
 
-import org.craftsmenlabs.gareth2.time.TimeService
+import org.craftsmenlabs.gareth.time.TimeService
 import org.springframework.context.annotation.Profile
 import org.springframework.stereotype.Service
 import java.time.LocalDateTime

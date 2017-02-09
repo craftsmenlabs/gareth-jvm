@@ -1,14 +1,11 @@
 package org.craftsmenlabs.integration
 
 import org.assertj.core.api.Assertions.assertThat
+import org.craftsmenlabs.gareth.Application
 import org.craftsmenlabs.gareth.ExperimentStorage
-import org.craftsmenlabs.gareth.model.ExecutionStatus
-import org.craftsmenlabs.gareth.model.ExperimentCreateDTO
-import org.craftsmenlabs.gareth.model.ExperimentDTO
-import org.craftsmenlabs.gareth.model.ExperimentRunEnvironment
-import org.craftsmenlabs.gareth2.Application
-import org.craftsmenlabs.gareth2.integration.TestConfig
-import org.craftsmenlabs.gareth2.model.ExperimentDTOConverter
+import org.craftsmenlabs.gareth.integration.TestConfig
+import org.craftsmenlabs.gareth.model.*
+import org.craftsmenlabs.gareth.time.TimeService
 import org.junit.Before
 import org.junit.FixMethodOrder
 import org.junit.Ignore
@@ -23,6 +20,8 @@ import org.springframework.test.context.ActiveProfiles
 import org.springframework.test.context.junit4.SpringRunner
 import org.springframework.web.client.RestTemplate
 import java.net.URI
+import java.time.format.DateTimeFormatter
+import java.util.*
 
 @RunWith(SpringRunner::class)
 @SpringBootTest(classes = arrayOf(Application::class, TestConfig::class), webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
@@ -39,10 +38,15 @@ class CreateExperimentIntegrationTest {
     @Autowired
     lateinit var converter: ExperimentDTOConverter
 
+    @Autowired
+    lateinit var timeService: TimeService
+
+    lateinit var today: String
+
     @Before
     fun prepare() {
         val experiment = converter.createExperiment(createDTO()).copy(id = 42)
-        // storage.save(experiment)
+        today = timeService.now().format(DateTimeFormatter.ofPattern("ddMMYYYY", Locale.ENGLISH))
     }
 
     @Test
@@ -54,6 +58,7 @@ class CreateExperimentIntegrationTest {
     }
 
     @Test
+    @Ignore
     fun createExperiment() {
         val dto = createDTO()
         val created = doPut(path, dto)
@@ -63,6 +68,8 @@ class CreateExperimentIntegrationTest {
         assertThat(saved.details.name).isEqualTo("Hello world")
         assertThat(saved.timing.created).isNotNull()
         assertThat(saved.timing.ready).isNotNull()
+        assertThat(searchExperiment(date = today, completed = false)).hasSize(1)
+        assertThat(searchExperiment()).hasSize(1)
     }
 
     @Test
@@ -89,6 +96,7 @@ class CreateExperimentIntegrationTest {
         assertThat(saved.timing.ready).isNotNull()
         assertThat(saved.timing.started).isNotNull()
         assertThat(saved.results.status).isEqualTo(ExecutionStatus.RUNNING)
+
         Thread.sleep(3000)
         saved = storage.getById(created.id)
         assertThat(saved.results.status).isEqualTo(ExecutionStatus.SUCCESS)
@@ -113,5 +121,15 @@ class CreateExperimentIntegrationTest {
         val response = template.exchange(builder, ExperimentDTO::class.java)
         assertThat(response.statusCode.is2xxSuccessful).isTrue()
         return response.body
+    }
+
+    fun searchExperiment(date: String? = null, completed: Boolean? = null): List<ExperimentDTO> {
+        val completedQuery = if (completed != null) "completed=$completed" else "";
+        val createdQuery = if (date != null) "created=$date" else ""
+        val url = "$path?$completedQuery;$createdQuery"
+        val builder = RequestEntity.get(URI(url)).build()
+        val response = template.exchange(builder, Array<ExperimentDTO>::class.java)
+        assertThat(response.statusCode.is2xxSuccessful).isTrue()
+        return response.body.toList()
     }
 }

@@ -1,4 +1,4 @@
-package org.craftsmenlabs.gareth2.integration
+package org.craftsmenlabs.gareth.integration
 
 import org.springframework.context.annotation.ComponentScan
 
