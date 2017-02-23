@@ -15,6 +15,7 @@ class ExperimentEndpoint @Autowired constructor(val experimentStorage: Experimen
                                                 val converter: ExperimentDTOConverter,
                                                 val dateTimeService: TimeService) {
 
+    //TODO CrossOrigin annotation was added to make the old FE work: to be removed ASAP
     @RequestMapping(method = arrayOf(RequestMethod.PUT))
     @CrossOrigin
     fun upsert(@RequestBody dto: ExperimentCreateDTO): ExperimentDTO {
@@ -35,6 +36,7 @@ class ExperimentEndpoint @Autowired constructor(val experimentStorage: Experimen
         return experimentStorage.getFiltered(createdSince, completed).map { converter.createDTO(it) }
     }
 
+    //TODO CrossOrigin annotation was added to make the old FE work: to be reremoved ASAP
     @RequestMapping(value = "{id}/start", method = arrayOf(RequestMethod.PUT))
     @CrossOrigin
     fun start(@PathVariable("id") id: Long): ExperimentDTO {
