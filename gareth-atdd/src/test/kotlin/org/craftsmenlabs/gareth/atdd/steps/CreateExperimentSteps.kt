@@ -68,10 +68,12 @@ open class CreateExperimentSteps {
         assertThat(currentExperiment.started).isNotNull()
     }
 
-    @When("^the experiment is completed$")
-    fun theExperimentIsCompleted() {
+    @When("^the experiment is completed (|un?)successfully$")
+    fun theExperimentIsCompleted(notOk: String) {
         refresh()
+        val expectedStatus = if (notOk == "un") "FAILURE" else "SUCCESS"
         assertThat(currentExperiment.completed).isNotNull()
+        assertThat(currentExperiment.result.name).isEqualTo(expectedStatus)
     }
 
     @When("^I start the experiment$")
@@ -92,7 +94,7 @@ open class CreateExperimentSteps {
     fun validateKeyAndValue(key: String, value: String) {
         refresh()
         val find = currentExperiment.environment.items.find { it.key == key && it.value == value }
-        assertThat(find).describedAs("No key $key with value $value found").isNotNull()
+        assertThat(find).describedAs("No key $key with value $value found. Experiment: $currentExperiment.environment.items").isNotNull()
     }
 
     private fun url(path: String) = "http://localhost:${GarethServerEnvironment.garethPort}/gareth/v1/experiments/$path"
