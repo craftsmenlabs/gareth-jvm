@@ -105,26 +105,27 @@ class ExperimentEndpointTest {
     @Test
     fun testStartExperiment() {
         val experimentTemplate = Experiment.createDefault()
+        val ready = experimentTemplate.copy(timing = experimentTemplate.timing.copy(ready = LocalDateTime.now()))
         object : Expectations() {
             init {
                 dateTimeService.now()
                 result = now
 
                 experimentStorage.getById(42)
-                result = experimentTemplate
+                result = ready
 
                 converter.createDTO(withAny(experimentTemplate))
             }
         }
         val experiment = endpoint.start(42)
         assertThat(experiment).isSameAs(experimentDTO)
-       /* object : Verifications() {
-            init {
-                val experiments = mutableListOf<Experiment>()
-                experimentStorage.save(withCapture(experiments))
-                assertThat(experiments[0].timing.started).isEqualTo(now)
-            }
-        }*/
+        /* object : Verifications() {
+             init {
+                 val experiments = mutableListOf<Experiment>()
+                 experimentStorage.save(withCapture(experiments))
+                 assertThat(experiments[0].timing.started).isEqualTo(now)
+             }
+         }*/
     }
 
 }
