@@ -43,7 +43,7 @@ class SpringApplicationWrapper(val managementUrl: String, val executable: String
         startServer()
         try {
             waitUntil(waitForStartupSeconds, startupMonitor)
-            if (status == Status.STOPPING) {
+            if (status == Status.STARTING) {
                 throw IllegalStateException("Could not start service within time.")
             }
         } catch (e: Exception) {

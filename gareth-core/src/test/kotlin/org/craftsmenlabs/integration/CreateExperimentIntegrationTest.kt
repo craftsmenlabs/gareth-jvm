@@ -1,5 +1,6 @@
 package org.craftsmenlabs.integration
 
+import org.assertj.core.api.Assertions
 import org.assertj.core.api.Assertions.assertThat
 import org.craftsmenlabs.gareth.Application
 import org.craftsmenlabs.gareth.ExperimentStorage
@@ -27,7 +28,9 @@ import java.net.URI
 @ActiveProfiles(profiles = arrayOf("test"))
 class CreateExperimentIntegrationTest {
 
-    val path = "http://localhost:8100/gareth/v1/experiments"
+    val basePath = "http://localhost:8100/gareth/v1"
+    val experimentsPath = "$basePath/experiments"
+    val lookupPath = "$basePath/glueline"
     val template = RestTemplate()
 
     @Autowired
@@ -46,9 +49,28 @@ class CreateExperimentIntegrationTest {
     }
 
     @Test
-    fun a_createExperiment() {
+    fun a_testLookupGlueLines() {
+        fun getGlueLine(glueLine: GlueLineType, content: String) {
+            val entity = template.getForEntity("$lookupPath?type=$glueLine&content=$content", GlueLineSearchResultDTO::class.java)
+            if (!entity.statusCode.is2xxSuccessful) {
+                Assertions.fail("call not OK")
+            }
+            val dto = entity.body
+            assertThat(dto.exact).isEqualTo(content)
+            assertThat(dto.suggestions).containsExactly(content)
+        }
+        getGlueLine(GlueLineType.BASELINE, "get sale of fruit")
+        getGlueLine(GlueLineType.ASSUME, "has risen")
+        getGlueLine(GlueLineType.SUCCESS, "send mail to Moos")
+        getGlueLine(GlueLineType.FAILURE, "send mail to Sam")
+        getGlueLine(GlueLineType.TIME, "3 weeks")
+
+    }
+
+    @Test
+    fun b_createExperiment() {
         val dto = createDTO()
-        val created = doPut(path, dto)
+        val created = doPut(experimentsPath, dto)
         Thread.sleep(2000)
         assertThat(created.id).isPositive()
         val saved = storage.getById(created.id)
@@ -65,9 +87,9 @@ class CreateExperimentIntegrationTest {
     }
 
     @Test
-    fun b_createExperimentWithFaultyBaseline() {
+    fun c_createExperimentWithFaultyBaseline() {
         val dto = createDTO().copy(baseline = "sale of computers")
-        val created = doPut(path, dto)
+        val created = doPut(experimentsPath, dto)
         val saved = storage.getById(created.id)
         assertThat(saved.details.name).isEqualTo("Hello world")
         assertThat(saved.timing.created).isNotNull()
@@ -76,10 +98,11 @@ class CreateExperimentIntegrationTest {
     }
 
     @Test
-    fun c_createAndStartExperiment() {
+    fun d_createAndStartExperiment() {
         val dto = createDTO()
-        val created = doPut(path, dto)
-        val builder = RequestEntity.put(URI("$path/${created.id}/start")).contentType(MediaType.APPLICATION_JSON)
+        val created = doPut(experimentsPath, dto)
+        Thread.sleep(1000)
+        val builder = RequestEntity.put(URI("$experimentsPath/${created.id}/start")).contentType(MediaType.APPLICATION_JSON)
         template.exchange(builder.build(), ExperimentDTO::class.java)
         Thread.sleep(1000)
 
@@ -119,7 +142,7 @@ class CreateExperimentIntegrationTest {
     fun searchExperiment(date: String? = null, completed: Boolean? = null): List<ExperimentDTO> {
         val completedQuery = if (completed != null) "completed=$completed" else "";
         val createdQuery = if (date != null) "created=$date" else ""
-        val url = "$path?$createdQuery&$completedQuery"
+        val url = "$experimentsPath?$createdQuery&$completedQuery"
         val builder = RequestEntity.get(URI(url)).build()
         val response = template.exchange(builder, Array<ExperimentDTO>::class.java)
         assertThat(response.statusCode.is2xxSuccessful).isTrue()

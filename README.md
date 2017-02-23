@@ -225,7 +225,7 @@ necessary classes. You can add this your project pom.xml.
 After doing a ```maven clean package``` you now can run the Gareth platform with your own definitions and experiments.
 
 ```shell
-java -jar /path/to/project.jar
+java -jar /experimentsPath/to/project.jar
 ```
 
 ### Running Gareth (with REST interface)
@@ -299,7 +299,7 @@ necessary classes. You can add this your project pom.xml.
 After doing a ```maven clean package``` you now can run the Gareth platform with your own definitions and experiments.
 
 ```shell
-java -jar /path/to/project.jar
+java -jar /experimentsPath/to/project.jar
 ```
 
 # Matching glue lines to definition methods

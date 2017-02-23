@@ -35,6 +35,9 @@ class ExecutionRestClient constructor(@Value("\${execution.client.url}") val hos
         return response.body
     }
 
+    /**
+     * Connects to the the DefinitionsEndPoint REST controller in execution project
+     */
     fun isValidGlueLine(type: String, content: String): Boolean {
         val fullUrl = createUrl("definitions/$type/$content")
         val entity = restClient.getAsEntity(DefinitionInfo::class.java, fullUrl)
@@ -56,6 +59,20 @@ class ExecutionRestClient constructor(@Value("\${execution.client.url}") val hos
         }
         log.warn("Glueline '{}' is a valid time glueline", content)
         return entity.body != null
+    }
+
+    /**
+     * Connects to the the GlueLineMatcherEndpoint REST controller in execution project
+     */
+    fun lookupGlueline(type: GlueLineType, content: String): GlueLineSearchResultDTO {
+        val fullUrl = createUrl("search/${type.name.toLowerCase()}/$content")
+        val entity = restClient.getAsEntity(GlueLineSearchResultDTO::class.java, fullUrl)
+        if (!entity.statusCode.is2xxSuccessful) {
+            log.error("Could not find glueline '{}' of type {}", content, type.name)
+            throw IllegalStateException("Error looking up glueline")
+        }
+        log.debug("'Search results for {}' of type {} {}", content, type.name, entity.body)
+        return entity.body
     }
 
 
