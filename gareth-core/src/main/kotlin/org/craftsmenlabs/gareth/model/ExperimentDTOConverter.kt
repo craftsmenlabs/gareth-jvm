@@ -38,6 +38,7 @@ class ExperimentDTOConverter constructor(@Autowired val dateTimeService: TimeSer
                 started = experiment.timing.started,
                 baselineExecuted = experiment.timing.baselineExecuted,
                 completed = experiment.timing.completed,
+                result = experiment.results.status,
                 environment = experiment.environment)
         return dto;
     }

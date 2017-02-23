@@ -67,7 +67,7 @@ data class ExperimentTiming(
         val completed: LocalDateTime? = null
 )
 
-data class ExperimentResults(val status: ExecutionStatus = ExecutionStatus.RUNNING
+data class ExperimentResults(val status: ExecutionStatus = ExecutionStatus.PENDING
 )
 
 enum class ExperimentState {

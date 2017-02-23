@@ -62,7 +62,7 @@ class JPAExperimentStorageTest {
         entity.failure = "failure"
         entity.timeline = "time"
         entity.environment = setOf()
-        entity.result = ExecutionStatus.RUNNING
+        entity.result = ExecutionStatus.PENDING
         entity.dateCompleted = completed
         return entity;
     }

@@ -25,7 +25,7 @@ import java.net.URI
 @RunWith(SpringRunner::class)
 @SpringBootTest(classes = arrayOf(Application::class, TestConfig::class), webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
-@ActiveProfiles(profiles = arrayOf("test"))
+@ActiveProfiles(profiles = arrayOf("test", "NOAUTH"))
 class CreateExperimentIntegrationTest {
 
     val basePath = "http://localhost:8100/gareth/v1"
@@ -111,7 +111,7 @@ class CreateExperimentIntegrationTest {
         assertThat(saved.timing.created).isNotNull()
         assertThat(saved.timing.ready).isNotNull()
         assertThat(saved.timing.started).isNotNull()
-        assertThat(saved.results.status).isEqualTo(ExecutionStatus.RUNNING)
+        assertThat(saved.results.status).isEqualTo(ExecutionStatus.PENDING)
 
         Thread.sleep(3000)
         saved = storage.getById(created.id)
@@ -119,6 +119,7 @@ class CreateExperimentIntegrationTest {
         assertThat(saved.timing.assumeExecuted).isNotNull()
         assertThat(saved.timing.waitingFinalizing).isNotNull()
         assertThat(saved.timing.completed).isNotNull()
+
     }
 
     private fun createDTO(): ExperimentCreateDTO {

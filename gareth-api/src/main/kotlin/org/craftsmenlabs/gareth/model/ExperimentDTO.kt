@@ -15,7 +15,7 @@ data class ExperimentDTO(val id: Long,
                          val started: LocalDateTime? = null,
                          val baselineExecuted: LocalDateTime? = null,
                          val completed: LocalDateTime? = null,
-                         val result: Boolean = false,
+                         val result: ExecutionStatus = ExecutionStatus.PENDING,
                          val environment: ExperimentRunEnvironment)
 
 data class ExperimentCreateDTO(

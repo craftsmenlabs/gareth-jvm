@@ -86,7 +86,7 @@ class ExecuteBaselineMonitorTest {
                 result = experiments.toObservable()
 
                 glueLineExecutor.executeBaseline(withAny(waitingForbaseline))
-                result = ExecutionResult(experimentRunEnvironment, ExecutionStatus.RUNNING)
+                result = ExecutionResult(experimentRunEnvironment, ExecutionStatus.PENDING)
 
                 dateTimeService.now()
                 result = localDateTime10

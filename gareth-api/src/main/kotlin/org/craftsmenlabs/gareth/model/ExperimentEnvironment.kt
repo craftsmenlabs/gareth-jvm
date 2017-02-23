@@ -3,6 +3,8 @@ package org.craftsmenlabs.gareth.model
 import java.util.*
 
 enum class ExecutionStatus {
+
+    PENDING,
     /**
      * return after successfully executing the baseline step
      */

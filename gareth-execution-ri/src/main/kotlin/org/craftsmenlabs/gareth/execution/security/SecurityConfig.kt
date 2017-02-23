@@ -15,8 +15,8 @@ import org.springframework.security.core.userdetails.UserDetailsService
 @Configuration
 @EnableWebSecurity
 @EnableGlobalMethodSecurity(securedEnabled = true)
-@Profile("test")
-open class TestSecurityConfig : WebSecurityConfigurerAdapter() {
+@Profile("!NOAUTH")
+open class SecurityConfig : WebSecurityConfigurerAdapter() {
 
     @Autowired
     lateinit var userService: UserDetailsService

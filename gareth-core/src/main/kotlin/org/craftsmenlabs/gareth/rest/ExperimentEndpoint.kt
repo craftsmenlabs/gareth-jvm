@@ -16,6 +16,7 @@ class ExperimentEndpoint @Autowired constructor(val experimentStorage: Experimen
                                                 val dateTimeService: TimeService) {
 
     @RequestMapping(method = arrayOf(RequestMethod.PUT))
+    @CrossOrigin
     fun upsert(@RequestBody dto: ExperimentCreateDTO): ExperimentDTO {
         val experiment = converter.createExperiment(dto)
         val saved = experimentStorage.save(experiment)
@@ -35,8 +36,12 @@ class ExperimentEndpoint @Autowired constructor(val experimentStorage: Experimen
     }
 
     @RequestMapping(value = "{id}/start", method = arrayOf(RequestMethod.PUT))
+    @CrossOrigin
     fun start(@PathVariable("id") id: Long): ExperimentDTO {
         val experiment = experimentStorage.getById(id)
+        if (experiment.timing.ready == null) {
+            throw IllegalStateException("You cannot start an experiment that is not ready.")
+        }
         val updated = experiment.copy(timing = experiment.timing.copy(started = dateTimeService.now()))
         experimentStorage.save(updated)
         return converter.createDTO(updated)
