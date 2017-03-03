@@ -11,4 +11,6 @@ public @interface Baseline {
 
     String glueLine();
 
+    String description() default "";
+
 }

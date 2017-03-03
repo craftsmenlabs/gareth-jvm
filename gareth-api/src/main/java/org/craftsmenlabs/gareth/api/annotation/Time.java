@@ -8,5 +8,7 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.METHOD)
 public @interface Time {
-    public String glueLine();
+    String glueLine();
+
+    String description() default "";
 }

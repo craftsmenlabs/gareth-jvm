@@ -38,7 +38,7 @@ open class DefinitionService @Autowired constructor(val definitionRegistry: Defi
 
     fun getInfoByType(glueLine: String, type: ExecutionType): DefinitionInfo {
         val method = definitionRegistry.getMethodDescriptorForExecutionType(glueLine, type)
-        return DefinitionInfo(method.getRegexPatternForGlueLine(), method.getMethodName(), method.getClassName())
+        return DefinitionInfo(method.getRegexPatternForGlueLine(), method.getMethodName(), method.getClassName(), method.description)
     }
 
     fun getTime(glueline: String): Duration = DurationBuilder.createForMinutes(definitionRegistry.getTimeForGlueline(glueline))

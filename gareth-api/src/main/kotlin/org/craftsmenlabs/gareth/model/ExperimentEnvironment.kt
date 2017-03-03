@@ -39,7 +39,7 @@ enum class GlueLineType {
 
 data class Duration(val unit: String, val amount: Long)
 
-data class DefinitionInfo(val glueline: String, val method: String, val className: String)
+data class DefinitionInfo(val glueline: String, val method: String, val className: String, val description: String = "")
 
 data class ExecutionRequest(val environment: ExperimentRunEnvironment, val glueLine: String)
 

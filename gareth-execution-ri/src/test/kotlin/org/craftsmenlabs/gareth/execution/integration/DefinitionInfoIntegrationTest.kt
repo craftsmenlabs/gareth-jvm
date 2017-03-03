@@ -27,6 +27,7 @@ class DefinitionInfoIntegrationTest {
         val info = endpoint.getBaselineByGlueline("sale of fruit")
         assertThat(info.glueline).isEqualTo("^sale of (.*?)$")
         assertThat(info.method).isEqualTo("getSaleOfItem")
+        assertThat(info.description).isEqualTo("Sale of many things")
         assertThat(info.className).isEqualTo("org.craftsmenlabs.gareth.execution.definitions.SaleOfFruit")
     }
 
@@ -42,6 +43,7 @@ class DefinitionInfoIntegrationTest {
         val info = endpoint.getAssumeByGlueline("sale of fruit has risen by 5 per cent")
         assertThat(info.glueline).isEqualTo("^sale of fruit has risen by (\\d+?) per cent$")
         assertThat(info.method).isEqualTo("hasRisenByPercent")
+        assertThat(info.description).isEqualTo("Sale of fruit has risen by some percentage")
         assertThat(info.className).isEqualTo("org.craftsmenlabs.gareth.execution.definitions.SaleOfFruit")
     }
 
@@ -50,6 +52,7 @@ class DefinitionInfoIntegrationTest {
         val info = endpoint.getSuccessByGlueline("send email to bob")
         assertThat(info.glueline).isEqualTo("^send email to (.*?)$")
         assertThat(info.method).isEqualTo("sendText")
+        assertThat(info.description).isEqualTo("Send email that the experiment succeeded.")
         assertThat(info.className).isEqualTo("org.craftsmenlabs.gareth.execution.definitions.SaleOfFruit")
     }
 
@@ -58,6 +61,7 @@ class DefinitionInfoIntegrationTest {
         val info = endpoint.getFailureByGlueline("send email to John")
         assertThat(info.glueline).isEqualTo("^send email to (.*?)$")
         assertThat(info.method).isEqualTo("sendFailureEmail")
+        assertThat(info.description).isEqualTo("Send email that the experiment failed.")
         assertThat(info.className).isEqualTo("org.craftsmenlabs.gareth.execution.definitions.SaleOfFruit")
 
     }

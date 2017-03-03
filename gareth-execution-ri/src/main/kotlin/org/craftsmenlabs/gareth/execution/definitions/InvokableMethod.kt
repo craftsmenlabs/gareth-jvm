@@ -12,15 +12,18 @@ class InvokableMethod {
     private val parameters = ArrayList<Class<*>>()
     val pattern: Pattern
     val method: Method
+    val description: String
     val runcontextParameter: Boolean
 
     constructor(glueLine: String,
+                description: String,
                 method: Method,
                 runcontextParameter: Boolean) {
         try {
             this.runcontextParameter = runcontextParameter
             pattern = Pattern.compile(glueLine)
             this.method = method
+            this.description = description
             parseMethod()
         } catch (e: Exception) {
             throw GarethDefinitionParseException(e)

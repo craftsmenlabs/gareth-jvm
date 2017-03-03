@@ -11,7 +11,8 @@ class InvokableMethodTest {
 
     @Test
     fun testInvocation() {
-        val invokableMethod = InvokableMethod("^sale of fruit has risen by (\\d+?) per cent$", assumeMethod, false)
+        val invokableMethod = InvokableMethod(glueLine = "^sale of fruit has risen by (\\d+?) per cent$",
+                method = assumeMethod, runcontextParameter = false, description = "")
         invokableMethod.invokeWith("sale of fruit has risen by 60 per cent", assume, runContext)
 
     }
