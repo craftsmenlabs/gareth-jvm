@@ -9,7 +9,6 @@ import org.craftsmenlabs.gareth.time.TimeService
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
 import rx.Observable
-import java.time.temporal.ChronoUnit
 import java.util.concurrent.TimeUnit
 
 @Service
@@ -27,10 +26,10 @@ class IsWaitingForAssumeMonitor @Autowired constructor(
         return observable
                 .filter { !delayedExperiments.contains(it.id) }
                 .delay {
-                    val duration = durationCalculator.getDuration(it)
-                    val assumePlanned = it.timing.baselineExecuted?.plus(duration)
-                    val now = dateTimeService.now()
-                    val delayInSeconds = ChronoUnit.SECONDS.between(now, assumePlanned)
+                    val delayInSeconds = durationCalculator.getDifferenceInSeconds(
+                            dateTimeService.now(),
+                            it.timing.baselineExecuted,
+                            durationCalculator.getDuration(it))
                     delayedExperiments.add(it.id!!)
                     val delay = Observable.just(it).delay(delayInSeconds, TimeUnit.SECONDS)
                     return@delay delay
@@ -42,4 +41,3 @@ class IsWaitingForAssumeMonitor @Autowired constructor(
                 }
     }
 }
-

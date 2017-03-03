@@ -10,10 +10,10 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.web.bind.annotation.*
 
 @RestController
-@RequestMapping("gareth/v1/experiments")
-class ExperimentEndpoint @Autowired constructor(val experimentStorage: ExperimentStorage,
-                                                val converter: ExperimentDTOConverter,
-                                                val dateTimeService: TimeService) {
+@RequestMapping("gareth/v1/templates")
+class ExperimentTemplateEndpoint @Autowired constructor(val experimentStorage: ExperimentStorage,
+                                                        val converter: ExperimentDTOConverter,
+                                                        val dateTimeService: TimeService) {
 
     //TODO CrossOrigin annotation was added to make the old FE work: to be removed ASAP
     @RequestMapping(method = arrayOf(RequestMethod.PUT))

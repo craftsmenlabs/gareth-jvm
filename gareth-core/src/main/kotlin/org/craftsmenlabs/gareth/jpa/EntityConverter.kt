@@ -2,13 +2,21 @@ package org.craftsmenlabs.gareth.jpa
 
 import org.craftsmenlabs.gareth.model.*
 import org.springframework.stereotype.Service
-import java.sql.Timestamp
-import java.time.Instant
-import java.time.LocalDateTime
-import java.time.ZoneOffset
 
 @Service
 class EntityConverter {
+
+    fun toEntity(dto: ExperimentTemplate): ExperimentTemplateEntity {
+        val entity = ExperimentTemplateEntity(dto.id)
+        entity.id = dto.id
+        entity.name = dto.name
+        entity.assume = dto.assume
+        entity.baseline = dto.baseline
+        entity.success = dto.success
+        entity.failure = dto.failure
+        entity.timeline = dto.timeline
+        return entity
+    }
 
     fun toEntity(experiment: Experiment): ExperimentEntity {
         val entity = ExperimentEntity()
@@ -72,17 +80,8 @@ class EntityConverter {
                 environment = ExperimentRunEnvironment(environmentItems))
     }
 
-    private fun toDate(dateTime: LocalDateTime?): Timestamp? {
-        if (dateTime == null)
-            return null
-        val instant = dateTime.toInstant(ZoneOffset.UTC)
-        return Timestamp.from(instant)
-    }
-
-    private fun toLocalDateTime(timeStamp: Timestamp?): LocalDateTime? {
-        if (timeStamp == null)
-            return null
-        val instant = Instant.ofEpochMilli(timeStamp.getTime())
-        return LocalDateTime.ofInstant(instant, ZoneOffset.UTC)
+    fun toDTO(entity: ExperimentTemplateEntity): ExperimentTemplate {
+        return ExperimentTemplate(id = entity.id ?: throw IllegalStateException("Cannot convert ExperimentTemplate with null ID to DTO"),
+                name = entity.name, assume = entity.assume, baseline = entity.baseline, success = entity.success, failure = entity.failure, timeline = entity.timeline)
     }
 }

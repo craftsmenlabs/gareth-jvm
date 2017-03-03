@@ -8,6 +8,8 @@ import org.craftsmenlabs.gareth.GlueLineExecutor
 import org.craftsmenlabs.gareth.model.Experiment
 import org.junit.Test
 import java.time.Duration
+import java.time.LocalDateTime
+import java.time.temporal.ChronoUnit
 
 class DurationCalculatorTest {
 
@@ -18,6 +20,9 @@ class DurationCalculatorTest {
 
     @Injectable
     lateinit var executor: GlueLineExecutor
+
+    @Injectable
+    lateinit var timeService: DateTimeService
 
     @Tested
     lateinit var durationCalculator: DurationCalculator
@@ -57,5 +62,15 @@ class DurationCalculatorTest {
         val actual = durationCalculator.getDuration(experiment)
 
         assertThat(actual).isSameAs(expected);
+    }
+
+    @Test
+    fun testcalculateDuration() {
+        val now = LocalDateTime.now();
+        val inOneHour = now.plusHours(1)
+
+        assertThat(durationCalculator.getDifferenceInSeconds(now, now, Duration.of(15, ChronoUnit.MINUTES))).isEqualTo(900)
+        assertThat(durationCalculator.getDifferenceInSeconds(now, inOneHour, Duration.of(2, ChronoUnit.HOURS))).isEqualTo(3 * 3600)
+
     }
 }
