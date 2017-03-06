@@ -3,57 +3,62 @@ package org.craftsmenlabs.gareth.atdd.steps
 import cucumber.api.java.en.When
 import org.assertj.core.api.Assertions.assertThat
 import org.craftsmenlabs.gareth.atdd.GarethServerEnvironment
-import org.craftsmenlabs.gareth.model.ExperimentCreateDTO
-import org.craftsmenlabs.gareth.model.ExperimentDTO
-import org.craftsmenlabs.gareth.model.ExperimentRunEnvironment
+import org.craftsmenlabs.gareth.model.*
 import org.craftsmenlabs.gareth.rest.BasicAuthenticationRestClient
 import org.slf4j.LoggerFactory
+import java.time.LocalDateTime
 
 open class CreateExperimentSteps {
 
     val log = LoggerFactory.getLogger("cucumber")
     val client: BasicAuthenticationRestClient = BasicAuthenticationRestClient("user", "secret")
+    lateinit var currentTemplate: ExperimentTemplateDTO
     lateinit var currentExperiment: ExperimentDTO
-    lateinit var experiment: ExperimentCreateDTO
+    lateinit var experiment: ExperimentTemplateCreateDTO
 
     @When("^I want to create an experiment named (.*?)$")
     fun iCreateAnExperiment(name: String) {
-        experiment = ExperimentCreateDTO(name = name, environment = ExperimentRunEnvironment(), baseline = "", assume = "", success = "", failure = "", time = "")
+        experiment = ExperimentTemplateCreateDTO(name = name, glueLines = Gluelines("", "", "", "", ""))
     }
 
     @When("^the baseline is (.*?)$")
     fun theBaselineIs(baseline: String) {
-        experiment = experiment.copy(baseline = baseline)
+        experiment = experiment.copy(glueLines = experiment.glueLines.copy(baseline = baseline))
     }
 
     @When("^the assume is (.*?)$")
     fun theAssumeIs(assume: String) {
-        experiment = experiment.copy(assume = assume)
+        experiment = experiment.copy(glueLines = experiment.glueLines.copy(assume = assume))
     }
 
     @When("^the success is (.*?)$")
     fun theSuccessIs(success: String) {
-        experiment = experiment.copy(success = success)
+        experiment = experiment.copy(glueLines = experiment.glueLines.copy(success = success))
     }
 
     @When("^the failure is (.*?)$")
     fun theFailureIs(failure: String) {
-        experiment = experiment.copy(failure = failure)
+        experiment = experiment.copy(glueLines = experiment.glueLines.copy(failure = failure))
     }
 
     @When("^the time is (\\d+) seconds$")
     fun theTimeIs(seconds: Int) {
-        experiment = experiment.copy(time = "$seconds seconds")
+        experiment = experiment.copy(glueLines = experiment.glueLines.copy(time = "$seconds seconds"))
     }
 
-    @When("^I submit the experiment$")
+    @When("^I create the template$")
     fun iSubmitTheExperiment() {
-        currentExperiment = client.put(experiment, ExperimentDTO::class.java, url(""))
+        currentTemplate = client.post(experiment, ExperimentTemplateDTO::class.java, url("templates"))
     }
 
-    @When("^the experiment is created$")
-    fun theExperimentIsCreated() {
-        assertThat(currentExperiment.created).isNotNull()
+    @When("^the template is correct$")
+    fun theTemplateIsReady() {
+        assertThat(currentTemplate.ready).isNotNull()
+    }
+
+    @When("^the template is not correct$")
+    fun theTemplateIsNotReady() {
+        assertThat(currentTemplate.ready).isNull()
     }
 
     @When("^the experiment is ready$")
@@ -78,11 +83,12 @@ open class CreateExperimentSteps {
 
     @When("^I start the experiment$")
     fun iStartTheExperiment() {
-        currentExperiment = client.put(experiment, ExperimentDTO::class.java, url("${currentExperiment.id}/start"))
+        val dto = ExperimentCreateDTO(templateId = currentTemplate.id, startDate = LocalDateTime.now())
+        currentExperiment = client.post(dto, ExperimentDTO::class.java, url("experiments"))
     }
 
     private fun refresh() {
-        currentExperiment = client.get(ExperimentDTO::class.java, url("/" + currentExperiment.id))
+        currentExperiment = client.get(ExperimentDTO::class.java, url("experiments/" + currentExperiment.id))
     }
 
     @When("^I wait (\\d+) seconds$")
@@ -97,6 +103,6 @@ open class CreateExperimentSteps {
         assertThat(find).describedAs("No key $key with value $value found. Experiment: $currentExperiment.environment.items").isNotNull()
     }
 
-    private fun url(path: String) = "http://localhost:${GarethServerEnvironment.garethPort}/gareth/v1/experiments/$path"
+    private fun url(path: String) = "http://localhost:${GarethServerEnvironment.garethPort}/gareth/v1/$path"
 
 }

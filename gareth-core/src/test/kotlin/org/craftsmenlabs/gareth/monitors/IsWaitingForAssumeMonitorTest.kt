@@ -6,11 +6,11 @@ import mockit.Injectable
 import mockit.Mocked
 import org.assertj.core.api.Assertions.assertThat
 import org.craftsmenlabs.Captors
-import org.craftsmenlabs.gareth.ExperimentStorage
+import org.craftsmenlabs.gareth.jpa.ExperimentStorage
 import org.craftsmenlabs.gareth.model.Experiment
-import org.craftsmenlabs.gareth.model.ExperimentDetails
 import org.craftsmenlabs.gareth.model.ExperimentResults
 import org.craftsmenlabs.gareth.model.ExperimentTiming
+import org.craftsmenlabs.gareth.model.Gluelines
 import org.craftsmenlabs.gareth.providers.ExperimentProvider
 import org.craftsmenlabs.gareth.time.DurationCalculator
 import org.craftsmenlabs.gareth.time.TimeService
@@ -64,14 +64,14 @@ class IsWaitingForAssumeMonitorTest {
     fun shouldOnlyOperateOnStartedExperiments(@Mocked schedulers: Schedulers) {
         schedulers.ioTestOverride()
         schedulers.computationTestOverride()
-        val details = ExperimentDetails("id", "baseline", "assumption", "time", "success", "failure", 666)
+        val glueLines = Gluelines("baseline", "assumption", "success", "failure", "time")
 
         val timingBaselineExecuted = ExperimentTiming(localDateTime1, localDateTime2, localDateTime3, localDateTime4, localDateTime5)
         val timingWaitingForAssume = ExperimentTiming(localDateTime6, localDateTime7, localDateTime8, localDateTime9, localDateTime10, localDateTime11)
 
         val results = ExperimentResults()
-        val experimentBaseline = Experiment(details, timingBaselineExecuted, results, ID1)
-        val experimentWaitingForAssume = Experiment(details, timingWaitingForAssume, results, ID2)
+        val experimentBaseline = Experiment(ID1, name = "name", glueLines = glueLines, timing = timingBaselineExecuted, results = results)
+        val experimentWaitingForAssume = Experiment(id = ID2, name = "name", glueLines = glueLines, timing = timingWaitingForAssume, results = results)
         val experiments = listOf(experimentBaseline, experimentWaitingForAssume)
 
         val duration = Duration.ofMillis(MILLI_DELAY)
@@ -100,17 +100,17 @@ class IsWaitingForAssumeMonitorTest {
 
     @Test
     fun shouldOnlyOperateOnStartedExperimentsOnce() {
-        val details = ExperimentDetails("id", "baseline", "assumption", "time", "success", "failure", 666)
+        val glueLines = Gluelines("baseline", "assumption", "success", "failure", "time")
 
         val timingBaselineExecuted = ExperimentTiming(localDateTime1, localDateTime2, localDateTime3, localDateTime4, localDateTime5)
 
         val results = ExperimentResults()
-        val experimentBaseline = Experiment(details, timingBaselineExecuted, results, ID1)
+        val experimentBaseline = Experiment(id = ID1, name = "name", glueLines = glueLines, timing = timingBaselineExecuted, results = results)
         val experiments = listOf(experimentBaseline)
 
         val duration = Duration.ofMillis(MILLI_DELAY)
 
-        val delayedExperiments:MutableList<Long> = Deencapsulation.getField(monitor, "delayedExperiments")
+        val delayedExperiments: MutableList<Long> = Deencapsulation.getField(monitor, "delayedExperiments")
         delayedExperiments.add(ID1)
 
         object : Expectations() {

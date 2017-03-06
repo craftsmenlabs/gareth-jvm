@@ -5,8 +5,8 @@ import mockit.Injectable
 import mockit.Mocked
 import org.assertj.core.api.Assertions.assertThat
 import org.craftsmenlabs.Captors
-import org.craftsmenlabs.gareth.ExperimentStorage
 import org.craftsmenlabs.gareth.GlueLineExecutor
+import org.craftsmenlabs.gareth.jpa.ExperimentStorage
 import org.craftsmenlabs.gareth.model.*
 import org.craftsmenlabs.gareth.providers.ExperimentProvider
 import org.craftsmenlabs.gareth.time.TimeService
@@ -61,7 +61,7 @@ class ExecuteBaselineMonitorTest {
 
     @Test
     fun shouldOnlyOperateOnStartedExperiments() {
-        val details = ExperimentDetails("id", "baseline", "assumption", "time", "success", "failure", 111)
+        val glueLines = Gluelines("baseline", "assumption", "success", "failure", "time")
         val timingFinalisationExecuted = ExperimentTiming(
                 localDateTime1,
                 localDateTime2,
@@ -76,8 +76,8 @@ class ExecuteBaselineMonitorTest {
         )
 
         val results = ExperimentResults()
-        val waitingForbaseline = Experiment(details, timingFinalisationExecuted, results)
-        val baselineExecuted = Experiment(details, timingCompleted, results)
+        val waitingForbaseline = Experiment(id = 0, name = "id", glueLines = glueLines, timing = timingFinalisationExecuted, results = results)
+        val baselineExecuted = waitingForbaseline.copy(timing = timingCompleted)
         val experiments = listOf(waitingForbaseline, baselineExecuted)
 
         object : Expectations() {

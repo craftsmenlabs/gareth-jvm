@@ -38,14 +38,14 @@ class ExecutionRestClient constructor(@Value("\${execution.client.url}") val hos
     /**
      * Connects to the the DefinitionsEndPoint REST controller in execution project
      */
-    fun isValidGlueLine(type: String, content: String): Boolean {
-        val fullUrl = createUrl("definitions/$type/$content")
+    fun isValidGlueLine(type: GlueLineType, content: String): Boolean {
+        val fullUrl = createUrl("definitions/${type.name.toLowerCase()}/$content")
         val entity = restClient.getAsEntity(DefinitionInfo::class.java, fullUrl)
         if (!entity.statusCode.is2xxSuccessful) {
             log.warn("Glueline '{}' of type {} is not a valid glue line", content, type)
             return false;
         }
-        log.debug("'{}' is a valid {} glueline", content, type)
+        log.debug("'{}' is a valid {} glueline", content, type.name.toLowerCase())
         val info = entity.body
         return info.glueline != null
     }

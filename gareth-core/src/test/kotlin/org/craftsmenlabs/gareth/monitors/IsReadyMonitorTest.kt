@@ -3,15 +3,14 @@ package org.craftsmenlabs.gareth.monitors
 import mockit.Expectations
 import mockit.Injectable
 import mockit.Mocked
-import mockit.Verifications
 import org.assertj.core.api.Assertions.assertThat
 import org.craftsmenlabs.Captors
-import org.craftsmenlabs.gareth.ExperimentStorage
-import org.craftsmenlabs.gareth.GlueLineLookup
+import org.craftsmenlabs.gareth.GluelineValidator
+import org.craftsmenlabs.gareth.jpa.ExperimentStorage
 import org.craftsmenlabs.gareth.model.Experiment
-import org.craftsmenlabs.gareth.model.ExperimentDetails
 import org.craftsmenlabs.gareth.model.ExperimentResults
 import org.craftsmenlabs.gareth.model.ExperimentTiming
+import org.craftsmenlabs.gareth.model.Gluelines
 import org.craftsmenlabs.gareth.providers.ExperimentProvider
 import org.craftsmenlabs.gareth.time.TimeService
 import org.craftsmenlabs.monitorintegration.computationTestOverride
@@ -35,7 +34,7 @@ class IsReadyMonitorTest {
     lateinit var dateTimeService: TimeService
 
     @Injectable
-    lateinit var glueLineLookup: GlueLineLookup
+    lateinit var gluelineValidator: GluelineValidator
 
     @Injectable
     lateinit var experimentStorage: ExperimentStorage
@@ -50,17 +49,17 @@ class IsReadyMonitorTest {
         schedulers.ioTestOverride()
         schedulers.computationTestOverride()
 
-        monitor = IsReadyMonitor(experimentProvider, dateTimeService, experimentStorage, glueLineLookup)
+        monitor = IsReadyMonitor(experimentProvider, dateTimeService, experimentStorage, gluelineValidator)
     }
 
     @Test
     fun shouldOnlyOperateOnNewExperiments() {
-        val details = ExperimentDetails("name", "baseline", "assume", "time", "success", "failure", 111)
+        val glueLines = Gluelines("baseline", "assumption", "success", "failure", "time")
         val timingNew = ExperimentTiming(localDateTime1)
         val timingReady = ExperimentTiming(localDateTime2, localDateTime3)
         val results = ExperimentResults()
-        val experimentNew = Experiment(details, timingNew, results)
-        val experimentReady = Experiment(details, timingReady, results)
+        val experimentNew = Experiment(id = 0, name = "name", glueLines = glueLines, timing = timingNew, results = results)
+        val experimentReady = experimentNew.copy(timing = timingReady)
         val experiments = listOf(experimentNew, experimentReady)
 
         object : Expectations() {
@@ -72,57 +71,14 @@ class IsReadyMonitorTest {
 
         monitor.start();
 
-        object : Verifications() {
-            init {
-                glueLineLookup.isExperimentReady(experimentNew)
-                times = 1
-
-                glueLineLookup.isExperimentReady(experimentReady)
-                times = 0
-            }
-        }
-    }
-
-    @Test
-    fun shouldOnlyUpdateExperimentsWithGluelines() {
-        val details = ExperimentDetails("name", "baseline", "assume", "time", "success", "failure", 111)
-        val timingNew1 = ExperimentTiming(localDateTime1)
-        val timingNew2 = ExperimentTiming(localDateTime2)
-        val results = ExperimentResults()
-        val experiment1 = Experiment(details, timingNew1, results)
-        val experiment2 = Experiment(details, timingNew2, results)
-        val experiments = listOf(experiment1, experiment2)
-
-        object : Expectations() {
-            init {
-                experimentProvider.observable
-                result = experiments.toObservable()
-
-                glueLineLookup.isExperimentReady(experiment1)
-                result = false
-
-                glueLineLookup.isExperimentReady(experiment2)
-                result = true
-
-                dateTimeService.now()
-                result = localDateTime3
-            }
-        }
-
-        monitor.start();
-
-        val captor = Captors.experimentStorage_save(experimentStorage)
-
-        assertThat(captor).hasSize(1);
-        assertThat(captor[0]).isEqualTo(experiment2.copy(timing = experiment2.timing.copy(ready = localDateTime3)))
     }
 
     @Test
     fun shouldUpdateReadyTimestampWhenReady() {
-        val details = ExperimentDetails("name", "baseline", "assume", "time", "success", "failure", 111)
+        val glueLines = Gluelines("baseline", "assumption", "success", "failure", "time")
         val timingNew = ExperimentTiming(localDateTime1)
         val results = ExperimentResults()
-        val experiment = Experiment(details, timingNew, results)
+        val experiment = Experiment(id = 111, name = "name", glueLines = glueLines, timing = timingNew, results = results)
         val experiments = listOf(experiment)
 
         object : Expectations() {
@@ -130,7 +86,7 @@ class IsReadyMonitorTest {
                 experimentProvider.observable
                 result = experiments.toObservable()
 
-                glueLineLookup.isExperimentReady(experiment)
+                gluelineValidator.gluelinesAreValid(glueLines)
                 result = true
 
                 dateTimeService.now()

@@ -5,8 +5,8 @@ import mockit.Injectable
 import mockit.Mocked
 import org.assertj.core.api.Assertions
 import org.craftsmenlabs.Captors
-import org.craftsmenlabs.gareth.ExperimentStorage
 import org.craftsmenlabs.gareth.GlueLineExecutor
+import org.craftsmenlabs.gareth.jpa.ExperimentStorage
 import org.craftsmenlabs.gareth.model.*
 import org.craftsmenlabs.gareth.providers.ExperimentProvider
 import org.craftsmenlabs.gareth.time.TimeService
@@ -69,7 +69,7 @@ class ExecuteFailureMonitorTest {
 
     @Test
     fun shouldOnlyOperateOnStartedExperiments() {
-        val details = ExperimentDetails("id", "baseline", "assumption", "time", "success", "failure", 111)
+        val glueLines = Gluelines("baseline", "assumption", "success", "failure", "time")
         val timingFinalisationExecuted = ExperimentTiming(
                 localDateTime1,
                 localDateTime2,
@@ -94,9 +94,10 @@ class ExecuteFailureMonitorTest {
         val failResults = ExperimentResults(ExecutionStatus.FAILURE)
         val successResults = ExperimentResults(ExecutionStatus.SUCCESS)
 
-        val failedExperimentWaitingForFinalisation = Experiment(details, timingFinalisationExecuted, failResults)
-        val succeededExperimentWaitingForFinalisation = Experiment(details, timingFinalisationExecuted, successResults)
-        val experimentFinalisationExecuted = Experiment(details, timingCompleted, successResults)
+        val failedExperimentWaitingForFinalisation = Experiment(id = 0, name = "id", glueLines = glueLines, timing = timingFinalisationExecuted, results = failResults)
+
+        val succeededExperimentWaitingForFinalisation = Experiment(id = 0, name = "id", glueLines = glueLines, timing = timingFinalisationExecuted, results = successResults)
+        val experimentFinalisationExecuted = succeededExperimentWaitingForFinalisation.copy(timing = timingCompleted)
         val experiments = listOf(failedExperimentWaitingForFinalisation, succeededExperimentWaitingForFinalisation, experimentFinalisationExecuted)
 
         object : Expectations() {

@@ -1,6 +1,6 @@
 package org.craftsmenlabs.gareth.providers
 
-import org.craftsmenlabs.gareth.ExperimentStorage
+import org.craftsmenlabs.gareth.jpa.ExperimentStorage
 import org.craftsmenlabs.gareth.model.Experiment
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service

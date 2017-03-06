@@ -1,34 +1,41 @@
 package org.craftsmenlabs.gareth.jpa
 
 import org.craftsmenlabs.gareth.model.*
+import org.craftsmenlabs.gareth.time.TimeService
+import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
 
 @Service
-class EntityConverter {
+class EntityConverter @Autowired constructor(val timeService: TimeService) {
 
-    fun toEntity(dto: ExperimentTemplate): ExperimentTemplateEntity {
-        val entity = ExperimentTemplateEntity(dto.id)
-        entity.id = dto.id
+
+    fun toEntity(dto: ExperimentTemplateDTO): ExperimentTemplateEntity {
+        val entity = ExperimentTemplateEntity()
         entity.name = dto.name
-        entity.assume = dto.assume
-        entity.baseline = dto.baseline
-        entity.success = dto.success
-        entity.failure = dto.failure
-        entity.timeline = dto.timeline
+        entity.dateCreated = timeService.now()
+        entity.baseline = dto.glueLines.baseline
+        entity.assume = dto.glueLines.assume
+        entity.success = dto.glueLines.success
+        entity.failure = dto.glueLines.failure
+        entity.timeline = dto.glueLines.time
         return entity
     }
 
-    fun toEntity(experiment: Experiment): ExperimentEntity {
-        val entity = ExperimentEntity()
-        entity.id = experiment.id
-        entity.name = experiment.details.name
-        entity.assume = experiment.details.assume
-        entity.baseline = experiment.details.baseline
-        entity.success = experiment.details.success
-        entity.failure = experiment.details.failure
-        entity.timeline = experiment.details.time
+    fun toEntity(dto: ExperimentTemplateCreateDTO): ExperimentTemplateEntity {
+        val entity = ExperimentTemplateEntity()
+        entity.name = dto.name
+        entity.dateCreated = timeService.now()
+        entity.baseline = dto.glueLines.baseline
+        entity.assume = dto.glueLines.assume
+        entity.success = dto.glueLines.success
+        entity.failure = dto.glueLines.failure
+        entity.timeline = dto.glueLines.time
+        return entity
+    }
+
+
+    fun copyEditableValues(entity: ExperimentEntity, experiment: Experiment): ExperimentEntity {
         val timing = experiment.timing
-        entity.dateCreated = timing.created!!
         entity.dateReady = timing.ready
         entity.dateStarted = timing.started
         entity.dateWaitingForBaseline = timing.waitingForBaseline
@@ -52,14 +59,29 @@ class EntityConverter {
         return entity
     }
 
+    fun toDTO(experiment: Experiment): ExperimentDTO {
+        val dto = ExperimentDTO(
+                id = experiment.id ?: throw IllegalStateException("Cannot convert Experiment with null ID to DTO"),
+                name = experiment.name,
+                created = experiment.timing.created,
+                glueLines = experiment.glueLines.copy(),
+                ready = experiment.timing.ready,
+                started = experiment.timing.started,
+                baselineExecuted = experiment.timing.baselineExecuted,
+                completed = experiment.timing.completed,
+                result = experiment.results.status,
+                environment = experiment.environment)
+        return dto;
+    }
+
     fun toDTO(entity: ExperimentEntity): Experiment {
-        val details = ExperimentDetails(name = entity.name,
-                assume = entity.assume,
-                baseline = entity.baseline,
-                success = entity.success,
-                failure = entity.failure,
-                time = entity.timeline,
-                value = 0)
+        val template = entity.template
+        val gluelines = Gluelines(
+                assume = template.assume,
+                baseline = template.baseline,
+                success = template.success,
+                failure = template.failure,
+                time = template.timeline)
 
         val timing = ExperimentTiming(
                 created = entity.dateCreated!!,
@@ -74,14 +96,26 @@ class EntityConverter {
                 completed = entity.dateCompleted)
         val environmentItems = entity.environment.map { EnvironmentItem(it.key, it.value, it.itemType) }
         return Experiment(id = entity.id!!,
-                details = details,
+                name = template.name,
+                value = 0,
+                glueLines = gluelines,
                 timing = timing,
                 results = ExperimentResults(entity.result),
                 environment = ExperimentRunEnvironment(environmentItems))
     }
 
-    fun toDTO(entity: ExperimentTemplateEntity): ExperimentTemplate {
-        return ExperimentTemplate(id = entity.id ?: throw IllegalStateException("Cannot convert ExperimentTemplate with null ID to DTO"),
-                name = entity.name, assume = entity.assume, baseline = entity.baseline, success = entity.success, failure = entity.failure, timeline = entity.timeline)
+    fun toDTO(entity: ExperimentTemplateEntity): ExperimentTemplateDTO {
+        val glueLines = Gluelines(
+                assume = entity.assume,
+                baseline = entity.baseline,
+                success = entity.success,
+                failure = entity.failure,
+                time = entity.timeline)
+        return ExperimentTemplateDTO(id = entity.id ?: throw IllegalStateException("Cannot convert ExperimentTemplate with null ID to DTO"),
+                name = entity.name,
+                created = entity.dateCreated,
+                ready = entity.ready,
+                glueLines = glueLines
+        )
     }
 }

@@ -31,7 +31,7 @@ class DurationCalculatorTest {
     fun shouldReturnDuration_whenParserReturnsResult(@Injectable experiment: Experiment, @Injectable expected: Duration) {
         object : Expectations() {
             init {
-                experiment.details.time
+                experiment.glueLines.time
                 result = TIME_TEXT
 
                 durationExpressionParser.parse(TIME_TEXT)
@@ -48,7 +48,7 @@ class DurationCalculatorTest {
     fun shouldReturnDurationFromExecutor_whenParserReturnsNoResult(@Injectable experiment: Experiment, @Injectable expected: Duration) {
         object : Expectations() {
             init {
-                experiment.details.time
+                experiment.glueLines.time
                 result = TIME_TEXT
 
                 durationExpressionParser.parse(TIME_TEXT)

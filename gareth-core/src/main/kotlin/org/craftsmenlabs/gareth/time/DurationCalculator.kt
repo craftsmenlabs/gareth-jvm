@@ -11,11 +11,10 @@ import java.time.temporal.ChronoUnit
 @Service
 class DurationCalculator @Autowired constructor(
         private val durationExpressionParser: DurationExpressionParser,
-        private val timeService: DateTimeService,
         private val executor: GlueLineExecutor) {
 
     fun getDuration(experiment: Experiment): Duration {
-        val time = durationExpressionParser.parse(experiment.details.time)
+        val time = durationExpressionParser.parse(experiment.glueLines.time)
         if (time != null) {
             return time
         } else {

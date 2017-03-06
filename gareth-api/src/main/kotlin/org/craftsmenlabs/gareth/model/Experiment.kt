@@ -3,11 +3,13 @@ package org.craftsmenlabs.gareth.model
 import java.time.LocalDateTime
 
 data class Experiment(
-        val details: ExperimentDetails,
+        val id: Long,
+        val value: Int = 0,
+        val name: String,
+        override val glueLines: Gluelines,
         val timing: ExperimentTiming,
         val results: ExperimentResults,
-        val id: Long? = null,
-        val environment: ExperimentRunEnvironment = ExperimentRunEnvironment()) {
+        val environment: ExperimentRunEnvironment = ExperimentRunEnvironment()) : HasGlueLines {
 
     fun getState(): ExperimentState {
         if (timing.ready == null) {
@@ -36,7 +38,10 @@ data class Experiment(
     companion object {
         fun createDefault(): Experiment {
             return Experiment(
-                    details = ExperimentDetails("TEST", "baseline", "assume", "5 seonds", "success", "failure", 1),
+                    id = 0,
+                    name = "TEST",
+                    value = 1,
+                    glueLines = Gluelines(baseline = "baseline", assume = "assume", time = "5 seonds", success = "success", failure = "failure"),
                     timing = ExperimentTiming(),
                     results = ExperimentResults(),
                     environment = ExperimentRunEnvironment())
@@ -56,6 +61,8 @@ data class ExperimentDetails(
 
 data class ExperimentTiming(
         val created: LocalDateTime = LocalDateTime.now(),
+        //val due: LocalDateTime? = null,
+        //val dueDateReached: Boolean = false,
         val ready: LocalDateTime? = null,
         val started: LocalDateTime? = null,
         val waitingForBaseline: LocalDateTime? = null,
@@ -71,6 +78,20 @@ data class ExperimentResults(val status: ExecutionStatus = ExecutionStatus.PENDI
 )
 
 enum class ExperimentState {
-    NEW, READY, STARTED, WAITING_FOR_BASELINE, BASELINE_EXECUTED,
-    WAITING_FOR_ASSUME, ASSUME_EXECUTED, WAITING_FOR_FINALISATION, FINALISATION_EXECUTED, COMPLETED
+    /**
+     * Timestamp of insertion into database
+     */
+    NEW,
+    /**
+     * after gluelines in the template have been successfully validated
+     */
+    READY,
+    STARTED,
+    WAITING_FOR_BASELINE,
+    BASELINE_EXECUTED,
+    WAITING_FOR_ASSUME,
+    ASSUME_EXECUTED,
+    WAITING_FOR_FINALISATION,
+    FINALISATION_EXECUTED,
+    COMPLETED
 }

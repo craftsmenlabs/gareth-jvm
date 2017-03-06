@@ -5,12 +5,12 @@ import mockit.Injectable
 import mockit.Mocked
 import org.assertj.core.api.Assertions.assertThat
 import org.craftsmenlabs.Captors
-import org.craftsmenlabs.gareth.ExperimentStorage
-import org.craftsmenlabs.gareth.GlueLineLookup
+import org.craftsmenlabs.gareth.GluelineValidator
+import org.craftsmenlabs.gareth.jpa.ExperimentStorage
 import org.craftsmenlabs.gareth.model.Experiment
-import org.craftsmenlabs.gareth.model.ExperimentDetails
 import org.craftsmenlabs.gareth.model.ExperimentResults
 import org.craftsmenlabs.gareth.model.ExperimentTiming
+import org.craftsmenlabs.gareth.model.Gluelines
 import org.craftsmenlabs.gareth.providers.ExperimentProvider
 import org.craftsmenlabs.gareth.time.TimeService
 import org.craftsmenlabs.monitorintegration.computationTestOverride
@@ -49,7 +49,7 @@ class IsWaitingForFinalizingMonitorTest {
     lateinit var dateTimeService: TimeService
 
     @Injectable
-    lateinit var glueLineLookup: GlueLineLookup
+    lateinit var gluelineValidator: GluelineValidator
 
     @Injectable
     lateinit var experimentStorage: ExperimentStorage
@@ -69,7 +69,7 @@ class IsWaitingForFinalizingMonitorTest {
 
     @Test
     fun shouldOnlyOperateOnStartedExperiments() {
-        val details = ExperimentDetails("name", "baseline", "assume", "time", "success", "failure", 111)
+        val glueLines = Gluelines("baseline", "assumption", "success", "failure", "time")
         val timingAssumeExecuted = ExperimentTiming(
                 localDateTime1,
                 localDateTime2,
@@ -89,8 +89,8 @@ class IsWaitingForFinalizingMonitorTest {
                 localDateTime16
         )
         val results = ExperimentResults()
-        val experimentAssumeExecuted = Experiment(details, timingAssumeExecuted, results)
-        val experimentWaitingForFinalisation = Experiment(details, timingWaitingForFinalisation, results)
+        val experimentAssumeExecuted = Experiment(id = 0, name = "name", glueLines = glueLines, timing = timingAssumeExecuted, results = results)
+        val experimentWaitingForFinalisation = experimentAssumeExecuted.copy(timing = timingWaitingForFinalisation)
         val experiments = listOf(experimentAssumeExecuted, experimentWaitingForFinalisation)
 
         object : Expectations() {

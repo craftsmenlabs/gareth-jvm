@@ -5,11 +5,11 @@ import mockit.Injectable
 import mockit.Mocked
 import org.assertj.core.api.Assertions.assertThat
 import org.craftsmenlabs.Captors
-import org.craftsmenlabs.gareth.ExperimentStorage
+import org.craftsmenlabs.gareth.jpa.ExperimentStorage
 import org.craftsmenlabs.gareth.model.Experiment
-import org.craftsmenlabs.gareth.model.ExperimentDetails
 import org.craftsmenlabs.gareth.model.ExperimentResults
 import org.craftsmenlabs.gareth.model.ExperimentTiming
+import org.craftsmenlabs.gareth.model.Gluelines
 import org.craftsmenlabs.gareth.providers.ExperimentProvider
 import org.craftsmenlabs.gareth.time.TimeService
 import org.craftsmenlabs.monitorintegration.computationTestOverride
@@ -55,12 +55,12 @@ class IsWaitingForBaselineMonitorTest {
 
     @Test
     fun shouldOnlyOperateOnStartedExperiments() {
-        val details = ExperimentDetails("name", "baseline", "assume", "time", "success", "failure", 111)
+        val glueLines = Gluelines("baseline", "assumption", "success", "failure", "time")
         val timingStarted = ExperimentTiming(localDateTime1, localDateTime2, localDateTime3)
         val timingWaitingForBaseline = ExperimentTiming(localDateTime4, localDateTime5, localDateTime6, localDateTime7)
         val results = ExperimentResults()
-        val experimentStarted = Experiment(details, timingStarted, results)
-        val experimentWaitingForBaseline = Experiment(details, timingWaitingForBaseline, results)
+        val experimentStarted = Experiment(id = 111, name = "name", glueLines = glueLines, timing = timingStarted, results = results)
+        val experimentWaitingForBaseline = experimentStarted.copy(timing = timingWaitingForBaseline)
         val experiments = listOf(experimentStarted, experimentWaitingForBaseline)
 
         object : Expectations() {

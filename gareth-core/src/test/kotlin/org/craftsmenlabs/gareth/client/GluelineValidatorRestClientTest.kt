@@ -5,20 +5,22 @@ import mockit.Injectable
 import mockit.Tested
 import org.assertj.core.api.Assertions.assertThat
 import org.craftsmenlabs.gareth.model.Experiment
-import org.craftsmenlabs.gareth.model.ExperimentDetails
+import org.craftsmenlabs.gareth.model.GlueLineType
+import org.craftsmenlabs.gareth.model.Gluelines
 import org.craftsmenlabs.gareth.time.DurationExpressionParser
 import org.junit.Test
 import java.time.Duration
 
-class GlueLineLookupRestClientTest {
+class GluelineValidatorRestClientTest {
+
     @Injectable
     private lateinit var experiment: Experiment
     @Injectable
-    private lateinit var details: ExperimentDetails
+    private lateinit var gluelines: Gluelines
     @Injectable
     private lateinit var client: ExecutionRestClient
     @Tested
-    private lateinit var glueLineClient: GlueLineLookupRestClient
+    private lateinit var glueLineClient: GluelineValidatorRestClient
 
     @Injectable
     private lateinit var durationExpressionParser: DurationExpressionParser
@@ -28,19 +30,19 @@ class GlueLineLookupRestClientTest {
         setupExperimentDetails()
         object : Expectations() {
             init {
-                client.isValidGlueLine("assume", "A")
+                client.isValidGlueLine(GlueLineType.ASSUME, "A")
                 result = true
-                client.isValidGlueLine("baseline", "B")
+                client.isValidGlueLine(GlueLineType.BASELINE, "B")
                 result = true
-                client.isValidGlueLine("success", "S")
+                client.isValidGlueLine(GlueLineType.SUCCESS, "S")
                 result = true
-                client.isValidGlueLine("failure", "F")
+                client.isValidGlueLine(GlueLineType.FAILURE, "F")
                 result = true
                 durationExpressionParser.parse("T")
                 result = Duration.ZERO
             }
         }
-        assertThat(glueLineClient.isExperimentReady(experiment)).isTrue()
+        assertThat(glueLineClient.gluelinesAreValid(experiment.glueLines)).isTrue()
     }
 
 
@@ -49,27 +51,27 @@ class GlueLineLookupRestClientTest {
         setupExperimentDetails()
         object : Expectations() {
             init {
-                client.isValidGlueLine("assume", "A")
+                client.isValidGlueLine(GlueLineType.ASSUME, "A")
                 result = false
             }
         }
-        assertThat(glueLineClient.isExperimentReady(experiment)).isFalse()
+        assertThat(glueLineClient.gluelinesAreValid(experiment.glueLines)).isFalse()
     }
 
     fun setupExperimentDetails() {
         object : Expectations() {
             init {
-                experiment.details
-                result = details
-                details.assume
+                experiment.glueLines
+                result = gluelines
+                gluelines.assume
                 result = "A"
-                details.baseline
+                gluelines.baseline
                 result = "B"
-                details.success
+                gluelines.success
                 result = "S"
-                details.failure
+                gluelines.failure
                 result = "F"
-                details.time
+                gluelines.time
                 result = "T"
             }
         }

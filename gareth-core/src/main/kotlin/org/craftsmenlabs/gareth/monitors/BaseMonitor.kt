@@ -1,6 +1,6 @@
 package org.craftsmenlabs.gareth.monitors
 
-import org.craftsmenlabs.gareth.ExperimentStorage
+import org.craftsmenlabs.gareth.jpa.ExperimentStorage
 import org.craftsmenlabs.gareth.model.Experiment
 import org.craftsmenlabs.gareth.model.ExperimentState
 import org.craftsmenlabs.gareth.providers.ExperimentProvider
@@ -42,7 +42,7 @@ abstract class BaseMonitor constructor(
                 .filter { it.id != INVALID_ID }
                 .observeOn(Schedulers.computation())
                 .subscribe {
-                    experimentStorage.save(it)
+                    experimentStorage.updateExperiment(it)
                 }
     }
 

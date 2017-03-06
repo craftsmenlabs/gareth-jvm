@@ -3,11 +3,11 @@ package org.craftsmenlabs.gareth.rest
 import mockit.Expectations
 import mockit.Injectable
 import org.assertj.core.api.Assertions.assertThat
-import org.craftsmenlabs.gareth.ExperimentStorage
+import org.craftsmenlabs.gareth.jpa.EntityConverter
+import org.craftsmenlabs.gareth.jpa.ExperimentStorage
 import org.craftsmenlabs.gareth.model.Experiment
 import org.craftsmenlabs.gareth.model.ExperimentCreateDTO
 import org.craftsmenlabs.gareth.model.ExperimentDTO
-import org.craftsmenlabs.gareth.model.ExperimentDTOConverter
 import org.craftsmenlabs.gareth.time.TimeService
 import org.junit.Before
 import org.junit.Test
@@ -19,14 +19,12 @@ class ExperimentEndpointTest {
     @Injectable
     lateinit var experimentStorage: ExperimentStorage
     @Injectable
-    lateinit var converter: ExperimentDTOConverter
+    lateinit var converter: EntityConverter
     @Injectable
     lateinit var dateTimeService: TimeService
 
     @Injectable
     lateinit var experiment: Experiment
-    @Injectable
-    lateinit var experimentCreateDTO: ExperimentCreateDTO
     @Injectable
     lateinit var experimentDTO: ExperimentDTO
 
@@ -38,31 +36,13 @@ class ExperimentEndpointTest {
     }
 
     @Test
-    fun testupsert() {
-        object : Expectations() {
-            init {
-                converter.createExperiment(experimentCreateDTO)
-                result = experiment
-
-                experimentStorage.save(experiment)
-                result = experiment
-
-                converter.createDTO(experiment)
-                result = experimentDTO
-            }
-        }
-        val experiment = endpoint.upsert(experimentCreateDTO)
-        assertThat(experiment).isSameAs(experimentDTO)
-    }
-
-    @Test
     fun testGetById() {
         object : Expectations() {
             init {
                 experimentStorage.getById(42)
                 result = experiment
 
-                converter.createDTO(experiment)
+                converter.toDTO(experiment)
                 result = experimentDTO
             }
         }
@@ -77,7 +57,7 @@ class ExperimentEndpointTest {
                 experimentStorage.getFiltered(withInstanceOf(LocalDateTime::class.java), null)
                 result = listOf(experiment)
 
-                converter.createDTO(experiment)
+                converter.toDTO(experiment)
                 result = experimentDTO
             }
         }
@@ -93,7 +73,7 @@ class ExperimentEndpointTest {
                 experimentStorage.getFiltered(null, true)
                 result = listOf(experiment)
 
-                converter.createDTO(experiment)
+                converter.toDTO(experiment)
                 result = experimentDTO
             }
         }
@@ -103,29 +83,18 @@ class ExperimentEndpointTest {
     }
 
     @Test
-    fun testStartExperiment() {
-        val experimentTemplate = Experiment.createDefault()
-        val ready = experimentTemplate.copy(timing = experimentTemplate.timing.copy(ready = LocalDateTime.now()))
+    fun testStartExperiment(@Injectable experiment: Experiment) {
         object : Expectations() {
             init {
-                dateTimeService.now()
-                result = now
+                experimentStorage.createExperiment(42, now)
+                result = experiment
 
-                experimentStorage.getById(42)
-                result = ready
-
-                converter.createDTO(withAny(experimentTemplate))
+                converter.toDTO(experiment)
+                result = experimentDTO
             }
         }
-        val experiment = endpoint.start(42)
+        val experiment = endpoint.start(ExperimentCreateDTO(42, now))
         assertThat(experiment).isSameAs(experimentDTO)
-        /* object : Verifications() {
-             init {
-                 val experiments = mutableListOf<Experiment>()
-                 experimentStorage.save(withCapture(experiments))
-                 assertThat(experiments[0].timing.started).isEqualTo(now)
-             }
-         }*/
     }
 
 }

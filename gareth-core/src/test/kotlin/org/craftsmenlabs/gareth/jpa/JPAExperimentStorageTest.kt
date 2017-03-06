@@ -3,6 +3,7 @@ package org.craftsmenlabs.gareth.jpa
 import mockit.Expectations
 import mockit.Injectable
 import org.assertj.core.api.Assertions.assertThat
+import org.craftsmenlabs.gareth.client.GluelineValidatorRestClient
 import org.craftsmenlabs.gareth.model.ExecutionStatus
 import org.craftsmenlabs.gareth.time.DateTimeService
 import org.junit.Before
@@ -14,15 +15,21 @@ class JPAExperimentStorageTest {
     @Injectable
     lateinit var dao: ExperimentDao
 
-    val entityconverter = EntityConverter()
+    @Injectable
+    lateinit var templateDao: ExperimentTemplateDao
+
+    @Injectable
+    lateinit var gluelineLookup: GluelineValidatorRestClient
 
     val dateTimeService = DateTimeService()
+
+    val entityconverter = EntityConverter(dateTimeService)
 
     lateinit var storage: JPAExperimentStorage
 
     @Before
     fun setup() {
-        storage = JPAExperimentStorage(entityconverter, dao, dateTimeService)
+        storage = JPAExperimentStorage(entityconverter, dao, gluelineLookup, templateDao, dateTimeService)
         val today = dateTimeService.now().plusMinutes(10)
         val yesterday = dateTimeService.now().minusDays(1)
         val cache = listOf(createEntity(today, null),
@@ -35,7 +42,6 @@ class JPAExperimentStorageTest {
                 result = cache
             }
         }
-
     }
 
     @Test
@@ -55,15 +61,18 @@ class JPAExperimentStorageTest {
         val entity = ExperimentEntity()
         entity.dateCreated = created
         entity.id = 42
-        entity.name = "name"
-        entity.assume = "assume"
-        entity.baseline = "baseline"
-        entity.success = "success"
-        entity.failure = "failure"
-        entity.timeline = "time"
+
         entity.environment = setOf()
         entity.result = ExecutionStatus.PENDING
         entity.dateCompleted = completed
+        val template = ExperimentTemplateEntity()
+        template.name = "name"
+        template.assume = "assume"
+        template.baseline = "baseline"
+        template.success = "success"
+        template.failure = "failure"
+        template.timeline = "time"
+        entity.template = template
         return entity;
     }
 

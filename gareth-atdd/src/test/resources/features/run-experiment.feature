@@ -9,24 +9,26 @@ Feature: Run ACME experiment
 
   Scenario: Run experiment with successful outcome
     When the assume is sale of apples has risen by 8 per cent
-    And I submit the experiment
-    Then the experiment is created
-    When I wait 2 seconds
-    Then the experiment is ready
+    And I create the template
+    Then the template is correct
     When I start the experiment
-    Then the experiment is started
+    Then the experiment is ready
+    And the experiment is started
     When I wait 3 seconds
     Then the experiment is completed successfully
     And the environment key result has value sending success mail to Moos
 
+  Scenario: Create template with invalid assume glueline
+    When the assume is sale of apples has done nothing
+    And I create the template
+    Then the template is not correct
+
   Scenario: Run experiment with failed outcome
     When the assume is sale of apples has risen by 11 per cent
-    And I submit the experiment
-    Then the experiment is created
-    When I wait 2 seconds
+    And I create the template
+    And I start the experiment
     Then the experiment is ready
-    When I start the experiment
-    Then the experiment is started
+    And the experiment is started
     When I wait 3 seconds
     Then the experiment is completed unsuccessfully
     And the environment key result has value sending failure mail to Sam

@@ -4,6 +4,7 @@ import org.craftsmenlabs.gareth.model.*
 import org.springframework.web.bind.annotation.RequestBody
 
 interface DefinitionsResource {
+
     fun getBaselineByGlueline(glueLine: String): DefinitionInfo
 
     fun getAssumeByGlueline(glueLine: String): DefinitionInfo
@@ -28,6 +29,7 @@ interface ExecutionResource {
 }
 
 interface GlueLineMatcherResource {
+
     fun getBaselineByGlueline(glueLine: String): GlueLineSearchResultDTO
 
     fun getAssumeByGlueline(glueLine: String): GlueLineSearchResultDTO

@@ -37,7 +37,7 @@
         <mockserver-netty.version>3.10.2</mockserver-netty.version>
         <guava.version>19.0</guava.version>
         <spring.version>1.4.0.RELEASE</spring.version>
-        <kotlin.version>1.0.5-2</kotlin.version>
+        <kotlin.version>1.0.6</kotlin.version>
         <swagger.version>2.6.0</swagger.version>
         <cucumber.version>1.2.3</cucumber.version>
         <h2.version>1.4.193</h2.version>
@@ -327,13 +327,6 @@
             </dependency>
 
             <dependency>
-                <groupId>org.mockito</groupId>
-                <artifactId>mockito-core</artifactId>
-                <version>${mockito.version}</version>
-                <scope>test</scope>
-            </dependency>
-
-            <dependency>
                 <groupId>org.jmockit</groupId>
                 <artifactId>jmockit</artifactId>
                 <version>${jmockit.version}</version>
@@ -418,12 +411,6 @@
             <version>${junit.version}</version>
             <scope>test</scope>
         </dependency>
-
-        <dependency>
-            <groupId>org.mockito</groupId>
-            <artifactId>mockito-core</artifactId>
-        </dependency>
-
         <dependency>
             <groupId>org.assertj</groupId>
             <artifactId>assertj-core</artifactId>
