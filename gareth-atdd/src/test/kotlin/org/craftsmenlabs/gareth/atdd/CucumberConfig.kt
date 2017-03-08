@@ -21,14 +21,14 @@ open class CucumberConfig {
 
     @EventListener
     fun handleContextRefresh(event: ContextRefreshedEvent) {
-      //  GarethServerEnvironment.addInstance(GarethServerEnvironment.createGarethInstance())
-      //  GarethServerEnvironment.addInstance(GarethServerEnvironment.createExecutionInstance())
-       // GarethServerEnvironment.start()
+        GarethServerEnvironment.addInstance(GarethServerEnvironment.createGarethInstance())
+        GarethServerEnvironment.addInstance(GarethServerEnvironment.createExecutionInstance())
+        GarethServerEnvironment.start()
     }
 
     @EventListener
     fun handleContextClosed(event: ContextClosedEvent) {
-      //  GarethServerEnvironment.shutDown()
+        GarethServerEnvironment.shutDown()
     }
 
     @Bean

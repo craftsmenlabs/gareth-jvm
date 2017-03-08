@@ -85,7 +85,7 @@ class BasicAuthenticationRestClient(
             }
             return responseEntity
         } catch (ex: HttpClientErrorException) {
-            throw createRestException(methodPlusUrl, ex)
+            return ResponseEntity.status(ex.statusCode).body(ex.message) as ResponseEntity<T>
         } catch (ex: HttpServerErrorException) {
             return ResponseEntity.status(ex.statusCode).body(ex.message) as ResponseEntity<T>
         } catch (e: Exception) {

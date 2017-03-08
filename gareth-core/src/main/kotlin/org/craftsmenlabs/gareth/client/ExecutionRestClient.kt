@@ -46,8 +46,8 @@ class ExecutionRestClient constructor(@Value("\${execution.client.url}") val hos
             return false;
         }
         log.debug("'{}' is a valid {} glueline", content, type.name.toLowerCase())
-        val info = entity.body
-        return info.glueline != null
+        val info: DefinitionInfo? = entity.body
+        return info?.glueline != null
     }
 
     fun isValidTimeGlueLine(content: String): Boolean {
