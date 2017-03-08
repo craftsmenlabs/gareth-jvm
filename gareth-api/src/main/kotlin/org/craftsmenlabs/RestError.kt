@@ -1,4 +1,4 @@
-package org.craftsmenlabs.gareth.execution.dto
+package org.craftsmenlabs
 
 import com.fasterxml.jackson.annotation.JsonCreator
 import com.fasterxml.jackson.annotation.JsonProperty

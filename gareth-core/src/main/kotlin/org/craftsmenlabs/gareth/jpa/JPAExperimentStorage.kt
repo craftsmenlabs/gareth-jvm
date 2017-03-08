@@ -1,5 +1,6 @@
 package org.craftsmenlabs.gareth.jpa
 
+import org.craftsmenlabs.BadRequestException
 import org.craftsmenlabs.gareth.client.GluelineValidatorRestClient
 import org.craftsmenlabs.gareth.model.*
 import org.craftsmenlabs.gareth.time.TimeService
@@ -33,8 +34,6 @@ class JPAExperimentStorage @Autowired constructor(private val converter: EntityC
     override fun updateTemplate(dto: ExperimentTemplateUpdateDTO): ExperimentTemplateDTO {
         val entity = findTemplateById(dto.id)
         validateNoRunningExperimentsForTemplate(entity)
-        if (dto.ready != null)
-            entity.ready = dto.ready
         if (dto.name != null)
             entity.name = dto.name!!
         if (dto.baseline != null)
@@ -58,7 +57,7 @@ class JPAExperimentStorage @Autowired constructor(private val converter: EntityC
     private fun validateNoRunningExperimentsForTemplate(entity: ExperimentTemplateEntity) {
         val experiments = dao.findByTemplate(entity)
         if (!experiments.isEmpty())
-            throw IllegalStateException("You cannot update experiment template ${entity.name}. There are already running experiments.")
+            throw BadRequestException("You cannot update experiment template ${entity.name}. There are already running experiments.")
     }
 
     private fun validateGluelinesForUpdate(dto: ExperimentTemplateUpdateDTO): Boolean {
@@ -74,7 +73,7 @@ class JPAExperimentStorage @Autowired constructor(private val converter: EntityC
     override fun createExperiment(templateId: Long, startDate: LocalDateTime?): Experiment {
         val template = findTemplateById(templateId)
         if (template.ready == null) {
-            throw IllegalStateException("You cannot start an experiment that is not ready.")
+            throw BadRequestException("You cannot start an experiment that is not ready.")
         }
         val entity = ExperimentEntity()
         entity.template = template

@@ -1,6 +1,9 @@
-package org.craftsmenlabs.gareth.execution.rest
+package org.craftsmenlabs.gareth.config
 
-import org.craftsmenlabs.*
+import org.craftsmenlabs.BadRequestException
+import org.craftsmenlabs.GarethIllegalDefinitionException
+import org.craftsmenlabs.NotFoundException
+import org.craftsmenlabs.RestError
 import org.slf4j.LoggerFactory
 import org.springframework.http.HttpStatus
 import org.springframework.web.bind.annotation.*
@@ -9,7 +12,6 @@ import javax.servlet.http.HttpServletRequest
 @ControllerAdvice(annotations = arrayOf(RestController::class))
 class GlobalControllerAdvice {
     private val LOGGER = LoggerFactory.getLogger(GlobalControllerAdvice::class.java)
-
 
     @ExceptionHandler(NotFoundException::class)
     @ResponseStatus(value = HttpStatus.NOT_FOUND)
@@ -22,20 +24,6 @@ class GlobalControllerAdvice {
     @ResponseStatus(value = HttpStatus.BAD_REQUEST)
     @ResponseBody
     fun definitionError(req: HttpServletRequest, e: GarethIllegalDefinitionException): RestError {
-        return RestError(HttpStatus.BAD_REQUEST.value(), e.message ?: "Unknown error")
-    }
-
-    @ExceptionHandler(GarethUnknownDefinitionException::class)
-    @ResponseStatus(value = HttpStatus.NOT_FOUND)
-    @ResponseBody
-    fun definitionError(req: HttpServletRequest, e: GarethUnknownDefinitionException): RestError {
-        return RestError(HttpStatus.NOT_FOUND.value(), e.message ?: "Unknown error")
-    }
-
-    @ExceptionHandler(GarethInvocationException::class)
-    @ResponseStatus(value = HttpStatus.BAD_REQUEST)
-    @ResponseBody
-    fun invocationException(req: HttpServletRequest, e: GarethInvocationException): RestError {
         return RestError(HttpStatus.BAD_REQUEST.value(), e.message ?: "Unknown error")
     }
 

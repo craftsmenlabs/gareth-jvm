@@ -14,41 +14,57 @@ open class CreateExperimentSteps {
     val client: BasicAuthenticationRestClient = BasicAuthenticationRestClient("user", "secret")
     lateinit var currentTemplate: ExperimentTemplateDTO
     lateinit var currentExperiment: ExperimentDTO
-    lateinit var experiment: ExperimentTemplateCreateDTO
+    lateinit var templateCreateDTO: ExperimentTemplateCreateDTO
 
     @When("^I want to create an experiment named (.*?)$")
     fun iCreateAnExperiment(name: String) {
-        experiment = ExperimentTemplateCreateDTO(name = name, glueLines = Gluelines("", "", "", "", ""))
+        templateCreateDTO = ExperimentTemplateCreateDTO(name = name, glueLines = Gluelines("", "", "", "", ""))
     }
 
     @When("^the baseline is (.*?)$")
     fun theBaselineIs(baseline: String) {
-        experiment = experiment.copy(glueLines = experiment.glueLines.copy(baseline = baseline))
+        templateCreateDTO = templateCreateDTO.copy(glueLines = templateCreateDTO.glueLines.copy(baseline = baseline))
     }
 
     @When("^the assume is (.*?)$")
     fun theAssumeIs(assume: String) {
-        experiment = experiment.copy(glueLines = experiment.glueLines.copy(assume = assume))
+        templateCreateDTO = templateCreateDTO.copy(glueLines = templateCreateDTO.glueLines.copy(assume = assume))
     }
 
     @When("^the success is (.*?)$")
     fun theSuccessIs(success: String) {
-        experiment = experiment.copy(glueLines = experiment.glueLines.copy(success = success))
+        templateCreateDTO = templateCreateDTO.copy(glueLines = templateCreateDTO.glueLines.copy(success = success))
     }
 
     @When("^the failure is (.*?)$")
     fun theFailureIs(failure: String) {
-        experiment = experiment.copy(glueLines = experiment.glueLines.copy(failure = failure))
+        templateCreateDTO = templateCreateDTO.copy(glueLines = templateCreateDTO.glueLines.copy(failure = failure))
     }
 
     @When("^the time is (\\d+) seconds$")
     fun theTimeIs(seconds: Int) {
-        experiment = experiment.copy(glueLines = experiment.glueLines.copy(time = "$seconds seconds"))
+        templateCreateDTO = templateCreateDTO.copy(glueLines = templateCreateDTO.glueLines.copy(time = "$seconds seconds"))
+    }
+
+    @When("^I update the name of the current template to (.*?)$")
+    fun iUpdateTheName(name: String) {
+        val updateDTO = ExperimentTemplateUpdateDTO(currentTemplate.id, name = name)
+        currentTemplate = client.put(updateDTO, ExperimentTemplateDTO::class.java, url("templates"))
+    }
+
+    @When("^I update the assume line of the current template to (.*?)$")
+    fun iUpdateTheAssumeLine(name: String) {
+        val updateDTO = ExperimentTemplateUpdateDTO(currentTemplate.id, assume = name)
+        val entity = client.putAsEntity(updateDTO, ExperimentTemplateDTO::class.java, url("templates"))
+        if (entity.statusCode.is2xxSuccessful)
+            currentTemplate = entity.body
     }
 
     @When("^I create the template$")
     fun iSubmitTheExperiment() {
-        currentTemplate = client.post(experiment, ExperimentTemplateDTO::class.java, url("templates"))
+        val entity = client.postAsEntity(templateCreateDTO, ExperimentTemplateDTO::class.java, url("templates"))
+        if (entity.statusCode.is2xxSuccessful)
+            currentTemplate = entity.body
     }
 
     @When("^the template is correct$")
@@ -85,6 +101,14 @@ open class CreateExperimentSteps {
     fun iStartTheExperiment() {
         val dto = ExperimentCreateDTO(templateId = currentTemplate.id, startDate = LocalDateTime.now())
         currentExperiment = client.post(dto, ExperimentDTO::class.java, url("experiments"))
+    }
+
+    @When("^I cannot start the experiment$")
+    fun iCannotStartTheExperiment() {
+        val dto = ExperimentCreateDTO(templateId = currentTemplate.id, startDate = LocalDateTime.now())
+        val entity = client.postAsEntity(dto, ExperimentDTO::class.java, url("experiments"))
+        val statusCode = entity.statusCode
+        assertThat(statusCode.is5xxServerError).describedAs("Expected experiment start to fail: ${statusCode.value()}").isTrue()
     }
 
     private fun refresh() {

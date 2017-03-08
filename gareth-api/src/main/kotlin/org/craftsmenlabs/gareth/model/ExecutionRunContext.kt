@@ -1,7 +1,7 @@
 package org.craftsmenlabs.gareth.model
 
 
-interface ExecutionRunContext {
+interface  ExecutionRunContext {
     fun storeString(key: String, value: String)
 
     fun storeLong(key: String, value: Long)

@@ -1,8 +1,8 @@
 package org.craftsmenlabs.gareth.execution.definitions
 
+import org.craftsmenlabs.GarethIllegalDefinitionException
+import org.craftsmenlabs.GarethInvocationException
 import org.craftsmenlabs.gareth.api.annotation.*
-import org.craftsmenlabs.gareth.api.exception.GarethDefinitionParseException
-import org.craftsmenlabs.gareth.api.exception.GarethInvocationException
 import org.craftsmenlabs.gareth.execution.services.DefinitionFactory
 import org.slf4j.LoggerFactory
 import java.lang.reflect.Method
@@ -56,9 +56,9 @@ class ParsedDefinitionFactory(val definitionFactory: DefinitionFactory) {
         val isBoolean = method.returnType == Boolean::class.java
         val isVoid = method.returnType != Void::class.java || method.returnType != Void.TYPE
         if (expectBoolean && !isBoolean)
-            throw GarethDefinitionParseException("Method return type must be boolean but is ${method.returnType}")
+            throw GarethIllegalDefinitionException("Method return type must be boolean but is ${method.returnType}")
         if (!expectBoolean && !isVoid)
-            throw GarethDefinitionParseException("Method return type must be void but is ${method.returnType}")
+            throw GarethIllegalDefinitionException("Method return type must be void but is ${method.returnType}")
         return InvokableMethod(glueLine = glueLine, description = description, method = method, runcontextParameter = hasRunContextParameter(method))
     }
 
@@ -77,7 +77,7 @@ class ParsedDefinitionFactory(val definitionFactory: DefinitionFactory) {
             try {
                 tmpDefinition = definitionFactory.getInstanceForClass(method.declaringClass)
             } catch(e: Exception) {
-                throw GarethDefinitionParseException("Could not instantiate instance for class ${method.declaringClass}")
+                throw GarethIllegalDefinitionException("Could not instantiate instance for class ${method.declaringClass}")
             }
             try {
                 durationMap.put(glueLine, method.invoke(tmpDefinition) as Duration)

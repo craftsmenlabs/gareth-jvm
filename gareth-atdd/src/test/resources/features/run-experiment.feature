@@ -8,7 +8,7 @@ Feature: Run ACME experiment
     And the time is 2 seconds
 
   Scenario: Run experiment with successful outcome
-    When the assume is sale of apples has risen by 8 per cent
+    And the assume is sale of apples has risen by 8 per cent
     And I create the template
     Then the template is correct
     When I start the experiment
@@ -18,13 +18,28 @@ Feature: Run ACME experiment
     Then the experiment is completed successfully
     And the environment key result has value sending success mail to Moos
 
-  Scenario: Create template with invalid assume glueline
-    When the assume is sale of apples has done nothing
+  Scenario: Cannot start experiment with incorrect template
+    And the assume is sale of apples has done nothing
     And I create the template
+    Then the template is not correct
+    And I cannot start the experiment
+
+  Scenario: Create template with invalid assume glueline, then correct it
+    And the assume is sale of apples has done nothing
+    And I create the template
+    Then the template is not correct
+    When I update the assume line of the current template to sale of apples has risen by 8 per cent
+    Then the template is correct
+
+  Scenario: Create template with valid assume glueline, then change it to an incorrect value
+    And the assume is sale of apples has risen by 8 per cent
+    And I create the template
+    Then the template is correct
+    When I update the assume line of the current template to sale of apples has done nothing
     Then the template is not correct
 
   Scenario: Run experiment with failed outcome
-    When the assume is sale of apples has risen by 11 per cent
+    And the assume is sale of apples has risen by 11 per cent
     And I create the template
     And I start the experiment
     Then the experiment is ready

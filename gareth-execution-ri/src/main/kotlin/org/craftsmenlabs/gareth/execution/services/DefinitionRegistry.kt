@@ -2,9 +2,8 @@ package org.craftsmenlabs.gareth.execution.services
 
 import com.google.common.reflect.ClassPath
 import org.craftsmenlabs.ExperimentDefinition
-import org.craftsmenlabs.gareth.api.exception.GarethAlreadyKnownDefinitionException
-import org.craftsmenlabs.gareth.api.exception.GarethInvocationException
-import org.craftsmenlabs.gareth.api.exception.GarethUnknownDefinitionException
+import org.craftsmenlabs.GarethIllegalDefinitionException
+import org.craftsmenlabs.GarethInvocationException
 import org.craftsmenlabs.gareth.execution.RunContext
 import org.craftsmenlabs.gareth.execution.definitions.ExecutionType
 import org.craftsmenlabs.gareth.execution.definitions.InvokableMethod
@@ -74,7 +73,7 @@ open class DefinitionRegistry @Autowired constructor(val definitionFactory: Defi
             if (!valueMap.containsKey(glueLine)) {
                 valueMap.put(glueLine, definition)
             } else {
-                throw GarethAlreadyKnownDefinitionException("Glue line already registered for $glueLine")
+                throw GarethIllegalDefinitionException("Glue line already registered for $glueLine")
             }
         }
 
@@ -88,7 +87,7 @@ open class DefinitionRegistry @Autowired constructor(val definitionFactory: Defi
 
     fun getTimeForGlueline(glueLine: String): Duration {
         val match = timeDefinitions.keys.filter({ annotationPattern -> matchesPattern(glueLine, annotationPattern) }).firstOrNull()
-        return timeDefinitions[match] ?: throw GarethUnknownDefinitionException("No time definition found for glue line $glueLine")
+        return timeDefinitions[match] ?: throw GarethIllegalDefinitionException("No time definition found for glue line $glueLine")
     }
 
 
@@ -117,7 +116,7 @@ open class DefinitionRegistry @Autowired constructor(val definitionFactory: Defi
 
     private fun getDefinition(valueMap: Map<String, InvokableMethod>, experimentLine: String): InvokableMethod {
         val match = valueMap.values.filter({ md -> matchesPattern(experimentLine, md.getRegexPatternForGlueLine()) }).firstOrNull()
-        return match ?: throw GarethUnknownDefinitionException("No definition found for glue line '$experimentLine'")
+        return match ?: throw GarethIllegalDefinitionException("No definition found for glue line '$experimentLine'")
     }
 
     private fun matchesPattern(experimentLine: String, pattern: String): Boolean {

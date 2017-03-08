@@ -1,8 +1,8 @@
 package org.craftsmenlabs.integration
 
+import org.craftsmenlabs.BadRequestException
 import org.craftsmenlabs.gareth.model.DefinitionInfo
 import org.craftsmenlabs.gareth.model.Duration
-import org.craftsmenlabs.gareth.rest.BadRequestException
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RequestMethod

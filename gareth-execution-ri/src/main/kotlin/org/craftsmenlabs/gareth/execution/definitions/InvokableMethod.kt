@@ -1,7 +1,7 @@
 package org.craftsmenlabs.gareth.execution.definitions
 
-import org.craftsmenlabs.gareth.api.exception.GarethDefinitionParseException
-import org.craftsmenlabs.gareth.api.exception.GarethInvocationException
+import org.craftsmenlabs.GarethIllegalDefinitionException
+import org.craftsmenlabs.GarethInvocationException
 import org.craftsmenlabs.gareth.model.ExecutionRunContext
 import java.lang.reflect.Method
 import java.lang.reflect.Type
@@ -26,7 +26,7 @@ class InvokableMethod {
             this.description = description
             parseMethod()
         } catch (e: Exception) {
-            throw GarethDefinitionParseException(e)
+            throw GarethIllegalDefinitionException(e)
         }
     }
 

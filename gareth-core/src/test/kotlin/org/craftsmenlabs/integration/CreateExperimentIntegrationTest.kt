@@ -72,7 +72,7 @@ class CreateExperimentIntegrationTest {
     @Test
     fun b_createExperimentWithoutStartDate() {
         val createTemplateDTO = createTemplate()
-        val template = postTemplate(templatesPath, createTemplateDTO)
+        val template = postTemplate(createTemplateDTO)
         val experimentCreateDTO = ExperimentCreateDTO(templateId = template.id)
         val created = postExperiment(experimentsPath, experimentCreateDTO)
         Thread.sleep(2000)
@@ -92,15 +92,18 @@ class CreateExperimentIntegrationTest {
     fun c_createExperimentWithFaultyBaseline() {
         val orig = createTemplate()
         val dto = orig.copy(glueLines = orig.glueLines.copy(baseline = "sale of computers"))
-        val created = postTemplate(templatesPath, dto)
+        val created = postTemplate(dto)
         val saved = storage.getTemplateById(created.id)
         assertThat(saved.name).isEqualTo("Hello world")
         assertThat(saved.ready).isNull()
+        val updated = updateTemplate(ExperimentTemplateUpdateDTO(id = saved.id, assume = "sale of fruit"))
+        assertThat(updated.ready).isNotNull()
+
     }
 
     @Test
     fun d_createAndStartExperiment() {
-        val template = postTemplate(templatesPath, createTemplate())
+        val template = postTemplate(createTemplate())
         val dto = ExperimentCreateDTO(templateId = template.id, startDate = LocalDateTime.now())
         val created = postExperiment(experimentsPath, dto)
         Thread.sleep(1000)
@@ -133,8 +136,15 @@ class CreateExperimentIntegrationTest {
                 value = 42)
     }
 
-    private fun postTemplate(path: String, dto: ExperimentTemplateCreateDTO): ExperimentTemplateDTO {
-        val builder = RequestEntity.post(URI(path)).contentType(MediaType.APPLICATION_JSON).body(dto)
+    private fun postTemplate(dto: ExperimentTemplateCreateDTO): ExperimentTemplateDTO {
+        val builder = RequestEntity.post(URI(templatesPath)).contentType(MediaType.APPLICATION_JSON).body(dto)
+        val response = template.exchange(builder, ExperimentTemplateDTO::class.java)
+        assertThat(response.statusCode.is2xxSuccessful).isTrue()
+        return response.body
+    }
+
+    private fun updateTemplate(dto: ExperimentTemplateUpdateDTO): ExperimentTemplateDTO {
+        val builder = RequestEntity.put(URI(templatesPath)).contentType(MediaType.APPLICATION_JSON).body(dto)
         val response = template.exchange(builder, ExperimentTemplateDTO::class.java)
         assertThat(response.statusCode.is2xxSuccessful).isTrue()
         return response.body

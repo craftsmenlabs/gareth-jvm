@@ -27,7 +27,6 @@ data class ExperimentCreateDTO(val templateId: Long, val startDate: LocalDateTim
 
 data class ExperimentTemplateUpdateDTO(
         val id: Long,
-        val ready: LocalDateTime? = null,
         val name: String? = null,
         val value: Int? = null,
         val baseline: String? = null,
