@@ -1,6 +1,7 @@
 package org.craftsmenlabs.gareth.jpa
 
 import org.craftsmenlabs.BadRequestException
+import org.craftsmenlabs.NotFoundException
 import org.craftsmenlabs.gareth.client.GluelineValidatorRestClient
 import org.craftsmenlabs.gareth.model.*
 import org.craftsmenlabs.gareth.time.TimeService
@@ -90,7 +91,7 @@ class JPAExperimentStorage @Autowired constructor(private val converter: EntityC
 
     var saveListener: ((Experiment) -> Unit)? = null
 
-    private fun findTemplateById(id: Long) = templateDao.findOne(id) ?: throw IllegalArgumentException("No template with id $id")
+    private fun findTemplateById(id: Long) = templateDao.findOne(id) ?: throw NotFoundException("No template with id $id")
 
     override fun getFiltered(createdAfter: LocalDateTime?, onlyFinished: Boolean?): List<Experiment> {
         val creationFilter: (ExperimentEntity) -> Boolean = {
@@ -107,7 +108,7 @@ class JPAExperimentStorage @Autowired constructor(private val converter: EntityC
     }
 
     override fun updateExperiment(experiment: Experiment): Experiment {
-        val entity = dao.findOne(experiment.id) ?: throw IllegalArgumentException("No experiment found with id ${experiment.id}")
+        val entity = dao.findOne(experiment.id) ?: throw NotFoundException("No experiment found with id ${experiment.id}")
         return doSave(converter.copyEditableValues(entity, experiment))
     }
 
@@ -123,7 +124,7 @@ class JPAExperimentStorage @Autowired constructor(private val converter: EntityC
     }
 
     override fun getById(id: Long): Experiment {
-        val entity = dao.findOne(id) ?: throw IllegalArgumentException("No experiment found with id $id")
+        val entity = dao.findOne(id) ?: throw NotFoundException("No experiment found with id $id")
         return converter.toDTO(entity)
     }
 

@@ -56,3 +56,13 @@ data class ExperimentTemplateCreateDTO(
         val name: String,
         val value: Int = 0,
         override val glueLines: Gluelines) : HasGlueLines
+
+data class OverviewDTO(val name: String,
+                       val templateId: Long,
+                       val lastRun: LocalDateTime? = null,
+                       val nextRun: LocalDateTime? = null,
+                       val pending: Int = 0,
+                       val running: Int = 0,
+                       val success: Int = 0,
+                       val failed: Int = 0
+)
