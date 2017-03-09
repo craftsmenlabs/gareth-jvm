@@ -38,6 +38,7 @@
         <swagger.version>2.6.0</swagger.version>
         <cucumber.version>1.2.3</cucumber.version>
         <h2.version>1.4.193</h2.version>
+        <retrofit.version>2.2.0</retrofit.version>
     </properties>
 
     <organization>
@@ -327,7 +328,18 @@
             <artifactId>logback-classic</artifactId>
         </dependency>
 
-        <!-- Test depedencies -->
+        <dependency>
+            <groupId>com.squareup.retrofit2</groupId>
+            <artifactId>retrofit</artifactId>
+            <version>${retrofit.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.squareup.retrofit2</groupId>
+            <artifactId>converter-jackson</artifactId>
+            <version>${retrofit.version}</version>
+        </dependency>
+
+        <!-- Test dependencies -->
         <dependency>
             <groupId>org.jmockit</groupId>
             <artifactId>jmockit</artifactId>

@@ -47,7 +47,7 @@ class JPAExperimentStorage @Autowired constructor(private val converter: EntityC
             entity.failure = dto.failure!!
         if (dto.time != null)
             entity.timeline = dto.time!!
-        if (dto.gluelinesHaveChanged()) {
+        if (gluelinesHaveChanged(dto)) {
             val isReady = validateGluelinesForUpdate(dto)
             entity.ready = if (isReady) timeService.now() else null
         }
@@ -62,7 +62,7 @@ class JPAExperimentStorage @Autowired constructor(private val converter: EntityC
     }
 
     private fun validateGluelinesForUpdate(dto: ExperimentTemplateUpdateDTO): Boolean {
-        return dto.getChangedGluelines().all { glueLineLookupRestClient.gluelineIsValid(it.key, it.value) }
+        return getChangedGluelines(dto).all { glueLineLookupRestClient.gluelineIsValid(it.key, it.value) }
     }
 
     private fun save(entity: ExperimentTemplateEntity): ExperimentTemplateDTO {
@@ -126,6 +126,23 @@ class JPAExperimentStorage @Autowired constructor(private val converter: EntityC
     override fun getById(id: Long): Experiment {
         val entity = dao.findOne(id) ?: throw NotFoundException("No experiment found with id $id")
         return converter.toDTO(entity)
+    }
+
+    fun gluelinesHaveChanged(dto: ExperimentTemplateUpdateDTO) = !getChangedGluelines(dto).isEmpty()
+
+    fun getChangedGluelines(dto: ExperimentTemplateUpdateDTO): Map<GlueLineType, String> {
+        val changed = mutableMapOf<GlueLineType, String>()
+        if (dto.baseline != null)
+            changed.put(GlueLineType.BASELINE, dto.baseline as String)
+        if (dto.assume != null)
+            changed.put(GlueLineType.ASSUME, dto.assume as String)
+        if (dto.success != null)
+            changed.put(GlueLineType.SUCCESS, dto.success as String)
+        if (dto.failure != null)
+            changed.put(GlueLineType.FAILURE, dto.failure as String)
+        if (dto.time != null)
+            changed.put(GlueLineType.TIME, dto.time as String)
+        return changed
     }
 
 }

@@ -33,24 +33,7 @@ data class ExperimentTemplateUpdateDTO(
         val assume: String? = null,
         val success: String? = null,
         val failure: String? = null,
-        val time: String? = null) {
-    fun gluelinesHaveChanged() = !getChangedGluelines().isEmpty()
-
-    fun getChangedGluelines(): Map<GlueLineType, String> {
-        val changed = mutableMapOf<GlueLineType, String>()
-        if (baseline != null)
-            changed.put(GlueLineType.BASELINE, baseline)
-        if (assume != null)
-            changed.put(GlueLineType.ASSUME, assume)
-        if (success != null)
-            changed.put(GlueLineType.SUCCESS, success)
-        if (failure != null)
-            changed.put(GlueLineType.FAILURE, failure)
-        if (time != null)
-            changed.put(GlueLineType.TIME, time)
-        return changed
-    }
-}
+        val time: String? = null)
 
 data class ExperimentTemplateCreateDTO(
         val name: String,

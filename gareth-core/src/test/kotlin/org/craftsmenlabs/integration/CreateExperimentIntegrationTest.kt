@@ -6,6 +6,10 @@ import org.craftsmenlabs.gareth.Application
 import org.craftsmenlabs.gareth.integration.TestConfig
 import org.craftsmenlabs.gareth.jpa.ExperimentStorage
 import org.craftsmenlabs.gareth.model.*
+import org.craftsmenlabs.gareth.rest.ExperimentEndpointClient
+import org.craftsmenlabs.gareth.rest.ExperimentTemplateEndpointClient
+import org.craftsmenlabs.gareth.rest.GluelineLookupEndpointClient
+import org.craftsmenlabs.gareth.rest.RestClientConfig
 import org.craftsmenlabs.gareth.time.DateFormatUtils
 import org.craftsmenlabs.gareth.time.TimeService
 import org.junit.Before
@@ -15,28 +19,28 @@ import org.junit.runner.RunWith
 import org.junit.runners.MethodSorters
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
-import org.springframework.http.MediaType
-import org.springframework.http.RequestEntity
 import org.springframework.test.context.ActiveProfiles
 import org.springframework.test.context.junit4.SpringRunner
-import org.springframework.web.client.RestTemplate
-import java.net.URI
+import retrofit2.Response
 import java.time.LocalDateTime
 
 @RunWith(SpringRunner::class)
-@SpringBootTest(classes = arrayOf(Application::class, TestConfig::class), webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
+@SpringBootTest(classes = arrayOf(Application::class, TestConfig::class, RestClientConfig::class), webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 @ActiveProfiles(profiles = arrayOf("test", "NOAUTH"))
 class CreateExperimentIntegrationTest {
 
-    val basePath = "http://localhost:8100/gareth/v1"
-    val experimentsPath = "$basePath/experiments"
-    val templatesPath = "$basePath/templates"
-    val lookupPath = "$basePath/glueline"
-    val template = RestTemplate()
-
     @Autowired
     lateinit var storage: ExperimentStorage
+
+    @Autowired
+    lateinit var templateClient: ExperimentTemplateEndpointClient
+
+    @Autowired
+    lateinit var experimentClient: ExperimentEndpointClient
+
+    @Autowired
+    lateinit var gluelineClient: GluelineLookupEndpointClient
 
     @Autowired
     lateinit var timeService: TimeService
@@ -53,11 +57,11 @@ class CreateExperimentIntegrationTest {
     @Test
     fun a_testLookupGlueLines() {
         fun getGlueLine(glueLine: GlueLineType, content: String) {
-            val entity = template.getForEntity("$lookupPath?type=$glueLine&content=$content", GlueLineSearchResultDTO::class.java)
-            if (!entity.statusCode.is2xxSuccessful) {
+            val response = gluelineClient.lookupGlueline(glueLine, content).execute()
+            if (!response.isSuccessful) {
                 Assertions.fail("call not OK")
             }
-            val dto = entity.body
+            val dto = response.body()
             assertThat(dto.exact).isEqualTo(content)
             assertThat(dto.suggestions).containsExactly(content)
         }
@@ -74,7 +78,7 @@ class CreateExperimentIntegrationTest {
         val createTemplateDTO = createTemplate()
         val template = postTemplate(createTemplateDTO)
         val experimentCreateDTO = ExperimentCreateDTO(templateId = template.id)
-        val created = postExperiment(experimentsPath, experimentCreateDTO)
+        val created = postExperiment(experimentCreateDTO)
         Thread.sleep(2000)
         assertThat(created.id).isPositive()
         val saved = storage.getById(created.id)
@@ -105,7 +109,7 @@ class CreateExperimentIntegrationTest {
     fun d_createAndStartExperiment() {
         val template = postTemplate(createTemplate())
         val dto = ExperimentCreateDTO(templateId = template.id, startDate = LocalDateTime.now())
-        val created = postExperiment(experimentsPath, dto)
+        val created = postExperiment(dto)
         Thread.sleep(1000)
 
         var saved = storage.getById(created.id)
@@ -136,34 +140,29 @@ class CreateExperimentIntegrationTest {
                 value = 42)
     }
 
+
     private fun postTemplate(dto: ExperimentTemplateCreateDTO): ExperimentTemplateDTO {
-        val builder = RequestEntity.post(URI(templatesPath)).contentType(MediaType.APPLICATION_JSON).body(dto)
-        val response = template.exchange(builder, ExperimentTemplateDTO::class.java)
-        assertThat(response.statusCode.is2xxSuccessful).isTrue()
-        return response.body
+        val response = templateClient.create(dto).execute()
+        assertThat(response.isSuccessful).describedAs("Could not create template " + parseError(response)).isTrue()
+        return response.body()
     }
 
     private fun updateTemplate(dto: ExperimentTemplateUpdateDTO): ExperimentTemplateDTO {
-        val builder = RequestEntity.put(URI(templatesPath)).contentType(MediaType.APPLICATION_JSON).body(dto)
-        val response = template.exchange(builder, ExperimentTemplateDTO::class.java)
-        assertThat(response.statusCode.is2xxSuccessful).isTrue()
-        return response.body
+        val response = templateClient.update(dto).execute()
+        assertThat(response.isSuccessful).describedAs("Could not update template: " + parseError(response)).isTrue()
+        return response.body()
     }
 
-    private fun postExperiment(path: String, dto: ExperimentCreateDTO): ExperimentDTO {
-        val builder = RequestEntity.post(URI(path)).contentType(MediaType.APPLICATION_JSON).body(dto)
-        val response = template.exchange(builder, ExperimentDTO::class.java)
-        assertThat(response.statusCode.is2xxSuccessful).isTrue()
-        return response.body
+    private fun postExperiment(dto: ExperimentCreateDTO): ExperimentDTO {
+        val response = experimentClient.start(dto).execute()
+        return response.body()
     }
 
     private fun searchExperiment(date: String? = null, completed: Boolean? = null): List<ExperimentDTO> {
-        val completedQuery = if (completed != null) "completed=$completed" else "";
-        val createdQuery = if (date != null) "created=$date" else ""
-        val url = "$experimentsPath?$createdQuery&$completedQuery"
-        val builder = RequestEntity.get(URI(url)).build()
-        val response = template.exchange(builder, Array<ExperimentDTO>::class.java)
-        assertThat(response.statusCode.is2xxSuccessful).isTrue()
-        return response.body.toList()
+        val response = experimentClient.getFiltered(date, completed).execute()
+        assertThat(response.isSuccessful).describedAs("Could not find experiments " + parseError(response)).isTrue()
+        return response.body()
     }
+
+    private fun parseError(response: Response<*>) = if (!response.isSuccessful) response.errorBody().string() else null
 }

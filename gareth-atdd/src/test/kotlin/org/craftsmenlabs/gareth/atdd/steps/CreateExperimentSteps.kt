@@ -2,19 +2,29 @@ package org.craftsmenlabs.gareth.atdd.steps
 
 import cucumber.api.java.en.When
 import org.assertj.core.api.Assertions.assertThat
-import org.craftsmenlabs.gareth.atdd.GarethServerEnvironment
+import org.craftsmenlabs.gareth.atdd.CucumberConfig
 import org.craftsmenlabs.gareth.model.*
-import org.craftsmenlabs.gareth.rest.BasicAuthenticationRestClient
+import org.craftsmenlabs.gareth.rest.ExperimentEndpointClient
+import org.craftsmenlabs.gareth.rest.ExperimentTemplateEndpointClient
 import org.slf4j.LoggerFactory
+import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.test.context.ContextConfiguration
 import java.time.LocalDateTime
 
+@ContextConfiguration(classes = arrayOf(CucumberConfig::class))
 open class CreateExperimentSteps {
 
     val log = LoggerFactory.getLogger("cucumber")
-    val client: BasicAuthenticationRestClient = BasicAuthenticationRestClient("user", "secret")
     lateinit var currentTemplate: ExperimentTemplateDTO
     lateinit var currentExperiment: ExperimentDTO
     lateinit var templateCreateDTO: ExperimentTemplateCreateDTO
+    var overviewForTemplate: OverviewDTO? = null
+
+    @Autowired
+    private lateinit var experimentTemplateClient: ExperimentTemplateEndpointClient
+
+    @Autowired
+    private lateinit var experimentClient: ExperimentEndpointClient
 
     @When("^I want to create an experiment named (.*?)$")
     fun iCreateAnExperiment(name: String) {
@@ -49,22 +59,18 @@ open class CreateExperimentSteps {
     @When("^I update the name of the current template to (.*?)$")
     fun iUpdateTheName(name: String) {
         val updateDTO = ExperimentTemplateUpdateDTO(currentTemplate.id, name = name)
-        currentTemplate = client.put(updateDTO, ExperimentTemplateDTO::class.java, url("templates"))
+        currentTemplate = experimentTemplateClient.update(updateDTO).execute().body()
     }
 
     @When("^I update the assume line of the current template to (.*?)$")
     fun iUpdateTheAssumeLine(name: String) {
         val updateDTO = ExperimentTemplateUpdateDTO(currentTemplate.id, assume = name)
-        val entity = client.putAsEntity(updateDTO, ExperimentTemplateDTO::class.java, url("templates"))
-        if (entity.statusCode.is2xxSuccessful)
-            currentTemplate = entity.body
+        currentTemplate = experimentTemplateClient.update(updateDTO).execute().body()
     }
 
     @When("^I create the template$")
     fun iSubmitTheExperiment() {
-        val entity = client.postAsEntity(templateCreateDTO, ExperimentTemplateDTO::class.java, url("templates"))
-        if (entity.statusCode.is2xxSuccessful)
-            currentTemplate = entity.body
+        currentTemplate = experimentTemplateClient.create(templateCreateDTO).execute().body()
     }
 
     @When("^the template is correct$")
@@ -100,19 +106,18 @@ open class CreateExperimentSteps {
     @When("^I start the experiment$")
     fun iStartTheExperiment() {
         val dto = ExperimentCreateDTO(templateId = currentTemplate.id, startDate = LocalDateTime.now())
-        currentExperiment = client.post(dto, ExperimentDTO::class.java, url("experiments"))
+        currentExperiment = experimentClient.start(dto).execute().body()
     }
 
     @When("^I cannot start the experiment$")
     fun iCannotStartTheExperiment() {
         val dto = ExperimentCreateDTO(templateId = currentTemplate.id, startDate = LocalDateTime.now())
-        val entity = client.postAsEntity(dto, ExperimentDTO::class.java, url("experiments"))
-        val statusCode = entity.statusCode
-        assertThat(statusCode.is5xxServerError).describedAs("Expected experiment start to fail: ${statusCode.value()}").isTrue()
+        val response = experimentClient.start(dto).execute()
+        assertThat(response.code()).describedAs("Expected experiment start to fail").isEqualTo(500)
     }
 
     private fun refresh() {
-        currentExperiment = client.get(ExperimentDTO::class.java, url("experiments/" + currentExperiment.id))
+        currentExperiment = experimentClient.get(currentExperiment.id).execute().body()
     }
 
     @When("^I wait (\\d+) seconds$")
@@ -127,6 +132,10 @@ open class CreateExperimentSteps {
         assertThat(find).describedAs("No key $key with value $value found. Experiment: $currentExperiment.environment.items").isNotNull()
     }
 
-    private fun url(path: String) = "http://localhost:${GarethServerEnvironment.garethPort}/gareth/v1/$path"
+    @When("^I get the overview for the current template$")
+    fun iGetTheOverviewForTheCurrentTemplate() {
+
+    }
+
 
 }

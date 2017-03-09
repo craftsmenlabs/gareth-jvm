@@ -15,7 +15,7 @@ class MockExecutionDefinitionEndPoint {
     @RequestMapping(value = "definitions/baseline/{glueline}", method = arrayOf(RequestMethod.GET))
     fun getBaselineByGlueline(@PathVariable("glueline") glueLine: String): DefinitionInfo {
         if (!glueLine.equals("sale of fruit"))
-            throw BadRequestException("not a valid glueline")
+            throw BadRequestException("$glueLine is not a valid glueline")
         return DefinitionInfo(glueline = "^sale of (.*?)$", method = "getSaleOfItem", className = "org.craftsmenlabs.gareth.execution.definitions.SaleOfFruit")
     }
 
