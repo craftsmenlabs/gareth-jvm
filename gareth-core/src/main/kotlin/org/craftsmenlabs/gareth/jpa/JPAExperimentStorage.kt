@@ -1,6 +1,7 @@
 package org.craftsmenlabs.gareth.jpa
 
 import org.craftsmenlabs.BadRequestException
+import org.craftsmenlabs.GarethIllegalDefinitionException
 import org.craftsmenlabs.NotFoundException
 import org.craftsmenlabs.gareth.client.GluelineValidatorRestClient
 import org.craftsmenlabs.gareth.model.*
@@ -25,6 +26,9 @@ class JPAExperimentStorage @Autowired constructor(private val converter: EntityC
     }
 
     override fun createTemplate(dto: ExperimentTemplateCreateDTO): ExperimentTemplateDTO {
+        val existing = templateDao.findByName(dto.name)
+        if (!existing.isEmpty())
+            throw BadRequestException("Cannot create template '${dto.name}': name exists")
         val entity = converter.toEntity(dto)
         val isReady = glueLineLookupRestClient.gluelinesAreValid(dto.glueLines)
         if (isReady)
@@ -144,5 +148,15 @@ class JPAExperimentStorage @Autowired constructor(private val converter: EntityC
             changed.put(GlueLineType.TIME, dto.time as String)
         return changed
     }
+
+    fun getTemplateByName(name: String): ExperimentTemplateDTO {
+        val templates = templateDao.findByName(name)
+        if (templates.isEmpty())
+            throw NotFoundException("No template with name $name")
+        else if (templates.size > 1)
+            throw GarethIllegalDefinitionException("Cannot have more than one template with name $name")
+        return converter.toDTO(templates[0])
+    }
+
 
 }

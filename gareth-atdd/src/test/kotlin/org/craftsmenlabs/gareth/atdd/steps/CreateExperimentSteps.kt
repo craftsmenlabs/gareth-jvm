@@ -6,6 +6,7 @@ import org.craftsmenlabs.gareth.atdd.CucumberConfig
 import org.craftsmenlabs.gareth.model.*
 import org.craftsmenlabs.gareth.rest.ExperimentEndpointClient
 import org.craftsmenlabs.gareth.rest.ExperimentTemplateEndpointClient
+import org.craftsmenlabs.gareth.rest.OverviewEndpointClient
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.test.context.ContextConfiguration
@@ -18,7 +19,11 @@ open class CreateExperimentSteps {
     lateinit var currentTemplate: ExperimentTemplateDTO
     lateinit var currentExperiment: ExperimentDTO
     lateinit var templateCreateDTO: ExperimentTemplateCreateDTO
-    var overviewForTemplate: OverviewDTO? = null
+    lateinit var overviews: List<OverviewDTO>
+    lateinit var overviewForTemplate: OverviewDTO
+
+    @Autowired
+    private lateinit var overviewClient: OverviewEndpointClient
 
     @Autowired
     private lateinit var experimentTemplateClient: ExperimentTemplateEndpointClient
@@ -73,6 +78,12 @@ open class CreateExperimentSteps {
         currentTemplate = experimentTemplateClient.create(templateCreateDTO).execute().body()
     }
 
+    @When("^I cannot create the template$")
+    fun iCannotCreateTheTemplate() {
+        val response = experimentTemplateClient.create(templateCreateDTO).execute()
+        //assertThat(response.isSuccessful).describedAs("create template should fail").isFalse()
+    }
+
     @When("^the template is correct$")
     fun theTemplateIsReady() {
         assertThat(currentTemplate.ready).isNotNull()
@@ -109,6 +120,14 @@ open class CreateExperimentSteps {
         currentExperiment = experimentClient.start(dto).execute().body()
     }
 
+    @When("^I start an experiment for template (.*?)$")
+    fun iStartAnExperimentForTemplate(template: String) {
+        currentTemplate = experimentTemplateClient.getByName(template).execute().body()[0]
+        val dto = ExperimentCreateDTO(templateId = currentTemplate.id, startDate = LocalDateTime.now())
+        currentExperiment = experimentClient.start(dto).execute().body()
+        //dit is
+    }
+
     @When("^I cannot start the experiment$")
     fun iCannotStartTheExperiment() {
         val dto = ExperimentCreateDTO(templateId = currentTemplate.id, startDate = LocalDateTime.now())
@@ -132,10 +151,49 @@ open class CreateExperimentSteps {
         assertThat(find).describedAs("No key $key with value $value found. Experiment: $currentExperiment.environment.items").isNotNull()
     }
 
-    @When("^I get the overview for the current template$")
+    @When("^I get the overviews for all templates")
     fun iGetTheOverviewForTheCurrentTemplate() {
-
+        overviews = overviewClient.getAll().execute().body()
     }
 
+    @When("^there are (\\d+) templates")
+    fun thereAreNTemplates(nmb: Int) {
+        assertThat(overviews).describedAs("number of templates in overview").hasSize(nmb)
+    }
+
+    @When("^I look at the overview for template (.*?)$")
+    fun overviewByName(name: String) {
+        overviewForTemplate = overviews.find { it.name == name } ?: throw IllegalStateException("No overview for $name")
+    }
+
+    @When("^there (?:is|are) (\\d+) pending runs?$")
+    fun numbeOfPending(nmb: Int) {
+        assertThat(overviewForTemplate.pending).describedAs("number of pending runs").isEqualTo(nmb)
+    }
+
+    @When("^there (?:is|are) (\\d+) current runs?$")
+    fun numbeOfRunning(nmb: Int) {
+        assertThat(overviewForTemplate.running).describedAs("number of running runs").isEqualTo(nmb)
+    }
+
+    @When("^there (?:is|are) (\\d+) failed runs?$")
+    fun numberOfFailed(nmb: Int) {
+        assertThat(overviewForTemplate.failed).describedAs("number of failed runs").isEqualTo(nmb)
+    }
+
+    @When("^there (?:is|are) (\\d+) successful runs?$")
+    fun numberOfSuccess(nmb: Int) {
+        assertThat(overviewForTemplate.failed).describedAs("number of failed runs").isEqualTo(nmb)
+    }
+
+    @When("^the template is (|not )editable?$")
+    fun templateIsEditable(yesorNo: String) {
+        assertThat(overviewForTemplate.editable).describedAs("is editable").isEqualTo(yesorNo.isBlank())
+    }
+
+    @When("^the template is (|not )ready?$")
+    fun templateIsReady(yesorNo: String) {
+        assertThat(overviewForTemplate.ready).describedAs("is ready").isEqualTo(yesorNo.isBlank())
+    }
 
 }

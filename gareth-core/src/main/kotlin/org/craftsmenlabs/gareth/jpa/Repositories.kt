@@ -10,7 +10,7 @@ interface ExperimentDao : CrudRepository<ExperimentEntity, Long> {
 
 @Repository
 interface ExperimentTemplateDao : CrudRepository<ExperimentTemplateEntity, Long> {
-    fun findByName(name: String): ExperimentTemplateEntity?
+    fun findByName(name: String): List<ExperimentTemplateEntity>
 }
 
 

@@ -29,5 +29,10 @@ class ExperimentTemplateEndpoint @Autowired constructor(val storage: JPAExperime
         return storage.getTemplateById(id)
     }
 
+    @RequestMapping(method = arrayOf(RequestMethod.GET))
+    fun getByFilter(@RequestParam("name", required = false) name: String?): List<ExperimentTemplateDTO> {
+        return if (name != null) listOf(storage.getTemplateByName(name)) else storage.getAllTemplates()
+    }
+
 
 }

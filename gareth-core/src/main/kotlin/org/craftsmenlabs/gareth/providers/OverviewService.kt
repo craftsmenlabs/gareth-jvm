@@ -22,7 +22,7 @@ class OverviewService @Autowired constructor(private val templateDao: Experiment
     private fun createForTemplate(template: ExperimentTemplateEntity): OverviewDTO {
         val experiments = experimentDao.findByTemplate(template)
         if (experiments.isEmpty())
-            return OverviewDTO(name = template.name, templateId = template.id!!)
+            return OverviewDTO(name = template.name, templateId = template.id!!, editable = true, ready = template.ready != null)
         val finished = experiments.filter { it.dateCompleted != null }
         val success = finished.filter { it.result == ExecutionStatus.SUCCESS }
         val failed = finished.filter { it.result == ExecutionStatus.FAILURE }
@@ -32,9 +32,12 @@ class OverviewService @Autowired constructor(private val templateDao: Experiment
         val lastRun = finished.map { it.dateCompleted!! }.max()
         //dateStarted is guaranteed to be non null
         val nextRun = experiments.filter { it.dateStarted != null && it.dateStarted!!.isAfter(timeService.now()) }.map { it.dateStarted!! }.min()
+        val ready = template.ready != null
         return OverviewDTO(
                 name = template.name,
                 templateId = template.id!!,
+                editable = !ready,
+                ready = ready,
                 lastRun = lastRun,
                 nextRun = nextRun,
                 pending = pending.size,

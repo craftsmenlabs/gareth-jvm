@@ -1,9 +1,6 @@
 package org.craftsmenlabs.gareth.config
 
-import org.craftsmenlabs.BadRequestException
-import org.craftsmenlabs.GarethIllegalDefinitionException
-import org.craftsmenlabs.NotFoundException
-import org.craftsmenlabs.RestError
+import org.craftsmenlabs.*
 import org.slf4j.LoggerFactory
 import org.springframework.http.HttpStatus
 import org.springframework.web.bind.annotation.*
@@ -32,5 +29,12 @@ class GlobalControllerAdvice {
     @ResponseBody
     fun genericException(req: HttpServletRequest, e: Exception): RestError {
         return RestError(501, "Unexpected error: " + e.message)
+    }
+
+    @ExceptionHandler(GarethException::class)
+    @ResponseStatus(value = HttpStatus.BAD_REQUEST)
+    @ResponseBody
+    fun garethException(req: HttpServletRequest, e: GarethException): RestError {
+        return RestError(HttpStatus.BAD_REQUEST.value(), "Gareth misconfiguration: " + e.message)
     }
 }

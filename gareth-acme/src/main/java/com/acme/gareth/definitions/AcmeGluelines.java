@@ -10,12 +10,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
-public class GetSaleAmounts implements ExperimentDefinition {
+public class AcmeGluelines implements ExperimentDefinition {
 
     @Autowired
     private MockDB mockDB;
 
-    @Baseline(glueLine = "^sale of (apples|bananas|peaches)$")
+    private boolean toggleStatus;
+
+    @Baseline(glueLine = "^sale of (apples|bananas|peaches)$", description = "Sale of apples, bananas or peaches")
     public void getSaleOfItem(final ExecutionRunContext context, final String item) {
         context.storeDouble(item, mockDB.getSalesForProductAtBaseline(item));
     }
@@ -27,6 +29,12 @@ public class GetSaleAmounts implements ExperimentDefinition {
         double increaseInPercentage = 100 * ((salesForProductAtAssume / salesAtBaseline) - 1);
         context.storeDouble("actual increase", increaseInPercentage);
         return increaseInPercentage >= percentageExpected;
+    }
+
+    @Assume(glueLine = "toggle success and failure", description = "Testing glueline which toggles between a failed or successful outcome.")
+    public boolean toggle() {
+        toggleStatus = !toggleStatus;
+        return toggleStatus;
     }
 
     @Success(glueLine = "^send email to (.*?)$")

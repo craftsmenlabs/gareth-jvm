@@ -42,6 +42,8 @@ data class ExperimentTemplateCreateDTO(
 
 data class OverviewDTO(val name: String,
                        val templateId: Long,
+                       val ready: Boolean = false,
+                       val editable: Boolean = true,
                        val lastRun: LocalDateTime? = null,
                        val nextRun: LocalDateTime? = null,
                        val pending: Int = 0,

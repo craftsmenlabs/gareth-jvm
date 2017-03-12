@@ -14,6 +14,12 @@ interface ExperimentTemplateEndpointClient {
 
     @GET("gareth/v1/templates/{id}")
     fun get(@Path("id") id: Long): Call<ExperimentTemplateDTO>
+
+    @GET("gareth/v1/templates")
+    fun getByName(@Query("name") name: String): Call<List<ExperimentTemplateDTO>>
+
+    @GET("gareth/v1/templates")
+    fun getAll(): Call<List<ExperimentTemplateDTO>>
 }
 
 interface OverviewEndpointClient {
