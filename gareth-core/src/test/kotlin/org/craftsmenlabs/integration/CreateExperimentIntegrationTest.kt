@@ -75,7 +75,7 @@ class CreateExperimentIntegrationTest {
 
     @Test
     fun b_createExperimentWithoutStartDate() {
-        val createTemplateDTO = createTemplate()
+        val createTemplateDTO = createTemplate("Hello world")
         val template = postTemplate(createTemplateDTO)
         val experimentCreateDTO = ExperimentCreateDTO(templateId = template.id)
         val created = postExperiment(experimentCreateDTO)
@@ -94,11 +94,11 @@ class CreateExperimentIntegrationTest {
 
     @Test
     fun c_createExperimentWithFaultyBaseline() {
-        val orig = createTemplate()
+        val orig = createTemplate("Hello world2")
         val dto = orig.copy(glueLines = orig.glueLines.copy(baseline = "sale of computers"))
         val created = postTemplate(dto)
         val saved = storage.getTemplateById(created.id)
-        assertThat(saved.name).isEqualTo("Hello world")
+        assertThat(saved.name).isEqualTo("Hello world2")
         assertThat(saved.ready).isNull()
         val updated = updateTemplate(ExperimentTemplateUpdateDTO(id = saved.id, assume = "sale of fruit"))
         assertThat(updated.ready).isNotNull()
@@ -107,13 +107,13 @@ class CreateExperimentIntegrationTest {
 
     @Test
     fun d_createAndStartExperiment() {
-        val template = postTemplate(createTemplate())
+        val template = postTemplate(createTemplate("Hello world3"))
         val dto = ExperimentCreateDTO(templateId = template.id, startDate = LocalDateTime.now())
         val created = postExperiment(dto)
         Thread.sleep(1000)
 
         var saved = storage.getById(created.id)
-        assertThat(saved.name).isEqualTo("Hello world")
+        assertThat(saved.name).isEqualTo("Hello world3")
         assertThat(saved.timing.created).isNotNull()
         assertThat(saved.timing.ready).isNotNull()
         assertThat(saved.timing.started).isNotNull()
@@ -128,8 +128,8 @@ class CreateExperimentIntegrationTest {
 
     }
 
-    private fun createTemplate(): ExperimentTemplateCreateDTO {
-        return ExperimentTemplateCreateDTO(name = "Hello world",
+    private fun createTemplate(name: String): ExperimentTemplateCreateDTO {
+        return ExperimentTemplateCreateDTO(name = name,
                 glueLines = Gluelines(
                         baseline = "sale of fruit",
                         assume = "sale of fruit has risen by 81 per cent",
