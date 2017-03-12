@@ -91,9 +91,7 @@ class ParsedDefinitionFactory(val definitionFactory: DefinitionFactory) {
 
 
     private fun hasRunContextParameter(method: Method): Boolean {
-        val hasParam = method.parameterCount > 0 && InvokableMethod.isContextParameter(method.parameterTypes[0])// == "org.craftsmenlabs.gareth.execution.RunContext"
-        println(method.parameterTypes[0].name)
-        return hasParam
+        return method.parameterCount > 0 && InvokableMethod.isContextParameter(method.parameterTypes[0])// == "org.craftsmenlabs.gareth.execution.RunContext"
     }
 
     private fun isTimeMethod(method: Method): Boolean {
