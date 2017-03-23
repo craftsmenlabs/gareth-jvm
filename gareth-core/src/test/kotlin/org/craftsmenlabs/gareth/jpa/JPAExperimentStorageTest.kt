@@ -60,6 +60,7 @@ class JPAExperimentStorageTest {
     private fun createEntity(created: LocalDateTime, completed: LocalDateTime? = null): ExperimentEntity {
         val entity = ExperimentEntity()
         entity.dateCreated = created
+        entity.dateDue = created
         entity.id = 42
 
         entity.environment = setOf()

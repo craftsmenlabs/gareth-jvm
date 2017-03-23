@@ -26,12 +26,12 @@ class OverviewService @Autowired constructor(private val templateDao: Experiment
         val finished = experiments.filter { it.dateCompleted != null }
         val success = finished.filter { it.result == ExecutionStatus.SUCCESS }
         val failed = finished.filter { it.result == ExecutionStatus.FAILURE }
-        val pending = experiments.filter { it.dateReady != null && it.result == ExecutionStatus.PENDING }
+        val pending = experiments.filter { it.dateDue != null && it.result == ExecutionStatus.PENDING }
         val running = experiments.filter { it.result == ExecutionStatus.RUNNING }
 
         val lastRun = finished.map { it.dateCompleted!! }.max()
         //dateStarted is guaranteed to be non null
-        val nextRun = experiments.filter { it.dateStarted != null && it.dateStarted!!.isAfter(timeService.now()) }.map { it.dateStarted!! }.min()
+        val nextRun = experiments.filter { it.dateDue != null && it.dateDue!!.isAfter(timeService.now()) }.map { it.dateDue!! }.min()
         val ready = template.ready != null
         return OverviewDTO(
                 name = template.name,

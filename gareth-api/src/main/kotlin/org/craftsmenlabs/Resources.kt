@@ -21,10 +21,6 @@ interface ExecutionResource {
 
     fun executeAssumption(dto: ExecutionRequest): ExecutionResult
 
-    fun executeSuccess(dto: ExecutionRequest): ExecutionResult
-
-    fun executeFailure(dto: ExecutionRequest): ExecutionResult
-
     fun getTime(@RequestBody dto: ExecutionRequest): Duration
 }
 

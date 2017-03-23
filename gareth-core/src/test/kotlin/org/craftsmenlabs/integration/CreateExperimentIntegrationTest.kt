@@ -84,12 +84,7 @@ class CreateExperimentIntegrationTest {
         val saved = storage.getById(created.id)
         assertThat(saved.name).isEqualTo("Hello world")
         assertThat(saved.timing.created).isNotNull()
-        assertThat(saved.timing.ready).isNotNull()
-        /*assertThat(searchExperiment(completed = false)).hasSize(1)
-        assertThat(searchExperiment(date = today, completed = false)).hasSize(1)
-        assertThat(searchExperiment(completed = true)).isEmpty()
-        assertThat(searchExperiment(date = tomorrow)).isEmpty()
-        assertThat(searchExperiment()).hasSize(1)*/
+
     }
 
     @Test
@@ -108,22 +103,20 @@ class CreateExperimentIntegrationTest {
     @Test
     fun d_createAndStartExperiment() {
         val template = postTemplate(createTemplate("Hello world3"))
-        val dto = ExperimentCreateDTO(templateId = template.id, startDate = LocalDateTime.now())
+        val dto = ExperimentCreateDTO(templateId = template.id, dueDate = LocalDateTime.now().plusSeconds(5))
         val created = postExperiment(dto)
-        Thread.sleep(1000)
+        assertThat(storage.getById(created.id).status).isEqualTo(ExecutionStatus.PENDING)
+        Thread.sleep(5000)
 
         var saved = storage.getById(created.id)
         assertThat(saved.name).isEqualTo("Hello world3")
         assertThat(saved.timing.created).isNotNull()
-        assertThat(saved.timing.ready).isNotNull()
-        assertThat(saved.timing.started).isNotNull()
-        assertThat(saved.results.status).isEqualTo(ExecutionStatus.PENDING)
+        assertThat(saved.timing.due).isNotNull()
+        assertThat(saved.status).isEqualTo(ExecutionStatus.RUNNING)
 
-        Thread.sleep(3000)
+        Thread.sleep(5000)
         saved = storage.getById(created.id)
-        assertThat(saved.results.status).isEqualTo(ExecutionStatus.SUCCESS)
-        assertThat(saved.timing.assumeExecuted).isNotNull()
-        assertThat(saved.timing.waitingFinalizing).isNotNull()
+        assertThat(saved.status).isEqualTo(ExecutionStatus.SUCCESS)
         assertThat(saved.timing.completed).isNotNull()
 
     }
@@ -133,7 +126,7 @@ class CreateExperimentIntegrationTest {
                 glueLines = Gluelines(
                         baseline = "sale of fruit",
                         assume = "sale of fruit has risen by 81 per cent",
-                        time = "2 seconds",
+                        time = "5 seconds",
                         success = "send email to Sam",
                         failure = "send email to Moos"
                 ),

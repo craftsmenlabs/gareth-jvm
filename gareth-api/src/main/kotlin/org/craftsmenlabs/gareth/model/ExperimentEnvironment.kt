@@ -16,7 +16,11 @@ enum class ExecutionStatus {
     /**
      * Returned after the assume step was evaluated with a failure
      */
-    FAILURE
+    FAILURE,
+    /**
+     * Returned when a non-recoverable error was encountered
+     */
+    ERROR
 }
 
 enum class ItemType {
@@ -41,7 +45,7 @@ data class Duration(val unit: String, val amount: Long)
 
 data class DefinitionInfo(val glueline: String, val method: String, val className: String, val description: String = "")
 
-data class ExecutionRequest(val environment: ExperimentRunEnvironment, val glueLine: String)
+data class ExecutionRequest(val environment: ExperimentRunEnvironment, val glueLines: Gluelines)
 
 data class ExecutionResult(val environment: ExperimentRunEnvironment, val status: ExecutionStatus)
 

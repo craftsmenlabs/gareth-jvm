@@ -85,9 +85,8 @@ class JPAExperimentStorage @Autowired constructor(private val converter: EntityC
         val now = timeService.now()
         entity.dateCreated = now
         //can be null
-        entity.dateStarted = startDate
+        entity.dateDue = if (startDate == null) now else startDate
         //template is ready
-        entity.dateReady = now
         entity.environment = setOf()
         entity.result = ExecutionStatus.PENDING
         return doSave(entity)

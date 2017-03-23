@@ -30,7 +30,7 @@ class ExperimentEndpoint @Autowired constructor(val experimentStorage: Experimen
     //TODO CrossOrigin annotation was added to make the old FE work: to be removed ASAP
     @RequestMapping(method = arrayOf(RequestMethod.POST))
     @CrossOrigin
-    fun start(@RequestBody dto: ExperimentCreateDTO): ExperimentDTO {
-        return converter.toDTO(experimentStorage.createExperiment(dto.templateId, dto.startDate))
+    fun createExperiment(@RequestBody dto: ExperimentCreateDTO): ExperimentDTO {
+        return converter.toDTO(experimentStorage.createExperiment(dto.templateId, dto.dueDate))
     }
 }

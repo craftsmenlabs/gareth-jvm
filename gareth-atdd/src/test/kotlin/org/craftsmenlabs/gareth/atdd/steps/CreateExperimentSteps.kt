@@ -94,16 +94,16 @@ open class CreateExperimentSteps {
         assertThat(currentTemplate.ready).isNull()
     }
 
-    @When("^the experiment is ready$")
-    fun theExperimentIsReady() {
+    @When("^the experiment is running$")
+    fun theExperimentIsRunning() {
         refresh()
-        assertThat(currentExperiment.ready).isNotNull()
+        assertThat(currentExperiment.result).isEqualTo(ExecutionStatus.RUNNING)
     }
 
-    @When("^the experiment is started$")
-    fun theExperimentIsStarted() {
+    @When("^the experiment is pending$")
+    fun theExperimentIsPending() {
         refresh()
-        assertThat(currentExperiment.started).isNotNull()
+        assertThat(currentExperiment.result).isEqualTo(ExecutionStatus.PENDING)
     }
 
     @When("^the experiment is completed (|un?)successfully$")
@@ -114,23 +114,36 @@ open class CreateExperimentSteps {
         assertThat(currentExperiment.result.name).isEqualTo(expectedStatus)
     }
 
-    @When("^I start the experiment$")
+    @When("^the experiment is completed$")
+    fun theExperimentIsCompleted() {
+        refresh()
+        assertThat(currentExperiment.completed).isNotNull()
+    }
+
+    @When("^I start the experiment immediately$")
     fun iStartTheExperiment() {
-        val dto = ExperimentCreateDTO(templateId = currentTemplate.id, startDate = LocalDateTime.now())
+        val dto = ExperimentCreateDTO(templateId = currentTemplate.id, dueDate = LocalDateTime.now())
         currentExperiment = experimentClient.start(dto).execute().body()
     }
 
-    @When("^I start an experiment for template (.*?)$")
+    @When("^I start an experiment for template (.*?) immediately$")
     fun iStartAnExperimentForTemplate(template: String) {
+        iStartAnExperimentForTemplateInNSeconds(template, 0)
+    }
+
+    @When("^I start an experiment for template (.*?) in (\\d+) seconds?$")
+    fun iStartAnExperimentForTemplateInNSeconds(template: String, seconds: Long) {
         currentTemplate = experimentTemplateClient.getByName(template).execute().body()[0]
-        val dto = ExperimentCreateDTO(templateId = currentTemplate.id, startDate = LocalDateTime.now())
+        val start = if (seconds == 0L) null else LocalDateTime.now().plusSeconds(seconds)
+        val dto = ExperimentCreateDTO(templateId = currentTemplate.id, dueDate = start)
         currentExperiment = experimentClient.start(dto).execute().body()
         //dit is
     }
 
+
     @When("^I cannot start the experiment$")
     fun iCannotStartTheExperiment() {
-        val dto = ExperimentCreateDTO(templateId = currentTemplate.id, startDate = LocalDateTime.now())
+        val dto = ExperimentCreateDTO(templateId = currentTemplate.id, dueDate = LocalDateTime.now())
         val response = experimentClient.start(dto).execute()
         assertThat(response.code()).describedAs("Expected experiment start to fail").isEqualTo(500)
     }
@@ -139,7 +152,7 @@ open class CreateExperimentSteps {
         currentExperiment = experimentClient.get(currentExperiment.id).execute().body()
     }
 
-    @When("^I wait (\\d+) seconds$")
+    @When("^I wait (\\d+) seconds?$")
     fun iWaitSeconds(seconds: Int) {
         Thread.sleep(1000 * seconds.toLong())
     }

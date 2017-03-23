@@ -10,6 +10,10 @@ import java.util.*
 @Service
 @Profile("mock")
 open class WrappedDateTimeService : TimeService {
+    override fun getSecondsUntil(inFuture: LocalDateTime): Long {
+        return mock.getSecondsUntil(inFuture)
+    }
+
     override fun midnight(): LocalDate {
         return mock.midnight()
     }

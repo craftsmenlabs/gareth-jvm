@@ -63,7 +63,7 @@ class OverviewServiceTest {
     @Test
     fun testWithOneRunningExperiment() {
         setupTemplateDao(template)
-        val started = createExperiment(template, 1, started = threeDaysAgo, status = ExecutionStatus.RUNNING)
+        val started = createExperiment(template, 1, due = threeDaysAgo, status = ExecutionStatus.RUNNING)
         setupExperimentDaoForTemplate(template, started)
         assertThat(service.getAll()[0].running).isEqualTo(1)
     }
@@ -71,23 +71,15 @@ class OverviewServiceTest {
     @Test
     fun testWithOneStartedAndPendingExperiment() {
         setupTemplateDao(template)
-        val started = createExperiment(template, 1, started = threeDaysAgo)
+        val started = createExperiment(template, 1, due = threeDaysAgo)
         setupExperimentDaoForTemplate(template, started)
         assertThat(service.getAll()[0].pending).isEqualTo(1)
     }
 
     @Test
-    fun testWithNotReadyExperiment() {
-        setupTemplateDao(template)
-        val notReady = createExperiment(template, 1, ready = null)
-        setupExperimentDaoForTemplate(template, notReady)
-        assertThat(service.getAll()[0].pending).isEqualTo(0)
-    }
-
-    @Test
     fun testWithOneSuccessfulExperiment() {
         setupTemplateDao(template)
-        val success = createExperiment(template, 1, started = threeDaysAgo, status = ExecutionStatus.SUCCESS, completed = twoDaysAgo)
+        val success = createExperiment(template, 1, due = threeDaysAgo, status = ExecutionStatus.SUCCESS, completed = twoDaysAgo)
         setupExperimentDaoForTemplate(template, success)
         assertThat(service.getAll()[0].success).isEqualTo(1)
         assertThat(service.getAll()[0].failed).isEqualTo(0)
@@ -97,7 +89,7 @@ class OverviewServiceTest {
     @Test
     fun testWithOneFailedExperiment() {
         setupTemplateDao(template)
-        val failed = createExperiment(template, 1, started = threeDaysAgo, status = ExecutionStatus.FAILURE, completed = twoDaysAgo)
+        val failed = createExperiment(template, 1, due = threeDaysAgo, status = ExecutionStatus.FAILURE, completed = twoDaysAgo)
         setupExperimentDaoForTemplate(template, failed)
         assertThat(service.getAll()[0].success).isEqualTo(0)
         assertThat(service.getAll()[0].failed).isEqualTo(1)
@@ -108,8 +100,8 @@ class OverviewServiceTest {
     @Test
     fun testWithLastRun() {
         setupTemplateDao(template)
-        val success = createExperiment(template, 1, started = threeDaysAgo, status = ExecutionStatus.SUCCESS, completed = yesterday)
-        val failed = createExperiment(template, 2, started = threeDaysAgo, status = ExecutionStatus.FAILURE, completed = twoDaysAgo)
+        val success = createExperiment(template, 1, due = threeDaysAgo, status = ExecutionStatus.SUCCESS, completed = yesterday)
+        val failed = createExperiment(template, 2, due = threeDaysAgo, status = ExecutionStatus.FAILURE, completed = twoDaysAgo)
         setupExperimentDaoForTemplate(template, success, failed)
         assertThat(service.getAll()[0].lastRun).isEqualTo(yesterday)
     }
@@ -117,10 +109,10 @@ class OverviewServiceTest {
     @Test
     fun testWithNextRun() {
         setupTemplateDao(template)
-        val success = createExperiment(template, 1, started = threeDaysAgo, status = ExecutionStatus.SUCCESS, completed = now)
-        val failed = createExperiment(template, 2, started = threeDaysAgo, status = ExecutionStatus.FAILURE, completed = tomorrow)
-        val startNextWeek = createExperiment(template, 2, started = nextWeek, status = ExecutionStatus.PENDING)
-        val startInTwoWeeks = createExperiment(template, 2, started = twoWeeks, status = ExecutionStatus.PENDING)
+        val success = createExperiment(template, 1, due = threeDaysAgo, status = ExecutionStatus.SUCCESS, completed = now)
+        val failed = createExperiment(template, 2, due = threeDaysAgo, status = ExecutionStatus.FAILURE, completed = tomorrow)
+        val startNextWeek = createExperiment(template, 2, due = nextWeek, status = ExecutionStatus.PENDING)
+        val startInTwoWeeks = createExperiment(template, 2, due = twoWeeks, status = ExecutionStatus.PENDING)
         setupExperimentDaoForTemplate(template, success, failed, startNextWeek, startInTwoWeeks)
         assertThat(service.getAll()[0].nextRun).isEqualTo(nextWeek)
     }
@@ -158,8 +150,7 @@ class OverviewServiceTest {
 
     private fun createExperiment(template: ExperimentTemplateEntity,
                                  id: Long,
-                                 ready: LocalDateTime? = threeDaysAgo,
-                                 started: LocalDateTime? = null,
+                                 due: LocalDateTime,
                                  completed: LocalDateTime? = null,
                                  status: ExecutionStatus = ExecutionStatus.PENDING
 
@@ -167,8 +158,7 @@ class OverviewServiceTest {
         val exp = ExperimentEntity(id)
         exp.template = template
         exp.dateCreated = threeDaysAgo
-        exp.dateReady = ready
-        exp.dateStarted = started
+        exp.dateDue = due
         exp.dateCompleted = completed
         exp.result = status
         return exp

@@ -2,10 +2,7 @@ package org.craftsmenlabs.gareth.time
 
 import org.springframework.context.annotation.Profile
 import org.springframework.stereotype.Component
-import java.time.Instant
-import java.time.LocalDate
-import java.time.LocalDateTime
-import java.time.ZoneOffset
+import java.time.*
 import java.util.*
 
 @Component
@@ -28,6 +25,14 @@ class DateTimeService : TimeService {
     override fun fromDate(dateTime: Date): LocalDateTime {
         val instant = Instant.ofEpochMilli(dateTime.getTime())
         return LocalDateTime.ofInstant(instant, ZoneOffset.UTC)
+    }
+
+
+    override fun getSecondsUntil(inFuture: LocalDateTime): Long {
+        val now = now()
+        if (!inFuture.isAfter(now))
+            return 0
+        return Duration.between(now, inFuture).seconds
     }
 
 }

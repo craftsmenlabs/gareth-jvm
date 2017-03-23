@@ -29,22 +29,10 @@ class ExecutionEndPoint @Autowired constructor(val definitionService: Definition
         return definitionService.executeAssumption(dto)
     }
 
-    @ApiOperation("This call is invoked when the assumption has step evaluated to success")
-    @RequestMapping(value = "success", method = arrayOf(RequestMethod.PUT))
-    override fun executeSuccess(@RequestBody dto: ExecutionRequest): ExecutionResult {
-        return definitionService.executeSuccess(dto)
-    }
-
-    @ApiOperation("This call is invoked when the assumption has step evaluated to failure")
-    @RequestMapping(value = "failure", method = arrayOf(RequestMethod.PUT))
-    override fun executeFailure(@RequestBody dto: ExecutionRequest): ExecutionResult {
-        return definitionService.executeFailure(dto)
-    }
-
     @ApiOperation("Resolves the number of milliseconds")
     @RequestMapping(value = "time", method = arrayOf(RequestMethod.PUT))
     override fun getTime(@RequestBody dto: ExecutionRequest): Duration {
-        return definitionService.getTime(dto.glueLine)
+        return definitionService.getTime(dto.glueLines.time)
     }
 
 }

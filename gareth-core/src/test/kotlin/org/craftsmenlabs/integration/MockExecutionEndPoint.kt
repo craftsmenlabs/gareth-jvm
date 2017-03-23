@@ -19,12 +19,6 @@ class MockExecutionEndPoint {
     @RequestMapping(value = "assume", method = arrayOf(RequestMethod.PUT))
     fun executeAssumption(@RequestBody dto: ExecutionRequest): ExecutionResult = ExecutionResult(dto.environment, ExecutionStatus.SUCCESS)
 
-    @RequestMapping(value = "success", method = arrayOf(RequestMethod.PUT))
-    fun executeSuccess(@RequestBody dto: ExecutionRequest): ExecutionResult = ExecutionResult(dto.environment, ExecutionStatus.SUCCESS)
-
-    @RequestMapping(value = "failure", method = arrayOf(RequestMethod.PUT))
-    fun executeFailure(@RequestBody dto: ExecutionRequest): ExecutionResult = ExecutionResult(dto.environment, ExecutionStatus.FAILURE)
-
     @RequestMapping(value = "time", method = arrayOf(RequestMethod.PUT))
     fun getTime(@RequestBody dto: ExecutionRequest): Duration = Duration("SECONDS", 2)
 

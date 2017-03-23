@@ -25,47 +25,38 @@ class ExperimentLifecycleIntegrationTest {
     val path = "http://localhost:8101/gareth/v1/"
     val restClient = BasicAuthenticationRestClient("user", "secret")
 
+    private val glueLines = Gluelines(
+            baseline = "sale of fruit",
+            assume = "sale of fruit has risen by 81 per cent",
+            time = "next Easter",
+            success = "send email to John",
+            failure = "send email to Bob")
+
     @Test
     fun testBaseline() {
-        val request = createRequest("sale of fruit", ExperimentRunEnvironmentBuilder.createEmpty())
-        assertThat(doPut("${path}baseline", request).status).isEqualTo(ExecutionStatus.RUNNING)
+        assertThat(doPut("${path}baseline", createRequest()).status).isEqualTo(ExecutionStatus.RUNNING)
     }
 
     @Test
     fun testSuccessfulAssume() {
-        val request = createRequest("sale of fruit has risen by 81 per cent", ExperimentRunEnvironmentBuilder.createEmpty())
-        assertThat(doPut("${path}assume", request).status).isEqualTo(ExecutionStatus.SUCCESS)
+        assertThat(doPut("${path}assume", createRequest()).status).isEqualTo(ExecutionStatus.SUCCESS)
     }
 
     @Test
     fun testFailedAssume() {
-        val request = createRequest("sale of fruit has risen by 79 per cent", ExperimentRunEnvironmentBuilder.createEmpty())
-        assertThat(doPut("${path}assume", request).status).isEqualTo(ExecutionStatus.FAILURE)
+        val request = createRequest()
+        val failedAssume = request.copy(glueLines = request.glueLines.copy(assume = "sale of fruit has risen by 79 per cent"))
+        assertThat(doPut("${path}assume", failedAssume).status).isEqualTo(ExecutionStatus.FAILURE)
     }
 
     @Test
     fun testDuration() {
-        val request = createRequest("next Easter", ExperimentRunEnvironmentBuilder.createEmpty())
-        val response = restClient.putAsEntity(request, Duration::class.java, "${path}time")
+        val response = restClient.putAsEntity(createRequest(), Duration::class.java, "${path}time")
         assertThat(response.body.amount).isEqualTo(14400L)
     }
 
-    @Test
-    fun testSuccess() {
-        val request = createRequest("send email to John", ExperimentRunEnvironmentBuilder.createEmpty())
-        val environment = doPut("${path}success", request).environment
-        assertThat(environment.items.find { it.key == "result" }?.value).isEqualTo("sending success mail to John")
-    }
-
-    @Test
-    fun testFailure() {
-        val request = createRequest("send email to Bob", ExperimentRunEnvironmentBuilder.createEmpty())
-        assertThat(doPut("${path}failure", request).status).isEqualTo(ExecutionStatus.FAILURE)
-    }
-
-
-    fun createRequest(glueLine: String, environment: ExperimentRunEnvironment): ExecutionRequest {
-        return ExecutionRequest(environment, glueLine)
+    fun createRequest(): ExecutionRequest {
+        return ExecutionRequest(ExperimentRunEnvironmentBuilder.createEmpty(), glueLines)
     }
 
     fun doPut(path: String, dto: ExecutionRequest): ExecutionResult {

@@ -26,11 +26,15 @@ class ExecutionRestClient constructor(@Value("\${execution.client.url}") val hos
         val fullUrl = createUrl(type.name.toLowerCase())
         log.debug("Executing lifecycle stage {}", type.name)
         val response: ResponseEntity<ExecutionResult> = restClient.putAsEntity(executionRequest, ExecutionResult::class.java, fullUrl)
-        return response.body
+        if (!response.statusCode.is2xxSuccessful) {
+            log.error("Error executing glueline $type for experiment")
+            return ExecutionResult(status = ExecutionStatus.ERROR, environment = ExperimentRunEnvironment())
+        } else
+            return response.body
     }
 
     fun getDuration(executionRequest: ExecutionRequest): Duration {
-        log.debug("Getting duration for {}", executionRequest.glueLine)
+        log.debug("Getting duration for {}", executionRequest.glueLines.time)
         val response: ResponseEntity<Duration> = restClient.putAsEntity(executionRequest, Duration::class.java, createUrl("time"))
         return response.body
     }

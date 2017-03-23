@@ -29,13 +29,4 @@ open class WrappedGlueLineExecutor : GlueLineExecutor {
         return mock.getDuration(experiment)
     }
 
-    override fun executeSuccess(experiment: Experiment): ExecutionResult {
-        mock.executeSuccess(experiment)
-        return ExecutionResult(ExperimentRunEnvironment(), ExecutionStatus.SUCCESS)
-    }
-
-    override fun executeFailure(experiment: Experiment): ExecutionResult {
-        mock.executeFailure(experiment)
-        return ExecutionResult(ExperimentRunEnvironment(), ExecutionStatus.FAILURE)
-    }
 }

@@ -13,21 +13,9 @@ data class ExperimentEntity(@Id
     @Enumerated(EnumType.ORDINAL)
     lateinit var result: ExecutionStatus
     @Convert(converter = DateTimeConverter::class)
-    var dateReady: LocalDateTime? = null
-    @Convert(converter = DateTimeConverter::class)
-    var dateStarted: LocalDateTime? = null
-    @Convert(converter = DateTimeConverter::class)
-    var dateWaitingForBaseline: LocalDateTime? = null
+    lateinit var dateDue: LocalDateTime
     @Convert(converter = DateTimeConverter::class)
     var dateBaselineExecuted: LocalDateTime? = null
-    @Convert(converter = DateTimeConverter::class)
-    var dateWaitingForAssume: LocalDateTime? = null
-    @Convert(converter = DateTimeConverter::class)
-    var dateAssumeExecuted: LocalDateTime? = null
-    @Convert(converter = DateTimeConverter::class)
-    var dateWaitingFinalizing: LocalDateTime? = null
-    @Convert(converter = DateTimeConverter::class)
-    var dateFinalizingExecuted: LocalDateTime? = null
     @Convert(converter = DateTimeConverter::class)
     var dateCompleted: LocalDateTime? = null
     @OneToMany(cascade = arrayOf(CascadeType.ALL), fetch = FetchType.EAGER, mappedBy = "experiment", orphanRemoval = true)
@@ -39,7 +27,7 @@ data class ExperimentEntity(@Id
 @Entity(name = "EXPERIMENT_TEMPLATE")
 data class ExperimentTemplateEntity(@Id
                                     @GeneratedValue(strategy = GenerationType.AUTO)
-                                    var id: Long? = null){
+                                    var id: Long? = null) {
     lateinit var name: String
     lateinit var baseline: String
     lateinit var assume: String

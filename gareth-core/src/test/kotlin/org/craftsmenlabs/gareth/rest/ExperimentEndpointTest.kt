@@ -93,7 +93,7 @@ class ExperimentEndpointTest {
                 result = experimentDTO
             }
         }
-        val experiment = endpoint.start(ExperimentCreateDTO(42, now))
+        val experiment = endpoint.createExperiment(ExperimentCreateDTO(42, now))
         assertThat(experiment).isSameAs(experimentDTO)
     }
 

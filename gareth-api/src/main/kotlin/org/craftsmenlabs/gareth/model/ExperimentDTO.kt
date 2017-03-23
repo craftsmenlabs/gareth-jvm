@@ -8,7 +8,7 @@ data class ExperimentDTO(val id: Long,
                          override val glueLines: Gluelines,
                          val created: LocalDateTime,
                          val ready: LocalDateTime? = null,
-                         val started: LocalDateTime? = null,
+                         val due: LocalDateTime? = null,
                          val baselineExecuted: LocalDateTime? = null,
                          val completed: LocalDateTime? = null,
                          val result: ExecutionStatus = ExecutionStatus.PENDING,
@@ -23,7 +23,7 @@ data class ExperimentTemplateDTO(
         override val glueLines: Gluelines
 ) : HasGlueLines
 
-data class ExperimentCreateDTO(val templateId: Long, val startDate: LocalDateTime? = null)
+data class ExperimentCreateDTO(val templateId: Long, val dueDate: LocalDateTime? = null)
 
 data class ExperimentTemplateUpdateDTO(
         val id: Long,

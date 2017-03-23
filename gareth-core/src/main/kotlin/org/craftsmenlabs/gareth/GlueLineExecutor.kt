@@ -8,6 +8,4 @@ interface GlueLineExecutor {
     fun executeBaseline(experiment: Experiment): ExecutionResult
     fun executeAssume(experiment: Experiment): ExecutionResult
     fun getDuration(experiment: Experiment): Duration
-    fun executeSuccess(experiment: Experiment): ExecutionResult
-    fun executeFailure(experiment: Experiment): ExecutionResult
 }

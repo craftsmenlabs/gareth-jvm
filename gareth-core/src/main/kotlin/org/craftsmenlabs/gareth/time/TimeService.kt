@@ -15,4 +15,5 @@ interface TimeService {
 
     fun fromDate(dateTime: Date): LocalDateTime
 
+    fun getSecondsUntil(inFuture: LocalDateTime): Long
 }

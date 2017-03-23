@@ -110,49 +110,12 @@ class MonitorIntegrationTest {
                 failure = TEST_FAILURE
         )
         val timing = ExperimentTiming(localDateTimeCreated_20)
-        val results = ExperimentResults()
-        experiment = Experiment(id = entity.id!!, name = TEST_NAME, glueLines = details, timing = timing, results = results)
+        experiment = Experiment(id = entity.id!!, name = TEST_NAME, glueLines = details, timing = timing)
     }
 
     @Test
     fun shouldLoadAllMonitors_whenBooted() {
         assertThat(monitors).hasSize(9);
-    }
-
-    @Test
-    fun shouldCheckIfExperimentIsReady_whenNewExperimentIsSaved() {
-
-        object : Expectations() {
-            init {
-                gluelineValidator.gluelinesAreValid(withAny(experiment.glueLines))
-                result = false;
-            }
-        }
-
-        experimentStorage.updateExperiment(experiment)
-        waitForPipeline()
-
-        val resultExp = getStoredExperiment()
-        assertThat(resultExp.timing.ready).isNull()
-        assertThat(resultExp.getState()).isEqualTo(ExperimentState.NEW)
-    }
-
-    @Test
-    fun shouldSaveTimestamp_whenExperimentIsReady() {
-
-        object : Expectations() {
-            init {
-                gluelineValidator.gluelinesAreValid(withAny(experiment.glueLines))
-                result = true;
-            }
-        }
-
-        experimentStorage.updateExperiment(experiment)
-        waitForPipeline()
-
-        val resultExp = getStoredExperiment()
-        assertThat(resultExp.timing.ready).isEqualTo(localDateTimeReady_21)
-        assertThat(resultExp.getState()).isEqualTo(ExperimentState.READY)
     }
 
     @Test
@@ -173,11 +136,6 @@ class MonitorIntegrationTest {
                 result = ExecutionResult(status = ExecutionStatus.SUCCESS, environment = ExperimentRunEnvironment())
                 times = 1
 
-                glueLineExecutor.executeSuccess(withAny(experiment))
-                times = 1
-
-                glueLineExecutor.executeFailure(withAny(experiment))
-                times = 0
             }
         }
 
@@ -185,7 +143,7 @@ class MonitorIntegrationTest {
         waitForPipeline()
 
         val storedExperiment = getStoredExperiment()
-        var copiedExp = storedExperiment.copy(timing = storedExperiment.timing.copy(started = wrappedDateTimeService.now()))
+        var copiedExp = storedExperiment.copy(timing = storedExperiment.timing.copy(due = wrappedDateTimeService.now()))
 
         experimentStorage.updateExperiment(copiedExp)
 
@@ -193,14 +151,8 @@ class MonitorIntegrationTest {
 
         val resultExp = getStoredExperiment()
         assertThat(resultExp.timing.created).isEqualTo(localDateTimeCreated_20)
-        assertThat(resultExp.timing.ready).isEqualTo(localDateTimeReady_21)
-        assertThat(resultExp.timing.started).isEqualTo(localDateTimeStarted_22)
-        assertThat(resultExp.timing.waitingForBaseline).isEqualTo(localDateTimeWaitBaseline_23)
+        assertThat(resultExp.timing.due).isEqualTo(localDateTimeStarted_22)
         assertThat(resultExp.timing.baselineExecuted).isEqualTo(localDateTimeExecBaseline_now1)
-        assertThat(resultExp.timing.waitingForAssume).isEqualTo(localDateTimeWaitAssume_01)
-        assertThat(resultExp.timing.assumeExecuted).isEqualTo(localDateTimeExecAssume_02)
-        assertThat(resultExp.timing.waitingFinalizing).isEqualTo(localDateTimeWaitFinalize_03)
-        assertThat(resultExp.timing.finalizingExecuted).isEqualTo(localDateTimeExecFinalize_04)
         assertThat(resultExp.timing.completed).isEqualTo(localDateTimeCompleted_05)
     }
 
@@ -222,11 +174,6 @@ class MonitorIntegrationTest {
                 result = ExecutionResult(status = ExecutionStatus.FAILURE, environment = ExperimentRunEnvironment());
                 times = 1
 
-                glueLineExecutor.executeSuccess(withAny(experiment))
-                times = 0
-
-                glueLineExecutor.executeFailure(withAny(experiment))
-                times = 1
             }
         }
 
@@ -235,7 +182,7 @@ class MonitorIntegrationTest {
         waitForPipeline()
 
         val storedExperiment = getStoredExperiment()
-        var copiedExp = storedExperiment.copy(timing = storedExperiment.timing.copy(started = wrappedDateTimeService.now()))
+        var copiedExp = storedExperiment.copy(timing = storedExperiment.timing.copy(due = wrappedDateTimeService.now()))
 
         experimentStorage.updateExperiment(copiedExp)
 
@@ -243,14 +190,8 @@ class MonitorIntegrationTest {
 
         val resultExp = getStoredExperiment()
         assertThat(resultExp.timing.created).isEqualTo(localDateTimeCreated_20)
-        assertThat(resultExp.timing.ready).isEqualTo(localDateTimeReady_21)
-        assertThat(resultExp.timing.started).isEqualTo(localDateTimeStarted_22)
-        assertThat(resultExp.timing.waitingForBaseline).isEqualTo(localDateTimeWaitBaseline_23)
+        assertThat(resultExp.timing.due).isEqualTo(localDateTimeStarted_22)
         assertThat(resultExp.timing.baselineExecuted).isEqualTo(localDateTimeExecBaseline_now1)
-        assertThat(resultExp.timing.waitingForAssume).isEqualTo(localDateTimeWaitAssume_01)
-        assertThat(resultExp.timing.assumeExecuted).isEqualTo(localDateTimeExecAssume_02)
-        assertThat(resultExp.timing.waitingFinalizing).isEqualTo(localDateTimeWaitFinalize_03)
-        assertThat(resultExp.timing.finalizingExecuted).isEqualTo(localDateTimeExecFinalize_04)
         assertThat(resultExp.timing.completed).isEqualTo(localDateTimeCompleted_05)
     }
 

@@ -5,24 +5,31 @@ Feature: Run ACME experiment
     And the baseline is sale of apples
     And the success is send email to Moos
     And the failure is send email to Sam
-    And the time is 1 seconds
+    And the time is 3 seconds
     And the assume is toggle success and failure
     And I create the template
     Then the template is correct
-    When I start the experiment
-    Then the experiment is ready
-    And the experiment is started
-    When I wait 2 seconds
-    Then the experiment is completed successfully
+    When I start the experiment immediately
+    And I wait 1 seconds
+    Then the experiment is running
+    When I wait 4 seconds
+    Then the experiment is completed
     And the environment key result has value sending success mail to Moos
 
   Scenario: Run experiment with failed outcome
-    When I start an experiment for template toss a coin
-    Then the experiment is ready
-    And the experiment is started
-    When I wait 2 seconds
-    Then the experiment is completed unsuccessfully
+    When I start an experiment for template toss a coin in 1 second
+    When I wait 5 seconds
+    Then the experiment is completed
     And the environment key result has value sending failure mail to Sam
+
+  Scenario: Run experiment with delayed start
+    When I start an experiment for template toss a coin in 3 seconds
+    When I wait 1 seconds
+    Then the experiment is pending
+    When I wait 3 seconds
+    Then the experiment is running
+    When I wait 3 seconds
+    Then the experiment is completed
 
   Scenario: Cannot start experiment with incorrect template
     When I want to create an experiment named Wrong try

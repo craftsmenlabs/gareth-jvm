@@ -36,16 +36,10 @@ class EntityConverter @Autowired constructor(val timeService: TimeService) {
 
     fun copyEditableValues(entity: ExperimentEntity, experiment: Experiment): ExperimentEntity {
         val timing = experiment.timing
-        entity.dateReady = timing.ready
-        entity.dateStarted = timing.started
-        entity.dateWaitingForBaseline = timing.waitingForBaseline
+        entity.dateDue = timing.due
         entity.dateBaselineExecuted = timing.baselineExecuted
-        entity.dateWaitingForAssume = timing.waitingForAssume
-        entity.dateAssumeExecuted = timing.assumeExecuted
-        entity.dateWaitingFinalizing = timing.waitingFinalizing
-        entity.dateFinalizingExecuted = timing.finalizingExecuted
         entity.dateCompleted = timing.completed
-        entity.result = experiment.results.status
+        entity.result = experiment.status
 
         val environment: List<ExperimentEnvironmentItem> = experiment.environment.items.map {
             val item = ExperimentEnvironmentItem()
@@ -65,11 +59,10 @@ class EntityConverter @Autowired constructor(val timeService: TimeService) {
                 name = experiment.name,
                 created = experiment.timing.created,
                 glueLines = experiment.glueLines.copy(),
-                ready = experiment.timing.ready,
-                started = experiment.timing.started,
+                due = experiment.timing.due,
                 baselineExecuted = experiment.timing.baselineExecuted,
                 completed = experiment.timing.completed,
-                result = experiment.results.status,
+                result = experiment.status,
                 environment = experiment.environment)
         return dto;
     }
@@ -85,14 +78,8 @@ class EntityConverter @Autowired constructor(val timeService: TimeService) {
 
         val timing = ExperimentTiming(
                 created = entity.dateCreated!!,
-                ready = entity.dateReady,
-                started = entity.dateStarted,
-                waitingForBaseline = entity.dateWaitingForBaseline,
+                due = entity.dateDue!!,
                 baselineExecuted = entity.dateBaselineExecuted,
-                waitingForAssume = entity.dateWaitingForAssume,
-                assumeExecuted = entity.dateAssumeExecuted,
-                waitingFinalizing = entity.dateWaitingFinalizing,
-                finalizingExecuted = entity.dateFinalizingExecuted,
                 completed = entity.dateCompleted)
         val environmentItems = entity.environment.map { EnvironmentItem(it.key, it.value, it.itemType) }
         return Experiment(id = entity.id!!,
@@ -100,7 +87,7 @@ class EntityConverter @Autowired constructor(val timeService: TimeService) {
                 value = 0,
                 glueLines = gluelines,
                 timing = timing,
-                results = ExperimentResults(entity.result),
+                status = entity.result,
                 environment = ExperimentRunEnvironment(environmentItems))
     }
 

@@ -14,25 +14,29 @@ open class DefinitionService @Autowired constructor(val definitionRegistry: Defi
     val log: Logger = LoggerFactory.getLogger(DefinitionService::class.java)
 
     fun executeBaseline(dto: ExecutionRequest): ExecutionResult {
-        val context: ExecutionRunContext = executeByType(dto.glueLine, ExecutionType.BASELINE, dto)
+        val context: ExecutionRunContext = executeByType(dto.glueLines.baseline, ExecutionType.BASELINE, dto)
         return context.toExecutionResult(ExecutionStatus.RUNNING)
     }
 
     fun executeAssumption(dto: ExecutionRequest): ExecutionResult {
-        val successAndContext = definitionRegistry.invokeAssumptionMethod(dto.glueLine, dto)
+        val successAndContext = definitionRegistry.invokeAssumptionMethod(dto.glueLines.assume, dto)
         val isSuccess = successAndContext.first
-        val context = successAndContext.second
-        return if (isSuccess) context.toExecutionResult(ExecutionStatus.SUCCESS) else context.toExecutionResult(ExecutionStatus.FAILURE)
+        val result = successAndContext.second.toExecutionResult(ExecutionStatus.RUNNING)
+        val copy = dto.copy(environment = result.environment)
+        if (isSuccess) {
+            return executeSuccess(copy)
+        } else {
+            return executeFailure(copy)
+        }
     }
 
-    fun executeSuccess(dto: ExecutionRequest): ExecutionResult {
-        val context = executeByType(dto.glueLine, ExecutionType.SUCCESS, dto)
+    private fun executeSuccess(dto: ExecutionRequest): ExecutionResult {
+        val context = executeByType(dto.glueLines.success, ExecutionType.SUCCESS, dto)
         return context.toExecutionResult(ExecutionStatus.SUCCESS)
     }
 
-
-    fun executeFailure(dto: ExecutionRequest): ExecutionResult {
-        val context = executeByType(dto.glueLine, ExecutionType.FAILURE, dto)
+    private fun executeFailure(dto: ExecutionRequest): ExecutionResult {
+        val context = executeByType(dto.glueLines.failure, ExecutionType.FAILURE, dto)
         return context.toExecutionResult(ExecutionStatus.FAILURE)
     }
 

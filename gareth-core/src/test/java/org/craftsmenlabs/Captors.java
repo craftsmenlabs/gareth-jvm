@@ -1,11 +1,12 @@
 package org.craftsmenlabs;
 
-import java.util.ArrayList;
-import java.util.List;
-import org.craftsmenlabs.gareth.GlueLineExecutor;
+import mockit.Verifications;
 import org.craftsmenlabs.gareth.jpa.ExperimentStorage;
 import org.craftsmenlabs.gareth.model.Experiment;
-import mockit.Verifications;
+import org.craftsmenlabs.gareth.monitors.ExperimentExecutor;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class Captors {
 
@@ -17,34 +18,18 @@ public class Captors {
         return captor;
     }
 
-    public static List<Experiment> glueLineExecutor_executeBaseline(GlueLineExecutor glueLineExecutor) {
+    public static List<Experiment> experimentExecutor_executeBaseline(ExperimentExecutor experimentExecutor) {
         final List<Experiment> captor = new ArrayList<>();
         new Verifications() {{
-            glueLineExecutor.executeBaseline(withCapture(captor));
+            experimentExecutor.executeBaseline(withCapture(captor));
         }};
         return captor;
     }
 
-    public static List<Experiment> glueLineExecutor_executeAssume(GlueLineExecutor glueLineExecutor) {
+    public static List<Experiment> experimentExecutor_executeAssume(ExperimentExecutor experimentExecutor) {
         final List<Experiment> captor = new ArrayList<>();
         new Verifications() {{
-            glueLineExecutor.executeAssume(withCapture(captor));
-        }};
-        return captor;
-    }
-
-    public static List<Experiment> glueLineExecutor_executeSuccess(GlueLineExecutor glueLineExecutor) {
-        final List<Experiment> captor = new ArrayList<>();
-        new Verifications() {{
-            glueLineExecutor.executeSuccess(withCapture(captor));
-        }};
-        return captor;
-    }
-
-    public static List<Experiment> glueLineExecutor_executeFailure(GlueLineExecutor glueLineExecutor) {
-        final List<Experiment> captor = new ArrayList<>();
-        new Verifications() {{
-            glueLineExecutor.executeFailure(withCapture(captor));
+            experimentExecutor.executeAssume(withCapture(captor));
         }};
         return captor;
     }
