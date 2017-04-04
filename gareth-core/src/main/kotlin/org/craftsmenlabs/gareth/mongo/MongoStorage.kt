@@ -1,8 +1,9 @@
-package org.craftsmenlabs.gareth.jpa
+package org.craftsmenlabs.gareth.mongo
 
 import org.craftsmenlabs.BadRequestException
 import org.craftsmenlabs.GarethIllegalDefinitionException
 import org.craftsmenlabs.NotFoundException
+import org.craftsmenlabs.gareth.ExperimentStorage
 import org.craftsmenlabs.gareth.client.GluelineValidatorRestClient
 import org.craftsmenlabs.gareth.model.*
 import org.craftsmenlabs.gareth.time.TimeService
@@ -11,17 +12,17 @@ import org.springframework.stereotype.Service
 import java.time.LocalDateTime
 
 @Service
-class JPAExperimentStorage @Autowired constructor(private val converter: EntityConverter,
-                                                  private val dao: ExperimentDao,
-                                                  private val glueLineLookupRestClient: GluelineValidatorRestClient,
-                                                  private val templateDao: ExperimentTemplateDao,
-                                                  private val timeService: TimeService) : ExperimentStorage {
+class MongoStorage @Autowired constructor(private val converter: MongoEntityConverter,
+                                          private val dao: MongoExperimentDao,
+                                          private val templateDao: MongoExperimentTemplateDao,
+                                          private val glueLineLookupRestClient: GluelineValidatorRestClient,
+                                          private val timeService: TimeService) : ExperimentStorage {
 
     override fun getAllTemplates(): List<ExperimentTemplateDTO> {
         return templateDao.findAll().map { converter.toDTO(it) }
     }
 
-    override fun getTemplateById(id: Long): ExperimentTemplateDTO {
+    override fun getTemplateById(id: String): ExperimentTemplateDTO {
         return converter.toDTO(findTemplateById(id))
     }
 
@@ -59,8 +60,8 @@ class JPAExperimentStorage @Autowired constructor(private val converter: EntityC
         return converter.toDTO(entity)
     }
 
-    private fun validateNoRunningExperimentsForTemplate(entity: ExperimentTemplateEntity) {
-        val experiments = dao.findByTemplate(entity)
+    private fun validateNoRunningExperimentsForTemplate(entity: MongoExperimentTemplateEntity) {
+        val experiments = dao.findByTemplateId(entity.id!!)
         if (!experiments.isEmpty())
             throw BadRequestException("You cannot update experiment template ${entity.name}. There are already running experiments.")
     }
@@ -69,19 +70,14 @@ class JPAExperimentStorage @Autowired constructor(private val converter: EntityC
         return getChangedGluelines(dto).all { glueLineLookupRestClient.gluelineIsValid(it.key, it.value) }
     }
 
-    private fun save(entity: ExperimentTemplateEntity): ExperimentTemplateDTO {
+    private fun save(entity: MongoExperimentTemplateEntity): ExperimentTemplateDTO {
         val saved = templateDao.save(entity)
         return converter.toDTO(saved)
     }
 
 
-    override fun createExperiment(templateId: Long, startDate: LocalDateTime?): Experiment {
-        val template = findTemplateById(templateId)
-        if (template.ready == null) {
-            throw BadRequestException("You cannot start an experiment that is not ready.")
-        }
-        val entity = ExperimentEntity()
-        entity.template = template
+    override fun createExperiment(templateId: String, startDate: LocalDateTime?): Experiment {
+        val entity = createEntityForTemplate(templateId)
         val now = timeService.now()
         entity.dateCreated = now
         //can be null
@@ -89,18 +85,38 @@ class JPAExperimentStorage @Autowired constructor(private val converter: EntityC
         //template is ready
         entity.environment = setOf()
         entity.result = ExecutionStatus.PENDING
-        return doSave(entity)
+
+        val savedEntity = dao.save(entity)
+        val saved = converter.toDTO(savedEntity)
+        saveListener?.invoke(saved)
+        return saved
+    }
+
+    private fun createEntityForTemplate(templateId: String): MongoExperimentEntity {
+        val template: MongoExperimentTemplateEntity = findTemplateById(templateId)
+        if (template.ready == null) {
+            throw BadRequestException("You cannot start an experiment that is not ready.")
+        }
+        val entity = MongoExperimentEntity()
+        entity.templateId = templateId
+        entity.baseline = template.baseline
+        entity.assume = template.assume
+        entity.success = template.success
+        entity.failure = template.failure
+        entity.timeline = template.timeline
+        entity.name = template.name
+        return entity
     }
 
     var saveListener: ((Experiment) -> Unit)? = null
 
-    private fun findTemplateById(id: Long) = templateDao.findOne(id) ?: throw NotFoundException("No template with id $id")
+    private fun findTemplateById(id: String) = templateDao.findOne(id) ?: throw NotFoundException("No template with id $id")
 
     override fun getFiltered(createdAfter: LocalDateTime?, onlyFinished: Boolean?): List<Experiment> {
-        val creationFilter: (ExperimentEntity) -> Boolean = {
+        val creationFilter: (MongoExperimentEntity) -> Boolean = {
             createdAfter == null || it.dateCreated.isAfter(createdAfter)
         }
-        val finishedFilter: (ExperimentEntity) -> Boolean = {
+        val finishedFilter: (MongoExperimentEntity) -> Boolean = {
             onlyFinished == null || onlyFinished == (it.dateCompleted != null)
         }
         return dao.findAll().filter { creationFilter.invoke(it) && finishedFilter.invoke(it) }.map { converter.toDTO(it) }
@@ -112,11 +128,8 @@ class JPAExperimentStorage @Autowired constructor(private val converter: EntityC
 
     override fun updateExperiment(experiment: Experiment): Experiment {
         val entity = dao.findOne(experiment.id) ?: throw NotFoundException("No experiment found with id ${experiment.id}")
-        return doSave(converter.copyEditableValues(entity, experiment))
-    }
-
-    private fun doSave(entity: ExperimentEntity): Experiment {
-        val savedEntity = dao.save(entity)
+        val updated = converter.copyEditableValues(entity, experiment)
+        val savedEntity = dao.save(updated)
         val saved = converter.toDTO(savedEntity)
         saveListener?.invoke(saved)
         return saved
@@ -126,7 +139,7 @@ class JPAExperimentStorage @Autowired constructor(private val converter: EntityC
         saveListener = listener
     }
 
-    override fun getById(id: Long): Experiment {
+    override fun getById(id: String): Experiment {
         val entity = dao.findOne(id) ?: throw NotFoundException("No experiment found with id $id")
         return converter.toDTO(entity)
     }
@@ -156,6 +169,4 @@ class JPAExperimentStorage @Autowired constructor(private val converter: EntityC
             throw GarethIllegalDefinitionException("Cannot have more than one template with name $name")
         return converter.toDTO(templates[0])
     }
-
-
 }

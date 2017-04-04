@@ -31,7 +31,7 @@ interface OverviewEndpointClient {
 interface ExperimentEndpointClient {
 
     @GET("gareth/v1/experiments/{id}")
-    fun get(@Path("id") id: Long): Call<ExperimentDTO>
+    fun get(@Path("id") id: String): Call<ExperimentDTO>
 
     @GET("gareth/v1/experiments")
     fun getFiltered(@Query("created") ddMMYYYY: String?,

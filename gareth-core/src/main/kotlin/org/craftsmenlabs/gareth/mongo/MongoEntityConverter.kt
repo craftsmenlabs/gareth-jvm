@@ -1,4 +1,4 @@
-package org.craftsmenlabs.gareth.jpa
+package org.craftsmenlabs.gareth.mongo
 
 import org.craftsmenlabs.gareth.model.*
 import org.craftsmenlabs.gareth.time.TimeService
@@ -6,11 +6,9 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
 
 @Service
-class EntityConverter @Autowired constructor(val timeService: TimeService) {
-
-
-    fun toEntity(dto: ExperimentTemplateDTO): ExperimentTemplateEntity {
-        val entity = ExperimentTemplateEntity()
+class MongoEntityConverter @Autowired constructor(val timeService: TimeService) {
+    fun toEntity(dto: ExperimentTemplateDTO): MongoExperimentTemplateEntity {
+        val entity = MongoExperimentTemplateEntity()
         entity.name = dto.name
         entity.dateCreated = timeService.now()
         entity.baseline = dto.glueLines.baseline
@@ -21,8 +19,8 @@ class EntityConverter @Autowired constructor(val timeService: TimeService) {
         return entity
     }
 
-    fun toEntity(dto: ExperimentTemplateCreateDTO): ExperimentTemplateEntity {
-        val entity = ExperimentTemplateEntity()
+    fun toEntity(dto: ExperimentTemplateCreateDTO): MongoExperimentTemplateEntity {
+        val entity = MongoExperimentTemplateEntity()
         entity.name = dto.name
         entity.dateCreated = timeService.now()
         entity.baseline = dto.glueLines.baseline
@@ -34,7 +32,7 @@ class EntityConverter @Autowired constructor(val timeService: TimeService) {
     }
 
 
-    fun copyEditableValues(entity: ExperimentEntity, experiment: Experiment): ExperimentEntity {
+    fun copyEditableValues(entity: MongoExperimentEntity, experiment: Experiment): MongoExperimentEntity {
         val timing = experiment.timing
         entity.dateDue = timing.due
         entity.dateBaselineExecuted = timing.baselineExecuted
@@ -46,7 +44,6 @@ class EntityConverter @Autowired constructor(val timeService: TimeService) {
             item.key = it.key
             item.value = it.value
             item.itemType = it.itemType
-            item.experiment = entity
             item
         }
         entity.environment = environment.toSet()
@@ -55,7 +52,7 @@ class EntityConverter @Autowired constructor(val timeService: TimeService) {
 
     fun toDTO(experiment: Experiment): ExperimentDTO {
         val dto = ExperimentDTO(
-                id = experiment.id ?: throw IllegalStateException("Cannot convert Experiment with null ID to DTO"),
+                id = experiment.id,
                 name = experiment.name,
                 created = experiment.timing.created,
                 glueLines = experiment.glueLines.copy(),
@@ -67,23 +64,22 @@ class EntityConverter @Autowired constructor(val timeService: TimeService) {
         return dto;
     }
 
-    fun toDTO(entity: ExperimentEntity): Experiment {
-        val template = entity.template
+    fun toDTO(entity: MongoExperimentEntity): Experiment {
         val gluelines = Gluelines(
-                assume = template.assume,
-                baseline = template.baseline,
-                success = template.success,
-                failure = template.failure,
-                time = template.timeline)
+                assume = entity.assume,
+                baseline = entity.baseline,
+                success = entity.success,
+                failure = entity.failure,
+                time = entity.timeline)
 
         val timing = ExperimentTiming(
-                created = entity.dateCreated!!,
-                due = entity.dateDue!!,
+                created = entity.dateCreated,
+                due = entity.dateDue,
                 baselineExecuted = entity.dateBaselineExecuted,
                 completed = entity.dateCompleted)
         val environmentItems = entity.environment.map { EnvironmentItem(it.key, it.value, it.itemType) }
-        return Experiment(id = entity.id!!,
-                name = template.name,
+        return Experiment(id = entity.id.toString(),
+                name = entity.name,
                 value = 0,
                 glueLines = gluelines,
                 timing = timing,
@@ -91,7 +87,7 @@ class EntityConverter @Autowired constructor(val timeService: TimeService) {
                 environment = ExperimentRunEnvironment(environmentItems))
     }
 
-    fun toDTO(entity: ExperimentTemplateEntity): ExperimentTemplateDTO {
+    fun toDTO(entity: MongoExperimentTemplateEntity): ExperimentTemplateDTO {
         val glueLines = Gluelines(
                 assume = entity.assume,
                 baseline = entity.baseline,

@@ -5,8 +5,8 @@ import mockit.Injectable
 import mockit.Mocked
 import org.assertj.core.api.Assertions.assertThat
 import org.craftsmenlabs.Captors
+import org.craftsmenlabs.gareth.ExperimentStorage
 import org.craftsmenlabs.gareth.GlueLineExecutor
-import org.craftsmenlabs.gareth.jpa.ExperimentStorage
 import org.craftsmenlabs.gareth.model.Experiment
 import org.craftsmenlabs.gareth.model.ExperimentRunEnvironment
 import org.craftsmenlabs.gareth.model.ExperimentState
@@ -22,9 +22,9 @@ import rx.schedulers.Schedulers
 
 class BaseMonitorTest {
 
-    val ID1 = 111L
-    val ID2 = 222L
-    val ID3 = 333L
+    val ID1 = "111"
+    val ID2 = "222"
+    val ID3 = "333"
 
     @Injectable
     lateinit var experimentProvider: ExperimentProvider
@@ -88,7 +88,7 @@ class BaseMonitorTest {
             dateTimeService: TimeService,
             experimentStorage: ExperimentStorage,
             experimentState: ExperimentState,
-            val results : List<Boolean>)
+            val results: List<Boolean>)
         : BaseMonitor(experimentProvider,
             dateTimeService,
             experimentStorage,
@@ -98,7 +98,7 @@ class BaseMonitorTest {
 
         override fun extend(observable: Observable<Experiment>): Observable<Experiment> {
             val shouldThrowEx: Boolean? = results.getOrNull(index++)
-            if(shouldThrowEx?:false){
+            if (shouldThrowEx ?: false) {
                 throw IllegalStateException("TestException");
             } else {
                 return observable

@@ -3,7 +3,7 @@ package org.craftsmenlabs.gareth.model
 import java.time.LocalDateTime
 
 data class Experiment(
-        val id: Long,
+        val id: String,
         val value: Int = 0,
         val name: String,
         override val glueLines: Gluelines,
@@ -24,7 +24,7 @@ data class Experiment(
     companion object {
         fun createDefault(): Experiment {
             return Experiment(
-                    id = 0,
+                    id = "",
                     name = "TEST",
                     value = 1,
                     glueLines = Gluelines(baseline = "baseline", assume = "assume", time = "5 seonds", success = "success", failure = "failure"),

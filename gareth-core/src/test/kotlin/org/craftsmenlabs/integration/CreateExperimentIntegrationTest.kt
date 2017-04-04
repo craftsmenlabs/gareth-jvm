@@ -3,8 +3,8 @@ package org.craftsmenlabs.integration
 import org.assertj.core.api.Assertions
 import org.assertj.core.api.Assertions.assertThat
 import org.craftsmenlabs.gareth.Application
+import org.craftsmenlabs.gareth.ExperimentStorage
 import org.craftsmenlabs.gareth.integration.TestConfig
-import org.craftsmenlabs.gareth.jpa.ExperimentStorage
 import org.craftsmenlabs.gareth.model.*
 import org.craftsmenlabs.gareth.rest.ExperimentEndpointClient
 import org.craftsmenlabs.gareth.rest.ExperimentTemplateEndpointClient
@@ -74,13 +74,27 @@ class CreateExperimentIntegrationTest {
     }
 
     @Test
+    fun b_createExperimentWithoutStartDate1() {
+        val createTemplateDTO = createTemplate("Goodbye world")
+        val template = storage.createTemplate(createTemplateDTO)
+        val created = storage.createExperiment(template.id, LocalDateTime.now())
+        Thread.sleep(2000)
+        assertThat(created.id).isNotNull()
+        val saved = storage.getById(created.id)
+        assertThat(saved.name).isEqualTo("Goodbye world")
+        assertThat(saved.timing.created).isNotNull()
+
+    }
+
+
+    @Test
     fun b_createExperimentWithoutStartDate() {
         val createTemplateDTO = createTemplate("Hello world")
         val template = postTemplate(createTemplateDTO)
         val experimentCreateDTO = ExperimentCreateDTO(templateId = template.id)
         val created = postExperiment(experimentCreateDTO)
         Thread.sleep(2000)
-        assertThat(created.id).isPositive()
+        assertThat(created.id).isNotNull()
         val saved = storage.getById(created.id)
         assertThat(saved.name).isEqualTo("Hello world")
         assertThat(saved.timing.created).isNotNull()

@@ -3,11 +3,11 @@ package org.craftsmenlabs.gareth.rest
 import mockit.Expectations
 import mockit.Injectable
 import org.assertj.core.api.Assertions.assertThat
-import org.craftsmenlabs.gareth.jpa.EntityConverter
-import org.craftsmenlabs.gareth.jpa.ExperimentStorage
+import org.craftsmenlabs.gareth.ExperimentStorage
 import org.craftsmenlabs.gareth.model.Experiment
 import org.craftsmenlabs.gareth.model.ExperimentCreateDTO
 import org.craftsmenlabs.gareth.model.ExperimentDTO
+import org.craftsmenlabs.gareth.mongo.MongoEntityConverter
 import org.craftsmenlabs.gareth.time.TimeService
 import org.junit.Before
 import org.junit.Test
@@ -19,7 +19,7 @@ class ExperimentEndpointTest {
     @Injectable
     lateinit var experimentStorage: ExperimentStorage
     @Injectable
-    lateinit var converter: EntityConverter
+    lateinit var converter: MongoEntityConverter
     @Injectable
     lateinit var dateTimeService: TimeService
 
@@ -39,14 +39,14 @@ class ExperimentEndpointTest {
     fun testGetById() {
         object : Expectations() {
             init {
-                experimentStorage.getById(42)
+                experimentStorage.getById("42")
                 result = experiment
 
                 converter.toDTO(experiment)
                 result = experimentDTO
             }
         }
-        val experiment = endpoint.get(42)
+        val experiment = endpoint.get("42")
         assertThat(experiment).isSameAs(experimentDTO)
     }
 
@@ -86,14 +86,14 @@ class ExperimentEndpointTest {
     fun testStartExperiment(@Injectable experiment: Experiment) {
         object : Expectations() {
             init {
-                experimentStorage.createExperiment(42, now)
+                experimentStorage.createExperiment("42", now)
                 result = experiment
 
                 converter.toDTO(experiment)
                 result = experimentDTO
             }
         }
-        val experiment = endpoint.createExperiment(ExperimentCreateDTO(42, now))
+        val experiment = endpoint.createExperiment(ExperimentCreateDTO("42", now))
         assertThat(experiment).isSameAs(experimentDTO)
     }
 

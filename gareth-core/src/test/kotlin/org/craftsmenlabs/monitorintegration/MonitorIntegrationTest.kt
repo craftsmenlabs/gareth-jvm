@@ -4,9 +4,9 @@ import mockit.Expectations
 import mockit.Injectable
 import org.assertj.core.api.Assertions.assertThat
 import org.craftsmenlabs.gareth.Application
+import org.craftsmenlabs.gareth.ExperimentStorage
 import org.craftsmenlabs.gareth.GlueLineExecutor
 import org.craftsmenlabs.gareth.GluelineValidator
-import org.craftsmenlabs.gareth.jpa.ExperimentStorage
 import org.craftsmenlabs.gareth.model.*
 import org.craftsmenlabs.gareth.monitors.BaseMonitor
 import org.craftsmenlabs.gareth.time.TimeService
@@ -110,7 +110,7 @@ class MonitorIntegrationTest {
                 failure = TEST_FAILURE
         )
         val timing = ExperimentTiming(localDateTimeCreated_20)
-        experiment = Experiment(id = entity.id!!, name = TEST_NAME, glueLines = details, timing = timing)
+        experiment = Experiment(id = entity.id.toString(), name = TEST_NAME, glueLines = details, timing = timing)
     }
 
     @Test

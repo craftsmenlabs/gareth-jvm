@@ -1,20 +1,20 @@
 package org.craftsmenlabs.monitorintegration
 
-import org.craftsmenlabs.gareth.jpa.ExperimentDao
-import org.craftsmenlabs.gareth.jpa.ExperimentEntity
-import org.craftsmenlabs.gareth.jpa.ExperimentTemplateDao
-import org.craftsmenlabs.gareth.jpa.ExperimentTemplateEntity
 import org.craftsmenlabs.gareth.model.ExecutionStatus
+import org.craftsmenlabs.gareth.mongo.MongoExperimentDao
+import org.craftsmenlabs.gareth.mongo.MongoExperimentEntity
+import org.craftsmenlabs.gareth.mongo.MongoExperimentTemplateDao
+import org.craftsmenlabs.gareth.mongo.MongoExperimentTemplateEntity
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
 import java.time.LocalDateTime
 
 @Service
-class DBSetup @Autowired constructor(private val experimentDao: ExperimentDao,
-                                     private val templateDao: ExperimentTemplateDao) {
+class DBSetup @Autowired constructor(private val experimentDao: MongoExperimentDao,
+                                     private val templateDao: MongoExperimentTemplateDao) {
 
-    fun createExperiment(): ExperimentEntity {
-        val template = ExperimentTemplateEntity()
+    fun createExperiment(): MongoExperimentEntity {
+        val template = MongoExperimentTemplateEntity()
         template.name = "name"
         template.baseline = "b"
         template.assume = "a"
@@ -22,8 +22,14 @@ class DBSetup @Autowired constructor(private val experimentDao: ExperimentDao,
         template.failure = "f"
         template.timeline = "t"
         val saved = templateDao.save(template)
-        val entity = ExperimentEntity()
-        entity.template = saved
+        val entity = MongoExperimentEntity()
+        entity.baseline = saved.baseline
+        entity.assume = saved.assume
+        entity.success = saved.success
+        entity.failure = saved.failure
+        entity.timeline = saved.timeline
+        entity.name = saved.name
+
         val now = LocalDateTime.now()
         entity.dateCreated = now
         entity.environment = setOf()

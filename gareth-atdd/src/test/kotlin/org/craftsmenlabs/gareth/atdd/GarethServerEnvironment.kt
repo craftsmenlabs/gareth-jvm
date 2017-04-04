@@ -18,6 +18,7 @@ object GarethServerEnvironment {
     }
 
     fun start() {
+        EmbeddedMongo.start()
         instances.forEach { it.start() }
     }
 
@@ -41,6 +42,7 @@ object GarethServerEnvironment {
     fun shutDown() {
         log.info("Shutting down gareth environments")
         instances.forEach { it.shutdown() }
+        EmbeddedMongo.shutDown()
     }
 
 

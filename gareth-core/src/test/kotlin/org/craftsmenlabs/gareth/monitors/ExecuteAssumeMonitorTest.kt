@@ -6,7 +6,7 @@ import mockit.Injectable
 import mockit.Mocked
 import org.assertj.core.api.Assertions.assertThat
 import org.craftsmenlabs.Captors
-import org.craftsmenlabs.gareth.jpa.ExperimentStorage
+import org.craftsmenlabs.gareth.ExperimentStorage
 import org.craftsmenlabs.gareth.model.Experiment
 import org.craftsmenlabs.gareth.model.ExperimentTiming
 import org.craftsmenlabs.gareth.model.Gluelines
@@ -37,8 +37,8 @@ class ExecuteAssumeMonitorTest {
     val localDateTime9 = LocalDateTime.now().minusHours(8)
     val localDateTime10 = LocalDateTime.now().minusHours(10)
     val localDateTime12 = LocalDateTime.now().minusHours(12)
-    private val ID1 = 111L
-    private val ID2 = 222L
+    private val ID1 = "111"
+    private val ID2 = "222"
 
     @Injectable
     lateinit var experimentProvider: ExperimentProvider
@@ -111,7 +111,7 @@ class ExecuteAssumeMonitorTest {
 
         val duration = Duration.ofMillis(MILLI_DELAY)
 
-        val delayedExperiments: MutableList<Long> = Deencapsulation.getField(monitor, "delayedExperiments")
+        val delayedExperiments: MutableList<String> = Deencapsulation.getField(monitor, "delayedExperiments")
         delayedExperiments.add(ID1)
 
         object : Expectations() {

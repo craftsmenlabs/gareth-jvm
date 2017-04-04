@@ -81,7 +81,7 @@ open class CreateExperimentSteps {
     @When("^I cannot create the template$")
     fun iCannotCreateTheTemplate() {
         val response = experimentTemplateClient.create(templateCreateDTO).execute()
-        //assertThat(response.isSuccessful).describedAs("create template should fail").isFalse()
+        assertThat(response.isSuccessful).describedAs("create template should fail").isFalse()
     }
 
     @When("^the template is correct$")

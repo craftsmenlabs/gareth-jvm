@@ -1,6 +1,6 @@
 package org.craftsmenlabs.gareth.monitors
 
-import org.craftsmenlabs.gareth.jpa.ExperimentStorage
+import org.craftsmenlabs.gareth.ExperimentStorage
 import org.craftsmenlabs.gareth.model.Experiment
 import org.craftsmenlabs.gareth.model.ExperimentState
 import org.craftsmenlabs.gareth.providers.ExperimentProvider
@@ -21,7 +21,7 @@ abstract class BaseMonitor constructor(
     val log: Logger = LoggerFactory.getLogger(BaseMonitor::class.java)
 
 
-    private val INVALID_ID = -1L
+    private val INVALID_ID = "INVALID"
 
     @PostConstruct
     fun start() {

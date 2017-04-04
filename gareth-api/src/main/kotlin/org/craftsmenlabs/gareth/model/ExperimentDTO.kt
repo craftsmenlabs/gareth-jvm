@@ -2,7 +2,7 @@ package org.craftsmenlabs.gareth.model
 
 import java.time.LocalDateTime
 
-data class ExperimentDTO(val id: Long,
+data class ExperimentDTO(val id: String,
                          val name: String,
                          val value: Int = 0,
                          override val glueLines: Gluelines,
@@ -15,7 +15,7 @@ data class ExperimentDTO(val id: Long,
                          val environment: ExperimentRunEnvironment) : HasGlueLines
 
 data class ExperimentTemplateDTO(
-        val id: Long,
+        val id: String,
         val created: LocalDateTime,
         val ready: LocalDateTime?,
         val name: String,
@@ -23,10 +23,10 @@ data class ExperimentTemplateDTO(
         override val glueLines: Gluelines
 ) : HasGlueLines
 
-data class ExperimentCreateDTO(val templateId: Long, val dueDate: LocalDateTime? = null)
+data class ExperimentCreateDTO(val templateId: String, val dueDate: LocalDateTime? = null)
 
 data class ExperimentTemplateUpdateDTO(
-        val id: Long,
+        val id: String,
         val name: String? = null,
         val value: Int? = null,
         val baseline: String? = null,
@@ -41,7 +41,7 @@ data class ExperimentTemplateCreateDTO(
         override val glueLines: Gluelines) : HasGlueLines
 
 data class OverviewDTO(val name: String,
-                       val templateId: Long,
+                       val templateId: String,
                        val ready: Boolean = false,
                        val editable: Boolean = true,
                        val lastRun: LocalDateTime? = null,

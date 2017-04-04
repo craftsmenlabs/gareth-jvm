@@ -1,17 +1,17 @@
 package org.craftsmenlabs.gareth.providers
 
-import org.craftsmenlabs.gareth.jpa.ExperimentDao
-import org.craftsmenlabs.gareth.jpa.ExperimentTemplateDao
-import org.craftsmenlabs.gareth.jpa.ExperimentTemplateEntity
 import org.craftsmenlabs.gareth.model.ExecutionStatus
 import org.craftsmenlabs.gareth.model.OverviewDTO
+import org.craftsmenlabs.gareth.mongo.MongoExperimentDao
+import org.craftsmenlabs.gareth.mongo.MongoExperimentTemplateDao
+import org.craftsmenlabs.gareth.mongo.MongoExperimentTemplateEntity
 import org.craftsmenlabs.gareth.time.TimeService
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
 
 @Service
-class OverviewService @Autowired constructor(private val templateDao: ExperimentTemplateDao,
-                                             private val experimentDao: ExperimentDao,
+class OverviewService @Autowired constructor(private val templateDao: MongoExperimentTemplateDao,
+                                             private val experimentDao: MongoExperimentDao,
                                              private val timeService: TimeService) {
 
     fun getAll(): List<OverviewDTO> {
@@ -19,8 +19,8 @@ class OverviewService @Autowired constructor(private val templateDao: Experiment
         return if (templates.isEmpty()) listOf() else templates.map { createForTemplate(it) }
     }
 
-    private fun createForTemplate(template: ExperimentTemplateEntity): OverviewDTO {
-        val experiments = experimentDao.findByTemplate(template)
+    private fun createForTemplate(template: MongoExperimentTemplateEntity): OverviewDTO {
+        val experiments = experimentDao.findByTemplateId(template.id!!)
         if (experiments.isEmpty())
             return OverviewDTO(name = template.name, templateId = template.id!!, editable = true, ready = template.ready != null)
         val finished = experiments.filter { it.dateCompleted != null }

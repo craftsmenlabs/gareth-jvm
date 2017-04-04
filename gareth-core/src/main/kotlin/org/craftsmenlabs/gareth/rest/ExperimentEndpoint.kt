@@ -1,9 +1,9 @@
 package org.craftsmenlabs.gareth.rest
 
-import org.craftsmenlabs.gareth.jpa.EntityConverter
-import org.craftsmenlabs.gareth.jpa.ExperimentStorage
+import org.craftsmenlabs.gareth.ExperimentStorage
 import org.craftsmenlabs.gareth.model.ExperimentCreateDTO
 import org.craftsmenlabs.gareth.model.ExperimentDTO
+import org.craftsmenlabs.gareth.mongo.MongoEntityConverter
 import org.craftsmenlabs.gareth.time.DateFormatUtils
 import org.craftsmenlabs.gareth.time.TimeService
 import org.springframework.beans.factory.annotation.Autowired
@@ -12,11 +12,11 @@ import org.springframework.web.bind.annotation.*
 @RestController
 @RequestMapping("gareth/v1/experiments")
 class ExperimentEndpoint @Autowired constructor(val experimentStorage: ExperimentStorage,
-                                                val converter: EntityConverter,
+                                                val converter: MongoEntityConverter,
                                                 val dateTimeService: TimeService) {
 
     @RequestMapping(value = "{id}", method = arrayOf(RequestMethod.GET))
-    fun get(@PathVariable("id") id: Long): ExperimentDTO {
+    fun get(@PathVariable("id") id: String): ExperimentDTO {
         return converter.toDTO(experimentStorage.getById(id))
     }
 

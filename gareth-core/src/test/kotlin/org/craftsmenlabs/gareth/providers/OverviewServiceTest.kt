@@ -4,11 +4,11 @@ import mockit.Expectations
 import mockit.Injectable
 import mockit.Tested
 import org.assertj.core.api.Assertions.assertThat
-import org.craftsmenlabs.gareth.jpa.ExperimentDao
-import org.craftsmenlabs.gareth.jpa.ExperimentEntity
-import org.craftsmenlabs.gareth.jpa.ExperimentTemplateDao
-import org.craftsmenlabs.gareth.jpa.ExperimentTemplateEntity
 import org.craftsmenlabs.gareth.model.ExecutionStatus
+import org.craftsmenlabs.gareth.mongo.MongoExperimentDao
+import org.craftsmenlabs.gareth.mongo.MongoExperimentEntity
+import org.craftsmenlabs.gareth.mongo.MongoExperimentTemplateDao
+import org.craftsmenlabs.gareth.mongo.MongoExperimentTemplateEntity
 import org.craftsmenlabs.gareth.time.TimeService
 import org.junit.Before
 import org.junit.Test
@@ -18,9 +18,9 @@ class OverviewServiceTest {
 
 
     @Injectable
-    lateinit var templateDao: ExperimentTemplateDao
+    lateinit var templateDao: MongoExperimentTemplateDao
     @Injectable
-    lateinit var experimentDao: ExperimentDao
+    lateinit var experimentDao: MongoExperimentDao
     @Injectable
     lateinit var timeService: TimeService
     @Tested
@@ -34,7 +34,7 @@ class OverviewServiceTest {
     val nextWeek = now.plusDays(7)
     val twoWeeks = now.plusDays(14)
 
-    val template = createTemplate(42, "fruit")
+    val template = createTemplate("fruit")
     @Before
     fun setup() {
         object : Expectations() {
@@ -57,13 +57,13 @@ class OverviewServiceTest {
         val overviews = service.getAll()
         assertThat(overviews).hasSize(1)
         assertThat(overviews[0].name).isEqualTo("fruit")
-        assertThat(overviews[0].templateId).isEqualTo(42)
+        assertThat(overviews[0].templateId).isEqualTo("tmp")
     }
 
     @Test
     fun testWithOneRunningExperiment() {
         setupTemplateDao(template)
-        val started = createExperiment(template, 1, due = threeDaysAgo, status = ExecutionStatus.RUNNING)
+        val started = createExperiment(template, due = threeDaysAgo, status = ExecutionStatus.RUNNING)
         setupExperimentDaoForTemplate(template, started)
         assertThat(service.getAll()[0].running).isEqualTo(1)
     }
@@ -71,7 +71,7 @@ class OverviewServiceTest {
     @Test
     fun testWithOneStartedAndPendingExperiment() {
         setupTemplateDao(template)
-        val started = createExperiment(template, 1, due = threeDaysAgo)
+        val started = createExperiment(template, due = threeDaysAgo)
         setupExperimentDaoForTemplate(template, started)
         assertThat(service.getAll()[0].pending).isEqualTo(1)
     }
@@ -79,7 +79,7 @@ class OverviewServiceTest {
     @Test
     fun testWithOneSuccessfulExperiment() {
         setupTemplateDao(template)
-        val success = createExperiment(template, 1, due = threeDaysAgo, status = ExecutionStatus.SUCCESS, completed = twoDaysAgo)
+        val success = createExperiment(template, due = threeDaysAgo, status = ExecutionStatus.SUCCESS, completed = twoDaysAgo)
         setupExperimentDaoForTemplate(template, success)
         assertThat(service.getAll()[0].success).isEqualTo(1)
         assertThat(service.getAll()[0].failed).isEqualTo(0)
@@ -89,7 +89,7 @@ class OverviewServiceTest {
     @Test
     fun testWithOneFailedExperiment() {
         setupTemplateDao(template)
-        val failed = createExperiment(template, 1, due = threeDaysAgo, status = ExecutionStatus.FAILURE, completed = twoDaysAgo)
+        val failed = createExperiment(template, due = threeDaysAgo, status = ExecutionStatus.FAILURE, completed = twoDaysAgo)
         setupExperimentDaoForTemplate(template, failed)
         assertThat(service.getAll()[0].success).isEqualTo(0)
         assertThat(service.getAll()[0].failed).isEqualTo(1)
@@ -100,8 +100,8 @@ class OverviewServiceTest {
     @Test
     fun testWithLastRun() {
         setupTemplateDao(template)
-        val success = createExperiment(template, 1, due = threeDaysAgo, status = ExecutionStatus.SUCCESS, completed = yesterday)
-        val failed = createExperiment(template, 2, due = threeDaysAgo, status = ExecutionStatus.FAILURE, completed = twoDaysAgo)
+        val success = createExperiment(template, due = threeDaysAgo, status = ExecutionStatus.SUCCESS, completed = yesterday)
+        val failed = createExperiment(template, due = threeDaysAgo, status = ExecutionStatus.FAILURE, completed = twoDaysAgo)
         setupExperimentDaoForTemplate(template, success, failed)
         assertThat(service.getAll()[0].lastRun).isEqualTo(yesterday)
     }
@@ -109,15 +109,15 @@ class OverviewServiceTest {
     @Test
     fun testWithNextRun() {
         setupTemplateDao(template)
-        val success = createExperiment(template, 1, due = threeDaysAgo, status = ExecutionStatus.SUCCESS, completed = now)
-        val failed = createExperiment(template, 2, due = threeDaysAgo, status = ExecutionStatus.FAILURE, completed = tomorrow)
-        val startNextWeek = createExperiment(template, 2, due = nextWeek, status = ExecutionStatus.PENDING)
-        val startInTwoWeeks = createExperiment(template, 2, due = twoWeeks, status = ExecutionStatus.PENDING)
+        val success = createExperiment(template, due = threeDaysAgo, status = ExecutionStatus.SUCCESS, completed = now)
+        val failed = createExperiment(template, due = threeDaysAgo, status = ExecutionStatus.FAILURE, completed = tomorrow)
+        val startNextWeek = createExperiment(template, due = nextWeek, status = ExecutionStatus.PENDING)
+        val startInTwoWeeks = createExperiment(template, due = twoWeeks, status = ExecutionStatus.PENDING)
         setupExperimentDaoForTemplate(template, success, failed, startNextWeek, startInTwoWeeks)
         assertThat(service.getAll()[0].nextRun).isEqualTo(nextWeek)
     }
 
-    private fun setupTemplateDao(vararg templates: ExperimentTemplateEntity) {
+    private fun setupTemplateDao(vararg templates: MongoExperimentTemplateEntity) {
         object : Expectations() {
             init {
                 templateDao.findAll()
@@ -126,37 +126,43 @@ class OverviewServiceTest {
         }
     }
 
-    private fun setupExperimentDaoForTemplate(template: ExperimentTemplateEntity, vararg experiments: ExperimentEntity) {
+    private fun setupExperimentDaoForTemplate(template: MongoExperimentTemplateEntity, vararg experiments: MongoExperimentEntity) {
         object : Expectations() {
             init {
-                experimentDao.findByTemplate(template)
+                experimentDao.findByTemplateId(template.id!!)
                 result = experiments
             }
         }
     }
 
-    private fun createTemplate(id: Long, name: String): ExperimentTemplateEntity {
-        val template = ExperimentTemplateEntity()
-        template.id = id
+    private fun createTemplate(name: String): MongoExperimentTemplateEntity {
+        val template = MongoExperimentTemplateEntity()
         template.name = name
+        template.id = "tmp"
         //the following are not part of the test, but cannot be null
         template.assume = "assume"
         template.baseline = "baseline"
         template.success = "success"
         template.failure = "failure"
+        template.timeline = "time"
         template.dateCreated = LocalDateTime.now()
         return template
     }
 
-    private fun createExperiment(template: ExperimentTemplateEntity,
-                                 id: Long,
+    private fun createExperiment(template: MongoExperimentTemplateEntity,
                                  due: LocalDateTime,
                                  completed: LocalDateTime? = null,
                                  status: ExecutionStatus = ExecutionStatus.PENDING
 
-    ): ExperimentEntity {
-        val exp = ExperimentEntity(id)
-        exp.template = template
+    ): MongoExperimentEntity {
+        val exp = MongoExperimentEntity(null)
+        exp.templateId = template.id!!
+        exp.assume = template.assume
+        exp.baseline = template.baseline
+        exp.success = template.success
+        exp.failure = template.failure
+        exp.timeline = template.timeline
+        exp.name = template.name
         exp.dateCreated = threeDaysAgo
         exp.dateDue = due
         exp.dateCompleted = completed

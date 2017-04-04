@@ -5,7 +5,7 @@ import mockit.Injectable
 import mockit.Mocked
 import org.assertj.core.api.Assertions.assertThat
 import org.craftsmenlabs.Captors
-import org.craftsmenlabs.gareth.jpa.ExperimentStorage
+import org.craftsmenlabs.gareth.ExperimentStorage
 import org.craftsmenlabs.gareth.model.Experiment
 import org.craftsmenlabs.gareth.model.ExperimentRunEnvironment
 import org.craftsmenlabs.gareth.model.ExperimentTiming
@@ -51,7 +51,7 @@ class ExecuteBaselineMonitorTest {
     lateinit var experimentRunEnvironment: ExperimentRunEnvironment
 
     @Mocked
-    lateinit var schedulers: Schedulers;
+    lateinit var schedulers: Schedulers
 
     @Before
     fun setUp() {
@@ -77,7 +77,7 @@ class ExecuteBaselineMonitorTest {
                 localDateTime8
         )
 
-        val waitingForbaseline = Experiment(id = 0, name = "id", glueLines = glueLines, timing = timingFinalisationExecuted)
+        val waitingForbaseline = Experiment(id = "", name = "id", glueLines = glueLines, timing = timingFinalisationExecuted)
         val baselineExecuted = waitingForbaseline.copy(timing = timingCompleted)
         val experiments = listOf(waitingForbaseline, baselineExecuted)
 
@@ -94,7 +94,7 @@ class ExecuteBaselineMonitorTest {
             }
         }
 
-        monitor.start();
+        monitor.start()
 
         val storageCaptor = Captors.experimentStorage_save(experimentStorage)
         val glueLineExecutorCaptor = Captors.experimentExecutor_executeBaseline(experimentExecutor)
