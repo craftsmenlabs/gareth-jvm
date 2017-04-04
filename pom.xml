@@ -105,8 +105,6 @@
     <!-- Dependency stuff -->
     <dependencyManagement>
         <dependencies>
-
-
             <!-- Spring Boot stuff -->
             <dependency>
                 <groupId>org.springframework.boot</groupId>
@@ -169,6 +167,14 @@
                 <version>${project.version}</version>
             </dependency>
             <dependency>
+                <groupId>org.craftsmenlabs.gareth</groupId>
+                <artifactId>gareth-api</artifactId>
+                <type>test-jar</type>
+                <version>${project.version}</version>
+                <scope>test</scope>
+            </dependency>
+
+            <dependency>
                 <groupId>com.h2database</groupId>
                 <artifactId>h2</artifactId>
                 <version>${h2.version}</version>
@@ -217,6 +223,17 @@
                 <version>${rxkotlin.version}</version>
             </dependency>
 
+            <!--Kotlin-->
+            <dependency>
+                <groupId>org.jetbrains.kotlin</groupId>
+                <artifactId>kotlin-stdlib</artifactId>
+                <version>${kotlin.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.jetbrains.kotlin</groupId>
+                <artifactId>kotlin-reflect</artifactId>
+                <version>${kotlin.version}</version>
+            </dependency>
             <!-- Jackson -->
             <dependency>
                 <groupId>com.fasterxml.jackson.module</groupId>
@@ -233,6 +250,11 @@
                 <artifactId>jackson-datatype-jsr310</artifactId>
                 <version>${jackson.version}</version>
             </dependency>
+            <dependency>
+                <groupId>com.fasterxml.jackson.module</groupId>
+                <artifactId>jackson-module-kotlin</artifactId>
+                <version>2.8.4</version>
+            </dependency>
 
             <!-- Logback -->
             <dependency>
@@ -240,11 +262,22 @@
                 <artifactId>logback-classic</artifactId>
                 <version>${logback.version}</version>
             </dependency>
-
             <dependency>
                 <groupId>org.slf4j</groupId>
                 <artifactId>jul-to-slf4j</artifactId>
                 <version>${slf4j.version}</version>
+            </dependency>
+
+            <!--swagger-->
+            <dependency>
+                <groupId>io.springfox</groupId>
+                <artifactId>springfox-swagger2</artifactId>
+                <version>${swagger.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>io.springfox</groupId>
+                <artifactId>springfox-swagger-ui</artifactId>
+                <version>${swagger.version}</version>
             </dependency>
 
             <!-- http client -->
@@ -260,14 +293,17 @@
                 <version>${httpclient.version}</version>
             </dependency>
 
-
-            <!-- Test dependencies -->
             <dependency>
-                <groupId>junit</groupId>
-                <artifactId>junit</artifactId>
-                <version>${junit.version}</version>
-                <scope>test</scope>
+                <groupId>com.squareup.retrofit2</groupId>
+                <artifactId>retrofit</artifactId>
+                <version>${retrofit.version}</version>
             </dependency>
+            <dependency>
+                <groupId>com.squareup.retrofit2</groupId>
+                <artifactId>converter-jackson</artifactId>
+                <version>${retrofit.version}</version>
+            </dependency>
+            <!-- Test dependencies -->
 
             <dependency>
                 <groupId>org.jmockit</groupId>
@@ -275,10 +311,18 @@
                 <version>${jmockit.version}</version>
                 <scope>test</scope>
             </dependency>
-
-
+            <dependency>
+                <groupId>org.jetbrains.kotlin</groupId>
+                <artifactId>kotlin-test</artifactId>
+                <version>${kotlin.version}</version>
+                <scope>test</scope>
+            </dependency>
+            <dependency>
+                <groupId>com.jayway.awaitility</groupId>
+                <artifactId>awaitility</artifactId>
+                <version>1.7.0</version>
+            </dependency>
         </dependencies>
-
     </dependencyManagement>
 
     <!-- Global dependencies -->
@@ -305,17 +349,6 @@
             <scope>test</scope>
         </dependency>
 
-        <!--Rx DEPENDENCIES-->
-        <dependency>
-            <groupId>io.reactivex</groupId>
-            <artifactId>rxjava</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>io.reactivex</groupId>
-            <artifactId>rxkotlin</artifactId>
-        </dependency>
-
         <!-- Commons IO -->
         <dependency>
             <groupId>commons-io</groupId>
@@ -326,17 +359,6 @@
         <dependency>
             <groupId>ch.qos.logback</groupId>
             <artifactId>logback-classic</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>com.squareup.retrofit2</groupId>
-            <artifactId>retrofit</artifactId>
-            <version>${retrofit.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>com.squareup.retrofit2</groupId>
-            <artifactId>converter-jackson</artifactId>
-            <version>${retrofit.version}</version>
         </dependency>
 
         <!-- Test dependencies -->
@@ -357,17 +379,7 @@
             <version>3.4.0</version>
             <scope>test</scope>
         </dependency>
-        <dependency>
-            <groupId>org.jetbrains.kotlin</groupId>
-            <artifactId>kotlin-stdlib</artifactId>
-            <version>${kotlin.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.jetbrains.kotlin</groupId>
-            <artifactId>kotlin-test</artifactId>
-            <version>${kotlin.version}</version>
-            <scope>test</scope>
-        </dependency>
+
     </dependencies>
 
     <build>
