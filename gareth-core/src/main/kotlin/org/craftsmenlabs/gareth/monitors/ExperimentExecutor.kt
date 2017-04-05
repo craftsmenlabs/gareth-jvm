@@ -18,7 +18,7 @@ class ExperimentExecutor @Autowired constructor(private val glueLineExecutor: Gl
         val result = glueLineExecutor.executeBaseline(experiment)
         val now = dateTimeService.now()
         log.info("Executed baseline")
-        return experiment.copy(result = result.status,
+        return experiment.copy(status = result.status,
                 environment = result.environment,
                 baselineExecuted = if (result.status == ExecutionStatus.ERROR) null else now)
     }
@@ -29,7 +29,7 @@ class ExperimentExecutor @Autowired constructor(private val glueLineExecutor: Gl
         val assumeExecutedDate = if (result.status == ExecutionStatus.ERROR) null else now
         val executed = experiment.copy(
                 completed = assumeExecutedDate,
-                result = result.status,
+                status = result.status,
                 environment = result.environment)
         return executed
     }

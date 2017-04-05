@@ -28,7 +28,7 @@ abstract class BaseMonitor constructor(
         experimentProvider.observable
                 .subscribeOn(Schedulers.io())
                 .map { it.copy() }
-                .filter { it.getState() == experimentState }
+                .filter { it.getLifecycleStage() == experimentState }
                 .flatMap {
                     var res: Observable<ExperimentDTO>
                     try {

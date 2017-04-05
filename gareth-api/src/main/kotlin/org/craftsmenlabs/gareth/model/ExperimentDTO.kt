@@ -11,10 +11,10 @@ data class ExperimentDTO(val id: String,
                          val due: LocalDateTime? = null,
                          val baselineExecuted: LocalDateTime? = null,
                          val completed: LocalDateTime? = null,
-                         val result: ExecutionStatus = ExecutionStatus.PENDING,
+                         val status: ExecutionStatus = ExecutionStatus.PENDING,
                          val environment: ExperimentRunEnvironment = ExperimentRunEnvironment()) : HasGlueLines {
 
-    fun getState(): ExperimentLifecycle {
+    fun getLifecycleStage(): ExperimentLifecycle {
         if (baselineExecuted == null) {
             return ExperimentLifecycle.NEW
         } else if (completed == null) {

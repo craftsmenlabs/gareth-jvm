@@ -16,7 +16,7 @@ class ExperimentConverter @Autowired constructor(val timeService: TimeService) {
         entity.dateDue = experiment.due ?: timeService.now()
         entity.dateBaselineExecuted = experiment.baselineExecuted
         entity.dateCompleted = experiment.completed
-        entity.result = experiment.result
+        entity.result = experiment.status
 
         val environment: List<ExperimentEnvironmentItem> = experiment.environment.items.map {
             val item = ExperimentEnvironmentItem()
@@ -45,7 +45,7 @@ class ExperimentConverter @Autowired constructor(val timeService: TimeService) {
                 due = entity.dateDue,
                 baselineExecuted = entity.dateBaselineExecuted,
                 completed = entity.dateCompleted,
-                result = entity.result,
+                status = entity.result,
                 environment = ExperimentRunEnvironment(environmentItems))
         return dto;
     }

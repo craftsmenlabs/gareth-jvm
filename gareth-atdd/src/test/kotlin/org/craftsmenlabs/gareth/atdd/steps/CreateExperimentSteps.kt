@@ -104,13 +104,13 @@ open class CreateExperimentSteps {
     @When("^the experiment is running$")
     fun theExperimentIsRunning() {
         refresh()
-        assertThat(currentExperiment.result).isEqualTo(ExecutionStatus.RUNNING)
+        assertThat(currentExperiment.status).isEqualTo(ExecutionStatus.RUNNING)
     }
 
     @When("^the experiment is pending$")
     fun theExperimentIsPending() {
         refresh()
-        assertThat(currentExperiment.result).isEqualTo(ExecutionStatus.PENDING)
+        assertThat(currentExperiment.status).isEqualTo(ExecutionStatus.PENDING)
     }
 
     @When("^the experiment is completed (|un?)successfully$")
@@ -118,7 +118,7 @@ open class CreateExperimentSteps {
         refresh()
         val expectedStatus = if (notOk == "un") "FAILURE" else "SUCCESS"
         assertThat(currentExperiment.completed).isNotNull()
-        assertThat(currentExperiment.result.name).isEqualTo(expectedStatus)
+        assertThat(currentExperiment.status.name).isEqualTo(expectedStatus)
     }
 
     @When("^the experiment is completed$")
