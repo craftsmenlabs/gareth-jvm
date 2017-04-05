@@ -1,7 +1,7 @@
 package org.craftsmenlabs.gareth.time
 
 import org.craftsmenlabs.gareth.GlueLineExecutor
-import org.craftsmenlabs.gareth.model.Experiment
+import org.craftsmenlabs.gareth.model.ExperimentDTO
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
 import java.time.Duration
@@ -13,7 +13,7 @@ class DurationCalculator @Autowired constructor(
         private val durationExpressionParser: DurationExpressionParser,
         private val executor: GlueLineExecutor) {
 
-    fun getDuration(experiment: Experiment): Duration {
+    fun getDuration(experiment: ExperimentDTO): Duration {
         val time = durationExpressionParser.parse(experiment.glueLines.time)
         if (time != null) {
             return time

@@ -1,7 +1,7 @@
 package org.craftsmenlabs.gareth.providers
 
-import org.craftsmenlabs.gareth.ExperimentStorage
-import org.craftsmenlabs.gareth.model.Experiment
+import org.craftsmenlabs.gareth.model.ExperimentDTO
+import org.craftsmenlabs.gareth.services.ExperimentService
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
 import rx.lang.kotlin.toObservable
@@ -12,9 +12,9 @@ import java.util.concurrent.TimeUnit
 @Service
 class ExperimentProvider @Autowired constructor(
         allExperimentListProvider: AllExperimentListProvider,
-        experimentStorage: ExperimentStorage) {
+        experimentService: ExperimentService) {
 
-    private val publishSubject = PublishSubject.create<Experiment>()
+    private val publishSubject = PublishSubject.create<ExperimentDTO>()
 
     init {
         allExperimentListProvider.observable
@@ -24,7 +24,7 @@ class ExperimentProvider @Autowired constructor(
                     publishSubject.onNext(it)
                 }
 
-        experimentStorage.setListener {
+        experimentService.setListener {
             publishSubject.onNext(it)
         }
     }

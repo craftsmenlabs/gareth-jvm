@@ -9,6 +9,7 @@ import org.craftsmenlabs.gareth.mongo.MongoExperimentDao
 import org.craftsmenlabs.gareth.mongo.MongoExperimentEntity
 import org.craftsmenlabs.gareth.mongo.MongoExperimentTemplateDao
 import org.craftsmenlabs.gareth.mongo.MongoExperimentTemplateEntity
+import org.craftsmenlabs.gareth.services.OverviewService
 import org.craftsmenlabs.gareth.time.TimeService
 import org.junit.Before
 import org.junit.Test

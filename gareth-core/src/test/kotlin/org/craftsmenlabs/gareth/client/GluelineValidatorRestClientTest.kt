@@ -4,7 +4,7 @@ import mockit.Expectations
 import mockit.Injectable
 import mockit.Tested
 import org.assertj.core.api.Assertions.assertThat
-import org.craftsmenlabs.gareth.model.Experiment
+import org.craftsmenlabs.gareth.model.ExperimentDTO
 import org.craftsmenlabs.gareth.model.GlueLineType
 import org.craftsmenlabs.gareth.model.Gluelines
 import org.craftsmenlabs.gareth.time.DurationExpressionParser
@@ -14,7 +14,7 @@ import java.time.Duration
 class GluelineValidatorRestClientTest {
 
     @Injectable
-    private lateinit var experiment: Experiment
+    private lateinit var experiment: ExperimentDTO
     @Injectable
     private lateinit var gluelines: Gluelines
     @Injectable

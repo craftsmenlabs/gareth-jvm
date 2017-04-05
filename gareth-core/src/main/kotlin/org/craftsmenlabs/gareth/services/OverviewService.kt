@@ -1,4 +1,4 @@
-package org.craftsmenlabs.gareth.providers
+package org.craftsmenlabs.gareth.services
 
 import org.craftsmenlabs.gareth.model.ExecutionStatus
 import org.craftsmenlabs.gareth.model.OverviewDTO

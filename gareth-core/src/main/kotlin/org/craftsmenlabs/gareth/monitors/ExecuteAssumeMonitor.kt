@@ -1,9 +1,9 @@
 package org.craftsmenlabs.gareth.monitors
 
-import org.craftsmenlabs.gareth.ExperimentStorage
-import org.craftsmenlabs.gareth.model.Experiment
-import org.craftsmenlabs.gareth.model.ExperimentState
+import org.craftsmenlabs.gareth.model.ExperimentDTO
+import org.craftsmenlabs.gareth.model.ExperimentLifecycle
 import org.craftsmenlabs.gareth.providers.ExperimentProvider
+import org.craftsmenlabs.gareth.services.ExperimentService
 import org.craftsmenlabs.gareth.time.DurationCalculator
 import org.craftsmenlabs.gareth.time.TimeService
 import org.springframework.beans.factory.annotation.Autowired
@@ -15,20 +15,20 @@ import java.util.concurrent.TimeUnit
 class ExecuteAssumeMonitor @Autowired constructor(
         experimentProvider: ExperimentProvider,
         dateTimeService: TimeService,
-        experimentStorage: ExperimentStorage,
+        experimentService: ExperimentService,
         private val experimentExecutor: ExperimentExecutor,
         private val durationCalculator: DurationCalculator)
     : BaseMonitor(
-        experimentProvider, dateTimeService, experimentStorage, ExperimentState.BASELINE_EXECUTED) {
+        experimentProvider, dateTimeService, experimentService, ExperimentLifecycle.BASELINE_EXECUTED) {
     private val delayedExperiments = mutableListOf<String>()
 
-    override fun extend(observable: Observable<Experiment>): Observable<Experiment> {
+    override fun extend(observable: Observable<ExperimentDTO>): Observable<ExperimentDTO> {
         return observable
                 .filter { !delayedExperiments.contains(it.id) }
                 .delay {
                     val delayInSeconds = durationCalculator.getDifferenceInSeconds(
                             dateTimeService.now(),
-                            it.timing.baselineExecuted,
+                            it.baselineExecuted,
                             durationCalculator.getDuration(it))
                     delayedExperiments.add(it.id)
                     val delay = Observable.just(it).delay(delayInSeconds, TimeUnit.SECONDS)

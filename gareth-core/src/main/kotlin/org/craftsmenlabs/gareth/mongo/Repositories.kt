@@ -7,6 +7,6 @@ interface MongoExperimentDao : MongoRepository<MongoExperimentEntity, String> {
 }
 
 interface MongoExperimentTemplateDao : MongoRepository<MongoExperimentTemplateEntity, String> {
-    fun findByName(name: String): List<MongoExperimentTemplateEntity>
+    fun findByName(name: String): MongoExperimentTemplateEntity?
 }
 

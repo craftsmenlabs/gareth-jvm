@@ -1,7 +1,7 @@
 package org.craftsmenlabs.gareth.rest
 
 import org.craftsmenlabs.gareth.model.OverviewDTO
-import org.craftsmenlabs.gareth.providers.OverviewService
+import org.craftsmenlabs.gareth.services.OverviewService
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RequestMethod

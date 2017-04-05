@@ -1,9 +1,9 @@
 package org.craftsmenlabs.gareth.monitors
 
-import org.craftsmenlabs.gareth.ExperimentStorage
-import org.craftsmenlabs.gareth.model.Experiment
-import org.craftsmenlabs.gareth.model.ExperimentState
+import org.craftsmenlabs.gareth.model.ExperimentDTO
+import org.craftsmenlabs.gareth.model.ExperimentLifecycle
 import org.craftsmenlabs.gareth.providers.ExperimentProvider
+import org.craftsmenlabs.gareth.services.ExperimentService
 import org.craftsmenlabs.gareth.time.TimeService
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
@@ -15,8 +15,8 @@ import javax.annotation.PostConstruct
 abstract class BaseMonitor constructor(
         protected val experimentProvider: ExperimentProvider,
         protected val dateTimeService: TimeService,
-        protected val experimentStorage: ExperimentStorage,
-        private val experimentState: ExperimentState) {
+        protected val experimentService: ExperimentService,
+        private val experimentState: ExperimentLifecycle) {
 
     val log: Logger = LoggerFactory.getLogger(BaseMonitor::class.java)
 
@@ -30,21 +30,21 @@ abstract class BaseMonitor constructor(
                 .map { it.copy() }
                 .filter { it.getState() == experimentState }
                 .flatMap {
-                    var res: Observable<Experiment>
+                    var res: Observable<ExperimentDTO>
                     try {
                         res = extend(it.toSingletonObservable())
                     } catch (t: Throwable) {
                         log.error("extend failed", t)
-                        res = Experiment.createDefault().copy(id = INVALID_ID).toSingletonObservable()
+                        res = ExperimentDTO.createDefault(dateTimeService.now()).copy(id = INVALID_ID).toSingletonObservable()
                     }
                     return@flatMap res
                 }
                 .filter { it.id != INVALID_ID }
                 .observeOn(Schedulers.computation())
                 .subscribe {
-                    experimentStorage.updateExperiment(it)
+                    experimentService.updateExperiment(it)
                 }
     }
 
-    protected abstract fun extend(observable: Observable<Experiment>): Observable<Experiment>
+    protected abstract fun extend(observable: Observable<ExperimentDTO>): Observable<ExperimentDTO>
 }

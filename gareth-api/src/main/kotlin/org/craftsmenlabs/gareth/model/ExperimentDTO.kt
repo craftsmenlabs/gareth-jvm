@@ -12,7 +12,30 @@ data class ExperimentDTO(val id: String,
                          val baselineExecuted: LocalDateTime? = null,
                          val completed: LocalDateTime? = null,
                          val result: ExecutionStatus = ExecutionStatus.PENDING,
-                         val environment: ExperimentRunEnvironment) : HasGlueLines
+                         val environment: ExperimentRunEnvironment = ExperimentRunEnvironment()) : HasGlueLines {
+
+    fun getState(): ExperimentLifecycle {
+        if (baselineExecuted == null) {
+            return ExperimentLifecycle.NEW
+        } else if (completed == null) {
+            return ExperimentLifecycle.BASELINE_EXECUTED
+        } else {
+            return ExperimentLifecycle.COMPLETED
+        }
+    }
+
+    companion object {
+        fun createDefault(now: LocalDateTime): ExperimentDTO {
+            return ExperimentDTO(
+                    id = "",
+                    name = "TEST",
+                    value = 1,
+                    created = now,
+                    glueLines = Gluelines(baseline = "baseline", assume = "assume", time = "5 seonds", success = "success", failure = "failure"),
+                    environment = ExperimentRunEnvironment())
+        }
+    }
+}
 
 data class ExperimentTemplateDTO(
         val id: String,

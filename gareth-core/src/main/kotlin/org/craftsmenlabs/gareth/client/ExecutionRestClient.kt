@@ -61,7 +61,6 @@ class ExecutionRestClient constructor(@Value("\${execution.client.url}") val hos
         if (!entity.statusCode.is2xxSuccessful) {
             log.warn("Glueline '{}' is not a valid time glueline", content)
             log.warn("Http status: ${entity.statusCodeValue}")
-
             return false;
         }
         log.warn("Glueline '{}' is a valid time glueline", content)

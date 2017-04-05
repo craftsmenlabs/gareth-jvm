@@ -5,7 +5,7 @@ import mockit.Injectable
 import mockit.Tested
 import org.assertj.core.api.Assertions.assertThat
 import org.craftsmenlabs.gareth.GlueLineExecutor
-import org.craftsmenlabs.gareth.model.Experiment
+import org.craftsmenlabs.gareth.model.ExperimentDTO
 import org.junit.Test
 import java.time.Duration
 import java.time.LocalDateTime
@@ -28,7 +28,7 @@ class DurationCalculatorTest {
     lateinit var durationCalculator: DurationCalculator
 
     @Test
-    fun shouldReturnDuration_whenParserReturnsResult(@Injectable experiment: Experiment, @Injectable expected: Duration) {
+    fun shouldReturnDuration_whenParserReturnsResult(@Injectable experiment: ExperimentDTO, @Injectable expected: Duration) {
         object : Expectations() {
             init {
                 experiment.glueLines.time
@@ -45,7 +45,7 @@ class DurationCalculatorTest {
     }
 
     @Test
-    fun shouldReturnDurationFromExecutor_whenParserReturnsNoResult(@Injectable experiment: Experiment, @Injectable expected: Duration) {
+    fun shouldReturnDurationFromExecutor_whenParserReturnsNoResult(@Injectable experiment: ExperimentDTO, @Injectable expected: Duration) {
         object : Expectations() {
             init {
                 experiment.glueLines.time

@@ -144,7 +144,6 @@ open class CreateExperimentSteps {
         val start = if (seconds == 0L) null else LocalDateTime.now().plusSeconds(seconds)
         val dto = ExperimentCreateDTO(templateId = currentTemplate.id, dueDate = start)
         currentExperiment = experimentClient.start(dto).execute().body()
-        //dit is
     }
 
 

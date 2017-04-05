@@ -3,13 +3,14 @@ package org.craftsmenlabs.integration
 import org.assertj.core.api.Assertions
 import org.assertj.core.api.Assertions.assertThat
 import org.craftsmenlabs.gareth.Application
-import org.craftsmenlabs.gareth.ExperimentStorage
 import org.craftsmenlabs.gareth.integration.TestConfig
 import org.craftsmenlabs.gareth.model.*
 import org.craftsmenlabs.gareth.rest.ExperimentEndpointClient
 import org.craftsmenlabs.gareth.rest.ExperimentTemplateEndpointClient
 import org.craftsmenlabs.gareth.rest.GluelineLookupEndpointClient
 import org.craftsmenlabs.gareth.rest.RestClientConfig
+import org.craftsmenlabs.gareth.services.ExperimentService
+import org.craftsmenlabs.gareth.services.TemplateService
 import org.craftsmenlabs.gareth.time.DateFormatUtils
 import org.craftsmenlabs.gareth.time.TimeService
 import org.junit.Before
@@ -31,7 +32,10 @@ import java.time.LocalDateTime
 class CreateExperimentIntegrationTest {
 
     @Autowired
-    lateinit var storage: ExperimentStorage
+    lateinit var experimentService: ExperimentService
+
+    @Autowired
+    lateinit var templateService: TemplateService
 
     @Autowired
     lateinit var templateClient: ExperimentTemplateEndpointClient
@@ -76,13 +80,14 @@ class CreateExperimentIntegrationTest {
     @Test
     fun b_createExperimentWithoutStartDate1() {
         val createTemplateDTO = createTemplate("Goodbye world")
-        val template = storage.createTemplate(createTemplateDTO)
-        val created = storage.createExperiment(template.id, LocalDateTime.now())
+        val template = templateService.create(createTemplateDTO)
+
+        val created = experimentService.createExperiment(ExperimentCreateDTO(template.id, LocalDateTime.now()))
         Thread.sleep(2000)
         assertThat(created.id).isNotNull()
-        val saved = storage.getById(created.id)
+        val saved = experimentService.get(created.id)
         assertThat(saved.name).isEqualTo("Goodbye world")
-        assertThat(saved.timing.created).isNotNull()
+        assertThat(saved.created).isNotNull()
 
     }
 
@@ -95,9 +100,9 @@ class CreateExperimentIntegrationTest {
         val created = postExperiment(experimentCreateDTO)
         Thread.sleep(2000)
         assertThat(created.id).isNotNull()
-        val saved = storage.getById(created.id)
+        val saved = experimentService.get(created.id)
         assertThat(saved.name).isEqualTo("Hello world")
-        assertThat(saved.timing.created).isNotNull()
+        assertThat(saved.created).isNotNull()
 
     }
 
@@ -105,8 +110,9 @@ class CreateExperimentIntegrationTest {
     fun c_createExperimentWithFaultyBaseline() {
         val orig = createTemplate("Hello world2")
         val dto = orig.copy(glueLines = orig.glueLines.copy(baseline = "sale of computers"))
-        val created = postTemplate(dto)
-        val saved = storage.getTemplateById(created.id)
+        val template = postTemplate(dto)
+        assertThat(template.id).isNotEmpty()
+        val saved = templateService.getTemplateById(template.id)
         assertThat(saved.name).isEqualTo("Hello world2")
         assertThat(saved.ready).isNull()
         val updated = updateTemplate(ExperimentTemplateUpdateDTO(id = saved.id, assume = "sale of fruit"))
@@ -119,19 +125,19 @@ class CreateExperimentIntegrationTest {
         val template = postTemplate(createTemplate("Hello world3"))
         val dto = ExperimentCreateDTO(templateId = template.id, dueDate = LocalDateTime.now().plusSeconds(5))
         val created = postExperiment(dto)
-        assertThat(storage.getById(created.id).status).isEqualTo(ExecutionStatus.PENDING)
+        assertThat(experimentService.get(created.id).result).isEqualTo(ExecutionStatus.PENDING)
         Thread.sleep(5000)
 
-        var saved = storage.getById(created.id)
+        var saved = experimentService.get(created.id)
         assertThat(saved.name).isEqualTo("Hello world3")
-        assertThat(saved.timing.created).isNotNull()
-        assertThat(saved.timing.due).isNotNull()
-        assertThat(saved.status).isEqualTo(ExecutionStatus.RUNNING)
+        assertThat(saved.created).isNotNull()
+        assertThat(saved.due).isNotNull()
+        assertThat(saved.result).isEqualTo(ExecutionStatus.RUNNING)
 
         Thread.sleep(5000)
-        saved = storage.getById(created.id)
-        assertThat(saved.status).isEqualTo(ExecutionStatus.SUCCESS)
-        assertThat(saved.timing.completed).isNotNull()
+        saved = experimentService.get(created.id)
+        assertThat(saved.result).isEqualTo(ExecutionStatus.SUCCESS)
+        assertThat(saved.completed).isNotNull()
 
     }
 
