@@ -12,7 +12,7 @@ class ExperimentEndpoint @Autowired constructor(val service: ExperimentService) 
 
     @RequestMapping(value = "{id}", method = arrayOf(RequestMethod.GET))
     fun get(@PathVariable("id") id: String): ExperimentDTO {
-        return service.get(id)
+        return service.getExperimentById(id)
     }
 
     @RequestMapping(method = arrayOf(RequestMethod.GET))

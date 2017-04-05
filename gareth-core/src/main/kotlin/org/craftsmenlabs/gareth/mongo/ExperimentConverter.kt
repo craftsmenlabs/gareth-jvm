@@ -12,8 +12,7 @@ import org.springframework.stereotype.Service
 class ExperimentConverter @Autowired constructor(val timeService: TimeService) {
 
     fun copyEditableValues(entity: MongoExperimentEntity, experiment: ExperimentDTO): MongoExperimentEntity {
-
-        entity.dateDue = experiment.due ?: timeService.now()
+        entity.dateDue = experiment.due
         entity.dateBaselineExecuted = experiment.baselineExecuted
         entity.dateCompleted = experiment.completed
         entity.result = experiment.status

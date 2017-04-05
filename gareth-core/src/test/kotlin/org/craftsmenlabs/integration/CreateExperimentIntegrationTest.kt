@@ -85,7 +85,7 @@ class CreateExperimentIntegrationTest {
         val created = experimentService.createExperiment(ExperimentCreateDTO(template.id, LocalDateTime.now()))
         Thread.sleep(2000)
         assertThat(created.id).isNotNull()
-        val saved = experimentService.get(created.id)
+        val saved = experimentService.getExperimentById(created.id)
         assertThat(saved.name).isEqualTo("Goodbye world")
         assertThat(saved.created).isNotNull()
 
@@ -100,7 +100,7 @@ class CreateExperimentIntegrationTest {
         val created = postExperiment(experimentCreateDTO)
         Thread.sleep(2000)
         assertThat(created.id).isNotNull()
-        val saved = experimentService.get(created.id)
+        val saved = experimentService.getExperimentById(created.id)
         assertThat(saved.name).isEqualTo("Hello world")
         assertThat(saved.created).isNotNull()
 
@@ -125,17 +125,15 @@ class CreateExperimentIntegrationTest {
         val template = postTemplate(createTemplate("Hello world3"))
         val dto = ExperimentCreateDTO(templateId = template.id, dueDate = LocalDateTime.now().plusSeconds(5))
         val created = postExperiment(dto)
-        assertThat(experimentService.get(created.id).status).isEqualTo(ExecutionStatus.PENDING)
+        assertThat(experimentService.getExperimentById(created.id).status).isEqualTo(ExecutionStatus.PENDING)
         Thread.sleep(5000)
 
-        var saved = experimentService.get(created.id)
+        var saved = experimentService.getExperimentById(created.id)
         assertThat(saved.name).isEqualTo("Hello world3")
-        assertThat(saved.created).isNotNull()
-        assertThat(saved.due).isNotNull()
         assertThat(saved.status).isEqualTo(ExecutionStatus.RUNNING)
 
         Thread.sleep(5000)
-        saved = experimentService.get(created.id)
+        saved = experimentService.getExperimentById(created.id)
         assertThat(saved.status).isEqualTo(ExecutionStatus.SUCCESS)
         assertThat(saved.completed).isNotNull()
 

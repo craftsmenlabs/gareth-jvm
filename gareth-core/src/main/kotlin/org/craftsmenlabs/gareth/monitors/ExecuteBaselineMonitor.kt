@@ -23,7 +23,7 @@ class ExecuteBaselineMonitor @Autowired constructor(
         return observable
                 .filter { !delayedExperiments.contains(it.id) }
                 .delay {
-                    val delayInSeconds = dateTimeService.getSecondsUntil(it.due!!)
+                    val delayInSeconds = dateTimeService.getSecondsUntil(it.due)
                     log.info("Waiting $delayInSeconds seconds until executing baseline of experiment ${it.id}")
                     delayedExperiments.add(it.id)
                     val delay = Observable.just(it).delay(delayInSeconds, TimeUnit.SECONDS)

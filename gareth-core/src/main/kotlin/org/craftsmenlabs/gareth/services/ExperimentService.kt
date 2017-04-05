@@ -22,7 +22,7 @@ class ExperimentService @Autowired constructor(val experimentDao: MongoExperimen
         saveListener = listener
     }
 
-    fun get(id: String): ExperimentDTO {
+    fun getExperimentById(id: String): ExperimentDTO {
         val entity = experimentDao.findOne(id) ?: throw NotFoundException("No experiment found with id $id")
         return converter.toDTO(entity)
     }
@@ -43,7 +43,6 @@ class ExperimentService @Autowired constructor(val experimentDao: MongoExperimen
         val entity = createEntityForTemplate(dto.templateId)
         val now = timeService.now()
         entity.dateCreated = now
-        //can be null
         entity.dateDue = dto.dueDate ?: now
         //template is ready
         entity.environment = setOf()
