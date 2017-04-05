@@ -3,6 +3,7 @@ package org.craftsmenlabs.gareth.atdd.steps
 import cucumber.api.java.en.When
 import org.assertj.core.api.Assertions.assertThat
 import org.craftsmenlabs.gareth.atdd.CucumberConfig
+import org.craftsmenlabs.gareth.atdd.EmbeddedMongoManager
 import org.craftsmenlabs.gareth.model.*
 import org.craftsmenlabs.gareth.rest.ExperimentEndpointClient
 import org.craftsmenlabs.gareth.rest.ExperimentTemplateEndpointClient
@@ -30,6 +31,11 @@ open class CreateExperimentSteps {
 
     @Autowired
     private lateinit var experimentClient: ExperimentEndpointClient
+
+    @When("^the database is cleared$")
+    fun theDatabaseIsCleared() {
+        EmbeddedMongoManager.deleteAll()
+    }
 
     @When("^I want to create an experiment named (.*?)$")
     fun iCreateAnExperiment(name: String) {
@@ -76,6 +82,7 @@ open class CreateExperimentSteps {
     @When("^I create the template$")
     fun iSubmitTheExperiment() {
         currentTemplate = experimentTemplateClient.create(templateCreateDTO).execute().body()
+        assertThat(currentTemplate.id).isNotEmpty()
     }
 
     @When("^I cannot create the template$")

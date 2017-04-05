@@ -7,6 +7,7 @@ import org.craftsmenlabs.gareth.ExperimentStorage
 import org.craftsmenlabs.gareth.client.GluelineValidatorRestClient
 import org.craftsmenlabs.gareth.model.*
 import org.craftsmenlabs.gareth.time.TimeService
+import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
 import java.time.LocalDateTime
@@ -18,6 +19,7 @@ class MongoStorage @Autowired constructor(private val converter: MongoEntityConv
                                           private val glueLineLookupRestClient: GluelineValidatorRestClient,
                                           private val timeService: TimeService) : ExperimentStorage {
 
+    private val log = LoggerFactory.getLogger(MongoStorage::class.java)
     override fun getAllTemplates(): List<ExperimentTemplateDTO> {
         return templateDao.findAll().map { converter.toDTO(it) }
     }
@@ -31,9 +33,13 @@ class MongoStorage @Autowired constructor(private val converter: MongoEntityConv
         if (!existing.isEmpty())
             throw BadRequestException("Cannot create template '${dto.name}': name exists")
         val entity = converter.toEntity(dto)
-        val isReady = glueLineLookupRestClient.gluelinesAreValid(dto.glueLines)
-        if (isReady)
+        val isReady = glueLineLookupRestClient.validateGluelines(dto.glueLines)
+        if (isReady) {
+            log.info("Experiment gluelines are valid.")
             entity.ready = timeService.now()
+        } else {
+            log.warn("Experiment gluelines are not ready! You must update this template before you can schedule experiment runs.")
+        }
         return save(entity)
     }
 

@@ -47,6 +47,7 @@ class ExecutionRestClient constructor(@Value("\${execution.client.url}") val hos
         val entity = restClient.getAsEntity(DefinitionInfo::class.java, fullUrl)
         if (!entity.statusCode.is2xxSuccessful) {
             log.warn("Glueline '{}' of type {} is not a valid glue line", content, type)
+            log.warn("Http status: ${entity.statusCodeValue}")
             return false;
         }
         log.debug("'{}' is a valid {} glueline", content, type.name.toLowerCase())
@@ -59,6 +60,8 @@ class ExecutionRestClient constructor(@Value("\${execution.client.url}") val hos
         val entity = restClient.getAsEntity(Duration::class.java, fullUrl)
         if (!entity.statusCode.is2xxSuccessful) {
             log.warn("Glueline '{}' is not a valid time glueline", content)
+            log.warn("Http status: ${entity.statusCodeValue}")
+
             return false;
         }
         log.warn("Glueline '{}' is a valid time glueline", content)

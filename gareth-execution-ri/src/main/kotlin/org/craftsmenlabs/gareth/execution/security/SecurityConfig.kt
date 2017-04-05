@@ -3,7 +3,6 @@ package org.craftsmenlabs.gareth.execution.security
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
-import org.springframework.context.annotation.Profile
 import org.springframework.security.authentication.AuthenticationManager
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity
@@ -15,7 +14,6 @@ import org.springframework.security.core.userdetails.UserDetailsService
 @Configuration
 @EnableWebSecurity
 @EnableGlobalMethodSecurity(securedEnabled = true)
-@Profile("!NOAUTH")
 open class SecurityConfig : WebSecurityConfigurerAdapter() {
 
     @Autowired
@@ -32,11 +30,9 @@ open class SecurityConfig : WebSecurityConfigurerAdapter() {
     }
 
     override fun configure(http: HttpSecurity) {
-        http.headers().disable().authorizeRequests().antMatchers("**/*.html")
-                .permitAll().antMatchers("/**/*").authenticated()
-                .and().httpBasic()
-                .and().userDetailsService(userService)
-                .csrf().disable()
+        http.headers().disable().authorizeRequests().antMatchers("**/*")
+                .permitAll()
+                .and().csrf().disable()
     }
 
 

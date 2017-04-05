@@ -42,7 +42,7 @@ class GluelineValidatorRestClientTest {
                 result = Duration.ZERO
             }
         }
-        assertThat(glueLineClient.gluelinesAreValid(experiment.glueLines)).isTrue()
+        assertThat(glueLineClient.validateGluelines(experiment.glueLines)).isTrue()
     }
 
 
@@ -55,7 +55,7 @@ class GluelineValidatorRestClientTest {
                 result = false
             }
         }
-        assertThat(glueLineClient.gluelinesAreValid(experiment.glueLines)).isFalse()
+        assertThat(glueLineClient.validateGluelines(experiment.glueLines)).isFalse()
     }
 
     fun setupExperimentDetails() {

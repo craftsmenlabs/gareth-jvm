@@ -23,7 +23,7 @@ Feature: Run ACME experiment
     And the environment key result has value sending failure mail to Sam
 
   Scenario: Run experiment with delayed start
-    When I start an experiment for template toss a coin in 3 seconds
+    When I start an experiment for template toss a coin in 4 seconds
     When I wait 1 seconds
     Then the experiment is pending
     When I wait 3 seconds

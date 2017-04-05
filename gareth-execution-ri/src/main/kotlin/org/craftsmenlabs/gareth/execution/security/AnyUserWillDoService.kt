@@ -7,13 +7,12 @@ import org.springframework.security.core.userdetails.UserDetailsService
 import org.springframework.stereotype.Service
 
 @Service
-open class HardcodedUserDetailsService : UserDetailsService {
+open class AnyUserWillDoService : UserDetailsService {
 
     override fun loadUserByUsername(userName: String): UserDetails? {
-        if (userName == "user") {
-            return User("user", "secret", true, true, true, true,
-                    AuthorityUtils.createAuthorityList("user"))
-        }
+        return User(userName, userName, true, true, true, true,
+                AuthorityUtils.createAuthorityList("user"))
+
         return null
     }
 }

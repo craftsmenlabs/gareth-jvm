@@ -123,7 +123,7 @@ class MonitorIntegrationTest {
 
         object : Expectations() {
             init {
-                gluelineValidator.gluelinesAreValid(withAny(experiment.glueLines))
+                gluelineValidator.validateGluelines(withAny(experiment.glueLines))
                 result = true;
 
                 glueLineExecutor.executeBaseline(withAny(experiment))
@@ -161,7 +161,7 @@ class MonitorIntegrationTest {
 
         object : Expectations() {
             init {
-                gluelineValidator.gluelinesAreValid(withAny(experiment.glueLines))
+                gluelineValidator.validateGluelines(withAny(experiment.glueLines))
                 result = true;
 
                 glueLineExecutor.executeBaseline(withAny(experiment))

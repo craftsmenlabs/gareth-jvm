@@ -28,12 +28,12 @@ class GluelineValidatorRestClient : GluelineValidator {
         else return client.isValidGlueLine(type, glueline)
     }
 
-    override fun gluelinesAreValid(glueLines: Gluelines): Boolean {
+    override fun validateGluelines(gluelines: Gluelines): Boolean {
         val lines = mapOf<GlueLineType, String>(
-                Pair(GlueLineType.ASSUME, glueLines.assume),
-                Pair(GlueLineType.BASELINE, glueLines.baseline),
-                Pair(GlueLineType.FAILURE, glueLines.failure),
-                Pair(GlueLineType.SUCCESS, glueLines.success))
-        return gluelineIsValid(GlueLineType.TIME, glueLines.time) && lines.all { gluelineIsValid(it.key, it.value) }
+                Pair(GlueLineType.ASSUME, gluelines.assume),
+                Pair(GlueLineType.BASELINE, gluelines.baseline),
+                Pair(GlueLineType.FAILURE, gluelines.failure),
+                Pair(GlueLineType.SUCCESS, gluelines.success))
+        return gluelineIsValid(GlueLineType.TIME, gluelines.time) && lines.all { gluelineIsValid(it.key, it.value) }
     }
 }

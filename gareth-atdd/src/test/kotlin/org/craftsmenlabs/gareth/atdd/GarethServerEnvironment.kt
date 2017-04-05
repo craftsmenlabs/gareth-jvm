@@ -9,8 +9,8 @@ object GarethServerEnvironment {
     private val log = LoggerFactory.getLogger("garethServerEnvironment")
 
     private val instances = mutableListOf<SpringApplicationWrapper>()
-    val garethPort = 8100;
-    val executionPort = 8101;
+    val GARETH_PORT = 8100;
+    val GARETH_EXECUTION_PORT = 8101;
 
     fun addInstance(instance: SpringApplicationWrapper) {
         if (instance.getStatus() == SpringApplicationWrapper.Status.IDLE)
@@ -18,31 +18,35 @@ object GarethServerEnvironment {
     }
 
     fun start() {
-        EmbeddedMongo.start()
+        EmbeddedMongoManager.start()
         instances.forEach { it.start() }
     }
 
     fun createGarethInstance(): SpringApplicationWrapper {
-        val conf = ConfBuilder(port = garethPort)
-        conf.add("execution.client.url", "http://localhost:$executionPort")
+        val conf = ConfBuilder(port = GARETH_PORT)
+        conf.add("logging.level.org.craftsmenlabs", "DEBUG")
+        conf.add("execution.client.url", "http://localhost:$GARETH_EXECUTION_PORT")
         conf.add("execution.client.user", "user")
         conf.add("execution.client.password", "secret")
+        conf.add("execution.client.password", "secret")
+        conf.add("spring.data.mongodb.port", EmbeddedMongoManager.MONGO_PORT.toString())
+        conf.add("spring.data.mongodb.database", EmbeddedMongoManager.MONGO_ADDRESS)
 
         val jarFilePath = getJarfile(getProjectRootDir() + "gareth-core/target")
-        return SpringApplicationWrapper("http://localhost:$garethPort/manage", jarFilePath, conf)
+        return SpringApplicationWrapper("http://localhost:$GARETH_PORT/manage", jarFilePath, conf)
     }
 
     fun createExecutionInstance(): SpringApplicationWrapper {
-        val conf = ConfBuilder(port = executionPort)
-        conf.add("spring.profiles.active", "test,memdb")
+        val conf = ConfBuilder(port = GARETH_EXECUTION_PORT)
+        conf.add("spring.profiles.active", "test")
         val jarFilePath = getJarfile(getProjectRootDir() + "gareth-acme/target")
-        return SpringApplicationWrapper("http://localhost:$executionPort/manage", jarFilePath, conf)
+        return SpringApplicationWrapper("http://localhost:$GARETH_EXECUTION_PORT/manage", jarFilePath, conf)
     }
 
     fun shutDown() {
         log.info("Shutting down gareth environments")
         instances.forEach { it.shutdown() }
-        EmbeddedMongo.shutDown()
+        EmbeddedMongoManager.shutDown()
     }
 
 

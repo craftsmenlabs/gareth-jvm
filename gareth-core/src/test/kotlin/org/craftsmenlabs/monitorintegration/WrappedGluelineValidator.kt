@@ -16,7 +16,7 @@ open class WrappedGluelineValidator : GluelineValidator {
         return mock!!.gluelineIsValid(type, glueline)
     }
 
-    override fun gluelinesAreValid(glueLines: Gluelines): Boolean {
-        return mock!!.gluelinesAreValid(glueLines)
+    override fun validateGluelines(gluelines: Gluelines): Boolean {
+        return mock!!.validateGluelines(gluelines)
     }
 }

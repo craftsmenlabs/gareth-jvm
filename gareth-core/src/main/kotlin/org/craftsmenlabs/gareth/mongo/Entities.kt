@@ -3,6 +3,7 @@ package org.craftsmenlabs.gareth.mongo
 import org.craftsmenlabs.gareth.model.ExecutionStatus
 import org.craftsmenlabs.gareth.model.ItemType
 import org.springframework.data.annotation.Id
+import org.springframework.data.mongodb.core.index.Indexed
 import java.time.LocalDateTime
 
 data class MongoExperimentEntity(@Id var id: String? = null) {
@@ -12,6 +13,7 @@ data class MongoExperimentEntity(@Id var id: String? = null) {
     var dateBaselineExecuted: LocalDateTime? = null
     var dateCompleted: LocalDateTime? = null
     lateinit var environment: Set<ExperimentEnvironmentItem>
+    @Indexed
     lateinit var templateId: String
     lateinit var name: String
     lateinit var baseline: String
@@ -22,6 +24,7 @@ data class MongoExperimentEntity(@Id var id: String? = null) {
 }
 
 data class MongoExperimentTemplateEntity(@Id var id: String? = null) {
+    @Indexed
     lateinit var name: String
     lateinit var baseline: String
     lateinit var assume: String
