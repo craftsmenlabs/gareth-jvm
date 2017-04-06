@@ -4,12 +4,10 @@ import org.craftsmenlabs.gareth.model.EnvironmentItem
 import org.craftsmenlabs.gareth.model.ExperimentDTO
 import org.craftsmenlabs.gareth.model.ExperimentRunEnvironment
 import org.craftsmenlabs.gareth.model.Gluelines
-import org.craftsmenlabs.gareth.time.TimeService
-import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
 
 @Service
-class ExperimentConverter @Autowired constructor(val timeService: TimeService) {
+class ExperimentConverter {
 
     fun copyEditableValues(entity: MongoExperimentEntity, experiment: ExperimentDTO): MongoExperimentEntity {
         entity.dateDue = experiment.due

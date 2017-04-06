@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.RequestMethod
 import org.springframework.web.bind.annotation.RestController
 
 @RestController
-@RequestMapping("gareth/v1/")
+@RequestMapping("gareth/validator/v1/")
 @Api("Endpoint for experiment execution")
 class ExecutionEndPoint @Autowired constructor(val definitionService: DefinitionService) : ExecutionResource {
 

@@ -22,7 +22,7 @@ import org.springframework.test.context.junit4.SpringRunner
 @ActiveProfiles("test")
 class ExperimentLifecycleIntegrationTest {
 
-    val path = "http://localhost:8101/gareth/v1/"
+    val path = "http://localhost:8101/gareth/validator/v1/"
     val restClient = BasicAuthenticationRestClient("user", "secret")
 
     private val glueLines = Gluelines(

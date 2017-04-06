@@ -27,7 +27,8 @@ class ExperimentService @Autowired constructor(val experimentDao: MongoExperimen
         return converter.toDTO(entity)
     }
 
-    fun getFiltered(ddMMYYYY: String?,
+    fun getFiltered(projectId: String,
+                    ddMMYYYY: String?,
                     onlyFinished: Boolean?): List<ExperimentDTO> {
         val createdAfter = if (ddMMYYYY == null) null else DateFormatUtils.parseDateStringToMidnight(ddMMYYYY)
         val creationFilter: (MongoExperimentEntity) -> Boolean = {
@@ -36,7 +37,7 @@ class ExperimentService @Autowired constructor(val experimentDao: MongoExperimen
         val finishedFilter: (MongoExperimentEntity) -> Boolean = {
             onlyFinished == null || onlyFinished == (it.dateCompleted != null)
         }
-        return experimentDao.findAll().filter { creationFilter.invoke(it) && finishedFilter.invoke(it) }.map { converter.toDTO(it) }
+        return experimentDao.findByProjectId(projectId).filter { creationFilter.invoke(it) && finishedFilter.invoke(it) }.map { converter.toDTO(it) }
     }
 
     fun createExperiment(dto: ExperimentCreateDTO): ExperimentDTO {
@@ -59,6 +60,7 @@ class ExperimentService @Autowired constructor(val experimentDao: MongoExperimen
             throw BadRequestException("You cannot start an experiment that is not ready.")
         }
         val entity = MongoExperimentEntity()
+        entity.projectId = template.projectId
         entity.templateId = templateId
         entity.baseline = template.baseline
         entity.assume = template.assume

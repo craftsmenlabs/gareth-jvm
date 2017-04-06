@@ -1,10 +1,11 @@
-package org.craftsmenlabs.gareth.config
+package org.craftsmenlabs.gareth.validator.rest
 
 import org.craftsmenlabs.*
 import org.slf4j.LoggerFactory
 import org.springframework.http.HttpStatus
 import org.springframework.web.bind.annotation.*
 import javax.servlet.http.HttpServletRequest
+
 
 @ControllerAdvice(annotations = arrayOf(RestController::class))
 class GlobalControllerAdvice {

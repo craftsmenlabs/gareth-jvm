@@ -1,4 +1,4 @@
-package org.craftsmenlabs.integration
+package org.craftsmenlabs.gareth.validator.integration
 
 import org.craftsmenlabs.BadRequestException
 import org.craftsmenlabs.gareth.model.DefinitionInfo
@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.RequestMethod
 import org.springframework.web.bind.annotation.RestController
 
 @RestController
-@RequestMapping("gareth/v1/")
+@RequestMapping("gareth/validator/v1/")
 class MockExecutionDefinitionEndPoint {
 
     @RequestMapping(value = "definitions/baseline/{glueline}", method = arrayOf(RequestMethod.GET))

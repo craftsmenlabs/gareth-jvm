@@ -32,7 +32,7 @@ object GarethServerEnvironment {
         conf.add("spring.data.mongodb.port", EmbeddedMongoManager.MONGO_PORT.toString())
         conf.add("spring.data.mongodb.database", EmbeddedMongoManager.MONGO_ADDRESS)
 
-        val jarFilePath = getJarfile(getProjectRootDir() + "gareth-core/target")
+        val jarFilePath = getJarfile(getProjectRootDir() + "gareth-validator-rest/target")
         return SpringApplicationWrapper("http://localhost:$GARETH_PORT/manage", jarFilePath, conf)
     }
 

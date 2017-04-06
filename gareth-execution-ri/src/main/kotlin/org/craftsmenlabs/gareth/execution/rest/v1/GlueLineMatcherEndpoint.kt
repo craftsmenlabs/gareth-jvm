@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RequestMethod
 import org.springframework.web.bind.annotation.RestController
 
 @RestController
-@RequestMapping("gareth/v1/")
+@RequestMapping("gareth/validator/v1/")
 @Api("Endpoint for glueline searches", description = "This rest endpoint helps you locate the executable methods for " +
         "glueline types by matching a given string. The object that is returned gives a list of partial matches in the 'suggestions' property, and " +
         "if the given string matches exactly the appropriate regular expression if returned in the 'exact' property.")

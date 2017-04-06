@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RequestMethod
 import org.springframework.web.bind.annotation.RestController
 
 @RestController
-@RequestMapping("gareth/v1/")
+@RequestMapping("gareth/validator/v1/")
 class MockExecutionEndPoint {
 
     @RequestMapping(value = "baseline", method = arrayOf(RequestMethod.PUT))

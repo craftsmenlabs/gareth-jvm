@@ -82,5 +82,5 @@ class ExecutionRestClient constructor(@Value("\${execution.client.url}") val hos
     }
 
 
-    fun createUrl(affix: String) = "$host/gareth/v1/$affix"
+    fun createUrl(affix: String) = "$host/gareth/validator/v1/$affix"
 }

@@ -21,7 +21,7 @@ import org.springframework.test.context.junit4.SpringRunner
 @TestPropertySource(properties = arrayOf("server.port=8101"))
 class GlueLineSearchIntegrationTest {
 
-    val path = "http://localhost:8101/gareth/v1/search/"
+    val path = "http://localhost:8101/gareth/validator/v1/search/"
     val restClient = BasicAuthenticationRestClient("user", "secret")
 
     @Test

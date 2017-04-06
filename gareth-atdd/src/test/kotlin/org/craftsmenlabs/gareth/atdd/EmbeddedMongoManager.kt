@@ -15,7 +15,7 @@ object EmbeddedMongoManager {
     private val log = LoggerFactory.getLogger(EmbeddedMongoManager::class.java)
 
     val MONGO_ADDRESS = "localhost"
-    val MONGO_PORT = 27018
+    val MONGO_PORT = System.getProperty("mongoport", "27018").toInt()
     lateinit var mongodExecutable: MongodExecutable
 
     private fun createConfig(): IMongodConfig {

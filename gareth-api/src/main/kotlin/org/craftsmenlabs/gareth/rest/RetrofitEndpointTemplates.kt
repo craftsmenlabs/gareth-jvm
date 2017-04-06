@@ -6,43 +6,43 @@ import retrofit2.http.*
 
 interface ExperimentTemplateEndpointClient {
 
-    @PUT("gareth/v1/templates")
+    @PUT("gareth/validator/v1/templates")
     fun update(@Body dto: ExperimentTemplateUpdateDTO): Call<ExperimentTemplateDTO>
 
-    @POST("gareth/v1/templates")
+    @POST("gareth/validator/v1/templates")
     fun create(@Body dto: ExperimentTemplateCreateDTO): Call<ExperimentTemplateDTO>
 
-    @GET("gareth/v1/templates/{id}")
+    @GET("gareth/validator/v1/templates/{id}")
     fun get(@Path("id") id: Long): Call<ExperimentTemplateDTO>
 
-    @GET("gareth/v1/templates")
+    @GET("gareth/validator/v1/templates")
     fun getByName(@Query("name") name: String): Call<List<ExperimentTemplateDTO>>
 
-    @GET("gareth/v1/templates")
+    @GET("gareth/validator/v1/templates")
     fun getAll(): Call<List<ExperimentTemplateDTO>>
 }
 
 interface OverviewEndpointClient {
 
-    @GET("gareth/v1/stats")
+    @GET("gareth/validator/v1/stats")
     fun getAll(): Call<List<OverviewDTO>>
 }
 
 interface ExperimentEndpointClient {
 
-    @GET("gareth/v1/experiments/{id}")
+    @GET("gareth/validator/v1/experiments/{id}")
     fun get(@Path("id") id: String): Call<ExperimentDTO>
 
-    @GET("gareth/v1/experiments")
+    @GET("gareth/validator/v1/experiments")
     fun getFiltered(@Query("created") ddMMYYYY: String?,
                     @Query("completed") completed: Boolean?): Call<List<ExperimentDTO>>
 
-    @POST("gareth/v1/experiments")
+    @POST("gareth/validator/v1/experiments")
     fun start(@Body dto: ExperimentCreateDTO): Call<ExperimentDTO>
 }
 
 interface GluelineLookupEndpointClient {
-    @GET("gareth/v1/glueline")
+    @GET("gareth/validator/v1/glueline")
     fun lookupGlueline(@Query("type") glueLine: GlueLineType,
                        @Query("content") content: String): Call<GlueLineSearchResultDTO>
 }

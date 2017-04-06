@@ -61,6 +61,7 @@ data class ExperimentTemplateUpdateDTO(
 
 data class ExperimentTemplateCreateDTO(
         val name: String,
+        val projectid: String,
         val value: Int = 0,
         override val glueLines: Gluelines) : HasGlueLines
 

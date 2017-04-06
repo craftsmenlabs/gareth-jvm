@@ -15,6 +15,8 @@ data class MongoExperimentEntity(@Id var id: String? = null) {
     lateinit var environment: Set<ExperimentEnvironmentItem>
     @Indexed
     lateinit var templateId: String
+    @Indexed
+    lateinit var projectId: String
     lateinit var name: String
     lateinit var baseline: String
     lateinit var assume: String
@@ -24,6 +26,8 @@ data class MongoExperimentEntity(@Id var id: String? = null) {
 }
 
 data class MongoExperimentTemplateEntity(@Id var id: String? = null) {
+    @Indexed
+    lateinit var projectId: String
     @Indexed
     lateinit var name: String
     lateinit var baseline: String

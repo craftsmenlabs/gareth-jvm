@@ -1,33 +1,53 @@
-<?xml version="1.0"?>
-<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://maven.apache.org/POM/4.0.0"
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-    <modelVersion>4.0.0</modelVersion>
-
     <parent>
-        <groupId>org.craftsmenlabs.gareth</groupId>
         <artifactId>gareth-jvm</artifactId>
+        <groupId>org.craftsmenlabs.gareth</groupId>
         <version>0.8.7-SNAPSHOT</version>
     </parent>
+    <modelVersion>4.0.0</modelVersion>
 
-    <groupId>org.craftsmenlabs.gareth</groupId>
-    <artifactId>gareth-core</artifactId>
-    <name>gareth-core</name>
-
-    <properties>
-    </properties>
+    <artifactId>gareth-validator-rest</artifactId>
 
     <dependencies>
+        <dependency>
+            <groupId>org.craftsmenlabs.gareth</groupId>
+            <artifactId>gareth-core</artifactId>
+        </dependency>
         <dependency>
             <groupId>org.craftsmenlabs.gareth</groupId>
             <artifactId>gareth-api</artifactId>
         </dependency>
         <dependency>
-            <groupId>com.google.guava</groupId>
-            <artifactId>guava</artifactId>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-security</artifactId>
+           <!-- <exclusions>
+                <exclusion>
+                    <groupId>org.springframework</groupId>
+                    <artifactId>spring-core</artifactId>
+                </exclusion>
+            </exclusions>-->
         </dependency>
         <dependency>
-            <groupId>org.springframework.data</groupId>
-            <artifactId>spring-data-mongodb</artifactId>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-web</artifactId>
+        </dependency>
+
+    <!--    <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-core</artifactId>
+            <version>4.3.6.RELEASE</version>
+        </dependency>-->
+
+        <dependency>
+            <groupId>com.fasterxml.jackson.datatype</groupId>
+            <artifactId>jackson-datatype-jsr310</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-actuator</artifactId>
         </dependency>
         <dependency>
             <groupId>org.craftsmenlabs.gareth</groupId>
@@ -37,20 +57,9 @@
 
         <dependency>
             <groupId>com.squareup.retrofit2</groupId>
-            <artifactId>retrofit</artifactId>
+            <artifactId>converter-jackson</artifactId>
             <scope>test</scope>
         </dependency>
-        <!--Rx DEPENDENCIES-->
-        <dependency>
-            <groupId>io.reactivex</groupId>
-            <artifactId>rxjava</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>io.reactivex</groupId>
-            <artifactId>rxkotlin</artifactId>
-        </dependency>
-
 
         <!--KOTLIN DEPENDENCIES-->
         <dependency>
@@ -65,15 +74,30 @@
             <groupId>org.jetbrains.kotlin</groupId>
             <artifactId>kotlin-test</artifactId>
         </dependency>
-        <dependency>
-            <groupId>de.flapdoodle.embed</groupId>
-            <artifactId>de.flapdoodle.embed.mongo</artifactId>
-        </dependency>
 
+        <dependency>
+            <groupId>io.springfox</groupId>
+            <artifactId>springfox-swagger2</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>io.springfox</groupId>
+            <artifactId>springfox-swagger-ui</artifactId>
+        </dependency>
 
     </dependencies>
     <build>
         <plugins>
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>repackage</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
             <plugin>
                 <artifactId>kotlin-maven-plugin</artifactId>
                 <groupId>org.jetbrains.kotlin</groupId>

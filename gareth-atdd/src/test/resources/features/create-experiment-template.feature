@@ -13,8 +13,6 @@ Feature: Create experiment template
     And the assume is sale of apples has risen by 8 per cent
     And I create the template
     Then the template is correct
-
-  Scenario: Cannot create template with non-unique name
     When I want to create an experiment named Template 10
     And the baseline is sale of apples
     And the success is send email to Moos

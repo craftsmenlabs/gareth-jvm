@@ -13,13 +13,13 @@ Feature: Run ACME experiment
     And I wait 1 seconds
     Then the experiment is running
     When I wait 4 seconds
-    Then the experiment is completed
+    Then the experiment is completed successfully
     And the environment key result has value sending success mail to Moos
 
   Scenario: Run experiment with failed outcome
     When I start an experiment for template toss a coin in 1 second
     When I wait 5 seconds
-    Then the experiment is completed
+    Then the experiment is completed unsuccessfully
     And the environment key result has value sending failure mail to Sam
 
   Scenario: Run experiment with delayed start
@@ -29,7 +29,7 @@ Feature: Run ACME experiment
     When I wait 3 seconds
     Then the experiment is running
     When I wait 3 seconds
-    Then the experiment is completed
+    Then the experiment is completed successfully
 
   Scenario: Cannot start experiment with incorrect template
     When I want to create an experiment named Wrong try

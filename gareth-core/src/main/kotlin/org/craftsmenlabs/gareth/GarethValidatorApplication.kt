@@ -2,14 +2,14 @@ package org.craftsmenlabs.gareth
 
 import org.springframework.boot.SpringApplication
 import org.springframework.boot.autoconfigure.SpringBootApplication
-import org.springframework.data.mongodb.repository.config.EnableMongoRepositories
+import org.springframework.context.annotation.Import
 
 @SpringBootApplication
-@EnableMongoRepositories(basePackages = arrayOf("org.craftsmenlabs.gareth.mongo"))
-open class Application {
+@Import(GarethValidatorConfiguration::class)
+open class GarethValidatorApplication {
     companion object {
         @JvmStatic fun main(args: Array<String>) {
-            SpringApplication.run(Application::class.java, *args)
+            SpringApplication.run(GarethValidatorApplication::class.java, *args)
         }
     }
 }

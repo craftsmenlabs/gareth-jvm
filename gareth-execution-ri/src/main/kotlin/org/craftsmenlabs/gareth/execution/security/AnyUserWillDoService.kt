@@ -12,8 +12,6 @@ open class AnyUserWillDoService : UserDetailsService {
     override fun loadUserByUsername(userName: String): UserDetails? {
         return User(userName, userName, true, true, true, true,
                 AuthorityUtils.createAuthorityList("user"))
-
-        return null
     }
 }
 

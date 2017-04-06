@@ -1,4 +1,4 @@
-package org.craftsmenlabs.integration
+package org.craftsmenlabs.gareth.validator.integration
 
 import org.craftsmenlabs.gareth.model.GlueLineSearchResultDTO
 import org.springframework.web.bind.annotation.PathVariable
@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.RequestMethod
 import org.springframework.web.bind.annotation.RestController
 
 @RestController
-@RequestMapping("gareth/v1/")
+@RequestMapping("gareth/validator/v1/")
 class MockGlueLineMatcherEndpoint {
 
     @RequestMapping(value = "search/baseline/{glueline}", method = arrayOf(RequestMethod.GET))
