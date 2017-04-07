@@ -5,7 +5,6 @@ import com.fasterxml.jackson.databind.DeserializationFeature
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.databind.SerializationFeature
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
-import okhttp3.*
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
@@ -16,10 +15,6 @@ import retrofit2.converter.jackson.JacksonConverterFactory
 @Configuration
 open class RestClientConfig {
 
-    @Value("\${http.user:}")
-    private lateinit var user: String
-    @Value("\${http.password:}")
-    private lateinit var password: String
     @Value("\${http.url:}")
     private lateinit var url: String
 
@@ -41,16 +36,6 @@ open class RestClientConfig {
     @Bean
     open fun retrofitClient(): Retrofit.Builder {
         val builder = Retrofit.Builder()
-        if (user.isNotBlank()) {
-            val clientBuilder = OkHttpClient.Builder()
-            clientBuilder.authenticator(object : Authenticator {
-                override fun authenticate(route: Route, response: Response): Request? {
-                    val credential = Credentials.basic(user, password)
-                    return response.request().newBuilder().header("Authorization", credential).build()
-                }
-            })
-            builder.client(clientBuilder.build())
-        }
         return builder.addConverterFactory(JacksonConverterFactory.create(objectMapper()))
     }
 

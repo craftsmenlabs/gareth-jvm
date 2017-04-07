@@ -17,16 +17,16 @@ import java.util.*
 
 
 class BasicAuthenticationRestClient(
-        private val userName: String,
-        private val password: String,
+        private val userName: String? = null,
+        private val password: String? = null,
         private val errorHandler: RestErrorHandler = RestErrorHandler()) {
     private val LOGGER = LoggerFactory.getLogger(BasicAuthenticationRestClient::class.java)
 
-    private val basicAuthenticationHeaders: HttpHeaders
+    private val basicAuthenticationHeaders: HttpHeaders?
     private val template: RestTemplate
 
     init {
-        basicAuthenticationHeaders = createAuthenticationHeaders(userName, password)
+        basicAuthenticationHeaders = if (userName != null && password != null) createAuthenticationHeaders(userName, password) else null
         val messageConverter = MappingJackson2HttpMessageConverter()
         template = RestTemplate(Arrays.asList(messageConverter, FormHttpMessageConverter()))
     }
@@ -114,11 +114,6 @@ class BasicAuthenticationRestClient(
     }
 
     private fun <T> createEntity(requestHeaders: HttpHeaders, body: Optional<T>): HttpEntity<T> {
-        if (basicAuthenticationHeaders == null) {
-            throw IllegalStateException("No authentication information present: " +
-                    "When using the get/put/post/delete methods without username and password arguments, you must provide them during "
-                    + "construction")
-        }
         return newEntity(body, requestHeaders)
     }
 

@@ -2,12 +2,14 @@ package org.craftsmenlabs.gareth.mongo
 
 import org.springframework.data.mongodb.repository.MongoRepository
 
-interface MongoExperimentDao : MongoRepository<MongoExperimentEntity, String> {
-    fun findByTemplateId(templateId: String): List<MongoExperimentEntity>
-    fun findByProjectId(projectId: String): List<MongoExperimentEntity>
+interface ExperimentDao : MongoRepository<ExperimentEntity, String> {
+    fun findByTemplateId(templateId: String): List<ExperimentEntity>
+    fun findByProjectId(projectId: String): List<ExperimentEntity>
 }
 
-interface MongoExperimentTemplateDao : MongoRepository<MongoExperimentTemplateEntity, String> {
-    fun findByName(name: String): MongoExperimentTemplateEntity?
+interface ExperimentTemplateDao : MongoRepository<ExperimentTemplateEntity, String> {
+    fun findByName(name: String): ExperimentTemplateEntity?
+    fun findByProjectId(name: String): List<ExperimentTemplateEntity>
+
 }
 

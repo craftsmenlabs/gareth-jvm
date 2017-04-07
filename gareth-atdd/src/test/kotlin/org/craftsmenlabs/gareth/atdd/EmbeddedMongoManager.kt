@@ -14,14 +14,15 @@ import org.slf4j.LoggerFactory
 object EmbeddedMongoManager {
     private val log = LoggerFactory.getLogger(EmbeddedMongoManager::class.java)
 
-    val MONGO_ADDRESS = "localhost"
+    val MONGO_HOSTNAME = "localhost"
+    val MONGO_DATABASE = "atdd"
     val MONGO_PORT = System.getProperty("mongoport", "27018").toInt()
     lateinit var mongodExecutable: MongodExecutable
 
     private fun createConfig(): IMongodConfig {
         return MongodConfigBuilder()
                 .version(Version.Main.PRODUCTION)
-                .net(Net(MONGO_ADDRESS, MONGO_PORT, Network.localhostIsIPv6()))
+                .net(Net(MONGO_HOSTNAME, MONGO_PORT, Network.localhostIsIPv6()))
                 .build()
     }
 
@@ -41,8 +42,8 @@ object EmbeddedMongoManager {
     }
 
     fun deleteAll() {
-        val mongo = MongoClient(MONGO_ADDRESS, MONGO_PORT)
-        val db = mongo.getDB("test")
+        val mongo = MongoClient(MONGO_HOSTNAME, MONGO_PORT)
+        val db = mongo.getDB(MONGO_DATABASE)
         db.collectionNames.forEach { db.getCollection(it).drop() }
         log.info("Successfully dropped collections.")
     }

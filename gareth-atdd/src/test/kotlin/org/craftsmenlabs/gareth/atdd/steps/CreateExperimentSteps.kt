@@ -172,7 +172,7 @@ open class CreateExperimentSteps {
 
     @When("^I get the overviews for all templates")
     fun iGetTheOverviewForTheCurrentTemplate() {
-        overviews = overviewClient.getAll().execute().body()
+        overviews = overviewClient.getAllForProject("acme").execute().body()
     }
 
     @When("^there are (\\d+) templates")

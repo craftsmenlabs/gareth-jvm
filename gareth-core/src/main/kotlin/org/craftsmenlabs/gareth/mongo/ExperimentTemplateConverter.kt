@@ -10,8 +10,8 @@ import org.springframework.stereotype.Service
 @Service
 class ExperimentTemplateConverter @Autowired constructor(val timeService: TimeService) {
 
-    fun toEntity(dto: ExperimentTemplateCreateDTO): MongoExperimentTemplateEntity {
-        val entity = MongoExperimentTemplateEntity()
+    fun toEntity(dto: ExperimentTemplateCreateDTO): ExperimentTemplateEntity {
+        val entity = ExperimentTemplateEntity()
         entity.name = dto.name
         entity.projectId = dto.projectid
         entity.dateCreated = timeService.now()
@@ -23,7 +23,7 @@ class ExperimentTemplateConverter @Autowired constructor(val timeService: TimeSe
         return entity
     }
 
-    fun toDTO(entity: MongoExperimentTemplateEntity): ExperimentTemplateDTO {
+    fun toDTO(entity: ExperimentTemplateEntity): ExperimentTemplateDTO {
         val glueLines = Gluelines(
                 assume = entity.assume,
                 baseline = entity.baseline,

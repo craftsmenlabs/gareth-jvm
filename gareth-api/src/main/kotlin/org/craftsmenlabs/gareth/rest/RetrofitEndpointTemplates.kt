@@ -24,8 +24,8 @@ interface ExperimentTemplateEndpointClient {
 
 interface OverviewEndpointClient {
 
-    @GET("gareth/validator/v1/stats")
-    fun getAll(): Call<List<OverviewDTO>>
+    @GET("gareth/validator/v1/overview/{projectId}")
+    fun getAllForProject(@Path("projectId") projectId: String): Call<List<OverviewDTO>>
 }
 
 interface ExperimentEndpointClient {

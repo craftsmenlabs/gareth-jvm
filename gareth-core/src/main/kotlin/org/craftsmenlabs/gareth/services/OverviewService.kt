@@ -2,26 +2,28 @@ package org.craftsmenlabs.gareth.services
 
 import org.craftsmenlabs.gareth.model.ExecutionStatus
 import org.craftsmenlabs.gareth.model.OverviewDTO
-import org.craftsmenlabs.gareth.mongo.MongoExperimentDao
-import org.craftsmenlabs.gareth.mongo.MongoExperimentTemplateDao
-import org.craftsmenlabs.gareth.mongo.MongoExperimentTemplateEntity
+import org.craftsmenlabs.gareth.mongo.ExperimentDao
+import org.craftsmenlabs.gareth.mongo.ExperimentEntity
+import org.craftsmenlabs.gareth.mongo.ExperimentTemplateDao
+import org.craftsmenlabs.gareth.mongo.ExperimentTemplateEntity
 import org.craftsmenlabs.gareth.time.TimeService
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
 
 @Service
-class OverviewService @Autowired constructor(private val templateDao: MongoExperimentTemplateDao,
-                                             private val experimentDao: MongoExperimentDao,
+class OverviewService @Autowired constructor(private val experimentDao: ExperimentDao,
+                                             private val templateDao: ExperimentTemplateDao,
                                              private val timeService: TimeService) {
 
-    fun getAll(): List<OverviewDTO> {
-        val templates = templateDao.findAll().toList()
-        return if (templates.isEmpty()) listOf() else templates.map { createForTemplate(it) }
+    fun getAllForProject(projectId: String): List<OverviewDTO> {
+        val templatesByProject = templateDao.findByProjectId(projectId)
+        val experimentsByTemplate: Map<String, List<ExperimentEntity>> = experimentDao.findByProjectId(projectId).groupBy { it.templateId }
+        return if (templatesByProject.isEmpty()) listOf() else templatesByProject.map { createForTemplate(it, experimentsByTemplate[it.id]) }
     }
 
-    private fun createForTemplate(template: MongoExperimentTemplateEntity): OverviewDTO {
-        val experiments = experimentDao.findByTemplateId(template.id!!)
-        if (experiments.isEmpty())
+    private fun createForTemplate(template: ExperimentTemplateEntity,
+                                  experiments: List<ExperimentEntity>?): OverviewDTO {
+        if (experiments == null || experiments.isEmpty())
             return OverviewDTO(name = template.name, templateId = template.id!!, editable = true, ready = template.ready != null)
         val finished = experiments.filter { it.dateCompleted != null }
         val success = finished.filter { it.result == ExecutionStatus.SUCCESS }

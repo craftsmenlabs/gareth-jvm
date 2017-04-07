@@ -26,11 +26,9 @@ object GarethServerEnvironment {
         val conf = ConfBuilder(port = GARETH_PORT)
         conf.add("logging.level.org.craftsmenlabs", "DEBUG")
         conf.add("execution.client.url", "http://localhost:$GARETH_EXECUTION_PORT")
-        conf.add("execution.client.user", "user")
-        conf.add("execution.client.password", "secret")
-        conf.add("execution.client.password", "secret")
         conf.add("spring.data.mongodb.port", EmbeddedMongoManager.MONGO_PORT.toString())
-        conf.add("spring.data.mongodb.database", EmbeddedMongoManager.MONGO_ADDRESS)
+        conf.add("spring.data.mongodb.host", EmbeddedMongoManager.MONGO_HOSTNAME)
+        conf.add("spring.data.mongodb.database", EmbeddedMongoManager.MONGO_DATABASE)
 
         val jarFilePath = getJarfile(getProjectRootDir() + "gareth-validator-rest/target")
         return SpringApplicationWrapper("http://localhost:$GARETH_PORT/manage", jarFilePath, conf)

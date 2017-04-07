@@ -69,12 +69,12 @@ class GlueLineLookupEndpoint @Autowired constructor(val service: GluelineService
 }
 
 @RestController
-@RequestMapping("gareth/validator/v1/stats")
+@RequestMapping("gareth/validator/v1/overview/")
 class OverviewEndpoint @Autowired constructor(val overviewService: OverviewService) {
 
-    @RequestMapping(method = arrayOf(RequestMethod.GET))
-    fun getAll(): List<OverviewDTO> {
-        return overviewService.getAll()
+    @RequestMapping(value = "{projectId}", method = arrayOf(RequestMethod.GET))
+    fun getAll(@PathVariable("projectId") projectId: String): List<OverviewDTO> {
+        return overviewService.getAllForProject(projectId)
     }
 }
 

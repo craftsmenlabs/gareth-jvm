@@ -9,7 +9,7 @@ import org.springframework.stereotype.Service
 @Service
 class ExperimentConverter {
 
-    fun copyEditableValues(entity: MongoExperimentEntity, experiment: ExperimentDTO): MongoExperimentEntity {
+    fun copyEditableValues(entity: ExperimentEntity, experiment: ExperimentDTO): ExperimentEntity {
         entity.dateDue = experiment.due
         entity.dateBaselineExecuted = experiment.baselineExecuted
         entity.dateCompleted = experiment.completed
@@ -26,7 +26,7 @@ class ExperimentConverter {
         return entity
     }
 
-    fun toDTO(entity: MongoExperimentEntity): ExperimentDTO {
+    fun toDTO(entity: ExperimentEntity): ExperimentDTO {
         val gluelines = Gluelines(
                 assume = entity.assume,
                 baseline = entity.baseline,

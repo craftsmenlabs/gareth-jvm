@@ -9,16 +9,14 @@ import org.springframework.stereotype.Service
 import javax.annotation.PostConstruct
 
 @Service
-class ExecutionRestClient constructor(@Value("\${execution.client.url}") val host: String,
-                                      @Value("\${execution.client.user}") val user: String,
-                                      @Value("\${execution.client.password}") val password: String) {
+class ExecutionRestClient constructor(@Value("\${execution.client.url:http://localhost:8101}") val host: String) {
 
     lateinit var restClient: BasicAuthenticationRestClient
     val log = LoggerFactory.getLogger(ExecutionRestClient::class.java)
 
     @PostConstruct
     fun init() {
-        restClient = BasicAuthenticationRestClient(user, password)
+        restClient = BasicAuthenticationRestClient()
     }
 
     fun executeLifeCycleStage(type: GlueLineType, executionRequest: ExecutionRequest): ExecutionResult {

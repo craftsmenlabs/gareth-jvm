@@ -12,8 +12,8 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
 
 @Service
-class ExperimentService @Autowired constructor(val experimentDao: MongoExperimentDao,
-                                               val templateDao: MongoExperimentTemplateDao,
+class ExperimentService @Autowired constructor(val experimentDao: ExperimentDao,
+                                               val templateDao: ExperimentTemplateDao,
                                                val converter: ExperimentConverter,
                                                val timeService: TimeService) {
     var saveListener: ((ExperimentDTO) -> Unit)? = null
@@ -31,10 +31,10 @@ class ExperimentService @Autowired constructor(val experimentDao: MongoExperimen
                     ddMMYYYY: String?,
                     onlyFinished: Boolean?): List<ExperimentDTO> {
         val createdAfter = if (ddMMYYYY == null) null else DateFormatUtils.parseDateStringToMidnight(ddMMYYYY)
-        val creationFilter: (MongoExperimentEntity) -> Boolean = {
+        val creationFilter: (ExperimentEntity) -> Boolean = {
             createdAfter == null || it.dateCreated.isAfter(createdAfter)
         }
-        val finishedFilter: (MongoExperimentEntity) -> Boolean = {
+        val finishedFilter: (ExperimentEntity) -> Boolean = {
             onlyFinished == null || onlyFinished == (it.dateCompleted != null)
         }
         return experimentDao.findByProjectId(projectId).filter { creationFilter.invoke(it) && finishedFilter.invoke(it) }.map { converter.toDTO(it) }
@@ -54,12 +54,12 @@ class ExperimentService @Autowired constructor(val experimentDao: MongoExperimen
         return dto
     }
 
-    private fun createEntityForTemplate(templateId: String): MongoExperimentEntity {
-        val template: MongoExperimentTemplateEntity = templateDao.findOne(templateId)
+    private fun createEntityForTemplate(templateId: String): ExperimentEntity {
+        val template: ExperimentTemplateEntity = templateDao.findOne(templateId)
         if (template.ready == null) {
             throw BadRequestException("You cannot start an experiment that is not ready.")
         }
-        val entity = MongoExperimentEntity()
+        val entity = ExperimentEntity()
         entity.projectId = template.projectId
         entity.templateId = templateId
         entity.baseline = template.baseline

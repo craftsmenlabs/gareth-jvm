@@ -7,18 +7,18 @@ import org.craftsmenlabs.gareth.model.ExperimentTemplateCreateDTO
 import org.craftsmenlabs.gareth.model.ExperimentTemplateDTO
 import org.craftsmenlabs.gareth.model.ExperimentTemplateUpdateDTO
 import org.craftsmenlabs.gareth.model.GlueLineType
+import org.craftsmenlabs.gareth.mongo.ExperimentDao
 import org.craftsmenlabs.gareth.mongo.ExperimentTemplateConverter
-import org.craftsmenlabs.gareth.mongo.MongoExperimentDao
-import org.craftsmenlabs.gareth.mongo.MongoExperimentTemplateDao
-import org.craftsmenlabs.gareth.mongo.MongoExperimentTemplateEntity
+import org.craftsmenlabs.gareth.mongo.ExperimentTemplateDao
+import org.craftsmenlabs.gareth.mongo.ExperimentTemplateEntity
 import org.craftsmenlabs.gareth.time.TimeService
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
 
 @Service
-class TemplateService @Autowired constructor(private val templateDao: MongoExperimentTemplateDao,
-                                             private val experimentDao: MongoExperimentDao,
+class TemplateService @Autowired constructor(private val templateDao: ExperimentTemplateDao,
+                                             private val experimentDao: ExperimentDao,
                                              private val glueLineLookupRestClient: GluelineValidatorRestClient,
                                              private val timeService: TimeService,
                                              private val templateConverter: ExperimentTemplateConverter) {
@@ -75,7 +75,7 @@ class TemplateService @Autowired constructor(private val templateDao: MongoExper
         } else return templateDao.findAll().map { templateConverter.toDTO(it) }
     }
 
-    private fun validateNoRunningExperimentsForTemplate(entity: MongoExperimentTemplateEntity) {
+    private fun validateNoRunningExperimentsForTemplate(entity: ExperimentTemplateEntity) {
         val experiments = experimentDao.findByTemplateId(entity.id!!)
         if (!experiments.isEmpty())
             throw BadRequestException("You cannot update experiment template ${entity.name}. There are already running experiments.")

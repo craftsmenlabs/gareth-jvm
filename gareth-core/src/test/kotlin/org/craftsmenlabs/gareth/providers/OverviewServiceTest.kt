@@ -5,10 +5,10 @@ import mockit.Injectable
 import mockit.Tested
 import org.assertj.core.api.Assertions.assertThat
 import org.craftsmenlabs.gareth.model.ExecutionStatus
-import org.craftsmenlabs.gareth.mongo.MongoExperimentDao
-import org.craftsmenlabs.gareth.mongo.MongoExperimentEntity
-import org.craftsmenlabs.gareth.mongo.MongoExperimentTemplateDao
-import org.craftsmenlabs.gareth.mongo.MongoExperimentTemplateEntity
+import org.craftsmenlabs.gareth.mongo.ExperimentDao
+import org.craftsmenlabs.gareth.mongo.ExperimentEntity
+import org.craftsmenlabs.gareth.mongo.ExperimentTemplateDao
+import org.craftsmenlabs.gareth.mongo.ExperimentTemplateEntity
 import org.craftsmenlabs.gareth.services.OverviewService
 import org.craftsmenlabs.gareth.time.TimeService
 import org.junit.Before
@@ -19,9 +19,9 @@ class OverviewServiceTest {
 
 
     @Injectable
-    lateinit var templateDao: MongoExperimentTemplateDao
+    lateinit var templateDao: ExperimentTemplateDao
     @Injectable
-    lateinit var experimentDao: MongoExperimentDao
+    lateinit var experimentDao: ExperimentDao
     @Injectable
     lateinit var timeService: TimeService
     @Tested
@@ -49,13 +49,13 @@ class OverviewServiceTest {
 
     @Test
     fun testOverviewWithNoExperimentTemplates() {
-        assertThat(service.getAll()).isEmpty()
+        assertThat(service.getAllForProject("acme")).isEmpty()
     }
 
     @Test
     fun testOverviewWithOneTemplateAndNoExperiments() {
         setupTemplateDao(template)
-        val overviews = service.getAll()
+        val overviews = service.getAllForProject("acme")
         assertThat(overviews).hasSize(1)
         assertThat(overviews[0].name).isEqualTo("fruit")
         assertThat(overviews[0].templateId).isEqualTo("tmp")
@@ -66,7 +66,7 @@ class OverviewServiceTest {
         setupTemplateDao(template)
         val started = createExperiment(template, due = threeDaysAgo, status = ExecutionStatus.RUNNING)
         setupExperimentDaoForTemplate(template, started)
-        assertThat(service.getAll()[0].running).isEqualTo(1)
+        assertThat(service.getAllForProject("acme")[0].running).isEqualTo(1)
     }
 
     @Test
@@ -74,7 +74,7 @@ class OverviewServiceTest {
         setupTemplateDao(template)
         val started = createExperiment(template, due = threeDaysAgo)
         setupExperimentDaoForTemplate(template, started)
-        assertThat(service.getAll()[0].pending).isEqualTo(1)
+        assertThat(service.getAllForProject("acme")[0].pending).isEqualTo(1)
     }
 
     @Test
@@ -82,9 +82,9 @@ class OverviewServiceTest {
         setupTemplateDao(template)
         val success = createExperiment(template, due = threeDaysAgo, status = ExecutionStatus.SUCCESS, completed = twoDaysAgo)
         setupExperimentDaoForTemplate(template, success)
-        assertThat(service.getAll()[0].success).isEqualTo(1)
-        assertThat(service.getAll()[0].failed).isEqualTo(0)
-        assertThat(service.getAll()[0].running).isEqualTo(0)
+        assertThat(service.getAllForProject("acme")[0].success).isEqualTo(1)
+        assertThat(service.getAllForProject("acme")[0].failed).isEqualTo(0)
+        assertThat(service.getAllForProject("acme")[0].running).isEqualTo(0)
     }
 
     @Test
@@ -92,9 +92,9 @@ class OverviewServiceTest {
         setupTemplateDao(template)
         val failed = createExperiment(template, due = threeDaysAgo, status = ExecutionStatus.FAILURE, completed = twoDaysAgo)
         setupExperimentDaoForTemplate(template, failed)
-        assertThat(service.getAll()[0].success).isEqualTo(0)
-        assertThat(service.getAll()[0].failed).isEqualTo(1)
-        assertThat(service.getAll()[0].running).isEqualTo(0)
+        assertThat(service.getAllForProject("acme")[0].success).isEqualTo(0)
+        assertThat(service.getAllForProject("acme")[0].failed).isEqualTo(1)
+        assertThat(service.getAllForProject("acme")[0].running).isEqualTo(0)
     }
 
 
@@ -104,7 +104,7 @@ class OverviewServiceTest {
         val success = createExperiment(template, due = threeDaysAgo, status = ExecutionStatus.SUCCESS, completed = yesterday)
         val failed = createExperiment(template, due = threeDaysAgo, status = ExecutionStatus.FAILURE, completed = twoDaysAgo)
         setupExperimentDaoForTemplate(template, success, failed)
-        assertThat(service.getAll()[0].lastRun).isEqualTo(yesterday)
+        assertThat(service.getAllForProject("acme")[0].lastRun).isEqualTo(yesterday)
     }
 
     @Test
@@ -115,31 +115,32 @@ class OverviewServiceTest {
         val startNextWeek = createExperiment(template, due = nextWeek, status = ExecutionStatus.PENDING)
         val startInTwoWeeks = createExperiment(template, due = twoWeeks, status = ExecutionStatus.PENDING)
         setupExperimentDaoForTemplate(template, success, failed, startNextWeek, startInTwoWeeks)
-        assertThat(service.getAll()[0].nextRun).isEqualTo(nextWeek)
+        assertThat(service.getAllForProject("acme")[0].nextRun).isEqualTo(nextWeek)
     }
 
-    private fun setupTemplateDao(vararg templates: MongoExperimentTemplateEntity) {
+    private fun setupTemplateDao(vararg templates: ExperimentTemplateEntity) {
         object : Expectations() {
             init {
-                templateDao.findAll()
+                templateDao.findByProjectId("acme")
                 result = templates.toList()
             }
         }
     }
 
-    private fun setupExperimentDaoForTemplate(template: MongoExperimentTemplateEntity, vararg experiments: MongoExperimentEntity) {
+    private fun setupExperimentDaoForTemplate(template: ExperimentTemplateEntity, vararg experiments: ExperimentEntity) {
         object : Expectations() {
             init {
-                experimentDao.findByTemplateId(template.id!!)
+                experimentDao.findByProjectId("acme")
                 result = experiments
             }
         }
     }
 
-    private fun createTemplate(name: String): MongoExperimentTemplateEntity {
-        val template = MongoExperimentTemplateEntity()
+    private fun createTemplate(name: String): ExperimentTemplateEntity {
+        val template = ExperimentTemplateEntity()
         template.name = name
         template.id = "tmp"
+        template.projectId = "acme"
         //the following are not part of the test, but cannot be null
         template.assume = "assume"
         template.baseline = "baseline"
@@ -150,13 +151,13 @@ class OverviewServiceTest {
         return template
     }
 
-    private fun createExperiment(template: MongoExperimentTemplateEntity,
+    private fun createExperiment(template: ExperimentTemplateEntity,
                                  due: LocalDateTime,
                                  completed: LocalDateTime? = null,
                                  status: ExecutionStatus = ExecutionStatus.PENDING
 
-    ): MongoExperimentEntity {
-        val exp = MongoExperimentEntity(null)
+    ): ExperimentEntity {
+        val exp = ExperimentEntity(null)
         exp.templateId = template.id!!
         exp.assume = template.assume
         exp.baseline = template.baseline

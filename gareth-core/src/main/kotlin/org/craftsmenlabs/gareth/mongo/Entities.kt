@@ -6,7 +6,7 @@ import org.springframework.data.annotation.Id
 import org.springframework.data.mongodb.core.index.Indexed
 import java.time.LocalDateTime
 
-data class MongoExperimentEntity(@Id var id: String? = null) {
+data class ExperimentEntity(@Id var id: String? = null) {
     lateinit var dateCreated: LocalDateTime
     lateinit var result: ExecutionStatus
     lateinit var dateDue: LocalDateTime
@@ -25,7 +25,7 @@ data class MongoExperimentEntity(@Id var id: String? = null) {
     lateinit var timeline: String
 }
 
-data class MongoExperimentTemplateEntity(@Id var id: String? = null) {
+data class ExperimentTemplateEntity(@Id var id: String? = null) {
     @Indexed
     lateinit var projectId: String
     @Indexed
