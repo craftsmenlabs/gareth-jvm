@@ -62,7 +62,7 @@ class CreateExperimentIntegrationTest {
 
     @Test
     fun b_createExperimentWithoutStartDate1() {
-        val createTemplateDTO = createTemplate("Goodbye world")
+        val createTemplateDTO = createFullTemplate("Goodbye world")
         val template = templateService.create(createTemplateDTO)
 
         val created = experimentService.createExperiment(ExperimentCreateDTO(template.id, LocalDateTime.now()))
@@ -77,7 +77,7 @@ class CreateExperimentIntegrationTest {
 
     @Test
     fun b_createExperimentWithoutStartDate() {
-        val createTemplateDTO = createTemplate("Hello world")
+        val createTemplateDTO = createFullTemplate("Hello world")
         val template = postTemplate(createTemplateDTO)
         val experimentCreateDTO = ExperimentCreateDTO(templateId = template.id)
         val created = postExperiment(experimentCreateDTO)
@@ -91,7 +91,7 @@ class CreateExperimentIntegrationTest {
 
     @Test
     fun c_createExperimentWithFaultyBaseline() {
-        val orig = createTemplate("Hello world2")
+        val orig = createFullTemplate("Hello world2")
         val dto = orig.copy(glueLines = orig.glueLines.copy(baseline = "sale of computers"))
         val template = postTemplate(dto)
         assertThat(template.id).isNotEmpty()
@@ -100,12 +100,11 @@ class CreateExperimentIntegrationTest {
         assertThat(saved.ready).isNull()
         val updated = updateTemplate(ExperimentTemplateUpdateDTO(id = saved.id, assume = "sale of fruit"))
         assertThat(updated.ready).isNotNull()
-
     }
 
     @Test
     fun d_createAndStartExperiment() {
-        val template = postTemplate(createTemplate("Hello world3"))
+        val template = postTemplate(createFullTemplate("Hello world3"))
         val dto = ExperimentCreateDTO(templateId = template.id, dueDate = LocalDateTime.now().plusSeconds(5))
         val created = postExperiment(dto)
         assertThat(experimentService.getExperimentById(created.id).status).isEqualTo(ExecutionStatus.PENDING)
@@ -119,10 +118,21 @@ class CreateExperimentIntegrationTest {
         saved = experimentService.getExperimentById(created.id)
         assertThat(saved.status).isEqualTo(ExecutionStatus.SUCCESS)
         assertThat(saved.completed).isNotNull()
+    }
+
+    @Test
+    fun d_createAndStartExperimentWithoutFinalization() {
+        val template = postTemplate(createTemplateWithoutFinalization("Hello world4"))
+        val dto = ExperimentCreateDTO(templateId = template.id, dueDate = LocalDateTime.now())
+        val created = postExperiment(dto)
+        Thread.sleep(3000)
+        val saved = experimentService.getExperimentById(created.id)
+        assertThat(saved.status).isEqualTo(ExecutionStatus.SUCCESS)
+        assertThat(saved.completed).isNotNull()
 
     }
 
-    private fun createTemplate(name: String): ExperimentTemplateCreateDTO {
+    private fun createFullTemplate(name: String): ExperimentTemplateCreateDTO {
         return ExperimentTemplateCreateDTO(name = name, projectid = "acme",
                 glueLines = Gluelines(
                         baseline = "sale of fruit",
@@ -130,6 +140,16 @@ class CreateExperimentIntegrationTest {
                         time = "5 seconds",
                         success = "send email to Sam",
                         failure = "send email to Moos"
+                ),
+                value = 42)
+    }
+
+    private fun createTemplateWithoutFinalization(name: String): ExperimentTemplateCreateDTO {
+        return ExperimentTemplateCreateDTO(name = name, projectid = "acme",
+                glueLines = Gluelines(
+                        baseline = "sale of fruit",
+                        assume = "sale of fruit has risen by 81 per cent",
+                        time = "2 seconds"
                 ),
                 value = 42)
     }

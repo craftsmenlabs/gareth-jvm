@@ -62,11 +62,12 @@ class ExperimentService @Autowired constructor(val experimentDao: ExperimentDao,
         val entity = ExperimentEntity()
         entity.projectId = template.projectId
         entity.templateId = templateId
-        entity.baseline = template.baseline
-        entity.assume = template.assume
+        //When the template is not ready this code is never reached, hence these exceptions should never be thrown
+        entity.baseline = template.baseline ?: throw IllegalStateException("baseline cannot be null")
+        entity.assume = template.assume ?: throw IllegalStateException("assume cannot be null")
+        entity.timeline = template.timeline ?: throw IllegalStateException("timeline cannot be null")
         entity.success = template.success
         entity.failure = template.failure
-        entity.timeline = template.timeline
         entity.name = template.name
         return entity
     }

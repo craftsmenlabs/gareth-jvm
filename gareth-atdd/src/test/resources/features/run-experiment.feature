@@ -1,5 +1,16 @@
 Feature: Run ACME experiment
 
+  Scenario: Run successful experiment without finalization steps
+    When I want to create an experiment named no finalization
+    And the baseline is sale of apples
+    And the time is 2 seconds
+    And the assume is sale of apples has risen by 10 per cent
+    And I create the template
+    Then the template is correct
+    When I start the experiment immediately
+    When I wait 4 seconds
+    Then the experiment is completed successfully
+
   Scenario: Run experiment with successful outcome
     When I want to create an experiment named toss a coin
     And the baseline is sale of apples

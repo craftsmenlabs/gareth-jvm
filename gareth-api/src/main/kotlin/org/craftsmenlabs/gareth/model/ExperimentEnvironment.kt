@@ -45,7 +45,7 @@ data class Duration(val unit: String, val amount: Long)
 
 data class DefinitionInfo(val glueline: String, val method: String, val className: String, val description: String = "")
 
-data class ExecutionRequest(val environment: ExperimentRunEnvironment, val glueLines: Gluelines)
+data class ExecutionRequest(val environment: ExperimentRunEnvironment, val glueLines: ValidatedGluelines)
 
 data class ExecutionResult(val environment: ExperimentRunEnvironment, val status: ExecutionStatus)
 

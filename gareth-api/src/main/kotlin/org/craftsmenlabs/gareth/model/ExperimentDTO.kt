@@ -5,14 +5,14 @@ import java.time.LocalDateTime
 data class ExperimentDTO(val id: String,
                          val name: String,
                          val value: Int = 0,
-                         override val glueLines: Gluelines,
+                         val glueLines: ValidatedGluelines,
                          val created: LocalDateTime,
                          val ready: LocalDateTime? = null,
                          val due: LocalDateTime,
                          val baselineExecuted: LocalDateTime? = null,
                          val completed: LocalDateTime? = null,
                          val status: ExecutionStatus = ExecutionStatus.PENDING,
-                         val environment: ExperimentRunEnvironment = ExperimentRunEnvironment()) : HasGlueLines {
+                         val environment: ExperimentRunEnvironment = ExperimentRunEnvironment()) {
 
     fun getLifecycleStage(): ExperimentLifecycle {
         if (baselineExecuted == null) {
@@ -32,7 +32,7 @@ data class ExperimentDTO(val id: String,
                     value = 1,
                     created = now,
                     due = now,
-                    glueLines = Gluelines(baseline = "baseline", assume = "assume", time = "5 seonds", success = "success", failure = "failure"),
+                    glueLines = ValidatedGluelines(baseline = "baseline", assume = "assume", time = "5 seonds", success = "success", failure = "failure"),
                     environment = ExperimentRunEnvironment())
         }
     }
@@ -44,8 +44,8 @@ data class ExperimentTemplateDTO(
         val ready: LocalDateTime?,
         val name: String,
         val value: Int = 0,
-        override val glueLines: Gluelines
-) : HasGlueLines
+        val glueLines: Gluelines
+)
 
 data class ExperimentCreateDTO(val templateId: String, val dueDate: LocalDateTime? = null)
 
@@ -63,7 +63,7 @@ data class ExperimentTemplateCreateDTO(
         val name: String,
         val projectid: String,
         val value: Int = 0,
-        override val glueLines: Gluelines) : HasGlueLines
+        val glueLines: Gluelines)
 
 data class OverviewDTO(val name: String,
                        val templateId: String,

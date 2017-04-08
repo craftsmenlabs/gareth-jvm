@@ -44,3 +44,11 @@ Feature: Create experiment template
     Then the template is correct
     When I update the assume line of the current template to sale of apples has done nothing
     Then the template is not correct
+
+  Scenario: Create template without success and failure
+    When I want to create an experiment named Template 40
+    And the baseline is sale of apples
+    And the time is 2 seconds
+    And the assume is sale of apples has risen by 8 per cent
+    And I create the template
+    Then the template is correct

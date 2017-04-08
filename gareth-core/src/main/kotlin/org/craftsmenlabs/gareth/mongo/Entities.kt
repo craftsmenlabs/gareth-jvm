@@ -20,8 +20,8 @@ data class ExperimentEntity(@Id var id: String? = null) {
     lateinit var name: String
     lateinit var baseline: String
     lateinit var assume: String
-    lateinit var success: String
-    lateinit var failure: String
+    var success: String? = null
+    var failure: String? = null
     lateinit var timeline: String
 }
 
@@ -30,11 +30,11 @@ data class ExperimentTemplateEntity(@Id var id: String? = null) {
     lateinit var projectId: String
     @Indexed
     lateinit var name: String
-    lateinit var baseline: String
-    lateinit var assume: String
-    lateinit var success: String
-    lateinit var failure: String
-    lateinit var timeline: String
+    var baseline: String? = null
+    var assume: String? = null
+    var success: String? = null
+    var failure: String? = null
+    var timeline: String? = null
     lateinit var dateCreated: LocalDateTime
     var ready: LocalDateTime? = null
 }

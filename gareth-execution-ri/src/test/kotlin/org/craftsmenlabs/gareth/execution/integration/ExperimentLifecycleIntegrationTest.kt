@@ -25,38 +25,45 @@ class ExperimentLifecycleIntegrationTest {
     val path = "http://localhost:8101/gareth/validator/v1/"
     val restClient = BasicAuthenticationRestClient("user", "secret")
 
-    private val glueLines = Gluelines(
+    private val fullGluelineSet = ValidatedGluelines(
             baseline = "sale of fruit",
             assume = "sale of fruit has risen by 81 per cent",
             time = "next Easter",
             success = "send email to John",
             failure = "send email to Bob")
 
+    private val noFinalizationGluelineSet = ValidatedGluelines(
+            baseline = "sale of fruit",
+            assume = "sale of fruit has risen by 81 per cent",
+            time = "next Easter")
+
     @Test
     fun testBaseline() {
-        assertThat(doPut("${path}baseline", createRequest()).status).isEqualTo(ExecutionStatus.RUNNING)
+        assertThat(doPut("${path}baseline", createRequest(fullGluelineSet)).status).isEqualTo(ExecutionStatus.RUNNING)
     }
 
     @Test
     fun testSuccessfulAssume() {
-        assertThat(doPut("${path}assume", createRequest()).status).isEqualTo(ExecutionStatus.SUCCESS)
+        assertThat(doPut("${path}assume", createRequest(fullGluelineSet)).status).isEqualTo(ExecutionStatus.SUCCESS)
+        assertThat(doPut("${path}assume", createRequest(noFinalizationGluelineSet)).status).isEqualTo(ExecutionStatus.SUCCESS)
     }
+
 
     @Test
     fun testFailedAssume() {
-        val request = createRequest()
+        val request = createRequest(fullGluelineSet)
         val failedAssume = request.copy(glueLines = request.glueLines.copy(assume = "sale of fruit has risen by 79 per cent"))
         assertThat(doPut("${path}assume", failedAssume).status).isEqualTo(ExecutionStatus.FAILURE)
     }
 
     @Test
     fun testDuration() {
-        val response = restClient.putAsEntity(createRequest(), Duration::class.java, "${path}time")
+        val response = restClient.putAsEntity(createRequest(fullGluelineSet), Duration::class.java, "${path}time")
         assertThat(response.body.amount).isEqualTo(14400L)
     }
 
-    fun createRequest(): ExecutionRequest {
-        return ExecutionRequest(ExperimentRunEnvironmentBuilder.createEmpty(), glueLines)
+    fun createRequest(gluelines: ValidatedGluelines): ExecutionRequest {
+        return ExecutionRequest(ExperimentRunEnvironmentBuilder.createEmpty(), gluelines)
     }
 
     fun doPut(path: String, dto: ExecutionRequest): ExecutionResult {

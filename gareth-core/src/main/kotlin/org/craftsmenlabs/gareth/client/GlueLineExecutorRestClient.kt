@@ -16,7 +16,7 @@ import java.time.temporal.ChronoUnit
 class GlueLineExecutorRestClient(@Autowired private val restClient: ExecutionRestClient) : GlueLineExecutor {
 
     override fun executeBaseline(experiment: ExperimentDTO): ExecutionResult {
-        return restClient.executeLifeCycleStage(GlueLineType.BASELINE, ExecutionRequest(experiment.environment, experiment.glueLines))
+        return restClient. executeLifeCycleStage(GlueLineType.BASELINE, ExecutionRequest(experiment.environment, experiment.glueLines))
     }
 
     override fun executeAssume(experiment: ExperimentDTO): ExecutionResult {

@@ -22,18 +22,23 @@ class GluelineValidatorRestClient : GluelineValidator {
     @Autowired
     private lateinit var durationExpressionParser: DurationExpressionParser
 
-    override fun gluelineIsValid(type: GlueLineType, glueline: String): Boolean {
+    override fun gluelineIsValid(type: GlueLineType, glueline: String?): Boolean {
+        if (glueline == null || glueline.isBlank()) {
+            //only success and failure are allowed to be blank
+            return type == GlueLineType.SUCCESS || type == GlueLineType.FAILURE
+        }
         if (type == GlueLineType.TIME)
             return durationExpressionParser.parse(glueline) != null || client.isValidTimeGlueLine(glueline)
         else return client.isValidGlueLine(type, glueline)
     }
 
     override fun validateGluelines(gluelines: Gluelines): Boolean {
-        val lines = mapOf<GlueLineType, String>(
+        val lines = mapOf<GlueLineType, String?>(
                 Pair(GlueLineType.ASSUME, gluelines.assume),
                 Pair(GlueLineType.BASELINE, gluelines.baseline),
+                Pair(GlueLineType.TIME, gluelines.time),
                 Pair(GlueLineType.FAILURE, gluelines.failure),
                 Pair(GlueLineType.SUCCESS, gluelines.success))
-        return gluelineIsValid(GlueLineType.TIME, gluelines.time) && lines.all { gluelineIsValid(it.key, it.value) }
+        return lines.all { gluelineIsValid(it.key, it.value) }
     }
 }

@@ -5,5 +5,5 @@ import org.craftsmenlabs.gareth.model.Gluelines
 
 interface GluelineValidator {
     fun validateGluelines(experiment: Gluelines): Boolean
-    fun gluelineIsValid(type: GlueLineType, glueline: String): Boolean
+    fun gluelineIsValid(type: GlueLineType, glueline: String?): Boolean
 }

@@ -1,5 +1,6 @@
 package org.craftsmenlabs.gareth.execution.services
 
+import org.craftsmenlabs.gareth.execution.RunContext
 import org.craftsmenlabs.gareth.execution.definitions.ExecutionType
 import org.craftsmenlabs.gareth.execution.dto.DurationBuilder
 import org.craftsmenlabs.gareth.model.*
@@ -14,7 +15,7 @@ open class DefinitionService @Autowired constructor(val definitionRegistry: Defi
     val log: Logger = LoggerFactory.getLogger(DefinitionService::class.java)
 
     fun executeBaseline(dto: ExecutionRequest): ExecutionResult {
-        val context: ExecutionRunContext = executeByType(dto.glueLines.baseline, ExecutionType.BASELINE, dto)
+        val context: ExecutionRunContext = executeMandatoryGlueline(dto.glueLines.baseline, ExecutionType.BASELINE, dto)
         return context.toExecutionResult(ExecutionStatus.RUNNING)
     }
 
@@ -31,12 +32,12 @@ open class DefinitionService @Autowired constructor(val definitionRegistry: Defi
     }
 
     private fun executeSuccess(dto: ExecutionRequest): ExecutionResult {
-        val context = executeByType(dto.glueLines.success, ExecutionType.SUCCESS, dto)
+        val context = executeOptionalGlueline(dto.glueLines.success, ExecutionType.SUCCESS, dto)
         return context.toExecutionResult(ExecutionStatus.SUCCESS)
     }
 
     private fun executeFailure(dto: ExecutionRequest): ExecutionResult {
-        val context = executeByType(dto.glueLines.failure, ExecutionType.FAILURE, dto)
+        val context = executeOptionalGlueline(dto.glueLines.failure, ExecutionType.FAILURE, dto)
         return context.toExecutionResult(ExecutionStatus.FAILURE)
     }
 
@@ -47,8 +48,14 @@ open class DefinitionService @Autowired constructor(val definitionRegistry: Defi
 
     fun getTime(glueline: String): Duration = DurationBuilder.createForMinutes(definitionRegistry.getTimeForGlueline(glueline))
 
-    private fun executeByType(glueline: String, type: ExecutionType, request: ExecutionRequest): ExecutionRunContext =
+    private fun executeMandatoryGlueline(glueline: String, type: ExecutionType, request: ExecutionRequest): ExecutionRunContext = definitionRegistry.invokeVoidMethodByType(glueline, type, request)
+
+    private fun executeOptionalGlueline(glueline: String?, type: ExecutionType, request: ExecutionRequest): ExecutionRunContext {
+        //if the glueline is empty, there's nothing to invoke
+        return if (glueline == null) RunContext.create(request)
+        else
             definitionRegistry.invokeVoidMethodByType(glueline, type, request)
+    }
 
 }
 

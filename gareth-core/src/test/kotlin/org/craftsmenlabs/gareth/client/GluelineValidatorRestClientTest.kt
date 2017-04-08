@@ -4,7 +4,6 @@ import mockit.Expectations
 import mockit.Injectable
 import mockit.Tested
 import org.assertj.core.api.Assertions.assertThat
-import org.craftsmenlabs.gareth.model.ExperimentDTO
 import org.craftsmenlabs.gareth.model.GlueLineType
 import org.craftsmenlabs.gareth.model.Gluelines
 import org.craftsmenlabs.gareth.time.DurationExpressionParser
@@ -13,8 +12,6 @@ import java.time.Duration
 
 class GluelineValidatorRestClientTest {
 
-    @Injectable
-    private lateinit var experiment: ExperimentDTO
     @Injectable
     private lateinit var gluelines: Gluelines
     @Injectable
@@ -42,7 +39,28 @@ class GluelineValidatorRestClientTest {
                 result = Duration.ZERO
             }
         }
-        assertThat(glueLineClient.validateGluelines(experiment.glueLines)).isTrue()
+        assertThat(glueLineClient.validateGluelines(gluelines)).isTrue()
+    }
+
+
+    @Test
+    fun testexperimentReadyWithEmptySuccessAndFailure() {
+        setupExperimentDetails(true)
+        object : Expectations() {
+            init {
+                client.isValidGlueLine(GlueLineType.ASSUME, "A")
+                result = true
+                client.isValidGlueLine(GlueLineType.BASELINE, "B")
+                result = true
+                client.isValidGlueLine(GlueLineType.SUCCESS, "S")
+                maxTimes = 0
+                client.isValidGlueLine(GlueLineType.FAILURE, "F")
+                maxTimes = 0
+                durationExpressionParser.parse("T")
+                result = Duration.ZERO
+            }
+        }
+        assertThat(glueLineClient.validateGluelines(gluelines)).isTrue()
     }
 
 
@@ -55,25 +73,24 @@ class GluelineValidatorRestClientTest {
                 result = false
             }
         }
-        assertThat(glueLineClient.validateGluelines(experiment.glueLines)).isFalse()
+        assertThat(glueLineClient.validateGluelines(gluelines)).isFalse()
     }
 
-    fun setupExperimentDetails() {
+    fun setupExperimentDetails(emptyFinalization: Boolean = false) {
         object : Expectations() {
             init {
-                experiment.glueLines
-                result = gluelines
                 gluelines.assume
                 result = "A"
                 gluelines.baseline
                 result = "B"
                 gluelines.success
-                result = "S"
+                result = if (emptyFinalization) null else "S"
                 gluelines.failure
-                result = "F"
+                result = if (emptyFinalization) null else "F"
                 gluelines.time
                 result = "T"
             }
         }
     }
+
 }

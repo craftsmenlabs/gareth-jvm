@@ -18,8 +18,6 @@ interface ExperimentTemplateEndpointClient {
     @GET("gareth/validator/v1/templates")
     fun getByName(@Query("name") name: String): Call<List<ExperimentTemplateDTO>>
 
-    @GET("gareth/validator/v1/templates")
-    fun getAll(): Call<List<ExperimentTemplateDTO>>
 }
 
 interface OverviewEndpointClient {

@@ -159,11 +159,11 @@ class OverviewServiceTest {
     ): ExperimentEntity {
         val exp = ExperimentEntity(null)
         exp.templateId = template.id!!
-        exp.assume = template.assume
-        exp.baseline = template.baseline
+        exp.assume = template.assume!!
+        exp.baseline = template.baseline!!
         exp.success = template.success
         exp.failure = template.failure
-        exp.timeline = template.timeline
+        exp.timeline = template.timeline!!
         exp.name = template.name
         exp.dateCreated = threeDaysAgo
         exp.dateDue = due

@@ -3,7 +3,7 @@ package org.craftsmenlabs.gareth.mongo
 import org.craftsmenlabs.gareth.model.EnvironmentItem
 import org.craftsmenlabs.gareth.model.ExperimentDTO
 import org.craftsmenlabs.gareth.model.ExperimentRunEnvironment
-import org.craftsmenlabs.gareth.model.Gluelines
+import org.craftsmenlabs.gareth.model.ValidatedGluelines
 import org.springframework.stereotype.Service
 
 @Service
@@ -27,7 +27,7 @@ class ExperimentConverter {
     }
 
     fun toDTO(entity: ExperimentEntity): ExperimentDTO {
-        val gluelines = Gluelines(
+        val gluelines = ValidatedGluelines(
                 assume = entity.assume,
                 baseline = entity.baseline,
                 success = entity.success,
