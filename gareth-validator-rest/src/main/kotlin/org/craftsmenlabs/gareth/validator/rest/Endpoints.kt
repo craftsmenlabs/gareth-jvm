@@ -1,14 +1,13 @@
 package org.craftsmenlabs.gareth.validator.rest
 
 
+import org.craftsmenlabs.gareth.validator.client.GluelineValidator
 import org.craftsmenlabs.gareth.validator.model.*
 import org.craftsmenlabs.gareth.validator.services.ExperimentService
-import org.craftsmenlabs.gareth.validator.services.GluelineService
 import org.craftsmenlabs.gareth.validator.services.OverviewService
 import org.craftsmenlabs.gareth.validator.services.TemplateService
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.web.bind.annotation.*
-
 
 @RestController
 @RequestMapping("gareth/validator/v1/experiments")
@@ -60,12 +59,13 @@ class ExperimentTemplateEndpoint @Autowired constructor(val templateService: Tem
 
 @RestController
 @RequestMapping("gareth/validator/v1/")
-class GlueLineLookupEndpoint @Autowired constructor(val service: GluelineService) {
+class GlueLineLookupEndpoint @Autowired constructor(val validator: GluelineValidator) {
 
-    @RequestMapping(value = "glueline", method = arrayOf(RequestMethod.GET))
-    fun lookupGlueline(@RequestParam("type") glueLine: GlueLineType,
-                       @RequestParam("content") content: String): GlueLineSearchResultDTO =
-            service.lookupGlueline(glueLine, content)
+    @RequestMapping(value = "glueline/{projectId}/{type}/{content}", method = arrayOf(RequestMethod.GET))
+    fun lookupGlueline(@PathVariable("projectId") projectId: String,
+                       @PathVariable("type") glueLine: GlueLineType,
+                       @PathVariable("content") content: String): GlueLineSearchResultDTO =
+            validator.lookupGlueline(projectId, glueLine, content)
 }
 
 @RestController
