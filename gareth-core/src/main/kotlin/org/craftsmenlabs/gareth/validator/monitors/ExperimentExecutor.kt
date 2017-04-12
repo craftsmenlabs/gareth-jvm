@@ -1,6 +1,6 @@
 package org.craftsmenlabs.gareth.validator.monitors
 
-import org.craftsmenlabs.gareth.validator.GlueLineExecutor
+import org.craftsmenlabs.gareth.validator.client.GlueLineExecutor
 import org.craftsmenlabs.gareth.validator.model.ExecutionStatus
 import org.craftsmenlabs.gareth.validator.model.ExperimentDTO
 import org.craftsmenlabs.gareth.validator.time.TimeService

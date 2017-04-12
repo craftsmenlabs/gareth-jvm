@@ -2,7 +2,7 @@ package org.craftsmenlabs.gareth.validator.services
 
 import org.craftsmenlabs.gareth.validator.BadRequestException
 import org.craftsmenlabs.gareth.validator.NotFoundException
-import org.craftsmenlabs.gareth.validator.client.GluelineValidatorRestClient
+import org.craftsmenlabs.gareth.validator.client.rest.GluelineValidatorRestClient
 import org.craftsmenlabs.gareth.validator.model.ExperimentTemplateCreateDTO
 import org.craftsmenlabs.gareth.validator.model.ExperimentTemplateDTO
 import org.craftsmenlabs.gareth.validator.model.ExperimentTemplateUpdateDTO
@@ -41,7 +41,7 @@ class TemplateService @Autowired constructor(private val templateDao: Experiment
         if (dto.time != null)
             entity.timeline = dto.time!!
         if (gluelinesHaveChanged(dto)) {
-            val isReady = validateGluelinesForUpdate(dto)
+            val isReady = getChangedGluelines(dto).all { glueLineLookupRestClient.gluelineIsValid(entity.projectId, it.key, it.value) }
             entity.ready = if (isReady) timeService.now() else null
         }
         val saved = templateDao.save(entity)
@@ -53,7 +53,7 @@ class TemplateService @Autowired constructor(private val templateDao: Experiment
         if (existing != null)
             throw BadRequestException("Cannot create template '${dto.name}': name exists")
         val entity = templateConverter.toEntity(dto)
-        val isReady = glueLineLookupRestClient.validateGluelines(dto.glueLines)
+        val isReady = glueLineLookupRestClient.validateGluelines(dto.projectid, dto.glueLines)
         if (isReady) {
             log.info("Experiment gluelines are valid.")
             entity.ready = timeService.now()
@@ -96,10 +96,6 @@ class TemplateService @Autowired constructor(private val templateDao: Experiment
         if (dto.time != null)
             changed.put(GlueLineType.TIME, dto.time as String)
         return changed
-    }
-
-    private fun validateGluelinesForUpdate(dto: ExperimentTemplateUpdateDTO): Boolean {
-        return getChangedGluelines(dto).all { glueLineLookupRestClient.gluelineIsValid(it.key, it.value) }
     }
 
     private fun findTemplateById(id: String) = templateDao.findOne(id) ?: throw NotFoundException("No template with id $id")

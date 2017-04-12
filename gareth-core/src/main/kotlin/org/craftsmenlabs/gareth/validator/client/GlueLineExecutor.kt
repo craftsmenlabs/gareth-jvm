@@ -1,4 +1,4 @@
-package org.craftsmenlabs.gareth.validator
+package org.craftsmenlabs.gareth.validator.client
 
 import org.craftsmenlabs.gareth.validator.model.ExecutionResult
 import org.craftsmenlabs.gareth.validator.model.ExperimentDTO

@@ -1,12 +1,10 @@
 package org.craftsmenlabs.gareth.validator.time
 
-import org.springframework.context.annotation.Profile
 import org.springframework.stereotype.Component
 import java.time.*
 import java.util.*
 
 @Component
-@Profile("!mock")
 class DateTimeService : TimeService {
 
     override fun midnight(): LocalDate {

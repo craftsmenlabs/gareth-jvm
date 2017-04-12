@@ -36,6 +36,7 @@ class ExperimentConverter {
         val environmentItems = entity.environment.map { EnvironmentItem(it.key, it.value, it.itemType) }
         val dto = ExperimentDTO(
                 id = entity.id!!,
+                projectId = entity.projectId,
                 name = entity.name,
                 created = entity.dateCreated,
                 glueLines = gluelines,

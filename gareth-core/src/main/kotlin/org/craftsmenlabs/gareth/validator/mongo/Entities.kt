@@ -4,8 +4,10 @@ import org.craftsmenlabs.gareth.validator.model.ExecutionStatus
 import org.craftsmenlabs.gareth.validator.model.ItemType
 import org.springframework.data.annotation.Id
 import org.springframework.data.mongodb.core.index.Indexed
+import org.springframework.data.mongodb.core.mapping.Document
 import java.time.LocalDateTime
 
+@Document(collection = "experiment_run")
 data class ExperimentEntity(@Id var id: String? = null) {
     lateinit var dateCreated: LocalDateTime
     lateinit var result: ExecutionStatus
@@ -25,6 +27,7 @@ data class ExperimentEntity(@Id var id: String? = null) {
     lateinit var timeline: String
 }
 
+@Document(collection = "experiment_template")
 data class ExperimentTemplateEntity(@Id var id: String? = null) {
     @Indexed
     lateinit var projectId: String
@@ -37,6 +40,13 @@ data class ExperimentTemplateEntity(@Id var id: String? = null) {
     var timeline: String? = null
     lateinit var dateCreated: LocalDateTime
     var ready: LocalDateTime? = null
+}
+
+@Document(collection = "project")
+data class ProjectEntity(@Id var id: String? = null) {
+    lateinit var name: String;
+    lateinit var companyId: String;
+    var active: Boolean = false
 }
 
 class ExperimentEnvironmentItem {

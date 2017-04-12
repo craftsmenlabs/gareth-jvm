@@ -1,6 +1,6 @@
 package org.craftsmenlabs.gareth.validator.time
 
-import org.craftsmenlabs.gareth.validator.GlueLineExecutor
+import org.craftsmenlabs.gareth.validator.client.GlueLineExecutor
 import org.craftsmenlabs.gareth.validator.model.ExperimentDTO
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service

@@ -39,7 +39,7 @@ open class CreateExperimentSteps {
 
     @When("^I want to create an experiment named (.*?)$")
     fun iCreateAnExperiment(name: String) {
-        templateCreateDTO = ExperimentTemplateCreateDTO(name = name, projectid = "acme", glueLines = Gluelines("", "", ""))
+        templateCreateDTO = ExperimentTemplateCreateDTO(name = name, projectid = EmbeddedMongoManager.PROJECT_ID, glueLines = Gluelines("", "", ""))
     }
 
     @When("^the baseline is (.*?)$")

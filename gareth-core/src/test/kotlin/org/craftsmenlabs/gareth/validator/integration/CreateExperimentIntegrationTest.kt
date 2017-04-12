@@ -1,9 +1,9 @@
 package org.craftsmenlabs.gareth.validator.integration
 
 import org.assertj.core.api.Assertions.assertThat
+import org.craftsmenlabs.gareth.validator.client.GluelineValidator
 import org.craftsmenlabs.gareth.validator.model.*
 import org.craftsmenlabs.gareth.validator.services.ExperimentService
-import org.craftsmenlabs.gareth.validator.services.GluelineService
 import org.craftsmenlabs.gareth.validator.services.TemplateService
 import org.craftsmenlabs.gareth.validator.time.DateFormatUtils
 import org.craftsmenlabs.gareth.validator.time.TimeService
@@ -15,6 +15,7 @@ import org.junit.runners.MethodSorters
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.autoconfigure.mongo.embedded.EmbeddedMongoAutoConfiguration
 import org.springframework.boot.test.context.SpringBootTest
+import org.springframework.test.context.ActiveProfiles
 import org.springframework.test.context.junit4.SpringRunner
 import retrofit2.Response
 import java.time.LocalDateTime
@@ -22,6 +23,7 @@ import java.time.LocalDateTime
 @RunWith(SpringRunner::class)
 @SpringBootTest(classes = arrayOf(TestConfig::class, EmbeddedMongoAutoConfiguration::class), webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
+@ActiveProfiles("test")
 class CreateExperimentIntegrationTest {
 
     @Autowired
@@ -31,7 +33,7 @@ class CreateExperimentIntegrationTest {
     lateinit var templateService: TemplateService
 
     @Autowired
-    lateinit var gluelineService: GluelineService
+    lateinit var validator: GluelineValidator
 
     @Autowired
     lateinit var timeService: TimeService
@@ -48,7 +50,7 @@ class CreateExperimentIntegrationTest {
     @Test
     fun a_testLookupGlueLines() {
         fun getGlueLine(glueLine: GlueLineType, content: String) {
-            val response = gluelineService.lookupGlueline(glueLine, content)
+            val response = validator.lookupGlueline("acme", glueLine, content)
             assertThat(response.exact).isEqualTo(content)
             assertThat(response.suggestions).containsExactly(content)
         }

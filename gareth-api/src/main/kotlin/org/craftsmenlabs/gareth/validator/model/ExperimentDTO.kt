@@ -4,6 +4,7 @@ import java.time.LocalDateTime
 
 data class ExperimentDTO(val id: String,
                          val name: String,
+                         val projectId: String = "",
                          val value: Int = 0,
                          val glueLines: ValidatedGluelines,
                          val created: LocalDateTime,
