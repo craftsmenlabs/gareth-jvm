@@ -1,7 +1,7 @@
 package org.craftsmenlabs.gareth.providers
 
-import org.craftsmenlabs.gareth.model.ExperimentDTO
 import org.craftsmenlabs.gareth.services.ExperimentService
+import org.craftsmenlabs.gareth.validator.model.ExperimentDTO
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
 import rx.schedulers.Schedulers

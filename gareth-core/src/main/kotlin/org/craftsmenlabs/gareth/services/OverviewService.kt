@@ -1,12 +1,12 @@
 package org.craftsmenlabs.gareth.services
 
-import org.craftsmenlabs.gareth.model.ExecutionStatus
-import org.craftsmenlabs.gareth.model.OverviewDTO
 import org.craftsmenlabs.gareth.mongo.ExperimentDao
 import org.craftsmenlabs.gareth.mongo.ExperimentEntity
 import org.craftsmenlabs.gareth.mongo.ExperimentTemplateDao
 import org.craftsmenlabs.gareth.mongo.ExperimentTemplateEntity
 import org.craftsmenlabs.gareth.time.TimeService
+import org.craftsmenlabs.gareth.validator.model.ExecutionStatus
+import org.craftsmenlabs.gareth.validator.model.OverviewDTO
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
 

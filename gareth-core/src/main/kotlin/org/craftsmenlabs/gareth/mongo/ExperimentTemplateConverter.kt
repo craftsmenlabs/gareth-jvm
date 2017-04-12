@@ -1,9 +1,9 @@
 package org.craftsmenlabs.gareth.mongo
 
-import org.craftsmenlabs.gareth.model.ExperimentTemplateCreateDTO
-import org.craftsmenlabs.gareth.model.ExperimentTemplateDTO
-import org.craftsmenlabs.gareth.model.Gluelines
 import org.craftsmenlabs.gareth.time.TimeService
+import org.craftsmenlabs.gareth.validator.model.ExperimentTemplateCreateDTO
+import org.craftsmenlabs.gareth.validator.model.ExperimentTemplateDTO
+import org.craftsmenlabs.gareth.validator.model.Gluelines
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
 

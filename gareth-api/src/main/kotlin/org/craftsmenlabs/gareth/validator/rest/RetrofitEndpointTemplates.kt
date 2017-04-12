@@ -1,6 +1,6 @@
-package org.craftsmenlabs.gareth.rest
+package org.craftsmenlabs.gareth.validator.rest
 
-import org.craftsmenlabs.gareth.model.*
+import org.craftsmenlabs.gareth.validator.model.*
 import retrofit2.Call
 import retrofit2.http.*
 

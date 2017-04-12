@@ -1,4 +1,4 @@
-package org.craftsmenlabs.gareth.model
+package org.craftsmenlabs.gareth.validator.model
 
 import java.time.LocalDateTime
 

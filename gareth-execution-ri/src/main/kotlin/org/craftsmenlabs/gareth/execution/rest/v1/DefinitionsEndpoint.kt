@@ -2,10 +2,10 @@ package org.craftsmenlabs.gareth.execution.rest.v1
 
 import io.swagger.annotations.Api
 import io.swagger.annotations.ApiOperation
-import org.craftsmenlabs.DefinitionsResource
 import org.craftsmenlabs.gareth.execution.definitions.ExecutionType
 import org.craftsmenlabs.gareth.execution.services.DefinitionService
-import org.craftsmenlabs.gareth.model.Duration
+import org.craftsmenlabs.gareth.validator.DefinitionsResource
+import org.craftsmenlabs.gareth.validator.model.Duration
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.RequestMapping

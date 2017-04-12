@@ -1,4 +1,4 @@
-package org.craftsmenlabs
+package org.craftsmenlabs.gareth.validator
 
 import com.fasterxml.jackson.annotation.JsonCreator
 import com.fasterxml.jackson.annotation.JsonProperty

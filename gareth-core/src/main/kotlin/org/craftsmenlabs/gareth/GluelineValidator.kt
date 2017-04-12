@@ -1,7 +1,7 @@
 package org.craftsmenlabs.gareth
 
-import org.craftsmenlabs.gareth.model.GlueLineType
-import org.craftsmenlabs.gareth.model.Gluelines
+import org.craftsmenlabs.gareth.validator.model.GlueLineType
+import org.craftsmenlabs.gareth.validator.model.Gluelines
 
 interface GluelineValidator {
     fun validateGluelines(experiment: Gluelines): Boolean

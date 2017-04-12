@@ -3,7 +3,7 @@ package org.craftsmenlabs.gareth.execution.services
 import org.craftsmenlabs.gareth.execution.RunContext
 import org.craftsmenlabs.gareth.execution.definitions.ExecutionType
 import org.craftsmenlabs.gareth.execution.dto.DurationBuilder
-import org.craftsmenlabs.gareth.model.*
+import org.craftsmenlabs.gareth.validator.model.*
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
@@ -43,10 +43,15 @@ open class DefinitionService @Autowired constructor(val definitionRegistry: Defi
 
     fun getInfoByType(glueLine: String, type: ExecutionType): DefinitionInfo {
         val method = definitionRegistry.getMethodDescriptorForExecutionType(glueLine, type)
-        return DefinitionInfo(method.getRegexPatternForGlueLine(), method.getMethodName(), method.getClassName(), method.description)
+        return DefinitionInfo(
+                glueline = method.getRegexPatternForGlueLine(),
+                method = method.getMethodName(),
+                className = method.getClassName(),
+                humanReadable = method.humanReadable,
+                description = method.description)
     }
 
-    fun getTime(glueline: String): Duration = DurationBuilder.createForMinutes(definitionRegistry.getTimeForGlueline(glueline))
+    fun getTime(glueline: String): Duration = DurationBuilder.createForMinutes(definitionRegistry.getTimeForGlueline(glueline).second)
 
     private fun executeMandatoryGlueline(glueline: String, type: ExecutionType, request: ExecutionRequest): ExecutionRunContext = definitionRegistry.invokeVoidMethodByType(glueline, type, request)
 

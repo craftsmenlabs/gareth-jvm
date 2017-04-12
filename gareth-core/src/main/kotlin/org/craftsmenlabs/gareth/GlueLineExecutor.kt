@@ -1,7 +1,7 @@
 package org.craftsmenlabs.gareth
 
-import org.craftsmenlabs.gareth.model.ExecutionResult
-import org.craftsmenlabs.gareth.model.ExperimentDTO
+import org.craftsmenlabs.gareth.validator.model.ExecutionResult
+import org.craftsmenlabs.gareth.validator.model.ExperimentDTO
 import java.time.Duration
 
 interface GlueLineExecutor {

@@ -1,16 +1,15 @@
 package org.craftsmenlabs.gareth.execution.services
 
-import com.google.common.reflect.ClassPath
-import org.craftsmenlabs.ExperimentDefinition
-import org.craftsmenlabs.GarethIllegalDefinitionException
-import org.craftsmenlabs.GarethInvocationException
 import org.craftsmenlabs.gareth.execution.RunContext
 import org.craftsmenlabs.gareth.execution.definitions.ExecutionType
 import org.craftsmenlabs.gareth.execution.definitions.InvokableMethod
 import org.craftsmenlabs.gareth.execution.definitions.ParsedDefinitionFactory
-import org.craftsmenlabs.gareth.model.ExecutionRequest
-import org.craftsmenlabs.gareth.model.ExecutionRunContext
-import org.craftsmenlabs.gareth.model.GlueLineType
+import org.craftsmenlabs.gareth.validator.ExperimentDefinition
+import org.craftsmenlabs.gareth.validator.GarethIllegalDefinitionException
+import org.craftsmenlabs.gareth.validator.GarethInvocationException
+import org.craftsmenlabs.gareth.validator.model.ExecutionRequest
+import org.craftsmenlabs.gareth.validator.model.ExecutionRunContext
+import org.craftsmenlabs.gareth.validator.model.GlueLineType
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
@@ -30,7 +29,7 @@ open class DefinitionRegistry @Autowired constructor(val definitionFactory: Defi
     private val assumeDefinitions = HashMap<String, InvokableMethod>()
     private val successDefinitions = HashMap<String, InvokableMethod>()
     private val failureDefinitions = HashMap<String, InvokableMethod>()
-    private val timeDefinitions = HashMap<String, Duration>()
+    private val timeDefinitions = HashMap<String, Pair<String, Duration>>()
 
     @PostConstruct
     fun init() {
@@ -43,20 +42,18 @@ open class DefinitionRegistry @Autowired constructor(val definitionFactory: Defi
         }
     }
 
-    private fun getClassesInPackage(packageName: String): List<Class<*>> {
-        val classesInfo = ClassPath.from(Thread.currentThread().getContextClassLoader()).getTopLevelClassesRecursive(packageName)
-        return classesInfo.map { Class.forName(it.name) }
-    }
+    fun getGlueLinesPerCategory(): Map<GlueLineType, Set<Pair<String, String?>>> {
+        fun toPair(map: Map<String, InvokableMethod>): Set<Pair<String, String?>> = map.map { Pair(it.key, it.value.humanReadable) }.toSet()
 
-    fun getGlueLinesPerCategory(): Map<GlueLineType, Set<String>> {
-        val allPatterns = HashMap<GlueLineType, Set<String>>()
-        allPatterns.put(GlueLineType.ASSUME, assumeDefinitions.keys)
-        allPatterns.put(GlueLineType.BASELINE, baselineDefinitions.keys)
-        allPatterns.put(GlueLineType.SUCCESS, successDefinitions.keys)
-        allPatterns.put(GlueLineType.FAILURE, failureDefinitions.keys)
-        allPatterns.put(GlueLineType.TIME, timeDefinitions.keys)
+        val allPatterns = HashMap<GlueLineType, Set<Pair<String, String?>>>()
+        allPatterns.put(GlueLineType.ASSUME, toPair(assumeDefinitions))
+        allPatterns.put(GlueLineType.BASELINE, toPair(baselineDefinitions))
+        allPatterns.put(GlueLineType.SUCCESS, toPair(successDefinitions))
+        allPatterns.put(GlueLineType.FAILURE, toPair(failureDefinitions))
+        allPatterns.put(GlueLineType.TIME, timeDefinitions.map { Pair(it.key, it.value.first) }.toSet())
         return allPatterns
     }
+
 
     fun getMethodDescriptorForExecutionType(glueLine: String, type: ExecutionType): InvokableMethod {
         return when (type) {
@@ -85,7 +82,7 @@ open class DefinitionRegistry @Autowired constructor(val definitionFactory: Defi
         parsedDefinition.timeDefinitions.forEach { addDefinition(timeDefinitions, it.key, it.value) }
     }
 
-    fun getTimeForGlueline(glueLine: String): Duration {
+    fun getTimeForGlueline(glueLine: String): Pair<String, Duration> {
         val match = timeDefinitions.keys.filter({ annotationPattern -> matchesPattern(glueLine, annotationPattern) }).firstOrNull()
         return timeDefinitions[match] ?: throw GarethIllegalDefinitionException("No time definition found for glue line $glueLine")
     }

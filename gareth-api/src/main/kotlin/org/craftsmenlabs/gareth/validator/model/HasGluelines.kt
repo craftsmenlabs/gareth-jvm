@@ -1,4 +1,4 @@
-package org.craftsmenlabs.gareth.model
+package org.craftsmenlabs.gareth.validator.model
 
 interface HasGlueLines {
     val glueLines: Gluelines

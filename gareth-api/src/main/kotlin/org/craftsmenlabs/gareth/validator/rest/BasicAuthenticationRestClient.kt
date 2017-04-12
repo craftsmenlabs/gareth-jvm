@@ -1,10 +1,10 @@
-package org.craftsmenlabs.gareth.rest
+package org.craftsmenlabs.gareth.validator.rest
 
 import org.apache.tomcat.util.codec.binary.Base64
-import org.craftsmenlabs.BadRequestException
-import org.craftsmenlabs.NotFoundException
-import org.craftsmenlabs.RequestForbiddenException
-import org.craftsmenlabs.RestException
+import org.craftsmenlabs.gareth.validator.BadRequestException
+import org.craftsmenlabs.gareth.validator.NotFoundException
+import org.craftsmenlabs.gareth.validator.RequestForbiddenException
+import org.craftsmenlabs.gareth.validator.RestException
 import org.slf4j.LoggerFactory
 import org.springframework.http.*
 import org.springframework.http.converter.FormHttpMessageConverter

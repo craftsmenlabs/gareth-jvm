@@ -1,4 +1,4 @@
-package org.craftsmenlabs.gareth.model
+package org.craftsmenlabs.gareth.validator.model
 
 import java.util.*
 
@@ -43,7 +43,7 @@ enum class GlueLineType {
 
 data class Duration(val unit: String, val amount: Long)
 
-data class DefinitionInfo(val glueline: String, val method: String, val className: String, val description: String = "")
+data class DefinitionInfo(val glueline: String, val method: String, val className: String, val description: String? = null, val humanReadable: String? = null)
 
 data class ExecutionRequest(val environment: ExperimentRunEnvironment, val glueLines: ValidatedGluelines)
 

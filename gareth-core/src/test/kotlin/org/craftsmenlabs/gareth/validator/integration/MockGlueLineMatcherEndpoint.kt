@@ -1,6 +1,6 @@
 package org.craftsmenlabs.gareth.validator.integration
 
-import org.craftsmenlabs.gareth.model.GlueLineSearchResultDTO
+import org.craftsmenlabs.gareth.validator.model.GlueLineSearchResultDTO
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RequestMethod

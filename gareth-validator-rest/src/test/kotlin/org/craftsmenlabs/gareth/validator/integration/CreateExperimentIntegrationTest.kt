@@ -4,9 +4,9 @@ package org.craftsmenlabs.gareth.validator.integration
 import org.assertj.core.api.Assertions
 import org.assertj.core.api.Assertions.assertThat
 import org.craftsmenlabs.gareth.model.*
-import org.craftsmenlabs.gareth.rest.ExperimentEndpointClient
-import org.craftsmenlabs.gareth.rest.ExperimentTemplateEndpointClient
-import org.craftsmenlabs.gareth.rest.GluelineLookupEndpointClient
+import org.craftsmenlabs.gareth.validator.rest.ExperimentEndpointClient
+import org.craftsmenlabs.gareth.validator.rest.ExperimentTemplateEndpointClient
+import org.craftsmenlabs.gareth.validator.rest.GluelineLookupEndpointClient
 import org.craftsmenlabs.gareth.rest.RestClientConfig
 import org.craftsmenlabs.gareth.services.ExperimentService
 import org.craftsmenlabs.gareth.services.TemplateService

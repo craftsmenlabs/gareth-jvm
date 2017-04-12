@@ -1,9 +1,9 @@
 package org.craftsmenlabs.gareth.client
 
 import org.craftsmenlabs.gareth.GluelineValidator
-import org.craftsmenlabs.gareth.model.GlueLineType
-import org.craftsmenlabs.gareth.model.Gluelines
 import org.craftsmenlabs.gareth.time.DurationExpressionParser
+import org.craftsmenlabs.gareth.validator.model.GlueLineType
+import org.craftsmenlabs.gareth.validator.model.Gluelines
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired

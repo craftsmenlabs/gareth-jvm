@@ -4,9 +4,9 @@ import mockit.Expectations
 import mockit.Injectable
 import mockit.Tested
 import org.assertj.core.api.Assertions.assertThat
-import org.craftsmenlabs.gareth.model.GlueLineType
-import org.craftsmenlabs.gareth.model.Gluelines
 import org.craftsmenlabs.gareth.time.DurationExpressionParser
+import org.craftsmenlabs.gareth.validator.model.GlueLineType
+import org.craftsmenlabs.gareth.validator.model.Gluelines
 import org.junit.Test
 import java.time.Duration
 

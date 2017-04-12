@@ -1,11 +1,11 @@
 package org.craftsmenlabs.gareth.validator.rest
 
 
-import org.craftsmenlabs.gareth.model.*
 import org.craftsmenlabs.gareth.services.ExperimentService
 import org.craftsmenlabs.gareth.services.GluelineService
 import org.craftsmenlabs.gareth.services.OverviewService
 import org.craftsmenlabs.gareth.services.TemplateService
+import org.craftsmenlabs.gareth.validator.model.*
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.web.bind.annotation.*
 

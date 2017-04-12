@@ -1,10 +1,10 @@
 package org.craftsmenlabs.gareth.monitors
 
-import org.craftsmenlabs.gareth.model.ExperimentDTO
-import org.craftsmenlabs.gareth.model.ExperimentLifecycle
 import org.craftsmenlabs.gareth.providers.ExperimentProvider
 import org.craftsmenlabs.gareth.services.ExperimentService
 import org.craftsmenlabs.gareth.time.TimeService
+import org.craftsmenlabs.gareth.validator.model.ExperimentDTO
+import org.craftsmenlabs.gareth.validator.model.ExperimentLifecycle
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
 import rx.Observable

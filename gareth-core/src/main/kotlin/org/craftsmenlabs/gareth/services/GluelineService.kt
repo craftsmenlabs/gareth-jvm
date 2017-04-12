@@ -1,8 +1,8 @@
 package org.craftsmenlabs.gareth.services
 
 import org.craftsmenlabs.gareth.client.ExecutionRestClient
-import org.craftsmenlabs.gareth.model.GlueLineSearchResultDTO
-import org.craftsmenlabs.gareth.model.GlueLineType
+import org.craftsmenlabs.gareth.validator.model.GlueLineSearchResultDTO
+import org.craftsmenlabs.gareth.validator.model.GlueLineType
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
 

@@ -1,8 +1,7 @@
 package org.craftsmenlabs.gareth.execution.services
 
-import com.google.common.collect.Lists
-import org.craftsmenlabs.gareth.model.GlueLineSearchResultDTO
-import org.craftsmenlabs.gareth.model.GlueLineType
+import org.craftsmenlabs.gareth.validator.model.GlueLineSearchResultDTO
+import org.craftsmenlabs.gareth.validator.model.GlueLineType
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
 import java.util.regex.Pattern
@@ -11,8 +10,8 @@ import javax.annotation.PostConstruct
 @Service
 open class GlueLineMatcherService @Autowired constructor(val definitionRegistry: DefinitionRegistry) {
 
-    lateinit var glueLinesPerCategory: Map<GlueLineType, Set<String>>
-    var timeGlueLines: MutableSet<String> = mutableSetOf<String>()
+    lateinit var glueLinesPerCategory: Map<GlueLineType, Set<Pair<String, String?>>>
+    var timeGlueLines: MutableSet<Pair<String, String?>> = mutableSetOf<Pair<String, String?>>()
 
     @PostConstruct
     fun init() {
@@ -26,13 +25,13 @@ open class GlueLineMatcherService @Autowired constructor(val definitionRegistry:
             return GlueLineSearchResultDTO(listOf<String>(), null)
         }
         val patternsPerGlueLineType = if (glueLineType == GlueLineType.TIME) timeGlueLines else glueLinesPerCategory[glueLineType]
-        val suggestions = getMatchingGlueLines(patternsPerGlueLineType, { it.contains(line) || isPartialMatch(it, line) })
-        val exact = getMatchingGlueLines(patternsPerGlueLineType, { isFullMatch(it, line) }).firstOrNull()
+        val suggestions = getMatchingGlueLines(patternsPerGlueLineType, { it.first.contains(line) || isPartialMatch(it.first, line) })
+        val exact = getMatchingGlueLines(patternsPerGlueLineType, { isFullMatch(it.first, line) }).firstOrNull()
         return GlueLineSearchResultDTO(suggestions, exact)
     }
 
-    private fun getMatchingGlueLines(patterns: Set<String>?, filter: (String) -> Boolean): List<String> {
-        return if (patterns == null) listOf() else patterns.filter(filter).map({ convertRegexToHumanReadable(it) })
+    private fun getMatchingGlueLines(patterns: Set<Pair<String, String?>>?, filter: (Pair<String, String?>) -> Boolean): List<String> {
+        return if (patterns == null) listOf() else patterns.filter(filter).map({ it.second ?: it.first })
     }
 
     private fun convertRegexToHumanReadable(pattern: String): String {
@@ -58,8 +57,14 @@ open class GlueLineMatcherService @Autowired constructor(val definitionRegistry:
             return 0
     }
 
-    private fun createDefaultTimeGlueLinePatterns(): List<String> {
-        return Lists.newArrayList("^(\\d+) seconds?$", "^(\\d+) minutes?$", "^(\\d+) hours?$", "^(\\d+) days?$", "^(\\d+) weeks?$", "^(\\d+) months?$", "^(\\d+) years?$")
+    private fun createDefaultTimeGlueLinePatterns(): List<Pair<String, String>> {
+        return listOf(Pair("^(\\d+) seconds?$", "<number> seconds"),
+                Pair("^(\\d+) minutes?$", "<number> minutes"),
+                Pair("^(\\d+) hours?$", "<number> hours"),
+                Pair("^(\\d+) days?$", "^<number> days"),
+                Pair("^(\\d+) weeks?$", "<number> weeks"),
+                Pair("^(\\d+) months?$", "<number> months"),
+                Pair("^(\\d+) years?$", "<number> years"))
     }
 }
 

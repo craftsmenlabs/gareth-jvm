@@ -1,6 +1,6 @@
-package org.craftsmenlabs
+package org.craftsmenlabs.gareth.validator
 
-import org.craftsmenlabs.gareth.model.*
+import org.craftsmenlabs.gareth.validator.model.*
 import org.springframework.web.bind.annotation.RequestBody
 
 interface DefinitionsResource {

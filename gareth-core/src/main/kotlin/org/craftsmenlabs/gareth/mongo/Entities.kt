@@ -1,7 +1,7 @@
 package org.craftsmenlabs.gareth.mongo
 
-import org.craftsmenlabs.gareth.model.ExecutionStatus
-import org.craftsmenlabs.gareth.model.ItemType
+import org.craftsmenlabs.gareth.validator.model.ExecutionStatus
+import org.craftsmenlabs.gareth.validator.model.ItemType
 import org.springframework.data.annotation.Id
 import org.springframework.data.mongodb.core.index.Indexed
 import java.time.LocalDateTime

@@ -1,9 +1,9 @@
 package org.craftsmenlabs.gareth.monitors
 
 import org.craftsmenlabs.gareth.GlueLineExecutor
-import org.craftsmenlabs.gareth.model.ExecutionStatus
-import org.craftsmenlabs.gareth.model.ExperimentDTO
 import org.craftsmenlabs.gareth.time.TimeService
+import org.craftsmenlabs.gareth.validator.model.ExecutionStatus
+import org.craftsmenlabs.gareth.validator.model.ExperimentDTO
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service

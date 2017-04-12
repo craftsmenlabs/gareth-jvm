@@ -4,10 +4,10 @@ import cucumber.api.java.en.When
 import org.assertj.core.api.Assertions.assertThat
 import org.craftsmenlabs.gareth.atdd.CucumberConfig
 import org.craftsmenlabs.gareth.atdd.EmbeddedMongoManager
-import org.craftsmenlabs.gareth.model.*
-import org.craftsmenlabs.gareth.rest.ExperimentEndpointClient
-import org.craftsmenlabs.gareth.rest.ExperimentTemplateEndpointClient
-import org.craftsmenlabs.gareth.rest.OverviewEndpointClient
+import org.craftsmenlabs.gareth.validator.model.*
+import org.craftsmenlabs.gareth.validator.rest.ExperimentEndpointClient
+import org.craftsmenlabs.gareth.validator.rest.ExperimentTemplateEndpointClient
+import org.craftsmenlabs.gareth.validator.rest.OverviewEndpointClient
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.test.context.ContextConfiguration

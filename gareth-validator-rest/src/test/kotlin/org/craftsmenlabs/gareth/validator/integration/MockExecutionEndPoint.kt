@@ -1,9 +1,9 @@
 package org.craftsmenlabs.integration
 
-import org.craftsmenlabs.gareth.model.Duration
-import org.craftsmenlabs.gareth.model.ExecutionRequest
-import org.craftsmenlabs.gareth.model.ExecutionResult
-import org.craftsmenlabs.gareth.model.ExecutionStatus
+import org.craftsmenlabs.gareth.validator.model.Duration
+import org.craftsmenlabs.gareth.validator.model.ExecutionRequest
+import org.craftsmenlabs.gareth.validator.model.ExecutionResult
+import org.craftsmenlabs.gareth.validator.model.ExecutionStatus
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RequestMethod

@@ -5,6 +5,10 @@ import com.fasterxml.jackson.databind.DeserializationFeature
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.databind.SerializationFeature
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
+import org.craftsmenlabs.gareth.validator.rest.ExperimentEndpointClient
+import org.craftsmenlabs.gareth.validator.rest.ExperimentTemplateEndpointClient
+import org.craftsmenlabs.gareth.validator.rest.GluelineLookupEndpointClient
+import org.craftsmenlabs.gareth.validator.rest.OverviewEndpointClient
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration

@@ -1,9 +1,9 @@
 package org.craftsmenlabs.gareth.mongo
 
-import org.craftsmenlabs.gareth.model.EnvironmentItem
-import org.craftsmenlabs.gareth.model.ExperimentDTO
-import org.craftsmenlabs.gareth.model.ExperimentRunEnvironment
-import org.craftsmenlabs.gareth.model.ValidatedGluelines
+import org.craftsmenlabs.gareth.validator.model.EnvironmentItem
+import org.craftsmenlabs.gareth.validator.model.ExperimentDTO
+import org.craftsmenlabs.gareth.validator.model.ExperimentRunEnvironment
+import org.craftsmenlabs.gareth.validator.model.ValidatedGluelines
 import org.springframework.stereotype.Service
 
 @Service

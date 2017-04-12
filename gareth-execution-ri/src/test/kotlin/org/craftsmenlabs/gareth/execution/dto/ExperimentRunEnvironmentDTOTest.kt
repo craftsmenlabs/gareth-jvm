@@ -1,7 +1,7 @@
 package org.craftsmenlabs.gareth.execution.dto
 
 import org.assertj.core.api.Assertions
-import org.craftsmenlabs.gareth.model.ItemType
+import org.craftsmenlabs.gareth.validator.model.ItemType
 import org.junit.Test
 
 class ExperimentRunEnvironmentDTOTest {

@@ -4,8 +4,8 @@ import org.assertj.core.api.Assertions.assertThat
 import org.craftsmenlabs.gareth.execution.GarethExecutionApplication
 import org.craftsmenlabs.gareth.execution.definitions.SaleOfFruit
 import org.craftsmenlabs.gareth.execution.dto.ExperimentRunEnvironmentBuilder
-import org.craftsmenlabs.gareth.model.*
-import org.craftsmenlabs.gareth.rest.BasicAuthenticationRestClient
+import org.craftsmenlabs.gareth.validator.model.*
+import org.craftsmenlabs.gareth.validator.rest.BasicAuthenticationRestClient
 import org.junit.FixMethodOrder
 import org.junit.Test
 import org.junit.runner.RunWith

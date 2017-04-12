@@ -1,4 +1,4 @@
-package org.craftsmenlabs.gareth.rest
+package org.craftsmenlabs.gareth.validator.rest
 
 import org.springframework.http.client.ClientHttpResponse
 import org.springframework.web.client.DefaultResponseErrorHandler

@@ -1,8 +1,8 @@
 package org.craftsmenlabs.gareth.execution.definitions
 
-import org.craftsmenlabs.GarethIllegalDefinitionException
-import org.craftsmenlabs.GarethInvocationException
-import org.craftsmenlabs.gareth.model.ExecutionRunContext
+import org.craftsmenlabs.gareth.validator.GarethIllegalDefinitionException
+import org.craftsmenlabs.gareth.validator.GarethInvocationException
+import org.craftsmenlabs.gareth.validator.model.ExecutionRunContext
 import java.lang.reflect.Method
 import java.lang.reflect.Type
 import java.util.*
@@ -12,11 +12,13 @@ class InvokableMethod {
     private val parameters = ArrayList<Class<*>>()
     val pattern: Pattern
     val method: Method
-    val description: String
+    val description: String?
+    val humanReadable: String?
     val runcontextParameter: Boolean
 
     constructor(glueLine: String,
-                description: String,
+                description: String? = null,
+                humanReadable: String? = null,
                 method: Method,
                 runcontextParameter: Boolean) {
         try {
@@ -24,6 +26,7 @@ class InvokableMethod {
             pattern = Pattern.compile(glueLine)
             this.method = method
             this.description = description
+            this.humanReadable = humanReadable
             parseMethod()
         } catch (e: Exception) {
             throw GarethIllegalDefinitionException(e)

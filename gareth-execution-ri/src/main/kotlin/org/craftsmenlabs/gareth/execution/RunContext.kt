@@ -1,6 +1,6 @@
 package org.craftsmenlabs.gareth.execution
 
-import org.craftsmenlabs.gareth.model.*
+import org.craftsmenlabs.gareth.validator.model.*
 
 class RunContext(private var data: MutableMap<String, EnvironmentItem>) : ExecutionRunContext {
 

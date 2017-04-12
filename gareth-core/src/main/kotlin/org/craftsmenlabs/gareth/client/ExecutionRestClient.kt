@@ -1,7 +1,7 @@
 package org.craftsmenlabs.gareth.client
 
-import org.craftsmenlabs.gareth.model.*
-import org.craftsmenlabs.gareth.rest.BasicAuthenticationRestClient
+import org.craftsmenlabs.gareth.validator.model.*
+import org.craftsmenlabs.gareth.validator.rest.BasicAuthenticationRestClient
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.http.ResponseEntity

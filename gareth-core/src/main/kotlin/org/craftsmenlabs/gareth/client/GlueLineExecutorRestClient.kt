@@ -1,10 +1,10 @@
 package org.craftsmenlabs.gareth.client
 
 import org.craftsmenlabs.gareth.GlueLineExecutor
-import org.craftsmenlabs.gareth.model.ExecutionRequest
-import org.craftsmenlabs.gareth.model.ExecutionResult
-import org.craftsmenlabs.gareth.model.ExperimentDTO
-import org.craftsmenlabs.gareth.model.GlueLineType
+import org.craftsmenlabs.gareth.validator.model.ExecutionRequest
+import org.craftsmenlabs.gareth.validator.model.ExecutionResult
+import org.craftsmenlabs.gareth.validator.model.ExperimentDTO
+import org.craftsmenlabs.gareth.validator.model.GlueLineType
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.context.annotation.Profile
 import org.springframework.stereotype.Service

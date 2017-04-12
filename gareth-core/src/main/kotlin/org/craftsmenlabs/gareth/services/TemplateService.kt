@@ -1,17 +1,17 @@
 package org.craftsmenlabs.gareth.services
 
-import org.craftsmenlabs.BadRequestException
-import org.craftsmenlabs.NotFoundException
 import org.craftsmenlabs.gareth.client.GluelineValidatorRestClient
-import org.craftsmenlabs.gareth.model.ExperimentTemplateCreateDTO
-import org.craftsmenlabs.gareth.model.ExperimentTemplateDTO
-import org.craftsmenlabs.gareth.model.ExperimentTemplateUpdateDTO
-import org.craftsmenlabs.gareth.model.GlueLineType
 import org.craftsmenlabs.gareth.mongo.ExperimentDao
 import org.craftsmenlabs.gareth.mongo.ExperimentTemplateConverter
 import org.craftsmenlabs.gareth.mongo.ExperimentTemplateDao
 import org.craftsmenlabs.gareth.mongo.ExperimentTemplateEntity
 import org.craftsmenlabs.gareth.time.TimeService
+import org.craftsmenlabs.gareth.validator.BadRequestException
+import org.craftsmenlabs.gareth.validator.NotFoundException
+import org.craftsmenlabs.gareth.validator.model.ExperimentTemplateCreateDTO
+import org.craftsmenlabs.gareth.validator.model.ExperimentTemplateDTO
+import org.craftsmenlabs.gareth.validator.model.ExperimentTemplateUpdateDTO
+import org.craftsmenlabs.gareth.validator.model.GlueLineType
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service

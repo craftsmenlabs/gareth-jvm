@@ -1,13 +1,13 @@
 package org.craftsmenlabs.gareth.services
 
-import org.craftsmenlabs.BadRequestException
-import org.craftsmenlabs.NotFoundException
-import org.craftsmenlabs.gareth.model.ExecutionStatus
-import org.craftsmenlabs.gareth.model.ExperimentCreateDTO
-import org.craftsmenlabs.gareth.model.ExperimentDTO
 import org.craftsmenlabs.gareth.mongo.*
 import org.craftsmenlabs.gareth.time.DateFormatUtils
 import org.craftsmenlabs.gareth.time.TimeService
+import org.craftsmenlabs.gareth.validator.BadRequestException
+import org.craftsmenlabs.gareth.validator.NotFoundException
+import org.craftsmenlabs.gareth.validator.model.ExecutionStatus
+import org.craftsmenlabs.gareth.validator.model.ExperimentCreateDTO
+import org.craftsmenlabs.gareth.validator.model.ExperimentDTO
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
 
