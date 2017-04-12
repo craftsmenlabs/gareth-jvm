@@ -1,6 +1,7 @@
 package org.craftsmenlabs.gareth.time
 
 import org.assertj.core.api.Assertions.assertThat
+import org.craftsmenlabs.gareth.validator.time.DateFormatUtils
 import org.junit.Test
 
 class DateFormatUtilsTest {

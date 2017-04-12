@@ -1,6 +1,6 @@
 package org.craftsmenlabs.gareth.execution.definitions
 
-import org.craftsmenlabs.gareth.validator.ExperimentDefinition
+import org.craftsmenlabs.gareth.validator.*
 import org.craftsmenlabs.gareth.validator.model.ExecutionRunContext
 import org.springframework.stereotype.Service
 import java.time.Duration

@@ -8,10 +8,10 @@ import org.craftsmenlabs.gareth.validator.rest.ExperimentEndpointClient
 import org.craftsmenlabs.gareth.validator.rest.ExperimentTemplateEndpointClient
 import org.craftsmenlabs.gareth.validator.rest.GluelineLookupEndpointClient
 import org.craftsmenlabs.gareth.rest.RestClientConfig
-import org.craftsmenlabs.gareth.services.ExperimentService
-import org.craftsmenlabs.gareth.services.TemplateService
-import org.craftsmenlabs.gareth.time.DateFormatUtils
-import org.craftsmenlabs.gareth.time.TimeService
+import org.craftsmenlabs.gareth.validator.services.ExperimentService
+import org.craftsmenlabs.gareth.validator.services.TemplateService
+import org.craftsmenlabs.gareth.validator.time.DateFormatUtils
+import org.craftsmenlabs.gareth.validator.time.TimeService
 import org.craftsmenlabs.gareth.validator.Application
 import org.junit.Before
 import org.junit.FixMethodOrder

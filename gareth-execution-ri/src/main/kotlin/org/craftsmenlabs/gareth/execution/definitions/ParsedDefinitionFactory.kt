@@ -1,8 +1,7 @@
 package org.craftsmenlabs.gareth.execution.definitions
 
 import org.craftsmenlabs.gareth.execution.services.DefinitionFactory
-import org.craftsmenlabs.gareth.validator.GarethIllegalDefinitionException
-import org.craftsmenlabs.gareth.validator.GarethInvocationException
+import org.craftsmenlabs.gareth.validator.*
 import org.slf4j.LoggerFactory
 import java.lang.reflect.Method
 import java.time.Duration

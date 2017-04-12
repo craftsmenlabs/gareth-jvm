@@ -1,12 +1,12 @@
 package org.craftsmenlabs.gareth.validator.integration
 
 import org.assertj.core.api.Assertions.assertThat
-import org.craftsmenlabs.gareth.services.ExperimentService
-import org.craftsmenlabs.gareth.services.GluelineService
-import org.craftsmenlabs.gareth.services.TemplateService
-import org.craftsmenlabs.gareth.time.DateFormatUtils
-import org.craftsmenlabs.gareth.time.TimeService
 import org.craftsmenlabs.gareth.validator.model.*
+import org.craftsmenlabs.gareth.validator.services.ExperimentService
+import org.craftsmenlabs.gareth.validator.services.GluelineService
+import org.craftsmenlabs.gareth.validator.services.TemplateService
+import org.craftsmenlabs.gareth.validator.time.DateFormatUtils
+import org.craftsmenlabs.gareth.validator.time.TimeService
 import org.junit.Before
 import org.junit.FixMethodOrder
 import org.junit.Test
