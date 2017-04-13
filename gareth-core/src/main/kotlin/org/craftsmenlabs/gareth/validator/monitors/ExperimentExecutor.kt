@@ -17,18 +17,20 @@ class ExperimentExecutor @Autowired constructor(private val glueLineExecutor: Gl
     fun executeBaseline(experiment: ExperimentDTO): ExperimentDTO {
         val result = glueLineExecutor.executeBaseline(experiment)
         val now = dateTimeService.now()
-        log.info("Executed baseline")
+        log.info("Executed baseline. Result: " + result.status.name)
+        val mustAbort = result.status == ExecutionStatus.ERROR
         return experiment.copy(status = result.status,
                 environment = result.environment,
-                baselineExecuted = if (result.status == ExecutionStatus.ERROR) null else now)
+                completed = if (mustAbort) dateTimeService.now() else null,
+                baselineExecuted = if (mustAbort) null else now)
     }
 
     fun executeAssume(experiment: ExperimentDTO): ExperimentDTO {
-        val now = dateTimeService.now()
+        if (experiment.status != ExecutionStatus.RUNNING)
+            throw IllegalStateException("Can only execute assume when experiment is in state RUNNING, but state is ${experiment.status.name}")
         val result = glueLineExecutor.executeAssume(experiment)
-        val assumeExecutedDate = if (result.status == ExecutionStatus.ERROR) null else now
         val executed = experiment.copy(
-                completed = assumeExecutedDate,
+                completed = dateTimeService.now(),
                 status = result.status,
                 environment = result.environment)
         return executed

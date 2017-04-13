@@ -1,7 +1,5 @@
 package org.craftsmenlabs.gareth.atdd
 
-import com.mongodb.BasicDBObject
-import com.mongodb.DBObject
 import com.mongodb.MongoClient
 import de.flapdoodle.embed.mongo.MongodExecutable
 import de.flapdoodle.embed.mongo.MongodStarter
@@ -29,23 +27,12 @@ object EmbeddedMongoManager {
             .build()
 
     fun start() {
-        runImport()
-        MongodStarter.getDefaultInstance().prepare(createConfig()).start()
+        val starter = MongodStarter.getDefaultInstance()
+        mongodExecutable = starter.prepare(createConfig());
+        mongodExecutable.start()
         log.info("Successfully started local mongo")
     }
 
-    private fun runImport() {
-        val mongo = MongoClient(MONGO_HOSTNAME, MONGO_PORT)
-        val db = mongo.getDB(MONGO_DATABASE)
-        val project = BasicDBObject()
-        project.put("_id", "{\"\$oid\": \"$PROJECT_ID\"}")
-        project.put("_class", "org.craftsmenlabs.dashboard.models.db.Project")
-        project.put("name", "sale of fruit")
-        project.put("companyId", "58e650ef443ca94506af5808")
-        project.put("active", true)
-        val objects = listOf<DBObject>(project)
-        db.getCollection("project").insert(objects)
-    }
 
     fun shutDown() {
         if (EmbeddedMongoManager.mongodExecutable != null) {

@@ -37,10 +37,36 @@ Feature: Run ACME experiment
     When I start an experiment for template toss a coin in 4 seconds
     When I wait 1 seconds
     Then the experiment is pending
-    When I wait 3 seconds
+    When I wait 4 seconds
     Then the experiment is running
-    When I wait 3 seconds
+    When I wait 5 seconds
     Then the experiment is completed successfully
+
+  @failure
+  Scenario: Run experiment with aborted baseline
+    When I want to create an experiment named aborted baseline
+    And the baseline is fresh snake oil
+    And the time is 2 seconds
+    And the assume is sale of apples has risen by 10 per cent
+    And I create the template
+    Then the template is correct
+    When I start an experiment for template aborted baseline immediately
+    When I wait 2 seconds
+    Then the experiment is aborted
+    And the environment key ERROR_DURING_BASELINE has value There is no such thing as snake oil!
+
+  @failure
+  Scenario: Run experiment with aborted assume
+    When I want to create an experiment named aborted assume
+    And the baseline is sale of apples
+    And the time is 2 seconds
+    And the assume is how about that snake oil
+    And I create the template
+    Then the template is correct
+    When I start an experiment for template aborted assume immediately
+    When I wait 2 seconds
+    Then the experiment is aborted
+    And the environment key ERROR_DURING_ASSUME has value For the last time: there is no such thing as snake oil!
 
   Scenario: Cannot start experiment with incorrect template
     When I want to create an experiment named Wrong try

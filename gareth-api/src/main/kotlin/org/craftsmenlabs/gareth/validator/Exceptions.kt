@@ -3,17 +3,11 @@ package org.craftsmenlabs.gareth.validator
 import com.fasterxml.jackson.annotation.JsonCreator
 import com.fasterxml.jackson.annotation.JsonProperty
 
-open class GarethException : RuntimeException {
-    constructor(msg: String) : super(msg)
-    constructor(cause: Throwable) : super(cause)
-}
+open class GarethException(msg: String? = null, cause: Throwable? = null) : RuntimeException(msg, cause)
 
-class GarethIllegalDefinitionException : GarethException {
-    constructor(cause: Throwable) : super(cause)
-    constructor(msg: String) : super(msg)
-}
+class GarethIllegalDefinitionException(msg: String? = null, cause: Throwable? = null) : GarethException(msg, cause)
 
-class GarethInvocationException(cause: Throwable) : GarethException(cause)
+class GarethInvocationException(msg: String? = null, cause: Throwable? = null) : GarethException(msg, cause)
 
 class GarethUnknownDefinitionException(msg: String) : GarethException(msg)
 

@@ -58,7 +58,7 @@ class OverviewServiceTest {
         val overviews = service.getAllForProject("acme")
         assertThat(overviews).hasSize(1)
         assertThat(overviews[0].name).isEqualTo("fruit")
-        assertThat(overviews[0].templateId).isEqualTo("tmp")
+        assertThat(overviews[0].id).isEqualTo("tmp")
     }
 
     @Test

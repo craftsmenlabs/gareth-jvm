@@ -88,26 +88,28 @@ open class DefinitionRegistry @Autowired constructor(val definitionFactory: Defi
     }
 
 
-    fun invokeAssumptionMethod(glueLine: String, request: ExecutionRequest): Pair<Boolean, ExecutionRunContext> {
-        val context = RunContext.create(request)
-        val result = invokeMethodByType(glueLine, ExecutionType.ASSUME, context) as Boolean
-        return Pair(result, context)
+    fun invokeAssumptionMethod(glueLine: String, request: ExecutionRequest): AssumptionInvocationResult {
+        val executionResult: GluelineInvocationResult = invokeMethodByType(glueLine, ExecutionType.ASSUME, RunContext.create(request))
+        if (executionResult.result != null) {
+            return AssumptionInvocationResult(successful = executionResult.result as Boolean, context = executionResult.context)
+        } else {
+            return AssumptionInvocationResult(exception = executionResult.exception, context = executionResult.context)
+        }
     }
 
-    fun invokeVoidMethodByType(glueLine: String, type: ExecutionType, request: ExecutionRequest): ExecutionRunContext {
-        val context = RunContext.create(request)
-        invokeMethodByType(glueLine, type, context)
-        return context
+    fun invokeVoidMethodByType(glueLine: String, type: ExecutionType, request: ExecutionRequest): GluelineInvocationResult {
+        return invokeMethodByType(glueLine, type, RunContext.create(request))
     }
 
-    fun invokeMethodByType(glueLine: String, type: ExecutionType, context: ExecutionRunContext): Any? {
+    private fun invokeMethodByType(glueLine: String, type: ExecutionType, context: ExecutionRunContext): GluelineInvocationResult {
         val method = getMethodDescriptorForExecutionType(glueLine, type)
         try {
             val declaringClass = getMethodDescriptorForExecutionType(glueLine, type).method.declaringClass
             val declaringClassInstance = definitionFactory.getInstanceForClass(declaringClass)
-            return method.invokeWith(glueLine, declaringClassInstance, context)
-        } catch (e: ReflectiveOperationException) {
-            throw GarethInvocationException(e)
+            return GluelineInvocationResult(result = method.invokeWith(glueLine, declaringClassInstance, context), context = context)
+        } catch (e: Exception) {
+            context.storeString("ERROR_DURING_" + type.name, e.message ?: "")
+            return GluelineInvocationResult(context = context, exception = GarethInvocationException(cause = e))
         }
     }
 

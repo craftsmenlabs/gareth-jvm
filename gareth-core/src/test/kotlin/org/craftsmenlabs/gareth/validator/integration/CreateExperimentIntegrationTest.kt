@@ -67,7 +67,7 @@ class CreateExperimentIntegrationTest {
         val createTemplateDTO = createFullTemplate("Goodbye world")
         val template = templateService.create(createTemplateDTO)
 
-        val created = experimentService.createExperiment(ExperimentCreateDTO(template.id, LocalDateTime.now()))
+        val created = experimentService.createExperiment(ExperimentCreateDTO(template.id, null))
         Thread.sleep(2000)
         assertThat(created.id).isNotNull()
         val saved = experimentService.getExperimentById(created.id)
@@ -107,10 +107,11 @@ class CreateExperimentIntegrationTest {
     @Test
     fun d_createAndStartExperiment() {
         val template = postTemplate(createFullTemplate("Hello world3"))
-        val dto = ExperimentCreateDTO(templateId = template.id, dueDate = LocalDateTime.now().plusSeconds(5))
+        val dto = ExperimentCreateDTO(templateId = template.id, dueDate = DateTimeDTO(LocalDateTime.now().plusSeconds(3)))
         val created = postExperiment(dto)
+        Thread.sleep(1000)
         assertThat(experimentService.getExperimentById(created.id).status).isEqualTo(ExecutionStatus.PENDING)
-        Thread.sleep(5000)
+        Thread.sleep(3000)
 
         var saved = experimentService.getExperimentById(created.id)
         assertThat(saved.name).isEqualTo("Hello world3")
@@ -125,7 +126,7 @@ class CreateExperimentIntegrationTest {
     @Test
     fun d_createAndStartExperimentWithoutFinalization() {
         val template = postTemplate(createTemplateWithoutFinalization("Hello world4"))
-        val dto = ExperimentCreateDTO(templateId = template.id, dueDate = LocalDateTime.now())
+        val dto = ExperimentCreateDTO(templateId = template.id, dueDate = null)
         val created = postExperiment(dto)
         Thread.sleep(3000)
         val saved = experimentService.getExperimentById(created.id)

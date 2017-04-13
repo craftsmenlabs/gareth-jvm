@@ -1,5 +1,6 @@
 package org.craftsmenlabs.gareth.validator.time
 
+import org.craftsmenlabs.gareth.validator.model.DateTimeDTO
 import org.springframework.stereotype.Component
 import java.time.*
 import java.util.*
@@ -23,6 +24,10 @@ class DateTimeService : TimeService {
     override fun fromDate(dateTime: Date): LocalDateTime {
         val instant = Instant.ofEpochMilli(dateTime.getTime())
         return LocalDateTime.ofInstant(instant, ZoneOffset.UTC)
+    }
+
+    override fun toDate(dto: DateTimeDTO): LocalDateTime {
+        return LocalDateTime.now().withYear(dto.year).withMonth(dto.month).withDayOfMonth(dto.day).withHour(dto.hour).withMinute(dto.minute).withSecond(dto.seconds)
     }
 
 

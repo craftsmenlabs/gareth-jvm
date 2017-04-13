@@ -24,7 +24,7 @@ class OverviewService @Autowired constructor(private val experimentDao: Experime
     private fun createForTemplate(template: ExperimentTemplateEntity,
                                   experiments: List<ExperimentEntity>?): OverviewDTO {
         if (experiments == null || experiments.isEmpty())
-            return OverviewDTO(name = template.name, templateId = template.id!!, editable = true, ready = template.ready != null)
+            return OverviewDTO(name = template.name, id = template.id!!, editable = true, ready = template.ready != null)
         val finished = experiments.filter { it.dateCompleted != null }
         val success = finished.filter { it.result == ExecutionStatus.SUCCESS }
         val failed = finished.filter { it.result == ExecutionStatus.FAILURE }
@@ -37,7 +37,7 @@ class OverviewService @Autowired constructor(private val experimentDao: Experime
         val ready = template.ready != null
         return OverviewDTO(
                 name = template.name,
-                templateId = template.id!!,
+                id = template.id!!,
                 editable = !ready,
                 ready = ready,
                 lastRun = lastRun,

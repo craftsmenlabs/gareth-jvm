@@ -9,6 +9,11 @@ import java.time.temporal.ChronoUnit
 @Service
 class SaleOfFruit : ExperimentDefinition {
 
+    @Baseline(glueLine = "^get snake oil$", humanReadable = "sale of snake oil", description = "Sale of snake oil always fails")
+    fun getSaleOfSnakeOil() {
+        throw IllegalStateException("There's no such thing as snake oil")
+    }
+
     @Baseline(glueLine = "^sale of (.*?)$", humanReadable = "sale of fruit", description = "Sale of many things")
     fun getSaleOfItem(context: ExecutionRunContext, item: String) {
         context.storeString("getting value for ", item)

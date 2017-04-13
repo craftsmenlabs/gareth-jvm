@@ -103,19 +103,19 @@ open class CreateExperimentSteps {
 
     @When("^the experiment is running$")
     fun theExperimentIsRunning() {
-        refresh()
+        refreshExperimentStatus()
         assertThat(currentExperiment.status).isEqualTo(ExecutionStatus.RUNNING)
     }
 
     @When("^the experiment is pending$")
     fun theExperimentIsPending() {
-        refresh()
+        refreshExperimentStatus()
         assertThat(currentExperiment.status).isEqualTo(ExecutionStatus.PENDING)
     }
 
     @When("^the experiment is completed (|un?)successfully$")
     fun theExperimentIsCompleted(notOk: String) {
-        refresh()
+        refreshExperimentStatus()
         val expectedStatus = if (notOk == "un") "FAILURE" else "SUCCESS"
         assertThat(currentExperiment.completed).isNotNull()
         assertThat(currentExperiment.status.name).isEqualTo(expectedStatus)
@@ -123,13 +123,20 @@ open class CreateExperimentSteps {
 
     @When("^the experiment is completed$")
     fun theExperimentIsCompleted() {
-        refresh()
+        refreshExperimentStatus()
         assertThat(currentExperiment.completed).isNotNull()
+    }
+
+    @When("^the experiment is aborted$")
+    fun theExperimentIsAborted() {
+        refreshExperimentStatus()
+        assertThat(currentExperiment.completed).describedAs("experiment completed date").isNotNull()
+        assertThat(currentExperiment.status).isEqualTo(ExecutionStatus.ERROR)
     }
 
     @When("^I start the experiment immediately$")
     fun iStartTheExperiment() {
-        val dto = ExperimentCreateDTO(templateId = currentTemplate.id, dueDate = LocalDateTime.now())
+        val dto = ExperimentCreateDTO(templateId = currentTemplate.id)
         currentExperiment = experimentClient.start(dto).execute().body()
     }
 
@@ -141,20 +148,20 @@ open class CreateExperimentSteps {
     @When("^I start an experiment for template (.*?) in (\\d+) seconds?$")
     fun iStartAnExperimentForTemplateInNSeconds(template: String, seconds: Long) {
         currentTemplate = experimentTemplateClient.getByName(template).execute().body()[0]
-        val start = if (seconds == 0L) null else LocalDateTime.now().plusSeconds(seconds)
-        val dto = ExperimentCreateDTO(templateId = currentTemplate.id, dueDate = start)
+        val start = LocalDateTime.now().plusSeconds(seconds)
+        val dto = ExperimentCreateDTO(templateId = currentTemplate.id, dueDate = DateTimeDTO(start))
         currentExperiment = experimentClient.start(dto).execute().body()
     }
 
 
     @When("^I cannot start the experiment$")
     fun iCannotStartTheExperiment() {
-        val dto = ExperimentCreateDTO(templateId = currentTemplate.id, dueDate = LocalDateTime.now())
+        val dto = ExperimentCreateDTO(templateId = currentTemplate.id)
         val response = experimentClient.start(dto).execute()
         assertThat(response.code()).describedAs("Expected experiment start to fail").isEqualTo(500)
     }
 
-    private fun refresh() {
+    private fun refreshExperimentStatus() {
         currentExperiment = experimentClient.get(currentExperiment.id).execute().body()
     }
 
@@ -165,14 +172,14 @@ open class CreateExperimentSteps {
 
     @When("^the environment key (.*?) has value (.*?)$")
     fun validateKeyAndValue(key: String, value: String) {
-        refresh()
+        refreshExperimentStatus()
         val find = currentExperiment.environment.items.find { it.key == key && it.value == value }
         assertThat(find).describedAs("No key $key with value $value found. Experiment: $currentExperiment.environment.items").isNotNull()
     }
 
     @When("^I get the overviews for all templates")
     fun iGetTheOverviewForTheCurrentTemplate() {
-        overviews = overviewClient.getAllForProject("acme").execute().body()
+        overviews = overviewClient.getAllForProject(EmbeddedMongoManager.PROJECT_ID).execute().body()
     }
 
     @When("^there are (\\d+) templates")

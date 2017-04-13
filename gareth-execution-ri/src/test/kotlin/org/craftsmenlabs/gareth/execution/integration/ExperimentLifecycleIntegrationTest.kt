@@ -37,6 +37,11 @@ class ExperimentLifecycleIntegrationTest {
             assume = "sale of fruit has risen by 81 per cent",
             time = "next Easter")
 
+    private val failingBaselineGluelineSet = ValidatedGluelines(
+            baseline = "get snake oil",
+            assume = "sale of fruit has risen by 81 per cent",
+            time = "2 days")
+
     @Test
     fun testBaseline() {
         assertThat(doPut("${path}baseline", createRequest(fullGluelineSet)).status).isEqualTo(ExecutionStatus.RUNNING)
@@ -48,6 +53,11 @@ class ExperimentLifecycleIntegrationTest {
         assertThat(doPut("${path}assume", createRequest(noFinalizationGluelineSet)).status).isEqualTo(ExecutionStatus.SUCCESS)
     }
 
+    @Test
+    fun testFailedBaseline() {
+        val request = createRequest(failingBaselineGluelineSet)
+        assertThat(doPut("${path}baseline", request).status).isEqualTo(ExecutionStatus.ERROR)
+    }
 
     @Test
     fun testFailedAssume() {

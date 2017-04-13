@@ -2,6 +2,10 @@ package org.craftsmenlabs.gareth.validator.model
 
 import java.time.LocalDateTime
 
+data class DateTimeDTO(val year: Int, val month: Int, val day: Int, val hour: Int = 0, val minute: Int = 0, val seconds: Int = 0) {
+    constructor(dt: LocalDateTime) : this(dt.year, dt.month.value, dt.dayOfMonth, dt.hour, dt.minute, dt.second)
+}
+
 data class ExperimentDTO(val id: String,
                          val name: String,
                          val projectId: String = "",
@@ -16,9 +20,9 @@ data class ExperimentDTO(val id: String,
                          val environment: ExperimentRunEnvironment = ExperimentRunEnvironment()) {
 
     fun getLifecycleStage(): ExperimentLifecycle {
-        if (baselineExecuted == null) {
+        if (baselineExecuted == null && status != ExecutionStatus.ERROR) {
             return ExperimentLifecycle.NEW
-        } else if (completed == null) {
+        } else if (completed == null && status != ExecutionStatus.ERROR) {
             return ExperimentLifecycle.BASELINE_EXECUTED
         } else {
             return ExperimentLifecycle.COMPLETED
@@ -48,7 +52,8 @@ data class ExperimentTemplateDTO(
         val glueLines: Gluelines
 )
 
-data class ExperimentCreateDTO(val templateId: String, val dueDate: LocalDateTime? = null)
+data class ExperimentCreateDTO(val templateId: String,
+                               val dueDate: DateTimeDTO? = null)
 
 data class ExperimentTemplateUpdateDTO(
         val id: String,
@@ -67,7 +72,7 @@ data class ExperimentTemplateCreateDTO(
         val glueLines: Gluelines)
 
 data class OverviewDTO(val name: String,
-                       val templateId: String,
+                       val id: String,
                        val ready: Boolean = false,
                        val editable: Boolean = true,
                        val lastRun: LocalDateTime? = null,

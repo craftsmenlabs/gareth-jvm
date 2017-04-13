@@ -2,6 +2,7 @@ package org.craftsmenlabs.gareth.validator.services
 
 import org.craftsmenlabs.gareth.validator.BadRequestException
 import org.craftsmenlabs.gareth.validator.NotFoundException
+import org.craftsmenlabs.gareth.validator.model.DateTimeDTO
 import org.craftsmenlabs.gareth.validator.model.ExecutionStatus
 import org.craftsmenlabs.gareth.validator.model.ExperimentCreateDTO
 import org.craftsmenlabs.gareth.validator.model.ExperimentDTO
@@ -44,7 +45,7 @@ class ExperimentService @Autowired constructor(val experimentDao: ExperimentDao,
         val entity = createEntityForTemplate(dto.templateId)
         val now = timeService.now()
         entity.dateCreated = now
-        entity.dateDue = dto.dueDate ?: now
+        entity.dateDue = if (dto.dueDate == null) now else timeService.toDate(dto.dueDate as DateTimeDTO)
         //template is ready
         entity.environment = setOf()
         entity.result = ExecutionStatus.PENDING

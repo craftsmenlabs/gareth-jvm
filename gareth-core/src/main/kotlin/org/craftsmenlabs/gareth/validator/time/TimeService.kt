@@ -1,5 +1,6 @@
 package org.craftsmenlabs.gareth.validator.time
 
+import org.craftsmenlabs.gareth.validator.model.DateTimeDTO
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.util.*
@@ -12,6 +13,8 @@ interface TimeService {
     fun now(): LocalDateTime
 
     fun toDate(dateTime: LocalDateTime): Date
+
+    fun toDate(dto: DateTimeDTO): LocalDateTime
 
     fun fromDate(dateTime: Date): LocalDateTime
 

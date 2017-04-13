@@ -18,12 +18,19 @@ public class AcmeGluelines implements ExperimentDefinition {
     private boolean toggleStatus;
 
     @Baseline(glueLine = "^sale of (apples|bananas|peaches)$",
-            humanReadable = "Sale of apples,bananas,peaches]")
+            humanReadable = "Sale of [apples,bananas,peaches]")
     public void getSaleOfItem(final ExecutionRunContext context, final String item) {
         context.storeDouble(item, mockDB.getSalesForProductAtBaseline(item));
     }
 
+    @Baseline(glueLine = "^fresh snake oil$",
+            humanReadable = "Sale of oil")
+    public void saleOfSnakeOil(final ExecutionRunContext context) {
+        throw new IllegalArgumentException("There is no such thing as snake oil!");
+    }
+
     @Assume(glueLine = "^sale of (apples|bananas|peaches) has risen by (\\d+?) per cent$",
+            humanReadable = "sale of <apples,bananas,peaches> has risen by <0-100> per cent]",
             description = "sale of apples,bananas,peaches and risen by 0-100 per cent")
     public boolean hasRisenByPercent(final ExecutionRunContext context, final String product, final int percentageExpected) {
         double salesAtBaseline = context.getDouble(product);
@@ -33,7 +40,13 @@ public class AcmeGluelines implements ExperimentDefinition {
         return increaseInPercentage >= percentageExpected;
     }
 
-    @Assume(glueLine = "toggle success and failure", description = "Testing glueline which toggles between a failed or successful outcome.")
+    @Assume(glueLine = "^how about that snake oil$",
+            humanReadable = "How about that snake oil?")
+    public boolean assumeSnakeOil(final ExecutionRunContext context) {
+        throw new IllegalArgumentException("For the last time: there is no such thing as snake oil!");
+    }
+
+    @Assume(glueLine = "toggle success and failure", humanReadable = "toggle success and failure", description = "Testing glueline which toggles between a failed or successful outcome.")
     public boolean toggle() {
         toggleStatus = !toggleStatus;
         return toggleStatus;

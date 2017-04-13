@@ -65,7 +65,7 @@ class ParsedDefinitionFactory(val definitionFactory: DefinitionFactory) {
                 glueLine = glueLine,
                 description = description,
                 method = method,
-                humanReadable = humanReadable,
+                humanReadable = humanReadable ?: description ?: glueLine,
                 runcontextParameter = hasRunContextParameter(method))
     }
 
@@ -93,7 +93,7 @@ class ParsedDefinitionFactory(val definitionFactory: DefinitionFactory) {
                 val duration = method.invoke(tmpDefinition) as Duration
                 durationMap.put(glueLine, Pair(humanReadable ?: glueLine, duration))
             } catch (e: Exception) {
-                throw GarethInvocationException(e)
+                throw GarethInvocationException(cause = e)
             }
         } else {
             throw IllegalStateException(String.format("Method %s with glue line '%s' is not a valid method (no duration return type)", method.name, glueLine))

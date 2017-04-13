@@ -3,6 +3,7 @@ package org.craftsmenlabs.gareth.execution.definitions
 import org.craftsmenlabs.gareth.validator.GarethIllegalDefinitionException
 import org.craftsmenlabs.gareth.validator.GarethInvocationException
 import org.craftsmenlabs.gareth.validator.model.ExecutionRunContext
+import java.lang.reflect.InvocationTargetException
 import java.lang.reflect.Method
 import java.lang.reflect.Type
 import java.util.*
@@ -18,7 +19,7 @@ class InvokableMethod {
 
     constructor(glueLine: String,
                 description: String? = null,
-                humanReadable: String? = null,
+                humanReadable: String,
                 method: Method,
                 runcontextParameter: Boolean) {
         try {
@@ -29,7 +30,7 @@ class InvokableMethod {
             this.humanReadable = humanReadable
             parseMethod()
         } catch (e: Exception) {
-            throw GarethIllegalDefinitionException(e)
+            throw GarethIllegalDefinitionException(cause = e)
         }
     }
 
@@ -53,8 +54,10 @@ class InvokableMethod {
         arguments.addAll(argumentValuesFromInputString)
         try {
             return method.invoke(declaringClassInstance, *arguments.toArray())
+        } catch (e: InvocationTargetException) {
+            throw GarethInvocationException(e.targetException.message, e.targetException)
         } catch (e: Exception) {
-            throw GarethInvocationException(e)
+            throw GarethInvocationException(cause = e)
         }
     }
 

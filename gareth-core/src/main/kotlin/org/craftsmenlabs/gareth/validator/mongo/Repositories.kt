@@ -11,6 +11,3 @@ interface ExperimentTemplateDao : MongoRepository<ExperimentTemplateEntity, Stri
     fun findByName(name: String): ExperimentTemplateEntity?
     fun findByProjectId(name: String): List<ExperimentTemplateEntity>
 }
-
-interface ProjectDao : MongoRepository<ProjectEntity, String> {
-}
