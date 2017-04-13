@@ -13,6 +13,7 @@ import org.craftsmenlabs.gareth.validator.model.GlueLineType
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.context.ApplicationContext
 import org.springframework.stereotype.Service
 import java.time.Duration
 import java.util.*
@@ -20,7 +21,7 @@ import java.util.regex.Pattern
 import javax.annotation.PostConstruct
 
 @Service
-open class DefinitionRegistry @Autowired constructor(val definitionFactory: DefinitionFactory, val definitions: List<ExperimentDefinition>) {
+open class DefinitionRegistry @Autowired constructor(val definitionFactory: DefinitionFactory, val context: ApplicationContext) {
     val log: Logger = LoggerFactory.getLogger(DefinitionService::class.java)
 
     val factory = ParsedDefinitionFactory(definitionFactory)
@@ -33,8 +34,10 @@ open class DefinitionRegistry @Autowired constructor(val definitionFactory: Defi
 
     @PostConstruct
     fun init() {
-        val classes = definitions.map { it.javaClass }
-        log.info("Found ${classes.size} classes.")
+        val beansOfType = context.getBeansOfType(ExperimentDefinition::class.java, true, false)
+        val classes = beansOfType.values.map { it.javaClass }
+        log.info("Found ${classes.size} implementing beans of ExperimentDefinition")
+        beansOfType.keys.forEach { log.info("$it") }
         classes.forEach { clz ->
             log.info("Parsing class ${clz.name}")
             addParsedDefinition(clz)
