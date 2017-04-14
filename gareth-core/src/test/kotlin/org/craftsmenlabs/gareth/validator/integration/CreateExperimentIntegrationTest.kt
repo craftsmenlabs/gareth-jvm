@@ -139,9 +139,9 @@ class CreateExperimentIntegrationTest {
     @Test
     fun e_testarchiving() {
         val toArchive = createTemplate(createFullTemplate("to be archived"))
-        assertThat(overviewService.getAllForProject("acme")).extracting { it.name }.contains("to be archived")
+        assertThat(overviewService.getAllForProject("acme").map { it.name }).contains("to be archived")
         templateService.update(ExperimentTemplateUpdateDTO(id = toArchive.id, archived = true))
-        assertThat(overviewService.getAllForProject("acme")).extracting { it.name }.doesNotContain("to be archived")
+        assertThat(overviewService.getAllForProject("acme").map { it.name }).doesNotContain("to be archived")
     }
 
     private fun createFullTemplate(name: String): ExperimentTemplateCreateDTO {
