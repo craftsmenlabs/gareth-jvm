@@ -1,8 +1,11 @@
 package org.craftsmenlabs.gareth.execution
 
 import org.craftsmenlabs.gareth.validator.model.*
+import org.springframework.util.StringUtils
 
-class RunContext(private var data: MutableMap<String, EnvironmentItem>) : ExecutionRunContext {
+class RunContext(private var data: MutableMap<String, EnvironmentItem> = mutableMapOf()) : ExecutionRunContext {
+
+    override fun getItems(): List<EnvironmentItem> = data.values.toList()
 
     override fun storeString(key: String, value: String) {
         data[key] = EnvironmentItem(key, value, ItemType.STRING)
@@ -16,6 +19,12 @@ class RunContext(private var data: MutableMap<String, EnvironmentItem>) : Execut
 
     override fun getLong(key: String) = getKey(key).value.toLong()
 
+    override fun storeList(key: String, value: List<String>) {
+        data[key] = EnvironmentItem(key, StringUtils.arrayToCommaDelimitedString(value.toTypedArray()), ItemType.LIST)
+    }
+
+    override fun getList(key: String): List<String> =
+            StringUtils.delimitedListToStringArray(getKey(key).value, ",").toList()
 
     override fun storeDouble(key: String, value: Double) {
         data[key] = EnvironmentItem(key, value.toString(), ItemType.DOUBLE)
@@ -44,6 +53,5 @@ class RunContext(private var data: MutableMap<String, EnvironmentItem>) : Execut
             return RunContext(data)
         }
     }
-
 
 }

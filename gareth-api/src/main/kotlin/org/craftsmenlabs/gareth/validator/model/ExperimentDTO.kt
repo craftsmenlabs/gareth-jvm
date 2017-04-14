@@ -46,6 +46,7 @@ data class ExperimentDTO(val id: String,
 
 data class ExperimentTemplateDTO(
         val id: String,
+        val projectId: String,
         val created: LocalDateTime,
         val ready: LocalDateTime?,
         val name: String,
@@ -55,7 +56,9 @@ data class ExperimentTemplateDTO(
 )
 
 data class ExperimentCreateDTO(val templateId: String,
-                               val dueDate: DateTimeDTO? = null)
+                               val dueDate: DateTimeDTO? = null,
+                               val environment: ExperimentRunEnvironment? = null
+)
 
 data class ExperimentTemplateUpdateDTO(
         val id: String,
@@ -83,5 +86,6 @@ data class OverviewDTO(val name: String,
                        val pending: Int = 0,
                        val running: Int = 0,
                        val success: Int = 0,
-                       val failed: Int = 0
+                       val failed: Int = 0,
+                       val aborted: Int = 0
 )

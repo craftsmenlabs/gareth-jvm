@@ -20,6 +20,7 @@ class ExperimentTemplateConverter @Autowired constructor(val timeService: TimeSe
         entity.success = dto.glueLines.success
         entity.failure = dto.glueLines.failure
         entity.timeline = dto.glueLines.time
+        entity.projectId = dto.projectid
         return entity
     }
 
@@ -32,6 +33,7 @@ class ExperimentTemplateConverter @Autowired constructor(val timeService: TimeSe
                 time = entity.timeline)
         return ExperimentTemplateDTO(id = entity.id ?: throw IllegalStateException("Cannot convert ExperimentTemplate with null ID to DTO"),
                 name = entity.name,
+                projectId = entity.projectId,
                 created = entity.dateCreated,
                 ready = entity.ready,
                 archived = entity.archived,

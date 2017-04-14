@@ -47,7 +47,7 @@ class ExperimentService @Autowired constructor(val experimentDao: ExperimentDao,
         entity.dateCreated = now
         entity.dateDue = if (dto.dueDate == null) now else timeService.toDate(dto.dueDate as DateTimeDTO)
         //template is ready
-        entity.environment = setOf()
+        entity.environment = if (dto.environment == null) setOf() else converter.getEnvironmentItems(dto.environment!!).toSet()
         entity.result = ExecutionStatus.PENDING
         val saved = experimentDao.save(entity)
         val dto = converter.toDTO(saved)

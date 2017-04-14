@@ -16,15 +16,18 @@ class ExperimentConverter {
         entity.result = experiment.status
         entity.archived = experiment.archived
 
-        val environment: List<ExperimentEnvironmentItem> = experiment.environment.items.map {
+        entity.environment = getEnvironmentItems(experiment.environment).toSet()
+        return entity
+    }
+
+    fun getEnvironmentItems(environment: ExperimentRunEnvironment): List<ExperimentEnvironmentItem> {
+        return environment.items.map {
             val item = ExperimentEnvironmentItem()
             item.key = it.key
             item.value = it.value
             item.itemType = it.itemType
             item
         }
-        entity.environment = environment.toSet()
-        return entity
     }
 
     fun toDTO(entity: ExperimentEntity): ExperimentDTO {

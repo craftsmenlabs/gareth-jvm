@@ -36,6 +36,7 @@ class OverviewService @Autowired constructor(private val experimentDao: Experime
         val failed = finished.filter { it.result == ExecutionStatus.FAILURE }
         val pending = experiments.filter { it.dateDue != null && it.result == ExecutionStatus.PENDING }
         val running = experiments.filter { it.result == ExecutionStatus.RUNNING }
+        val aborted = experiments.filter { it.result == ExecutionStatus.ERROR }
 
         val lastRun = finished.map { it.dateCompleted!! }.max()
         //dateStarted is guaranteed to be non null
@@ -51,7 +52,8 @@ class OverviewService @Autowired constructor(private val experimentDao: Experime
                 pending = pending.size,
                 running = running.size,
                 success = success.size,
-                failed = failed.size)
+                failed = failed.size,
+                aborted = aborted.size)
     }
 
 }

@@ -83,14 +83,14 @@ class CreateExperimentIntegrationTest {
     fun b_createExperimentWithoutStartDate() {
         val createTemplateDTO = createFullTemplate("Hello world")
         val template = createTemplate(createTemplateDTO)
-        val experimentCreateDTO = ExperimentCreateDTO(templateId = template.id)
+        val experimentCreateDTO = ExperimentCreateDTO(templateId = template.id, environment = ExperimentRunEnvironment(listOf(EnvironmentItem("COMPANY_TOKEN", "ABC", ItemType.STRING))))
         val created = postExperiment(experimentCreateDTO)
         Thread.sleep(2000)
         assertThat(created.id).isNotNull()
         val saved = experimentService.getExperimentById(created.id)
+        assertThat(saved.environment.items.map { it.key }).containsOnly("COMPANY_TOKEN")
         assertThat(saved.name).isEqualTo("Hello world")
         assertThat(saved.created).isNotNull()
-
     }
 
     @Test

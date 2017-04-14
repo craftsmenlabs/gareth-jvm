@@ -24,7 +24,7 @@ enum class ExecutionStatus {
 }
 
 enum class ItemType {
-    STRING, LONG, DOUBLE, BOOLEAN
+    STRING, LONG, DOUBLE, BOOLEAN, LIST
 }
 
 enum class GlueLineType {

@@ -58,7 +58,7 @@ open class DefinitionService @Autowired constructor(val definitionRegistry: Defi
 
     private fun executeOptionalGlueline(glueline: String?, type: ExecutionType, request: ExecutionRequest): ExecutionRunContext {
         //if the glueline is empty, there's nothing to invoke
-        return if (glueline == null) RunContext.create(request)
+        return if (glueline == null || glueline.isBlank()) RunContext.create(request)
         else
             definitionRegistry.invokeVoidMethodByType(glueline, type, request).context
     }

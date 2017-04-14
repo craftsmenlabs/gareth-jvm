@@ -47,25 +47,10 @@ open class DurationExpressionParser constructor(@Autowired val dateTimeService: 
 
     private fun getFlexibleDuration(unit: TemporalUnit, amount: Int): Duration {
         val now = dateTimeService.now()
-
-
         val later = now.plus(amount.toLong(), unit)
         val millisBetween = Duration.between(now, later).toMillis()
         return Duration.ofMillis(millisBetween)
     }
 
 
-    private enum class TimeUnit {
-        SECOND, SECONDS, MINUTE, MINUTES, HOUR, HOURS, DAY, DAYS, WEEK, WEEKS, MONTH, MONTHS, YEAR, YEARS;
-
-        companion object {
-            fun safeParse(txt: String): TimeUnit {
-                try {
-                    return TimeUnit.valueOf(txt.trim { it <= ' ' }.toUpperCase())
-                } catch (e: Exception) {
-                    throw IllegalArgumentException("Value for duration must be one of " + TimeUnit.values())
-                }
-            }
-        }
-    }
 }
