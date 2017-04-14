@@ -15,10 +15,16 @@ class OverviewService @Autowired constructor(private val experimentDao: Experime
                                              private val templateDao: ExperimentTemplateDao,
                                              private val timeService: TimeService) {
 
-    fun getAllForProject(projectId: String): List<OverviewDTO> {
-        val templatesByProject = templateDao.findByProjectId(projectId)
-        val experimentsByTemplate: Map<String, List<ExperimentEntity>> = experimentDao.findByProjectId(projectId).groupBy { it.templateId }
-        return if (templatesByProject.isEmpty()) listOf() else templatesByProject.map { createForTemplate(it, experimentsByTemplate[it.id]) }
+    fun getAllForProject(projectId: String, includeArchived: Boolean = false): List<OverviewDTO> {
+        val templatesByProject = templateDao
+                .findByProjectId(projectId)
+                .filter { includeArchived || it.archived == false }
+        //TODO make a custom query so that archived experiments are not fetched from mongo
+        val experimentsByTemplate: Map<String, List<ExperimentEntity>> = experimentDao
+                .findByProjectId(projectId)
+                .groupBy { it.templateId }
+        return if (templatesByProject.isEmpty()) listOf()
+        else templatesByProject.map { createForTemplate(it, experimentsByTemplate[it.id]) }
     }
 
     private fun createForTemplate(template: ExperimentTemplateEntity,

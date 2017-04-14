@@ -54,7 +54,7 @@ class OverviewServiceTest {
 
     @Test
     fun testOverviewWithOneTemplateAndNoExperiments() {
-        setupTemplateDao(template)
+        setupDaos(template)
         val overviews = service.getAllForProject("acme")
         assertThat(overviews).hasSize(1)
         assertThat(overviews[0].name).isEqualTo("fruit")
@@ -63,25 +63,22 @@ class OverviewServiceTest {
 
     @Test
     fun testWithOneRunningExperiment() {
-        setupTemplateDao(template)
         val started = createExperiment(template, due = threeDaysAgo, status = ExecutionStatus.RUNNING)
-        setupExperimentDaoForTemplate(template, started)
+        setupDaos(template, started)
         assertThat(service.getAllForProject("acme")[0].running).isEqualTo(1)
     }
 
     @Test
     fun testWithOneStartedAndPendingExperiment() {
-        setupTemplateDao(template)
         val started = createExperiment(template, due = threeDaysAgo)
-        setupExperimentDaoForTemplate(template, started)
+        setupDaos(template, started)
         assertThat(service.getAllForProject("acme")[0].pending).isEqualTo(1)
     }
 
     @Test
     fun testWithOneSuccessfulExperiment() {
-        setupTemplateDao(template)
         val success = createExperiment(template, due = threeDaysAgo, status = ExecutionStatus.SUCCESS, completed = twoDaysAgo)
-        setupExperimentDaoForTemplate(template, success)
+        setupDaos(template, success)
         assertThat(service.getAllForProject("acme")[0].success).isEqualTo(1)
         assertThat(service.getAllForProject("acme")[0].failed).isEqualTo(0)
         assertThat(service.getAllForProject("acme")[0].running).isEqualTo(0)
@@ -89,47 +86,57 @@ class OverviewServiceTest {
 
     @Test
     fun testWithOneFailedExperiment() {
-        setupTemplateDao(template)
         val failed = createExperiment(template, due = threeDaysAgo, status = ExecutionStatus.FAILURE, completed = twoDaysAgo)
-        setupExperimentDaoForTemplate(template, failed)
+        setupDaos(template, failed)
         assertThat(service.getAllForProject("acme")[0].success).isEqualTo(0)
         assertThat(service.getAllForProject("acme")[0].failed).isEqualTo(1)
         assertThat(service.getAllForProject("acme")[0].running).isEqualTo(0)
     }
 
+    @Test
+    fun testWithOneArchivedTemplate() {
+        val vegetables = createTemplate("vegetables")
+        val ex1 = createExperiment(template, due = threeDaysAgo)
+        val ex2 = createExperiment(template, due = threeDaysAgo)
+
+        vegetables.archived = true
+        object : Expectations() {
+            init {
+                templateDao.findByProjectId("acme")
+                result = listOf(template, vegetables)
+                experimentDao.findByProjectId("acme")
+                result = listOf(ex1, ex2)
+            }
+        }
+        assertThat(service.getAllForProject("acme")).hasSize(1)
+    }
+
 
     @Test
     fun testWithLastRun() {
-        setupTemplateDao(template)
         val success = createExperiment(template, due = threeDaysAgo, status = ExecutionStatus.SUCCESS, completed = yesterday)
         val failed = createExperiment(template, due = threeDaysAgo, status = ExecutionStatus.FAILURE, completed = twoDaysAgo)
-        setupExperimentDaoForTemplate(template, success, failed)
+        setupDaos(template, success, failed)
         assertThat(service.getAllForProject("acme")[0].lastRun).isEqualTo(yesterday)
     }
 
     @Test
     fun testWithNextRun() {
-        setupTemplateDao(template)
         val success = createExperiment(template, due = threeDaysAgo, status = ExecutionStatus.SUCCESS, completed = now)
         val failed = createExperiment(template, due = threeDaysAgo, status = ExecutionStatus.FAILURE, completed = tomorrow)
         val startNextWeek = createExperiment(template, due = nextWeek, status = ExecutionStatus.PENDING)
         val startInTwoWeeks = createExperiment(template, due = twoWeeks, status = ExecutionStatus.PENDING)
-        setupExperimentDaoForTemplate(template, success, failed, startNextWeek, startInTwoWeeks)
+        setupDaos(template, success, failed, startNextWeek, startInTwoWeeks)
         assertThat(service.getAllForProject("acme")[0].nextRun).isEqualTo(nextWeek)
     }
 
-    private fun setupTemplateDao(vararg templates: ExperimentTemplateEntity) {
+
+    private fun setupDaos(template: ExperimentTemplateEntity,
+                          vararg experiments: ExperimentEntity) {
         object : Expectations() {
             init {
                 templateDao.findByProjectId("acme")
-                result = templates.toList()
-            }
-        }
-    }
-
-    private fun setupExperimentDaoForTemplate(template: ExperimentTemplateEntity, vararg experiments: ExperimentEntity) {
-        object : Expectations() {
-            init {
+                result = template
                 experimentDao.findByProjectId("acme")
                 result = experiments
             }
@@ -148,6 +155,7 @@ class OverviewServiceTest {
         template.failure = "failure"
         template.timeline = "time"
         template.dateCreated = LocalDateTime.now()
+        template.archived = false
         return template
     }
 
@@ -169,6 +177,7 @@ class OverviewServiceTest {
         exp.dateDue = due
         exp.dateCompleted = completed
         exp.result = status
+        exp.archived = false
         return exp
     }
 }

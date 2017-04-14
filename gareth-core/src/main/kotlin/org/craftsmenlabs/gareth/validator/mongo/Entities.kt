@@ -25,6 +25,7 @@ data class ExperimentEntity(@Id var id: String? = null) {
     var success: String? = null
     var failure: String? = null
     lateinit var timeline: String
+    var archived: Boolean = false
 }
 
 @Document(collection = "experiment_template")
@@ -40,6 +41,7 @@ data class ExperimentTemplateEntity(@Id var id: String? = null) {
     var timeline: String? = null
     lateinit var dateCreated: LocalDateTime
     var ready: LocalDateTime? = null
+    var archived: Boolean = false
 }
 
 @Document(collection = "project")

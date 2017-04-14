@@ -14,6 +14,7 @@ class ExperimentConverter {
         entity.dateBaselineExecuted = experiment.baselineExecuted
         entity.dateCompleted = experiment.completed
         entity.result = experiment.status
+        entity.archived = experiment.archived
 
         val environment: List<ExperimentEnvironmentItem> = experiment.environment.items.map {
             val item = ExperimentEnvironmentItem()
@@ -44,7 +45,8 @@ class ExperimentConverter {
                 baselineExecuted = entity.dateBaselineExecuted,
                 completed = entity.dateCompleted,
                 status = entity.result,
-                environment = ExperimentRunEnvironment(environmentItems))
+                environment = ExperimentRunEnvironment(environmentItems),
+                archived = entity.archived)
         return dto;
     }
 }

@@ -34,6 +34,7 @@ class ExperimentTemplateConverter @Autowired constructor(val timeService: TimeSe
                 name = entity.name,
                 created = entity.dateCreated,
                 ready = entity.ready,
+                archived = entity.archived,
                 glueLines = glueLines
         )
     }

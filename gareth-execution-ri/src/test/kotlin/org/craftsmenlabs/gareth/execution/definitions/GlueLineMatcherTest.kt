@@ -24,10 +24,9 @@ class GlueLineMatcherTest {
     fun setup() {
         object : Expectations() {
             init {
-                definitionRegistry.getGlueLinesPerCategory()
-                result = mapOf(Pair(GlueLineType.ASSUME,
-                        setOf(Pair("has risen by (\\d{2}) per cent", "has risen by some percentage"),
-                                Pair("has increased", "is toegenomen"))))
+                definitionRegistry.getGluelinesPerCategory(GlueLineType.ASSUME)
+                result = setOf(Pair("has risen by (\\d{2}) per cent", "has risen by some percentage"),
+                        Pair("has increased", "is toegenomen"))
             }
         }
     }

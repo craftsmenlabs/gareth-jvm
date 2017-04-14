@@ -61,11 +61,12 @@ class ParsedDefinitionFactory(val definitionFactory: DefinitionFactory) {
             throw GarethIllegalDefinitionException("Method return type must be boolean but is ${method.returnType}")
         if (!expectBoolean && !isVoid)
             throw GarethIllegalDefinitionException("Method return type must be void but is ${method.returnType}")
+        fun nonEmpty(str: String?): String? = if (str == null || str.isBlank()) null else str!!
         return InvokableMethod(
                 glueLine = glueLine,
                 description = description,
                 method = method,
-                humanReadable = humanReadable ?: description ?: glueLine,
+                humanReadable = nonEmpty(humanReadable) ?: nonEmpty(description) ?: glueLine,
                 runcontextParameter = hasRunContextParameter(method))
     }
 

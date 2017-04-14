@@ -4,6 +4,7 @@ import org.assertj.core.api.Assertions.assertThat
 import org.craftsmenlabs.gareth.validator.client.GluelineValidator
 import org.craftsmenlabs.gareth.validator.model.*
 import org.craftsmenlabs.gareth.validator.services.ExperimentService
+import org.craftsmenlabs.gareth.validator.services.OverviewService
 import org.craftsmenlabs.gareth.validator.services.TemplateService
 import org.craftsmenlabs.gareth.validator.time.DateFormatUtils
 import org.craftsmenlabs.gareth.validator.time.TimeService
@@ -31,6 +32,9 @@ class CreateExperimentIntegrationTest {
 
     @Autowired
     lateinit var templateService: TemplateService
+
+    @Autowired
+    lateinit var overviewService: OverviewService
 
     @Autowired
     lateinit var validator: GluelineValidator
@@ -73,14 +77,12 @@ class CreateExperimentIntegrationTest {
         val saved = experimentService.getExperimentById(created.id)
         assertThat(saved.name).isEqualTo("Goodbye world")
         assertThat(saved.created).isNotNull()
-
     }
-
 
     @Test
     fun b_createExperimentWithoutStartDate() {
         val createTemplateDTO = createFullTemplate("Hello world")
-        val template = postTemplate(createTemplateDTO)
+        val template = createTemplate(createTemplateDTO)
         val experimentCreateDTO = ExperimentCreateDTO(templateId = template.id)
         val created = postExperiment(experimentCreateDTO)
         Thread.sleep(2000)
@@ -95,7 +97,7 @@ class CreateExperimentIntegrationTest {
     fun c_createExperimentWithFaultyBaseline() {
         val orig = createFullTemplate("Hello world2")
         val dto = orig.copy(glueLines = orig.glueLines.copy(baseline = "sale of computers"))
-        val template = postTemplate(dto)
+        val template = createTemplate(dto)
         assertThat(template.id).isNotEmpty()
         val saved = templateService.getTemplateById(template.id)
         assertThat(saved.name).isEqualTo("Hello world2")
@@ -106,7 +108,7 @@ class CreateExperimentIntegrationTest {
 
     @Test
     fun d_createAndStartExperiment() {
-        val template = postTemplate(createFullTemplate("Hello world3"))
+        val template = createTemplate(createFullTemplate("Hello world3"))
         val dto = ExperimentCreateDTO(templateId = template.id, dueDate = DateTimeDTO(LocalDateTime.now().plusSeconds(3)))
         val created = postExperiment(dto)
         Thread.sleep(1000)
@@ -125,14 +127,21 @@ class CreateExperimentIntegrationTest {
 
     @Test
     fun d_createAndStartExperimentWithoutFinalization() {
-        val template = postTemplate(createTemplateWithoutFinalization("Hello world4"))
+        val template = createTemplate(createTemplateWithoutFinalization("Hello world4"))
         val dto = ExperimentCreateDTO(templateId = template.id, dueDate = null)
         val created = postExperiment(dto)
         Thread.sleep(3000)
         val saved = experimentService.getExperimentById(created.id)
         assertThat(saved.status).isEqualTo(ExecutionStatus.SUCCESS)
         assertThat(saved.completed).isNotNull()
+    }
 
+    @Test
+    fun e_testarchiving() {
+        val toArchive = createTemplate(createFullTemplate("to be archived"))
+        assertThat(overviewService.getAllForProject("acme")).extracting { it.name }.contains("to be archived")
+        templateService.update(ExperimentTemplateUpdateDTO(id = toArchive.id, archived = true))
+        assertThat(overviewService.getAllForProject("acme")).extracting { it.name }.doesNotContain("to be archived")
     }
 
     private fun createFullTemplate(name: String): ExperimentTemplateCreateDTO {
@@ -158,7 +167,7 @@ class CreateExperimentIntegrationTest {
     }
 
 
-    private fun postTemplate(dto: ExperimentTemplateCreateDTO): ExperimentTemplateDTO {
+    private fun createTemplate(dto: ExperimentTemplateCreateDTO): ExperimentTemplateDTO {
         return templateService.create(dto)
     }
 

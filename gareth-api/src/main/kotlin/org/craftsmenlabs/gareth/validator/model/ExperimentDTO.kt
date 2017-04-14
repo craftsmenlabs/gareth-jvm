@@ -17,7 +17,8 @@ data class ExperimentDTO(val id: String,
                          val baselineExecuted: LocalDateTime? = null,
                          val completed: LocalDateTime? = null,
                          val status: ExecutionStatus = ExecutionStatus.PENDING,
-                         val environment: ExperimentRunEnvironment = ExperimentRunEnvironment()) {
+                         val environment: ExperimentRunEnvironment = ExperimentRunEnvironment(),
+                         val archived: Boolean = false) {
 
     fun getLifecycleStage(): ExperimentLifecycle {
         if (baselineExecuted == null && status != ExecutionStatus.ERROR) {
@@ -49,6 +50,7 @@ data class ExperimentTemplateDTO(
         val ready: LocalDateTime?,
         val name: String,
         val value: Int = 0,
+        val archived: Boolean = false,
         val glueLines: Gluelines
 )
 
@@ -63,6 +65,7 @@ data class ExperimentTemplateUpdateDTO(
         val assume: String? = null,
         val success: String? = null,
         val failure: String? = null,
+        val archived: Boolean? = false,
         val time: String? = null)
 
 data class ExperimentTemplateCreateDTO(
