@@ -16,15 +16,15 @@ object EmbeddedMongoManager {
 
     val MONGO_HOSTNAME = "localhost"
     val MONGO_DATABASE = "atdd"
+    val PROJECT_ID = "SALE_OF_FRUIT"
     val MONGO_PORT = System.getProperty("mongoport", "27018").toInt()
+    private val netconfig = Net(MONGO_HOSTNAME, MONGO_PORT, Network.localhostIsIPv6())
     lateinit var mongodExecutable: MongodExecutable
 
-    private fun createConfig(): IMongodConfig {
-        return MongodConfigBuilder()
-                .version(Version.Main.PRODUCTION)
-                .net(Net(MONGO_HOSTNAME, MONGO_PORT, Network.localhostIsIPv6()))
-                .build()
-    }
+    private fun createConfig(): IMongodConfig = MongodConfigBuilder()
+            .version(Version.Main.PRODUCTION)
+            .net(netconfig)
+            .build()
 
     fun start() {
         val starter = MongodStarter.getDefaultInstance()
@@ -32,6 +32,7 @@ object EmbeddedMongoManager {
         mongodExecutable.start()
         log.info("Successfully started local mongo")
     }
+
 
     fun shutDown() {
         if (EmbeddedMongoManager.mongodExecutable != null) {
@@ -44,7 +45,8 @@ object EmbeddedMongoManager {
     fun deleteAll() {
         val mongo = MongoClient(MONGO_HOSTNAME, MONGO_PORT)
         val db = mongo.getDB(MONGO_DATABASE)
-        db.collectionNames.forEach { db.getCollection(it).drop() }
+        db.getCollection("experimentTemplateEntity").drop()
+        db.getCollection("experimentEntity").drop()
         log.info("Successfully dropped collections.")
     }
 }

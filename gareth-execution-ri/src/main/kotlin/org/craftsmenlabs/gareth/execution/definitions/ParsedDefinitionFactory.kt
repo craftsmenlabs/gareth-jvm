@@ -1,9 +1,7 @@
 package org.craftsmenlabs.gareth.execution.definitions
 
-import org.craftsmenlabs.GarethIllegalDefinitionException
-import org.craftsmenlabs.GarethInvocationException
-import org.craftsmenlabs.gareth.api.annotation.*
 import org.craftsmenlabs.gareth.execution.services.DefinitionFactory
+import org.craftsmenlabs.gareth.validator.*
 import org.slf4j.LoggerFactory
 import java.lang.reflect.Method
 import java.time.Duration
@@ -28,23 +26,23 @@ class ParsedDefinitionFactory(val definitionFactory: DefinitionFactory) {
     private fun parseMethod(method: Method, definition: ParsedDefinition) {
         val baseline = getAnnotation(method, Baseline::class.java)
         if (baseline != null) {
-            definition.baselineDefinitions.put(baseline.glueLine, createMethod(method, baseline.glueLine, baseline.description))
+            definition.baselineDefinitions.put(baseline.glueLine, createMethod(method, baseline.glueLine, baseline.description, baseline.humanReadable))
         }
         val assume = getAnnotation(method, Assume::class.java)
         if (assume != null) {
-            definition.assumeDefinitions.put(assume.glueLine, createMethod(method, assume.glueLine, assume.description, true))
+            definition.assumeDefinitions.put(assume.glueLine, createMethod(method, assume.glueLine, assume.description, assume.humanReadable, true))
         }
         val sucess = getAnnotation(method, Success::class.java)
         if (sucess != null) {
-            definition.successDefinitions.put(sucess.glueLine, createMethod(method, sucess.glueLine, sucess.description))
+            definition.successDefinitions.put(sucess.glueLine, createMethod(method, sucess.glueLine, sucess.description, sucess.humanReadable))
         }
         val failure = getAnnotation(method, Failure::class.java)
         if (failure != null) {
-            definition.failureDefinitions.put(failure.glueLine, createMethod(method, failure.glueLine, failure.description))
+            definition.failureDefinitions.put(failure.glueLine, createMethod(method, failure.glueLine, failure.description, failure.humanReadable))
         }
         val time = getAnnotation(method, Time::class.java)
         if (time != null) {
-            registerDuration(method, time.glueLine, time.description, definition.timeDefinitions)
+            registerDuration(method, time.glueLine, time.humanReadable, definition.timeDefinitions)
         }
     }
 
@@ -52,14 +50,24 @@ class ParsedDefinitionFactory(val definitionFactory: DefinitionFactory) {
         return method.declaredAnnotations.filter { it.annotationClass.simpleName.equals(annotationClass.simpleName) }.firstOrNull() as T
     }
 
-    private fun createMethod(method: Method, glueLine: String, description: String, expectBoolean: Boolean = false): InvokableMethod {
+    private fun createMethod(method: Method,
+                             glueLine: String,
+                             description: String? = null,
+                             humanReadable: String? = null,
+                             expectBoolean: Boolean = false): InvokableMethod {
         val isBoolean = method.returnType == Boolean::class.java
         val isVoid = method.returnType != Void::class.java || method.returnType != Void.TYPE
         if (expectBoolean && !isBoolean)
             throw GarethIllegalDefinitionException("Method return type must be boolean but is ${method.returnType}")
         if (!expectBoolean && !isVoid)
             throw GarethIllegalDefinitionException("Method return type must be void but is ${method.returnType}")
-        return InvokableMethod(glueLine = glueLine, description = description, method = method, runcontextParameter = hasRunContextParameter(method))
+        fun nonEmpty(str: String?): String? = if (str == null || str.isBlank()) null else str!!
+        return InvokableMethod(
+                glueLine = glueLine,
+                description = description,
+                method = method,
+                humanReadable = nonEmpty(humanReadable) ?: nonEmpty(description) ?: glueLine,
+                runcontextParameter = hasRunContextParameter(method))
     }
 
     /**
@@ -71,7 +79,10 @@ class ParsedDefinitionFactory(val definitionFactory: DefinitionFactory) {
      * *
      * @param durationMap
      */
-    private fun registerDuration(method: Method, glueLine: String, description: String, durationMap: MutableMap<String, Duration>) {
+    private fun registerDuration(method: Method,
+                                 glueLine: String,
+                                 humanReadable: String? = null,
+                                 durationMap: MutableMap<String, Pair<String, Duration>>) {
         if (isTimeMethod(method)) {
             val tmpDefinition: Any?
             try {
@@ -80,9 +91,10 @@ class ParsedDefinitionFactory(val definitionFactory: DefinitionFactory) {
                 throw GarethIllegalDefinitionException("Could not instantiate instance for class ${method.declaringClass}")
             }
             try {
-                durationMap.put(glueLine, method.invoke(tmpDefinition) as Duration)
+                val duration = method.invoke(tmpDefinition) as Duration
+                durationMap.put(glueLine, Pair(humanReadable ?: glueLine, duration))
             } catch (e: Exception) {
-                throw GarethInvocationException(e)
+                throw GarethInvocationException(cause = e)
             }
         } else {
             throw IllegalStateException(String.format("Method %s with glue line '%s' is not a valid method (no duration return type)", method.name, glueLine))

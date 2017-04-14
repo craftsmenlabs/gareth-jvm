@@ -1,27 +1,28 @@
 package org.craftsmenlabs.gareth.execution.services
 
-import com.google.common.reflect.ClassPath
-import org.craftsmenlabs.ExperimentDefinition
-import org.craftsmenlabs.GarethIllegalDefinitionException
-import org.craftsmenlabs.GarethInvocationException
 import org.craftsmenlabs.gareth.execution.RunContext
 import org.craftsmenlabs.gareth.execution.definitions.ExecutionType
 import org.craftsmenlabs.gareth.execution.definitions.InvokableMethod
 import org.craftsmenlabs.gareth.execution.definitions.ParsedDefinitionFactory
-import org.craftsmenlabs.gareth.model.ExecutionRequest
-import org.craftsmenlabs.gareth.model.ExecutionRunContext
-import org.craftsmenlabs.gareth.model.GlueLineType
+import org.craftsmenlabs.gareth.validator.ExperimentDefinition
+import org.craftsmenlabs.gareth.validator.GarethIllegalDefinitionException
+import org.craftsmenlabs.gareth.validator.GarethInvocationException
+import org.craftsmenlabs.gareth.validator.model.ExecutionRequest
+import org.craftsmenlabs.gareth.validator.model.ExecutionRunContext
+import org.craftsmenlabs.gareth.validator.model.GlueLineType
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.boot.context.event.ApplicationReadyEvent
+import org.springframework.context.ApplicationListener
 import org.springframework.stereotype.Service
 import java.time.Duration
 import java.util.*
 import java.util.regex.Pattern
-import javax.annotation.PostConstruct
 
 @Service
-open class DefinitionRegistry @Autowired constructor(val definitionFactory: DefinitionFactory, val definitions: List<ExperimentDefinition>) {
+open class DefinitionRegistry @Autowired constructor(val definitionFactory: DefinitionFactory) : ApplicationListener<ApplicationReadyEvent> {
+
     val log: Logger = LoggerFactory.getLogger(DefinitionService::class.java)
 
     val factory = ParsedDefinitionFactory(definitionFactory)
@@ -30,45 +31,27 @@ open class DefinitionRegistry @Autowired constructor(val definitionFactory: Defi
     private val assumeDefinitions = HashMap<String, InvokableMethod>()
     private val successDefinitions = HashMap<String, InvokableMethod>()
     private val failureDefinitions = HashMap<String, InvokableMethod>()
-    private val timeDefinitions = HashMap<String, Duration>()
+    private val timeDefinitions = HashMap<String, Pair<String, Duration>>()
 
-    @PostConstruct
-    fun init() {
-        val classes = definitions.map { it.javaClass }
-        log.info("Found ${classes.size} classes.")
+    var timeGlueLines: MutableSet<Pair<String, String?>> = mutableSetOf<Pair<String, String?>>()
+    private lateinit var glueLinesPerCategory: Map<GlueLineType, Set<Pair<String, String?>>>
+
+    override fun onApplicationEvent(event: ApplicationReadyEvent) {
+        val beansOfType = event.applicationContext.getBeansOfType(ExperimentDefinition::class.java, true, false)
+        val classes = beansOfType.values.map { it.javaClass }
+        log.info("Found ${classes.size} implementing beans of ExperimentDefinition")
+        beansOfType.keys.forEach { log.info("$it") }
         classes.forEach { clz ->
             log.info("Parsing class ${clz.name}")
             addParsedDefinition(clz)
             log.info("Successfully parsed ${clz.simpleName}")
         }
+        glueLinesPerCategory = createGluelinesPerCategoryMap()
+        timeGlueLines.addAll(createDefaultTimeGlueLinePatterns())
+        timeGlueLines.addAll(glueLinesPerCategory[GlueLineType.TIME].orEmpty())
     }
 
-    private fun getClassesInPackage(packageName: String): List<Class<*>> {
-        val classesInfo = ClassPath.from(Thread.currentThread().getContextClassLoader()).getTopLevelClassesRecursive(packageName)
-        return classesInfo.map { Class.forName(it.name) }
-    }
-
-    fun getGlueLinesPerCategory(): Map<GlueLineType, Set<String>> {
-        val allPatterns = HashMap<GlueLineType, Set<String>>()
-        allPatterns.put(GlueLineType.ASSUME, assumeDefinitions.keys)
-        allPatterns.put(GlueLineType.BASELINE, baselineDefinitions.keys)
-        allPatterns.put(GlueLineType.SUCCESS, successDefinitions.keys)
-        allPatterns.put(GlueLineType.FAILURE, failureDefinitions.keys)
-        allPatterns.put(GlueLineType.TIME, timeDefinitions.keys)
-        return allPatterns
-    }
-
-    fun getMethodDescriptorForExecutionType(glueLine: String, type: ExecutionType): InvokableMethod {
-        return when (type) {
-            ExecutionType.BASELINE -> getDefinition(baselineDefinitions, glueLine)
-            ExecutionType.ASSUME -> getDefinition(assumeDefinitions, glueLine)
-            ExecutionType.SUCCESS -> getDefinition(successDefinitions, glueLine)
-            ExecutionType.FAILURE -> getDefinition(failureDefinitions, glueLine)
-        }
-    }
-
-    fun addParsedDefinition(clz: Class<*>) {
-
+    private fun addParsedDefinition(clz: Class<*>) {
         fun <T> addDefinition(valueMap: MutableMap<String, T>, glueLine: String, definition: T) {
             if (!valueMap.containsKey(glueLine)) {
                 valueMap.put(glueLine, definition)
@@ -85,32 +68,59 @@ open class DefinitionRegistry @Autowired constructor(val definitionFactory: Defi
         parsedDefinition.timeDefinitions.forEach { addDefinition(timeDefinitions, it.key, it.value) }
     }
 
-    fun getTimeForGlueline(glueLine: String): Duration {
+    private fun createGluelinesPerCategoryMap(): Map<GlueLineType, Set<Pair<String, String?>>> {
+        fun toPair(map: Map<String, InvokableMethod>): Set<Pair<String, String?>> = map.map { Pair(it.key, it.value.humanReadable) }.toSet()
+
+        val allPatterns = HashMap<GlueLineType, Set<Pair<String, String?>>>()
+        allPatterns.put(GlueLineType.ASSUME, toPair(assumeDefinitions))
+        allPatterns.put(GlueLineType.BASELINE, toPair(baselineDefinitions))
+        allPatterns.put(GlueLineType.SUCCESS, toPair(successDefinitions))
+        allPatterns.put(GlueLineType.FAILURE, toPair(failureDefinitions))
+        allPatterns.put(GlueLineType.TIME, timeDefinitions.map { Pair(it.key, it.value.first) }.toSet())
+        return allPatterns
+    }
+
+    fun getGluelinesPerCategory(glueLineType: GlueLineType): Set<Pair<String, String?>> {
+        return glueLinesPerCategory[glueLineType] ?: throw IllegalStateException("Not properly initialized")
+    }
+
+    fun getMethodDescriptorForExecutionType(glueLine: String, type: ExecutionType): InvokableMethod {
+        return when (type) {
+            ExecutionType.BASELINE -> getDefinition(baselineDefinitions, glueLine)
+            ExecutionType.ASSUME -> getDefinition(assumeDefinitions, glueLine)
+            ExecutionType.SUCCESS -> getDefinition(successDefinitions, glueLine)
+            ExecutionType.FAILURE -> getDefinition(failureDefinitions, glueLine)
+        }
+    }
+
+    fun getTimeForGlueline(glueLine: String): Pair<String, Duration> {
         val match = timeDefinitions.keys.filter({ annotationPattern -> matchesPattern(glueLine, annotationPattern) }).firstOrNull()
         return timeDefinitions[match] ?: throw GarethIllegalDefinitionException("No time definition found for glue line $glueLine")
     }
 
 
-    fun invokeAssumptionMethod(glueLine: String, request: ExecutionRequest): Pair<Boolean, ExecutionRunContext> {
-        val context = RunContext.create(request)
-        val result = invokeMethodByType(glueLine, ExecutionType.ASSUME, context) as Boolean
-        return Pair(result, context)
+    fun invokeAssumptionMethod(glueLine: String, request: ExecutionRequest): AssumptionInvocationResult {
+        val executionResult: GluelineInvocationResult = invokeMethodByType(glueLine, ExecutionType.ASSUME, RunContext.create(request))
+        if (executionResult.result != null) {
+            return AssumptionInvocationResult(successful = executionResult.result as Boolean, context = executionResult.context)
+        } else {
+            return AssumptionInvocationResult(exception = executionResult.exception, context = executionResult.context)
+        }
     }
 
-    fun invokeVoidMethodByType(glueLine: String, type: ExecutionType, request: ExecutionRequest): ExecutionRunContext {
-        val context = RunContext.create(request)
-        invokeMethodByType(glueLine, type, context)
-        return context
+    fun invokeVoidMethodByType(glueLine: String, type: ExecutionType, request: ExecutionRequest): GluelineInvocationResult {
+        return invokeMethodByType(glueLine, type, RunContext.create(request))
     }
 
-    fun invokeMethodByType(glueLine: String, type: ExecutionType, context: ExecutionRunContext): Any? {
+    private fun invokeMethodByType(glueLine: String, type: ExecutionType, context: ExecutionRunContext): GluelineInvocationResult {
         val method = getMethodDescriptorForExecutionType(glueLine, type)
         try {
             val declaringClass = getMethodDescriptorForExecutionType(glueLine, type).method.declaringClass
             val declaringClassInstance = definitionFactory.getInstanceForClass(declaringClass)
-            return method.invokeWith(glueLine, declaringClassInstance, context)
-        } catch (e: ReflectiveOperationException) {
-            throw GarethInvocationException(e)
+            return GluelineInvocationResult(result = method.invokeWith(glueLine, declaringClassInstance, context), context = context)
+        } catch (e: Exception) {
+            context.storeString("ERROR_DURING_" + type.name, e.message ?: "")
+            return GluelineInvocationResult(context = context, exception = GarethInvocationException(cause = e))
         }
     }
 
@@ -134,4 +144,13 @@ open class DefinitionRegistry @Autowired constructor(val definitionFactory: Defi
         return compiled
     }
 
+    private fun createDefaultTimeGlueLinePatterns(): List<Pair<String, String>> {
+        return listOf(Pair("^(\\d+) seconds?$", "<number> seconds"),
+                Pair("^(\\d+) minutes?$", "<number> minutes"),
+                Pair("^(\\d+) hours?$", "<number> hours"),
+                Pair("^(\\d+) days?$", "^<number> days"),
+                Pair("^(\\d+) weeks?$", "<number> weeks"),
+                Pair("^(\\d+) months?$", "<number> months"),
+                Pair("^(\\d+) years?$", "<number> years"))
+    }
 }

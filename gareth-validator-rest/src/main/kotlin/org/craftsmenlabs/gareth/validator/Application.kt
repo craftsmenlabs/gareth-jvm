@@ -1,7 +1,6 @@
 package org.craftsmenlabs.gareth.validator
 
-//import org.craftsmenlabs.gareth.GarethValidatorConfiguration
-import org.craftsmenlabs.gareth.GarethValidatorConfiguration
+//import org.craftsmenlabs.gareth.validator.GarethValidatorConfiguration
 import org.springframework.boot.SpringApplication
 import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.context.annotation.Import

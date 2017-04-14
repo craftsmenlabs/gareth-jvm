@@ -25,19 +25,18 @@ object GarethServerEnvironment {
     fun createGarethInstance(): SpringApplicationWrapper {
         val conf = ConfBuilder(port = GARETH_PORT)
         conf.add("logging.level.org.craftsmenlabs", "DEBUG")
-        conf.add("execution.client.url", "http://localhost:$GARETH_EXECUTION_PORT")
         conf.add("spring.data.mongodb.port", EmbeddedMongoManager.MONGO_PORT.toString())
         conf.add("spring.data.mongodb.host", EmbeddedMongoManager.MONGO_HOSTNAME)
         conf.add("spring.data.mongodb.database", EmbeddedMongoManager.MONGO_DATABASE)
 
-        val jarFilePath = getJarfile(getProjectRootDir() + "gareth-validator-rest/target")
+        val jarFilePath = PathUtil.getJarfile(PathUtil.getProjectRootDir() + "gareth-validator-rest/target")
         return SpringApplicationWrapper("http://localhost:$GARETH_PORT/manage", jarFilePath, conf)
     }
 
     fun createExecutionInstance(): SpringApplicationWrapper {
         val conf = ConfBuilder(port = GARETH_EXECUTION_PORT)
         conf.add("spring.profiles.active", "test")
-        val jarFilePath = getJarfile(getProjectRootDir() + "gareth-acme/target")
+        val jarFilePath = PathUtil.getJarfile(PathUtil.getProjectRootDir() + "gareth-acme/target")
         return SpringApplicationWrapper("http://localhost:$GARETH_EXECUTION_PORT/manage", jarFilePath, conf)
     }
 
@@ -45,13 +44,6 @@ object GarethServerEnvironment {
         log.info("Shutting down gareth environments")
         instances.forEach { it.shutdown() }
         EmbeddedMongoManager.shutDown()
-    }
-
-
-    fun getProjectRootDir(): String {
-        val packageAsPath = GarethServerEnvironment::class.java.getPackage().getName().replace("\\.".toRegex(), "/")
-        val path = GarethServerEnvironment::class.java.getResource(".").getFile()
-        return path.replace("gareth-atdd/target/test-classes/$packageAsPath", "").replace("\\/\\/".toRegex(), "\\/")
     }
 
     fun getJarfile(path: String): String {

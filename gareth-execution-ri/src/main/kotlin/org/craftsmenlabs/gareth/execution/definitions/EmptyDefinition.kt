@@ -1,6 +1,6 @@
 package org.craftsmenlabs.gareth.execution.definitions
 
-import org.craftsmenlabs.ExperimentDefinition
+import org.craftsmenlabs.gareth.validator.ExperimentDefinition
 import org.springframework.stereotype.Service
 
 /**

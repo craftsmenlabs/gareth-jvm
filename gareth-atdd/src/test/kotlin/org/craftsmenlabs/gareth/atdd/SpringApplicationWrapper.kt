@@ -1,6 +1,6 @@
 package org.craftsmenlabs.gareth.atdd
 
-import org.craftsmenlabs.gareth.rest.BasicAuthenticationRestClient
+import org.craftsmenlabs.gareth.validator.rest.BasicAuthenticationRestClient
 import org.json.JSONObject
 import org.slf4j.LoggerFactory
 import java.io.InputStream

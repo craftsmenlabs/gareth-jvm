@@ -2,10 +2,10 @@ package org.craftsmenlabs.gareth.execution.rest.v1
 
 import io.swagger.annotations.Api
 import io.swagger.annotations.ApiOperation
-import org.craftsmenlabs.GlueLineMatcherResource
 import org.craftsmenlabs.gareth.execution.services.GlueLineMatcherService
-import org.craftsmenlabs.gareth.model.GlueLineSearchResultDTO
-import org.craftsmenlabs.gareth.model.GlueLineType
+import org.craftsmenlabs.gareth.validator.GlueLineMatcherResource
+import org.craftsmenlabs.gareth.validator.model.GlueLineSearchResultDTO
+import org.craftsmenlabs.gareth.validator.model.GlueLineType
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.RequestMapping

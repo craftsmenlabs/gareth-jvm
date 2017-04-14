@@ -10,5 +10,5 @@ class ParsedDefinition {
     val assumeDefinitions = HashMap<String, InvokableMethod>()
     val successDefinitions = HashMap<String, InvokableMethod>()
     val failureDefinitions = HashMap<String, InvokableMethod>()
-    val timeDefinitions = HashMap<String, Duration>()
+    val timeDefinitions = HashMap<String, Pair<String, Duration>>()
 }

@@ -4,8 +4,11 @@ import mockit.Expectations
 import mockit.Injectable
 import mockit.Tested
 import org.assertj.core.api.Assertions.assertThat
-import org.craftsmenlabs.gareth.GlueLineExecutor
-import org.craftsmenlabs.gareth.model.ExperimentDTO
+import org.craftsmenlabs.gareth.validator.client.GlueLineExecutor
+import org.craftsmenlabs.gareth.validator.model.ExperimentDTO
+import org.craftsmenlabs.gareth.validator.time.DateTimeService
+import org.craftsmenlabs.gareth.validator.time.DurationCalculator
+import org.craftsmenlabs.gareth.validator.time.DurationExpressionParser
 import org.junit.Test
 import java.time.Duration
 import java.time.LocalDateTime
