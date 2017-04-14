@@ -35,11 +35,9 @@ Feature: Run ACME experiment
 
   Scenario: Run experiment with delayed start
     When I start an experiment for template toss a coin in 4 seconds
-    When I wait 1 seconds
+    When I wait 2 seconds
     Then the experiment is pending
-    When I wait 4 seconds
-    Then the experiment is running
-    When I wait 5 seconds
+    When I wait 7 seconds
     Then the experiment is completed successfully
 
   @failure
