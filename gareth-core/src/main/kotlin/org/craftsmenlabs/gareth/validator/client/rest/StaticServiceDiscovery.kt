@@ -2,11 +2,9 @@ package org.craftsmenlabs.gareth.validator.client.rest
 
 import org.craftsmenlabs.gareth.validator.client.ExecutionServiceDiscovery
 import org.springframework.beans.factory.annotation.Value
-import org.springframework.context.annotation.Profile
 import org.springframework.stereotype.Service
 
 @Service
-@Profile("!test")
 /**
  *This is a temporary solution. For now there is only ever one execution server for every project, semi-hardcoded in an application property.
  */
