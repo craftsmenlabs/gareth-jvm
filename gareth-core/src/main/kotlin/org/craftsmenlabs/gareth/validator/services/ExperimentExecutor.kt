@@ -1,4 +1,4 @@
-package org.craftsmenlabs.gareth.validator.monitors
+package org.craftsmenlabs.gareth.validator.services
 
 import org.craftsmenlabs.gareth.validator.client.GlueLineExecutor
 import org.craftsmenlabs.gareth.validator.model.ExecutionStatus

@@ -72,7 +72,7 @@ class CreateExperimentIntegrationTest {
         val template = templateService.create(createTemplateDTO)
 
         val created = experimentService.createExperiment(ExperimentCreateDTO(template.id, null))
-        Thread.sleep(2000)
+        Thread.sleep(1000)
         assertThat(created.id).isNotNull()
         val saved = experimentService.getExperimentById(created.id)
         assertThat(saved.name).isEqualTo("Goodbye world")
@@ -85,7 +85,7 @@ class CreateExperimentIntegrationTest {
         val template = createTemplate(createTemplateDTO)
         val experimentCreateDTO = ExperimentCreateDTO(templateId = template.id, environment = ExperimentRunEnvironment(listOf(EnvironmentItem("COMPANY_TOKEN", "ABC", ItemType.STRING))))
         val created = postExperiment(experimentCreateDTO)
-        Thread.sleep(2000)
+        Thread.sleep(1000)
         assertThat(created.id).isNotNull()
         val saved = experimentService.getExperimentById(created.id)
         assertThat(saved.environment.items.map { it.key }).containsOnly("COMPANY_TOKEN")
@@ -111,15 +111,15 @@ class CreateExperimentIntegrationTest {
         val template = createTemplate(createFullTemplate("Hello world3"))
         val dto = ExperimentCreateDTO(templateId = template.id, dueDate = DateTimeDTO(LocalDateTime.now().plusSeconds(3)))
         val created = postExperiment(dto)
-        Thread.sleep(1000)
+        Thread.sleep(500)
         assertThat(experimentService.getExperimentById(created.id).status).isEqualTo(ExecutionStatus.PENDING)
-        Thread.sleep(3000)
+        Thread.sleep(2000)
 
         var saved = experimentService.getExperimentById(created.id)
         assertThat(saved.name).isEqualTo("Hello world3")
         assertThat(saved.status).isEqualTo(ExecutionStatus.RUNNING)
 
-        Thread.sleep(5000)
+        Thread.sleep(1000)
         saved = experimentService.getExperimentById(created.id)
         assertThat(saved.status).isEqualTo(ExecutionStatus.SUCCESS)
         assertThat(saved.completed).isNotNull()
@@ -130,26 +130,57 @@ class CreateExperimentIntegrationTest {
         val template = createTemplate(createTemplateWithoutFinalization("Hello world4"))
         val dto = ExperimentCreateDTO(templateId = template.id, dueDate = null)
         val created = postExperiment(dto)
-        Thread.sleep(3000)
+        Thread.sleep(2000)
         val saved = experimentService.getExperimentById(created.id)
         assertThat(saved.status).isEqualTo(ExecutionStatus.SUCCESS)
         assertThat(saved.completed).isNotNull()
     }
 
     @Test
-    fun e_testarchiving() {
+    fun ea_createAndStartExperimentWithoutFinalization() {
+        var dto = createTemplateWithoutFinalization("Failed baseline")
+        dto = dto.copy(glueLines = dto.glueLines.copy(assume = "THROW"))
+        val template = createTemplate(dto)
+        val experimentDTO = ExperimentCreateDTO(templateId = template.id, dueDate = null)
+        val created = postExperiment(experimentDTO)
+        Thread.sleep(2000)
+        val saved = experimentService.getExperimentById(created.id)
+        assertThat(saved.status).isEqualTo(ExecutionStatus.ERROR)
+        assertThat(saved.completed).isNotNull()
+    }
+
+    @Test
+    fun eb_testRetrieval() {
+        fun getRuns(templateName: String,
+                    createdAfter: String? = null,
+                    status: ExecutionStatus? = null,
+                    completed: Boolean? = null): List<ExperimentDTO> {
+            val template = templateService.getFiltered(templateName)[0]
+            val experiments = experimentService.getFiltered(template.id, createdAfter, status, completed)
+            return experiments
+        }
+        assertThat(getRuns(templateName = "Hello world")).hasSize(1)
+        assertThat(getRuns("Hello world", completed = true)).hasSize(1)
+        assertThat(getRuns("Hello world", completed = true, status = ExecutionStatus.SUCCESS)).hasSize(1)
+
+        assertThat(getRuns("Failed baseline", completed = true, status = ExecutionStatus.ERROR)).hasSize(1)
+    }
+
+    @Test
+    fun f_testarchiving() {
         val toArchive = createTemplate(createFullTemplate("to be archived"))
         assertThat(overviewService.getAllForProject("acme").map { it.name }).contains("to be archived")
         templateService.update(ExperimentTemplateUpdateDTO(id = toArchive.id, archived = true))
         assertThat(overviewService.getAllForProject("acme").map { it.name }).doesNotContain("to be archived")
     }
 
+
     private fun createFullTemplate(name: String): ExperimentTemplateCreateDTO {
         return ExperimentTemplateCreateDTO(name = name, projectid = "acme",
                 glueLines = Gluelines(
                         baseline = "sale of fruit",
                         assume = "sale of fruit has risen by 81 per cent",
-                        time = "5 seconds",
+                        time = "2 seconds",
                         success = "send email to Sam",
                         failure = "send email to Moos"
                 ),
@@ -161,7 +192,7 @@ class CreateExperimentIntegrationTest {
                 glueLines = Gluelines(
                         baseline = "sale of fruit",
                         assume = "sale of fruit has risen by 81 per cent",
-                        time = "2 seconds"
+                        time = "1 seconds"
                 ),
                 value = 42)
     }
@@ -180,7 +211,7 @@ class CreateExperimentIntegrationTest {
     }
 
     private fun searchExperiment(date: String? = null, completed: Boolean? = null): List<ExperimentDTO> {
-        return experimentService.getFiltered("acme", date, completed)
+        return experimentService.getFiltered(projectId = "acme", createdAfter = date, completed = completed)
     }
 
     private fun parseError(response: Response<*>) = if (!response.isSuccessful) response.errorBody().string() else null

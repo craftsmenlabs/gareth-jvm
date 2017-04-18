@@ -3,6 +3,7 @@ package org.craftsmenlabs.gareth.validator.monitors
 import org.craftsmenlabs.gareth.validator.model.ExperimentDTO
 import org.craftsmenlabs.gareth.validator.model.ExperimentLifecycle
 import org.craftsmenlabs.gareth.validator.providers.ExperimentProvider
+import org.craftsmenlabs.gareth.validator.services.ExperimentExecutor
 import org.craftsmenlabs.gareth.validator.services.ExperimentService
 import org.craftsmenlabs.gareth.validator.time.DurationCalculator
 import org.craftsmenlabs.gareth.validator.time.TimeService

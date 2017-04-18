@@ -3,6 +3,7 @@ package org.craftsmenlabs.gareth.validator.monitors
 import org.craftsmenlabs.gareth.validator.model.ExperimentDTO
 import org.craftsmenlabs.gareth.validator.model.ExperimentLifecycle
 import org.craftsmenlabs.gareth.validator.providers.ExperimentProvider
+import org.craftsmenlabs.gareth.validator.services.ExperimentExecutor
 import org.craftsmenlabs.gareth.validator.services.ExperimentService
 import org.craftsmenlabs.gareth.validator.time.TimeService
 import org.springframework.beans.factory.annotation.Autowired
@@ -30,7 +31,14 @@ class ExecuteBaselineMonitor @Autowired constructor(
                     return@delay delay
                 }
                 .map {
-                    experimentExecutor.executeBaseline(it)
+                    scheduleNextExperimentRun(experimentExecutor.executeBaseline(it))
                 }
+    }
+
+    private fun scheduleNextExperimentRun(dto: ExperimentDTO): ExperimentDTO {
+        val createDTO = experimentService.scheduleNewInstance(dto)
+        if (createDTO != null)
+            experimentService.createExperiment(createDTO)
+        return dto
     }
 }

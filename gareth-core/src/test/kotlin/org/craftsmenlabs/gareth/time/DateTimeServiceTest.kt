@@ -1,7 +1,9 @@
 package org.craftsmenlabs.gareth.time
 
 import org.assertj.core.api.Assertions.assertThat
+import org.assertj.core.api.Assertions.assertThatThrownBy
 import org.craftsmenlabs.gareth.validator.model.DateTimeDTO
+import org.craftsmenlabs.gareth.validator.model.ExecutionInterval
 import org.craftsmenlabs.gareth.validator.time.DateTimeService
 import org.junit.Test
 import java.time.LocalDateTime
@@ -37,5 +39,16 @@ class DateTimeServiceTest {
 
         val roundTrip = DateTimeDTO(dt)
         assertThat(roundTrip).isEqualTo(dto)
+    }
+
+    @Test
+    fun testExecutionInterval() {
+        val now = service.now().withYear(2017).withMonth(1).withDayOfMonth(1)
+        assertThatThrownBy { service.getDelay(now, ExecutionInterval.NO_REPEAT) }.hasMessage("Interval cannot be ONCE")
+        assertThat(service.getDelay(now, ExecutionInterval.DAILY).dayOfMonth).isEqualTo(2)
+        assertThat(service.getDelay(now, ExecutionInterval.WEEKLY).dayOfMonth).isEqualTo(8)
+        assertThat(service.getDelay(now, ExecutionInterval.BIWEEKLY).dayOfMonth).isEqualTo(15)
+        assertThat(service.getDelay(now, ExecutionInterval.MONTHLY).dayOfMonth).isEqualTo(1)
+
     }
 }

@@ -20,7 +20,9 @@ enum class ExecutionStatus {
     /**
      * Returned when a non-recoverable error was encountered
      */
-    ERROR
+    ERROR;
+
+    fun isCompleted() = this == SUCCESS || this == FAILURE || this == ERROR
 }
 
 enum class ItemType {

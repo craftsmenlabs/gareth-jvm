@@ -1,5 +1,6 @@
 package org.craftsmenlabs.gareth.validator.mongo
 
+import org.craftsmenlabs.gareth.validator.model.ExecutionInterval
 import org.craftsmenlabs.gareth.validator.model.ExecutionStatus
 import org.craftsmenlabs.gareth.validator.model.ItemType
 import org.springframework.data.annotation.Id
@@ -42,6 +43,7 @@ data class ExperimentTemplateEntity(@Id var id: String? = null) {
     lateinit var dateCreated: LocalDateTime
     var ready: LocalDateTime? = null
     var archived: Boolean = false
+    var interval: ExecutionInterval = ExecutionInterval.NO_REPEAT
 }
 
 @Document(collection = "project")

@@ -2,7 +2,7 @@ package org.craftsmenlabs;
 
 import mockit.Verifications;
 import org.craftsmenlabs.gareth.validator.model.ExperimentDTO;
-import org.craftsmenlabs.gareth.validator.monitors.ExperimentExecutor;
+import org.craftsmenlabs.gareth.validator.services.ExperimentExecutor;
 import org.craftsmenlabs.gareth.validator.services.ExperimentService;
 
 import java.util.ArrayList;

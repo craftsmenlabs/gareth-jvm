@@ -1,12 +1,11 @@
 package org.craftsmenlabs.gareth.validator.services
 
 import org.craftsmenlabs.gareth.validator.BadRequestException
-import org.craftsmenlabs.gareth.validator.NotFoundException
-import org.craftsmenlabs.gareth.validator.model.DateTimeDTO
-import org.craftsmenlabs.gareth.validator.model.ExecutionStatus
-import org.craftsmenlabs.gareth.validator.model.ExperimentCreateDTO
-import org.craftsmenlabs.gareth.validator.model.ExperimentDTO
-import org.craftsmenlabs.gareth.validator.mongo.*
+import org.craftsmenlabs.gareth.validator.model.*
+import org.craftsmenlabs.gareth.validator.mongo.ExperimentConverter
+import org.craftsmenlabs.gareth.validator.mongo.ExperimentDao
+import org.craftsmenlabs.gareth.validator.mongo.ExperimentEntity
+import org.craftsmenlabs.gareth.validator.mongo.ExperimentTemplateEntity
 import org.craftsmenlabs.gareth.validator.time.DateFormatUtils
 import org.craftsmenlabs.gareth.validator.time.TimeService
 import org.springframework.beans.factory.annotation.Autowired
@@ -14,7 +13,7 @@ import org.springframework.stereotype.Service
 
 @Service
 class ExperimentService @Autowired constructor(val experimentDao: ExperimentDao,
-                                               val templateDao: ExperimentTemplateDao,
+                                               val templateService: TemplateService,
                                                val converter: ExperimentConverter,
                                                val timeService: TimeService) {
     var saveListener: ((ExperimentDTO) -> Unit)? = null
@@ -24,21 +23,43 @@ class ExperimentService @Autowired constructor(val experimentDao: ExperimentDao,
     }
 
     fun getExperimentById(id: String): ExperimentDTO {
-        val entity = experimentDao.findOne(id) ?: throw NotFoundException("No experiment found with id $id")
-        return converter.toDTO(entity)
+        return converter.toDTO(findById(id))
     }
 
     fun getFiltered(projectId: String,
-                    ddMMYYYY: String?,
-                    onlyFinished: Boolean?): List<ExperimentDTO> {
-        val createdAfter = if (ddMMYYYY == null) null else DateFormatUtils.parseDateStringToMidnight(ddMMYYYY)
+                    createdAfter: String? = null,
+                    status: ExecutionStatus? = null,
+                    completed: Boolean?): List<ExperimentDTO> =
+            getFilteredEntities(projectId, createdAfter, status, completed).map { converter.toDTO(it) }
+
+
+    fun getFilteredEntities(templateId: String,
+                            createdAfter: String? = null,
+                            status: ExecutionStatus? = null,
+                            onlyFinished: Boolean? = null): List<ExperimentEntity> {
+        validateFilterCriteria(status, onlyFinished)
+        val createdAfter = if (createdAfter == null) null else DateFormatUtils.parseDateStringToMidnight(createdAfter)
         val creationFilter: (ExperimentEntity) -> Boolean = {
             createdAfter == null || it.dateCreated.isAfter(createdAfter)
         }
         val finishedFilter: (ExperimentEntity) -> Boolean = {
             onlyFinished == null || onlyFinished == (it.dateCompleted != null)
         }
-        return experimentDao.findByProjectId(projectId).filter { creationFilter.invoke(it) && finishedFilter.invoke(it) }.map { converter.toDTO(it) }
+        val statusFilter: (ExperimentEntity) -> Boolean = {
+            status == null || status == it.result
+        }
+        return experimentDao.findByTemplateId(templateId)
+                .filter(creationFilter)
+                .filter(finishedFilter)
+                .filter(statusFilter)
+    }
+
+    private fun validateFilterCriteria(status: ExecutionStatus? = null,
+                                       onlyFinished: Boolean?) {
+        if (onlyFinished != null) {
+            if (onlyFinished == true && status != null && !status.isCompleted())
+                throw IllegalArgumentException("Cannot filter on running status when querying only for finished experiments.")
+        }
     }
 
     fun createExperiment(dto: ExperimentCreateDTO): ExperimentDTO {
@@ -56,7 +77,7 @@ class ExperimentService @Autowired constructor(val experimentDao: ExperimentDao,
     }
 
     private fun createEntityForTemplate(templateId: String): ExperimentEntity {
-        val template: ExperimentTemplateEntity = templateDao.findOne(templateId)
+        val template: ExperimentTemplateEntity = templateService.findByid(templateId)
         if (template.ready == null) {
             throw BadRequestException("You cannot start an experiment that is not ready.")
         }
@@ -74,8 +95,7 @@ class ExperimentService @Autowired constructor(val experimentDao: ExperimentDao,
     }
 
     fun updateExperiment(experiment: ExperimentDTO): ExperimentDTO {
-        val entity = experimentDao.findOne(experiment.id) ?: throw NotFoundException("No experiment found with id ${experiment.id}")
-        val updated = converter.copyEditableValues(entity, experiment)
+        val updated = converter.copyEditableValues(findById(experiment.id), experiment)
         val savedEntity = experimentDao.save(updated)
         val dto = converter.toDTO(savedEntity)
         saveListener?.invoke(dto)
@@ -85,4 +105,21 @@ class ExperimentService @Autowired constructor(val experimentDao: ExperimentDao,
     fun loadAllExperiments(): List<ExperimentDTO> {
         return experimentDao.findAll().map { converter.toDTO(it) }
     }
+
+    /**
+     * Bases on the template's interval pattern, returns the creation dto for the next experiment,
+     * or null if the template has no repeat
+     */
+    fun scheduleNewInstance(dto: ExperimentDTO): ExperimentCreateDTO? {
+        val template = templateService.findByid(findById(dto.id).templateId)
+        if (template.interval != ExecutionInterval.NO_REPEAT) {
+            val delay = timeService.getDelay(timeService.now(), template.interval)
+            return ExperimentCreateDTO(templateId = template.id!!, dueDate = DateTimeDTO(delay), environment = dto.environment)
+        } else
+            return null
+    }
+
+    fun findById(id: String): ExperimentEntity =
+            experimentDao.findOne(id) ?: throw IllegalArgumentException("No experiment with id $id")
+
 }
