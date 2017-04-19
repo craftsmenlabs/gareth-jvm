@@ -42,6 +42,8 @@ class TemplateService @Autowired constructor(private val templateDao: Experiment
             entity.timeline = dto.time!!
         if (dto.archived != null)
             entity.archived = dto.archived!!
+        if (dto.interval != null)
+            entity.interval = dto.interval!!
         if (gluelinesHaveChanged(dto)) {
             val isReady = getChangedGluelines(dto).all { glueLineLookupRestClient.gluelineIsValid(entity.projectId, it.key, it.value) }
             entity.ready = if (isReady) timeService.now() else null
@@ -101,4 +103,8 @@ class TemplateService @Autowired constructor(private val templateDao: Experiment
     }
 
     private fun findTemplateById(id: String) = templateDao.findOne(id) ?: throw NotFoundException("No template with id $id")
+
+    fun findByid(templateId: String): ExperimentTemplateEntity =
+            templateDao.findOne(templateId) ?: throw IllegalArgumentException("No template with id $templateId")
+
 }

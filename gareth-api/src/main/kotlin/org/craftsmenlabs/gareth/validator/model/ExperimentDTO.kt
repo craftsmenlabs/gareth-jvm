@@ -52,8 +52,13 @@ data class ExperimentTemplateDTO(
         val name: String,
         val value: Int = 0,
         val archived: Boolean = false,
+        val interval: ExecutionInterval,
         val glueLines: Gluelines
 )
+
+enum class ExecutionInterval {
+    NO_REPEAT, DAILY, WEEKLY, BIWEEKLY, MONTHLY
+}
 
 data class ExperimentCreateDTO(val templateId: String,
                                val dueDate: DateTimeDTO? = null,
@@ -69,12 +74,14 @@ data class ExperimentTemplateUpdateDTO(
         val success: String? = null,
         val failure: String? = null,
         val archived: Boolean? = false,
+        val interval: ExecutionInterval? = null,
         val time: String? = null)
 
 data class ExperimentTemplateCreateDTO(
         val name: String,
         val projectid: String,
         val value: Int = 0,
+        val interval: ExecutionInterval = ExecutionInterval.NO_REPEAT,
         val glueLines: Gluelines)
 
 data class OverviewDTO(val name: String,

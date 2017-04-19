@@ -21,6 +21,7 @@ class ExperimentTemplateConverter @Autowired constructor(val timeService: TimeSe
         entity.failure = dto.glueLines.failure
         entity.timeline = dto.glueLines.time
         entity.projectId = dto.projectid
+        entity.interval = dto.interval
         return entity
     }
 
@@ -37,6 +38,7 @@ class ExperimentTemplateConverter @Autowired constructor(val timeService: TimeSe
                 created = entity.dateCreated,
                 ready = entity.ready,
                 archived = entity.archived,
+                interval = entity.interval,
                 glueLines = glueLines
         )
     }

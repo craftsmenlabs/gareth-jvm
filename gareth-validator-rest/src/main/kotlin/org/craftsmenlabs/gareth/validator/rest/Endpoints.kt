@@ -20,8 +20,9 @@ class ExperimentEndpoint @Autowired constructor(val experimentService: Experimen
 
     @RequestMapping(method = arrayOf(RequestMethod.GET))
     fun getFiltered(@RequestParam("created", required = false) ddMMYYYY: String?,
-                    @RequestParam("completed", required = false) completed: Boolean?): List<ExperimentDTO> {
-        return experimentService.getFiltered("acme", ddMMYYYY, completed)
+                    @RequestParam("completed", required = false) completed: Boolean?,
+                    @RequestParam("status", required = false) status: ExecutionStatus?): List<ExperimentDTO> {
+        return experimentService.getFiltered(projectId = "acme", createdAfter = ddMMYYYY, completed = completed, status = status)
     }
 
     @RequestMapping(method = arrayOf(RequestMethod.POST))
