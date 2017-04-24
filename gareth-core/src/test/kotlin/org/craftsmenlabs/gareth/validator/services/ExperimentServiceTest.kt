@@ -95,45 +95,45 @@ class ExperimentServiceTest {
     @Test
     fun testGetAll() {
         setupRetrieval(createExperiments())
-        assertThat(service.getFilteredEntities(templateId = "acme")).hasSize(3)
+        assertThat(service.getFilteredEntities(projectId = "acme")).hasSize(3)
     }
 
     @Test
     fun testGetAllFinished() {
         setupRetrieval(createExperiments())
-        assertThat(service.getFilteredEntities(templateId = "acme", onlyFinished = true).map { it.id }).containsExactlyInAnyOrder("finishedOK", "withError")
+        assertThat(service.getFilteredEntities(projectId = "acme", onlyFinished = true).map { it.id }).containsExactlyInAnyOrder("finishedOK", "withError")
     }
 
     @Test
     fun testGetAllNonFinished() {
         setupRetrieval(createExperiments())
-        assertThat(service.getFilteredEntities(templateId = "acme", onlyFinished = false).map { it.id }).containsExactlyInAnyOrder("justStarted")
+        assertThat(service.getFilteredEntities(projectId = "acme", onlyFinished = false).map { it.id }).containsExactlyInAnyOrder("justStarted")
     }
 
     @Test
     fun testGetAllWithError() {
         setupRetrieval(createExperiments())
-        assertThat(service.getFilteredEntities(templateId = "acme", status = ERROR).map { it.id }).containsExactlyInAnyOrder("withError")
+        assertThat(service.getFilteredEntities(projectId = "acme", status = ERROR).map { it.id }).containsExactlyInAnyOrder("withError")
     }
 
     @Test
     fun testGetAllPending() {
         setupRetrieval(createExperiments())
-        assertThat(service.getFilteredEntities(templateId = "acme", status = PENDING, onlyFinished = false).map { it.id }).containsExactlyInAnyOrder("justStarted")
+        assertThat(service.getFilteredEntities(projectId = "acme", status = PENDING, onlyFinished = false).map { it.id }).containsExactlyInAnyOrder("justStarted")
     }
 
     @Test
     fun testGetPendingAndFinishedThrows() {
-        assertThatThrownBy { service.getFilteredEntities(templateId = "acme", status = PENDING, onlyFinished = true) }
+        assertThatThrownBy { service.getFilteredEntities(projectId = "acme", status = PENDING, onlyFinished = true) }
                 .hasMessage("Cannot filter on running status when querying only for finished experiments.")
     }
 
     @Test
     fun testGetAllCreatedAfterDate() {
         setupRetrieval(createExperiments())
-        assertThat(service.getFilteredEntities(templateId = "acme", createdAfter = DateFormatUtils.formatToDateString(now.toLocalDate()))
+        assertThat(service.getFilteredEntities(projectId = "acme", createdAfter = DateFormatUtils.formatToDateString(now.toLocalDate()))
                 .map { it.id }).containsExactlyInAnyOrder("justStarted")
-        assertThat(service.getFilteredEntities(templateId = "acme", createdAfter = DateFormatUtils.formatToDateString(now.plusDays(1).toLocalDate()))).isEmpty()
+        assertThat(service.getFilteredEntities(projectId = "acme", createdAfter = DateFormatUtils.formatToDateString(now.plusDays(1).toLocalDate()))).isEmpty()
     }
 
     private fun createExperiments(): List<ExperimentEntity> {
@@ -156,7 +156,7 @@ class ExperimentServiceTest {
     private fun setupRetrieval(dtos: List<ExperimentEntity>) {
         object : Expectations() {
             init {
-                experimentDao.findByTemplateId("acme")
+                experimentDao.findByProjectId("acme")
                 result = dtos
             }
         }

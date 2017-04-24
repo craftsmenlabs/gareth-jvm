@@ -41,17 +41,20 @@ Feature: Run ACME experiment
     Then the experiment is completed successfully
 
   @failure
+  @schedule
   Scenario: Run experiment with aborted baseline
     When I want to create an experiment named aborted baseline
     And the baseline is fresh snake oil
     And the time is 2 seconds
     And the assume is sale of apples has risen by 10 per cent
+    And the repeat interval is WEEKLY
     And I create the template
     Then the template is correct
     When I start an experiment for template aborted baseline immediately
     When I wait 2 seconds
     Then the experiment is aborted
     And the environment key ERROR_DURING_BASELINE has value There is no such thing as snake oil!
+    And there is a new experiment run for aborted baseline scheduled 7 days from now
 
   @failure
   Scenario: Run experiment with aborted assume

@@ -9,6 +9,7 @@ import org.springframework.context.annotation.Import
 @Import(GarethValidatorConfiguration::class)
 open class Application {
     companion object {
+        val DEFAULT_PROJECT_ID = "acme"
         @JvmStatic fun main(args: Array<String>) {
             SpringApplication.run(Application::class.java, *args)
         }

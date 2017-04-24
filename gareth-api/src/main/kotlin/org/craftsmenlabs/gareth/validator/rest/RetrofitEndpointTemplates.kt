@@ -33,7 +33,8 @@ interface ExperimentEndpointClient {
 
     @GET("gareth/validator/v1/experiments")
     fun getFiltered(@Query("created") ddMMYYYY: String?,
-                    @Query("completed") completed: Boolean?): Call<List<ExperimentDTO>>
+                    @Query("completed") completed: Boolean?,
+                    @Query("status") status: ExecutionStatus?): Call<List<ExperimentDTO>>
 
     @POST("gareth/validator/v1/experiments")
     fun start(@Body dto: ExperimentCreateDTO): Call<ExperimentDTO>

@@ -1,5 +1,6 @@
 package org.craftsmenlabs.gareth.atdd.steps
 
+import cucumber.api.java.en.Then
 import cucumber.api.java.en.When
 import org.assertj.core.api.Assertions.assertThat
 import org.craftsmenlabs.gareth.atdd.CucumberConfig
@@ -11,6 +12,7 @@ import org.craftsmenlabs.gareth.validator.rest.OverviewEndpointClient
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.test.context.ContextConfiguration
+import java.time.Duration
 import java.time.LocalDateTime
 
 @ContextConfiguration(classes = arrayOf(CucumberConfig::class))
@@ -65,6 +67,11 @@ open class CreateExperimentSteps {
     @When("^the time is (\\d+) seconds$")
     fun theTimeIs(seconds: Int) {
         templateCreateDTO = templateCreateDTO.copy(glueLines = templateCreateDTO.glueLines.copy(time = "$seconds seconds"))
+    }
+
+    @When("^the repeat interval is (.*?)$")
+    fun theRepeatIntervalIs(interval: String) {
+        templateCreateDTO = templateCreateDTO.copy(interval = ExecutionInterval.valueOf(interval))
     }
 
     @When("^I update the name of the current template to (.*?)$")
@@ -222,4 +229,16 @@ open class CreateExperimentSteps {
         assertThat(overviewForTemplate.ready).describedAs("is ready").isEqualTo(yesorNo.isBlank())
     }
 
+    @Then("^there is a new experiment run for (.*?) scheduled (\\d+) days from now$")
+    fun thereIsANewRunScheduled(templateName: String, difference: Long) {
+        val template = experimentTemplateClient.getByName(templateName).execute().body()
+        assertThat(template).describedAs("Not a valid template $templateName").hasSize(1)
+        val experiments = experimentClient.getFiltered(null, null, ExecutionStatus.PENDING).execute().body()
+        assertThat(experiments).hasSize(1)
+        val experiment = experiments[0]
+        assertThat(experiment.name).isEqualTo(template[0].name)
+        assertThat(experiment.status).isEqualTo(ExecutionStatus.PENDING)
+        val diff = Duration.between(experiment.created, experiment.due).toDays()
+        assertThat(diff).isEqualTo(difference)
+    }
 }

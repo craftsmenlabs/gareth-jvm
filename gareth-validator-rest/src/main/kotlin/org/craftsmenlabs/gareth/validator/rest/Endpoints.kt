@@ -1,6 +1,7 @@
 package org.craftsmenlabs.gareth.validator.rest
 
 
+import org.craftsmenlabs.gareth.validator.Application
 import org.craftsmenlabs.gareth.validator.client.GluelineValidator
 import org.craftsmenlabs.gareth.validator.model.*
 import org.craftsmenlabs.gareth.validator.services.ExperimentService
@@ -22,7 +23,7 @@ class ExperimentEndpoint @Autowired constructor(val experimentService: Experimen
     fun getFiltered(@RequestParam("created", required = false) ddMMYYYY: String?,
                     @RequestParam("completed", required = false) completed: Boolean?,
                     @RequestParam("status", required = false) status: ExecutionStatus?): List<ExperimentDTO> {
-        return experimentService.getFiltered(projectId = "acme", createdAfter = ddMMYYYY, completed = completed, status = status)
+        return experimentService.getFiltered(projectId = Application.DEFAULT_PROJECT_ID, createdAfter = ddMMYYYY, completed = completed, status = status)
     }
 
     @RequestMapping(method = arrayOf(RequestMethod.POST))

@@ -16,7 +16,7 @@ object EmbeddedMongoManager {
 
     val MONGO_HOSTNAME = "localhost"
     val MONGO_DATABASE = "atdd"
-    val PROJECT_ID = "SALE_OF_FRUIT"
+    val PROJECT_ID = "acme"
     val MONGO_PORT = System.getProperty("mongoport", "27018").toInt()
     private val netconfig = Net(MONGO_HOSTNAME, MONGO_PORT, Network.localhostIsIPv6())
     lateinit var mongodExecutable: MongodExecutable

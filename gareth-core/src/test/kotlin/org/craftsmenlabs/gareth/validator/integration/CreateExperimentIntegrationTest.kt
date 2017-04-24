@@ -18,7 +18,6 @@ import org.springframework.boot.autoconfigure.mongo.embedded.EmbeddedMongoAutoCo
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.test.context.ActiveProfiles
 import org.springframework.test.context.junit4.SpringRunner
-import retrofit2.Response
 import java.time.LocalDateTime
 
 @RunWith(SpringRunner::class)
@@ -155,9 +154,8 @@ class CreateExperimentIntegrationTest {
                     createdAfter: String? = null,
                     status: ExecutionStatus? = null,
                     completed: Boolean? = null): List<ExperimentDTO> {
-            val template = templateService.getFiltered(templateName)[0]
-            val experiments = experimentService.getFiltered(template.id, createdAfter, status, completed)
-            return experiments
+            val experiments = experimentService.getFiltered("acme", createdAfter, status, completed)
+            return experiments.filter { it.name == templateName }
         }
         assertThat(getRuns(templateName = "Hello world")).hasSize(1)
         assertThat(getRuns("Hello world", completed = true)).hasSize(1)
@@ -209,10 +207,4 @@ class CreateExperimentIntegrationTest {
     private fun postExperiment(dto: ExperimentCreateDTO): ExperimentDTO {
         return experimentService.createExperiment(dto)
     }
-
-    private fun searchExperiment(date: String? = null, completed: Boolean? = null): List<ExperimentDTO> {
-        return experimentService.getFiltered(projectId = "acme", createdAfter = date, completed = completed)
-    }
-
-    private fun parseError(response: Response<*>) = if (!response.isSuccessful) response.errorBody().string() else null
 }

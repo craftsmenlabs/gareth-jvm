@@ -33,7 +33,7 @@ class ExperimentService @Autowired constructor(val experimentDao: ExperimentDao,
             getFilteredEntities(projectId, createdAfter, status, completed).map { converter.toDTO(it) }
 
 
-    fun getFilteredEntities(templateId: String,
+    fun getFilteredEntities(projectId: String,
                             createdAfter: String? = null,
                             status: ExecutionStatus? = null,
                             onlyFinished: Boolean? = null): List<ExperimentEntity> {
@@ -48,7 +48,7 @@ class ExperimentService @Autowired constructor(val experimentDao: ExperimentDao,
         val statusFilter: (ExperimentEntity) -> Boolean = {
             status == null || status == it.result
         }
-        return experimentDao.findByTemplateId(templateId)
+        return experimentDao.findByProjectId(projectId)
                 .filter(creationFilter)
                 .filter(finishedFilter)
                 .filter(statusFilter)
