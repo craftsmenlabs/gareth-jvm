@@ -131,9 +131,9 @@ class ExperimentServiceTest {
     @Test
     fun testGetAllCreatedAfterDate() {
         setupRetrieval(createExperiments())
-        assertThat(service.getFilteredEntities(projectId = "acme", createdAfter = DateFormatUtils.formatToDateString(now.toLocalDate()))
+        assertThat(service.getFilteredEntities(projectId = "acme", createdAfterStr = DateFormatUtils.formatToDateString(now.toLocalDate()))
                 .map { it.id }).containsExactlyInAnyOrder("justStarted")
-        assertThat(service.getFilteredEntities(projectId = "acme", createdAfter = DateFormatUtils.formatToDateString(now.plusDays(1).toLocalDate()))).isEmpty()
+        assertThat(service.getFilteredEntities(projectId = "acme", createdAfterStr = DateFormatUtils.formatToDateString(now.plusDays(1).toLocalDate()))).isEmpty()
     }
 
     private fun createExperiments(): List<ExperimentEntity> {
