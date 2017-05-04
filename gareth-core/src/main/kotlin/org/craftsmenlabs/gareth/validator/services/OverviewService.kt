@@ -32,6 +32,7 @@ class OverviewService @Autowired constructor(private val experimentDao: Experime
         if (experiments == null || experiments.isEmpty())
             return OverviewDTO(name = template.name, id = template.id!!, editable = true, ready = template.ready != null)
         val finished = experiments.filter { it.dateCompleted != null }
+
         val success = finished.filter { it.result == ExecutionStatus.SUCCESS }
         val failed = finished.filter { it.result == ExecutionStatus.FAILURE }
         val pending = experiments.filter { it.dateDue != null && it.result == ExecutionStatus.PENDING }

@@ -33,12 +33,20 @@ class ExperimentService @Autowired constructor(val experimentDao: ExperimentDao,
             getFilteredEntities(projectId, createdAfter, status, completed).map { converter.toDTO(it) }
 
 
+    private fun validateFilterCriteria(status: ExecutionStatus? = null,
+                                       onlyFinished: Boolean?) {
+        if (onlyFinished != null) {
+            if (onlyFinished == true && status != null && !status.isCompleted())
+                throw IllegalArgumentException("Cannot filter on running status when querying only for finished experiments.")
+        }
+    }
+
     fun getFilteredEntities(projectId: String,
-                            createdAfter: String? = null,
+                            createdAfterStr: String? = null,
                             status: ExecutionStatus? = null,
                             onlyFinished: Boolean? = null): List<ExperimentEntity> {
         validateFilterCriteria(status, onlyFinished)
-        val createdAfter = if (createdAfter == null) null else DateFormatUtils.parseDateStringToMidnight(createdAfter)
+        val createdAfter = if (createdAfterStr == null) null else DateFormatUtils.parseDateStringToMidnight(createdAfterStr)
         val creationFilter: (ExperimentEntity) -> Boolean = {
             createdAfter == null || it.dateCreated.isAfter(createdAfter)
         }
@@ -52,14 +60,6 @@ class ExperimentService @Autowired constructor(val experimentDao: ExperimentDao,
                 .filter(creationFilter)
                 .filter(finishedFilter)
                 .filter(statusFilter)
-    }
-
-    private fun validateFilterCriteria(status: ExecutionStatus? = null,
-                                       onlyFinished: Boolean?) {
-        if (onlyFinished != null) {
-            if (onlyFinished == true && status != null && !status.isCompleted())
-                throw IllegalArgumentException("Cannot filter on running status when querying only for finished experiments.")
-        }
     }
 
     fun createExperiment(dto: ExperimentCreateDTO): ExperimentDTO {
