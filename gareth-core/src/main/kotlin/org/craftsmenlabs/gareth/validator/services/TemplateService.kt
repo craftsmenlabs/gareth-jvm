@@ -2,7 +2,7 @@ package org.craftsmenlabs.gareth.validator.services
 
 import org.craftsmenlabs.gareth.validator.BadRequestException
 import org.craftsmenlabs.gareth.validator.NotFoundException
-import org.craftsmenlabs.gareth.validator.client.rest.GluelineValidatorRestClient
+import org.craftsmenlabs.gareth.validator.definitions.DefinitionValidator
 import org.craftsmenlabs.gareth.validator.model.ExperimentTemplateCreateDTO
 import org.craftsmenlabs.gareth.validator.model.ExperimentTemplateDTO
 import org.craftsmenlabs.gareth.validator.model.ExperimentTemplateUpdateDTO
@@ -19,7 +19,7 @@ import org.springframework.stereotype.Service
 @Service
 class TemplateService @Autowired constructor(private val templateDao: ExperimentTemplateDao,
                                              private val experimentDao: ExperimentDao,
-                                             private val glueLineLookupRestClient: GluelineValidatorRestClient,
+                                             private val definitionValidator: DefinitionValidator,
                                              private val timeService: TimeService,
                                              private val templateConverter: ExperimentTemplateConverter) {
 
@@ -45,7 +45,7 @@ class TemplateService @Autowired constructor(private val templateDao: Experiment
         if (dto.interval != null)
             entity.interval = dto.interval!!
         if (gluelinesHaveChanged(dto)) {
-            val isReady = getChangedGluelines(dto).all { glueLineLookupRestClient.gluelineIsValid(entity.projectId, it.key, it.value) }
+            val isReady = getChangedGluelines(dto).all { definitionValidator.gluelineIsValid(entity.projectId, it.key, it.value) }
             entity.ready = if (isReady) timeService.now() else null
         }
         val saved = templateDao.save(entity)
@@ -57,7 +57,7 @@ class TemplateService @Autowired constructor(private val templateDao: Experiment
         if (existing != null)
             throw BadRequestException("Cannot create template '${dto.name}': name exists")
         val entity = templateConverter.toEntity(dto)
-        val isReady = glueLineLookupRestClient.validateGluelines(dto.projectid, dto.glueLines)
+        val isReady = definitionValidator.validateGluelines(dto.projectid, dto.glueLines)
         if (isReady) {
             log.info("Experiment gluelines are valid.")
             entity.ready = timeService.now()

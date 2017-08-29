@@ -5,7 +5,7 @@ import org.craftsmenlabs.gareth.validator.Baseline;
 import org.craftsmenlabs.gareth.validator.ExperimentDefinition;
 import org.craftsmenlabs.gareth.validator.Failure;
 import org.craftsmenlabs.gareth.validator.Success;
-import org.craftsmenlabs.gareth.validator.model.ExecutionRunContext;
+import org.craftsmenlabs.gareth.validator.model.RunContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -19,20 +19,20 @@ public class AcmeGluelines implements ExperimentDefinition {
 
     @Baseline(glueLine = "^sale of (apples|bananas|peaches)$",
             humanReadable = "Sale of [apples,bananas,peaches]")
-    public void getSaleOfItem(final ExecutionRunContext context, final String item) {
+    public void getSaleOfItem(final RunContext context, final String item) {
         context.storeDouble(item, mockDB.getSalesForProductAtBaseline(item));
     }
 
     @Baseline(glueLine = "^fresh snake oil$",
             humanReadable = "Sale of oil")
-    public void saleOfSnakeOil(final ExecutionRunContext context) {
+    public void saleOfSnakeOil(final RunContext context) {
         throw new IllegalArgumentException("There is no such thing as snake oil!");
     }
 
     @Assume(glueLine = "^sale of (apples|bananas|peaches) has risen by (\\d+?) per cent$",
             humanReadable = "sale of <apples,bananas,peaches> has risen by <0-100> per cent]",
             description = "sale of apples,bananas,peaches and risen by 0-100 per cent")
-    public boolean hasRisenByPercent(final ExecutionRunContext context, final String product, final int percentageExpected) {
+    public boolean hasRisenByPercent(final RunContext context, final String product, final int percentageExpected) {
         double salesAtBaseline = context.getDouble(product);
         double salesForProductAtAssume = mockDB.getSalesForProductAtAssume(product);
         double increaseInPercentage = 100 * ((salesForProductAtAssume / salesAtBaseline) - 1);
@@ -42,7 +42,7 @@ public class AcmeGluelines implements ExperimentDefinition {
 
     @Assume(glueLine = "^how about that snake oil$",
             humanReadable = "How about that snake oil?")
-    public boolean assumeSnakeOil(final ExecutionRunContext context) {
+    public boolean assumeSnakeOil(final RunContext context) {
         throw new IllegalArgumentException("For the last time: there is no such thing as snake oil!");
     }
 
@@ -53,22 +53,22 @@ public class AcmeGluelines implements ExperimentDefinition {
     }
 
     @Success(glueLine = "^send email to (.*?)$", humanReadable = "send email to <person>")
-    public void sendEmail(ExecutionRunContext runContext, String recipient) {
+    public void sendEmail(RunContext runContext, String recipient) {
         runContext.storeString("result", "sending success mail to " + recipient);
     }
 
     @Success(glueLine = "^send text to (.*?)$", humanReadable = "send text to <person>")
-    public void sendText(ExecutionRunContext runContext, String recipient) {
+    public void sendText(RunContext runContext, String recipient) {
         runContext.storeString("result", "sending success text to " + recipient);
     }
 
     @Failure(glueLine = "^send email to (.*?)$", humanReadable = "send email to <person>")
-    public void sendFailureEmail(ExecutionRunContext runContext, String recipient) {
+    public void sendFailureEmail(RunContext runContext, String recipient) {
         runContext.storeString("result", "sending failure mail to " + recipient);
     }
 
     @Failure(glueLine = "^send text to (.*?)$", humanReadable = "send text to <person>")
-    public void sendFailureText(ExecutionRunContext runContext, String recipient) {
+    public void sendFailureText(RunContext runContext, String recipient) {
         runContext.storeString("result", "sending failure text to " + recipient);
     }
 

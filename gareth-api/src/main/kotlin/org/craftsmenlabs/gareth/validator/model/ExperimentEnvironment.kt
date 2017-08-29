@@ -1,5 +1,6 @@
 package org.craftsmenlabs.gareth.validator.model
 
+import java.time.LocalDateTime
 import java.util.*
 
 enum class ExecutionStatus {
@@ -33,7 +34,8 @@ enum class GlueLineType {
     BASELINE, ASSUME, TIME, SUCCESS, FAILURE;
 
     companion object {
-        @JvmStatic fun safeValueOf(key: String?): Optional<GlueLineType> {
+        @JvmStatic
+        fun safeValueOf(key: String?): Optional<GlueLineType> {
             try {
                 return if (key == null) Optional.empty() else Optional.of(GlueLineType.valueOf(key));
             } catch (e: Exception) {
@@ -47,12 +49,13 @@ data class Duration(val unit: String, val amount: Long)
 
 data class DefinitionInfo(val glueline: String, val method: String, val className: String, val description: String? = null, val humanReadable: String? = null)
 
-data class ExecutionRequest(val environment: ExperimentRunEnvironment, val glueLines: ValidatedGluelines)
+data class ExecutionRequest(val experimentId: String, val runContext: RunContext, val glueLines: ValidatedGluelines)
 
-data class ExecutionResult(val environment: ExperimentRunEnvironment, val status: ExecutionStatus)
+data class BaselineExecutionResult(val experimentId: String, val runContext: RunContext, val success: Boolean, val assumptionDue: LocalDateTime?){
+}
 
-data class EnvironmentItem(val key: String, val value: String, val itemType: ItemType)
+data class AssumeExecutionResult(val experimentId: String, val runContext: RunContext, val status: ExecutionStatus)
 
-data class ExperimentRunEnvironment(val items: List<EnvironmentItem> = listOf<EnvironmentItem>())
+data class EnvironmentItem(val value: String, val itemType: ItemType)
 
 

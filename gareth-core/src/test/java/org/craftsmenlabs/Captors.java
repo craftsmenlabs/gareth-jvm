@@ -2,7 +2,6 @@ package org.craftsmenlabs;
 
 import mockit.Verifications;
 import org.craftsmenlabs.gareth.validator.model.ExperimentDTO;
-import org.craftsmenlabs.gareth.validator.services.ExperimentExecutor;
 import org.craftsmenlabs.gareth.validator.services.ExperimentService;
 
 import java.util.ArrayList;
@@ -18,19 +17,4 @@ public class Captors {
         return captor;
     }
 
-    public static List<ExperimentDTO> experimentExecutor_executeBaseline(ExperimentExecutor experimentExecutor) {
-        final List<ExperimentDTO> captor = new ArrayList<>();
-        new Verifications() {{
-            experimentExecutor.executeBaseline(withCapture(captor));
-        }};
-        return captor;
-    }
-
-    public static List<ExperimentDTO> experimentExecutor_executeAssume(ExperimentExecutor experimentExecutor) {
-        final List<ExperimentDTO> captor = new ArrayList<>();
-        new Verifications() {{
-            experimentExecutor.executeAssume(withCapture(captor));
-        }};
-        return captor;
-    }
 }

@@ -13,11 +13,12 @@ data class ExperimentDTO(val id: String,
                          val glueLines: ValidatedGluelines,
                          val created: LocalDateTime,
                          val ready: LocalDateTime? = null,
-                         val due: LocalDateTime,
+                         val baselineDue: LocalDateTime,
+                         var assumeDue: LocalDateTime? = null,
                          val baselineExecuted: LocalDateTime? = null,
                          val completed: LocalDateTime? = null,
                          val status: ExecutionStatus = ExecutionStatus.PENDING,
-                         val environment: ExperimentRunEnvironment = ExperimentRunEnvironment(),
+                         val runContext: RunContext = RunContext(),
                          val archived: Boolean = false) {
 
     fun getLifecycleStage(): ExperimentLifecycle {
@@ -37,9 +38,9 @@ data class ExperimentDTO(val id: String,
                     name = "TEST",
                     value = 1,
                     created = now,
-                    due = now,
+                    baselineDue = now,
                     glueLines = ValidatedGluelines(baseline = "baseline", assume = "assume", time = "5 seonds", success = "success", failure = "failure"),
-                    environment = ExperimentRunEnvironment())
+                    runContext = RunContext())
         }
     }
 }
@@ -62,7 +63,7 @@ enum class ExecutionInterval {
 
 data class ExperimentCreateDTO(val templateId: String,
                                val dueDate: DateTimeDTO? = null,
-                               val environment: ExperimentRunEnvironment? = null
+                               val runContext: RunContext? = null
 )
 
 data class ExperimentTemplateUpdateDTO(

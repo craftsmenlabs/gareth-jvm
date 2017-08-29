@@ -1,6 +1,6 @@
 package org.craftsmenlabs.gareth.execution.definitions
 
-import org.craftsmenlabs.gareth.execution.services.DefinitionFactory
+import org.craftsmenlabs.gareth.execution.services.definitions.DefinitionFactory
 import org.craftsmenlabs.gareth.validator.*
 import org.slf4j.LoggerFactory
 import java.lang.reflect.Method
@@ -42,7 +42,7 @@ class ParsedDefinitionFactory(val definitionFactory: DefinitionFactory) {
         }
         val time = getAnnotation(method, Time::class.java)
         if (time != null) {
-            registerDuration(method, time.glueLine, time.humanReadable, definition.timeDefinitions)
+            definition.timeDefinitions.put(time.glueLine, createMethod(method,time.glueLine,time.description,time.humanReadable))
         }
     }
 
@@ -79,31 +79,10 @@ class ParsedDefinitionFactory(val definitionFactory: DefinitionFactory) {
      * *
      * @param durationMap
      */
-    private fun registerDuration(method: Method,
-                                 glueLine: String,
-                                 humanReadable: String? = null,
-                                 durationMap: MutableMap<String, Pair<String, Duration>>) {
-        if (isTimeMethod(method)) {
-            val tmpDefinition: Any?
-            try {
-                tmpDefinition = definitionFactory.getInstanceForClass(method.declaringClass)
-            } catch(e: Exception) {
-                throw GarethIllegalDefinitionException("Could not instantiate instance for class ${method.declaringClass}")
-            }
-            try {
-                val duration = method.invoke(tmpDefinition) as Duration
-                durationMap.put(glueLine, Pair(humanReadable ?: glueLine, duration))
-            } catch (e: Exception) {
-                throw GarethInvocationException(cause = e)
-            }
-        } else {
-            throw IllegalStateException(String.format("Method %s with glue line '%s' is not a valid method (no duration return type)", method.name, glueLine))
-        }
-    }
 
 
     private fun hasRunContextParameter(method: Method): Boolean {
-        return method.parameterCount > 0 && InvokableMethod.isContextParameter(method.parameterTypes[0])// == "org.craftsmenlabs.gareth.execution.RunContext"
+        return method.parameterCount > 0 && InvokableMethod.isContextParameter(method.parameterTypes[0])// == "org.craftsmenlabs.gareth.validator.model.RunContext"
     }
 
     private fun isTimeMethod(method: Method): Boolean {

@@ -3,6 +3,7 @@ package org.craftsmenlabs.gareth.validator.mongo
 import org.craftsmenlabs.gareth.validator.model.ExecutionInterval
 import org.craftsmenlabs.gareth.validator.model.ExecutionStatus
 import org.craftsmenlabs.gareth.validator.model.ItemType
+import org.craftsmenlabs.gareth.validator.model.RunContext
 import org.springframework.data.annotation.Id
 import org.springframework.data.mongodb.core.index.Indexed
 import org.springframework.data.mongodb.core.mapping.Document
@@ -12,10 +13,11 @@ import java.time.LocalDateTime
 data class ExperimentEntity(@Id var id: String? = null) {
     lateinit var dateCreated: LocalDateTime
     lateinit var result: ExecutionStatus
-    lateinit var dateDue: LocalDateTime
+    lateinit var baselineDue: LocalDateTime
+    var assumeDue: LocalDateTime? = null
     var dateBaselineExecuted: LocalDateTime? = null
     var dateCompleted: LocalDateTime? = null
-    lateinit var environment: Set<ExperimentEnvironmentItem>
+    lateinit var runContext: RunContext
     @Indexed
     lateinit var templateId: String
     @Indexed

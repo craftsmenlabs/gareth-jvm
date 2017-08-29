@@ -15,3 +15,5 @@ data class ValidatedGluelines(val baseline: String,
                               val time: String,
                               val success: String? = null,
                               val failure: String? = null)
+
+data class Glueline(val pattern: String, val readable: String?)

@@ -14,6 +14,7 @@
     <name>gareth-core</name>
 
     <properties>
+        
     </properties>
 
     <dependencies>
@@ -45,17 +46,16 @@
             <groupId>io.reactivex</groupId>
             <artifactId>rxjava</artifactId>
         </dependency>
-
         <dependency>
             <groupId>io.reactivex</groupId>
             <artifactId>rxkotlin</artifactId>
         </dependency>
 
-
         <!--KOTLIN DEPENDENCIES-->
         <dependency>
             <groupId>org.jetbrains.kotlin</groupId>
-            <artifactId>kotlin-stdlib</artifactId>
+            <artifactId>kotlin-stdlib-jre8</artifactId>
+            <version>${kotlin.version}</version>
         </dependency>
         <dependency>
             <groupId>org.jetbrains.kotlin</groupId>
@@ -64,6 +64,8 @@
         <dependency>
             <groupId>org.jetbrains.kotlin</groupId>
             <artifactId>kotlin-test</artifactId>
+            <version>${kotlin.version}</version>
+            <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>de.flapdoodle.embed</groupId>
@@ -73,6 +75,7 @@
 
     </dependencies>
     <build>
+        <sourceDirectory>src/main/kotlin</sourceDirectory>
         <plugins>
             <plugin>
                 <artifactId>kotlin-maven-plugin</artifactId>
@@ -85,11 +88,6 @@
                         <goals>
                             <goal>compile</goal>
                         </goals>
-                        <configuration>
-                            <sourceDirs>
-                                <source>src/main/kotlin</source>
-                            </sourceDirs>
-                        </configuration>
                     </execution>
                     <execution>
                         <id>test-compile</id>
@@ -100,6 +98,7 @@
                         <configuration>
                             <sourceDirs>
                                 <source>src/test/kotlin</source>
+                                <source>src/test/java</source>
                             </sourceDirs>
                         </configuration>
                     </execution>

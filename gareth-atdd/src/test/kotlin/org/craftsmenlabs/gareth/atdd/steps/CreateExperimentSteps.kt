@@ -180,7 +180,7 @@ open class CreateExperimentSteps {
     @When("^the environment key (.*?) has value (.*?)$")
     fun validateKeyAndValue(key: String, value: String) {
         refreshExperimentStatus()
-        val find = currentExperiment.environment.items.find { it.key == key && it.value == value }
+        val find = currentExperiment.runContext.items.find { it.key == key && it.value == value }
         assertThat(find).describedAs("No key $key with value $value found. Experiment: $currentExperiment.environment.items").isNotNull()
     }
 
@@ -238,7 +238,7 @@ open class CreateExperimentSteps {
         val experiment = experiments[0]
         assertThat(experiment.name).isEqualTo(template[0].name)
         assertThat(experiment.status).isEqualTo(ExecutionStatus.PENDING)
-        val diff = Duration.between(experiment.created, experiment.due).toDays()
+        val diff = Duration.between(experiment.created, experiment.baselineDue).toDays()
         assertThat(diff).isEqualTo(difference)
     }
 }

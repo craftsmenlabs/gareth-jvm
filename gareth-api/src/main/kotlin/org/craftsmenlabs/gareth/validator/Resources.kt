@@ -17,9 +17,9 @@ interface DefinitionsResource {
 }
 
 interface ExecutionResource {
-    fun executeBaseline(dto: ExecutionRequest): ExecutionResult
+    fun executeBaseline(dto: ExecutionRequest): BaselineExecutionResult
 
-    fun executeAssumption(dto: ExecutionRequest): ExecutionResult
+    fun executeAssumption(dto: ExecutionRequest): AssumeExecutionResult
 
     fun getTime(@RequestBody dto: ExecutionRequest): Duration
 }

@@ -34,11 +34,12 @@
         <httpclient.version>4.5.1</httpclient.version>
         <guava.version>19.0</guava.version>
         <springboot.version>1.5.2.RELEASE</springboot.version>
-        <kotlin.version>1.0.6</kotlin.version>
+        <kotlin.version>1.1.4-2</kotlin.version>
         <swagger.version>2.6.0</swagger.version>
         <cucumber.version>1.2.3</cucumber.version>
         <retrofit.version>2.2.0</retrofit.version>
         <spring-data-mongodb.version>1.10.0.RELEASE</spring-data-mongodb.version>
+        <awaitility.version>1.7.0</awaitility.version>
     </properties>
 
     <organization>
@@ -281,7 +282,7 @@
                 <version>${swagger.version}</version>
             </dependency>
 
-            <!-- http client -->
+            <!-- http definitions -->
             <dependency>
                 <groupId>org.apache.httpcomponents</groupId>
                 <artifactId>httpclient</artifactId>
@@ -321,7 +322,8 @@
             <dependency>
                 <groupId>com.jayway.awaitility</groupId>
                 <artifactId>awaitility</artifactId>
-                <version>1.7.0</version>
+                <version>${awaitility.version}</version>
+                <scope>test</scope>
             </dependency>
         </dependencies>
     </dependencyManagement>
@@ -367,6 +369,7 @@
             <groupId>org.jmockit</groupId>
             <artifactId>jmockit</artifactId>
         </dependency>
+
 
         <dependency>
             <groupId>junit</groupId>

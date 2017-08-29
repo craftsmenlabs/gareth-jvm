@@ -68,7 +68,7 @@ class BasicAuthenticationRestClient(
         try {
             val requestHeaders = createHeadersForRequest(url)
             errorHandler.reset()
-            LOGGER.debug("Executing {} (client:{}). with headers: {}.", methodPlusUrl, toString(), requestHeaders)
+            LOGGER.debug("Executing {} (definitions:{}). with headers: {}.", methodPlusUrl, toString(), requestHeaders)
             if (body != null) {
                 LOGGER.debug("body: {}.", body)
             }

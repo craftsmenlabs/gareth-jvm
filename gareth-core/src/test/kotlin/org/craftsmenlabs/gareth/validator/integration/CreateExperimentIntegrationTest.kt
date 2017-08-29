@@ -1,7 +1,7 @@
 package org.craftsmenlabs.gareth.validator.integration
 
 import org.assertj.core.api.Assertions.assertThat
-import org.craftsmenlabs.gareth.validator.client.GluelineValidator
+import org.craftsmenlabs.gareth.validator.definitions.DefinitionValidator
 import org.craftsmenlabs.gareth.validator.model.*
 import org.craftsmenlabs.gareth.validator.services.ExperimentService
 import org.craftsmenlabs.gareth.validator.services.OverviewService
@@ -36,7 +36,7 @@ class CreateExperimentIntegrationTest {
     lateinit var overviewService: OverviewService
 
     @Autowired
-    lateinit var validator: GluelineValidator
+    lateinit var validator: DefinitionValidator
 
     @Autowired
     lateinit var timeService: TimeService
@@ -82,12 +82,12 @@ class CreateExperimentIntegrationTest {
     fun b_createExperimentWithoutStartDate() {
         val createTemplateDTO = createFullTemplate("Hello world")
         val template = createTemplate(createTemplateDTO)
-        val experimentCreateDTO = ExperimentCreateDTO(templateId = template.id, environment = ExperimentRunEnvironment(listOf(EnvironmentItem("COMPANY_TOKEN", "ABC", ItemType.STRING))))
+        val experimentCreateDTO = ExperimentCreateDTO(templateId = template.id, runContext = RunContext(hashMapOf(Pair("COMPANY_TOKEN", EnvironmentItem("ABC", ItemType.STRING)))))
         val created = postExperiment(experimentCreateDTO)
         Thread.sleep(1000)
         assertThat(created.id).isNotNull()
         val saved = experimentService.getExperimentById(created.id)
-        assertThat(saved.environment.items.map { it.key }).containsOnly("COMPANY_TOKEN")
+        assertThat(saved.runContext.getKey("COMPANY_TOKEN")).isEqualTo("ABC")
         assertThat(saved.name).isEqualTo("Hello world")
         assertThat(saved.created).isNotNull()
     }

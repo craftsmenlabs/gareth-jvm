@@ -5,12 +5,8 @@ import mockit.Injectable
 import mockit.Tested
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.assertThatThrownBy
-import org.craftsmenlabs.gareth.validator.model.DateTimeDTO
-import org.craftsmenlabs.gareth.validator.model.ExecutionInterval
-import org.craftsmenlabs.gareth.validator.model.ExecutionStatus
+import org.craftsmenlabs.gareth.validator.model.*
 import org.craftsmenlabs.gareth.validator.model.ExecutionStatus.*
-import org.craftsmenlabs.gareth.validator.model.ExperimentDTO
-import org.craftsmenlabs.gareth.validator.mongo.ExperimentConverter
 import org.craftsmenlabs.gareth.validator.mongo.ExperimentDao
 import org.craftsmenlabs.gareth.validator.mongo.ExperimentEntity
 import org.craftsmenlabs.gareth.validator.mongo.ExperimentTemplateEntity
@@ -27,12 +23,12 @@ class ExperimentServiceTest {
     @Injectable
     private lateinit var templateService: TemplateService
     @Injectable
-    private lateinit var converter: ExperimentConverter
-    @Injectable
     private lateinit var timeService: TimeService
 
     val now = LocalDateTime.now()
-    val later = now.plusWeeks(1)
+    val oneSecondAgo = now.minusSeconds(1)
+    val twoSecondsAgo = now.minusSeconds(2)
+    val nextWeek = now.plusWeeks(1)
     @Tested
     private lateinit var service: ExperimentService
 
@@ -66,7 +62,7 @@ class ExperimentServiceTest {
                 result = templateId
                 minTimes = 0
                 timeService.getDelay(now, ExecutionInterval.WEEKLY)
-                result = later
+                result = nextWeek
                 minTimes = 0
             }
         }
@@ -77,8 +73,8 @@ class ExperimentServiceTest {
         val dto = ExperimentDTO.createDefault(now).copy(id = experimentId)
         val createDTO = service.scheduleNewInstance(dto)!!
         assertThat(createDTO.templateId).isEqualTo(templateId)
-        assertThat(createDTO.dueDate).isEqualTo(DateTimeDTO(later))
-        assertThat(createDTO.environment).isSameAs(dto.environment)
+        assertThat(createDTO.dueDate).isEqualTo(DateTimeDTO(nextWeek))
+        assertThat(createDTO.runContext).isSameAs(dto.runContext)
     }
 
     @Test
@@ -95,7 +91,7 @@ class ExperimentServiceTest {
     @Test
     fun testGetAll() {
         setupRetrieval(createExperiments())
-        assertThat(service.getFilteredEntities(projectId = "acme")).hasSize(3)
+        assertThat(service.getFilteredEntities(projectId = "acme")).hasSize(4)
     }
 
     @Test
@@ -107,13 +103,31 @@ class ExperimentServiceTest {
     @Test
     fun testGetAllNonFinished() {
         setupRetrieval(createExperiments())
-        assertThat(service.getFilteredEntities(projectId = "acme", onlyFinished = false).map { it.id }).containsExactlyInAnyOrder("justStarted")
+        assertThat(service.getFilteredEntities(projectId = "acme", onlyFinished = false).map { it.id }).containsExactlyInAnyOrder("justStarted", "waitingForAssume")
     }
 
     @Test
     fun testGetAllWithError() {
         setupRetrieval(createExperiments())
         assertThat(service.getFilteredEntities(projectId = "acme", status = ERROR).map { it.id }).containsExactlyInAnyOrder("withError")
+    }
+
+    @Test
+    fun testGetAllWaitingForBaseline() {
+        setupRetrieval(createExperiments())
+        assertThat(service.getBaselinesDueForProject("acme").map { it.id }).containsExactlyInAnyOrder("justStarted")
+    }
+
+    @Test
+    fun testGetAllWaitingForAssume() {
+        object : Expectations() {
+            init {
+                timeService.now()
+                result = nextWeek
+            }
+        }
+        setupRetrieval(createExperiments())
+        assertThat(service.getAssumesDueForProject("acme").map { it.id }).containsExactlyInAnyOrder("waitingForAssume")
     }
 
     @Test
@@ -132,25 +146,35 @@ class ExperimentServiceTest {
     fun testGetAllCreatedAfterDate() {
         setupRetrieval(createExperiments())
         assertThat(service.getFilteredEntities(projectId = "acme", createdAfterStr = DateFormatUtils.formatToDateString(now.toLocalDate()))
-                .map { it.id }).containsExactlyInAnyOrder("justStarted")
+                .map { it.id }).containsExactlyInAnyOrder("justStarted", "waitingForAssume")
         assertThat(service.getFilteredEntities(projectId = "acme", createdAfterStr = DateFormatUtils.formatToDateString(now.plusDays(1).toLocalDate()))).isEmpty()
     }
 
     private fun createExperiments(): List<ExperimentEntity> {
-        fun create(id: String, created: LocalDateTime, completed: LocalDateTime?, status: ExecutionStatus): ExperimentEntity {
+        fun create(id: String,
+                   created: LocalDateTime = twoSecondsAgo,
+                   assumeDue: LocalDateTime?, completed: LocalDateTime?, status: ExecutionStatus): ExperimentEntity {
             val entity = ExperimentEntity()
             entity.id = id
+            entity.name =id
             entity.projectId = "acme"
+            entity.baselineDue = oneSecondAgo
+            entity.assumeDue = assumeDue
             entity.dateCreated = created
             entity.dateCompleted = completed
             entity.result = status
+            entity.assume="A"
+            entity.baseline="B"
+            entity.timeline="1 days"
+            entity.runContext = RunContext()
             return entity
         }
 
-        val finishedOK = create("finishedOK", now.minusDays(1), completed = later, status = SUCCESS)
-        val withError = create("withError", now.minusDays(1), completed = later, status = ERROR)
-        val justStarted = create("justStarted", now, null, PENDING)
-        return listOf<ExperimentEntity>(finishedOK, withError, justStarted)
+        val finishedOK = create("finishedOK", created = now.minusDays(1), assumeDue = nextWeek, completed = nextWeek, status = SUCCESS)
+        val withError = create("withError", created = now.minusDays(1), assumeDue = nextWeek, completed = nextWeek, status = ERROR)
+        val justStarted = create("justStarted", assumeDue = null, status = PENDING, completed = null)
+        val waitingForAssume = create("waitingForAssume", assumeDue = nextWeek, status = RUNNING, completed = null)
+        return listOf<ExperimentEntity>(finishedOK, withError, justStarted, waitingForAssume)
     }
 
     private fun setupRetrieval(dtos: List<ExperimentEntity>) {

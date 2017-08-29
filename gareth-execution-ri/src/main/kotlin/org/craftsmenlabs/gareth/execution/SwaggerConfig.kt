@@ -23,7 +23,7 @@ open class SwaggerConfig {
 
     private fun apiInfo(): ApiInfo {
         val info = ApiInfoBuilder()
-        info.description("This is the public REST api to handle glue line code execution for a single project/client")
+        info.description("This is the public REST api to handle glue line code execution for a single project/definitions")
         info.title("Gareth execution REST API")
         return info.build()
     }

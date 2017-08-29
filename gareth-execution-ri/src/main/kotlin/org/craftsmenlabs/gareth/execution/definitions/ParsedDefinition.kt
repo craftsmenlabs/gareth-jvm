@@ -1,6 +1,5 @@
 package org.craftsmenlabs.gareth.execution.definitions
 
-import java.time.Duration
 import java.util.*
 
 
@@ -10,5 +9,5 @@ class ParsedDefinition {
     val assumeDefinitions = HashMap<String, InvokableMethod>()
     val successDefinitions = HashMap<String, InvokableMethod>()
     val failureDefinitions = HashMap<String, InvokableMethod>()
-    val timeDefinitions = HashMap<String, Pair<String, Duration>>()
+    val timeDefinitions = HashMap<String, InvokableMethod>()
 }

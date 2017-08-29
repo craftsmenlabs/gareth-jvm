@@ -1,7 +1,7 @@
 package org.craftsmenlabs.gareth.execution.definitions
 
 import org.assertj.core.api.Assertions
-import org.craftsmenlabs.gareth.execution.RunContext
+import org.craftsmenlabs.gareth.validator.model.RunContext
 import org.junit.Test
 
 class InvokableMethodTest {

@@ -2,9 +2,9 @@ package org.craftsmenlabs.gareth.time
 
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.assertThatThrownBy
+import org.craftsmenlabs.gareth.validator.beans.DateTimeService
 import org.craftsmenlabs.gareth.validator.model.DateTimeDTO
 import org.craftsmenlabs.gareth.validator.model.ExecutionInterval
-import org.craftsmenlabs.gareth.validator.time.DateTimeService
 import org.junit.Test
 import java.time.LocalDateTime
 

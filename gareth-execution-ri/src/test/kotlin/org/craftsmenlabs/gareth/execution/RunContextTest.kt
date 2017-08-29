@@ -3,6 +3,7 @@ package org.craftsmenlabs.gareth.execution
 import org.assertj.core.api.Assertions.assertThat
 import org.craftsmenlabs.gareth.validator.model.EnvironmentItem
 import org.craftsmenlabs.gareth.validator.model.ItemType
+import org.craftsmenlabs.gareth.validator.model.RunContext
 import org.junit.Test
 
 class RunContextTest {
@@ -10,11 +11,11 @@ class RunContextTest {
     @Test
     fun testStringToValue() {
         val context = RunContext(mutableMapOf<String, EnvironmentItem>(
-                Pair("LONG", EnvironmentItem("LONG", "123", ItemType.LONG)),
-                Pair("LIST", EnvironmentItem("LIST", "The,quick,brown,fox", ItemType.LIST)),
-                Pair("STRING", EnvironmentItem("STRING", "Hello!", ItemType.STRING)),
-                Pair("BOOLEAN", EnvironmentItem("BOOLEAN", "true", ItemType.BOOLEAN)),
-                Pair("DOUBLE", EnvironmentItem("DOUBLE", "0.42", ItemType.DOUBLE))))
+                Pair("LONG", EnvironmentItem("123", ItemType.LONG)),
+                Pair("LIST", EnvironmentItem("The,quick,brown,fox", ItemType.LIST)),
+                Pair("STRING", EnvironmentItem("Hello!", ItemType.STRING)),
+                Pair("BOOLEAN", EnvironmentItem("true", ItemType.BOOLEAN)),
+                Pair("DOUBLE", EnvironmentItem("0.42", ItemType.DOUBLE))))
         assertThat(context.getBoolean("BOOLEAN")).isTrue()
         assertThat(context.getString("STRING")).isEqualTo("Hello!")
         assertThat(context.getLong("LONG")).isEqualTo(123)

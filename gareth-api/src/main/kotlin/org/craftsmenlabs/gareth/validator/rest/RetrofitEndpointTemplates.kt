@@ -45,3 +45,19 @@ interface GluelineLookupEndpointClient {
     fun lookupGlueline(@Query("type") glueLine: GlueLineType,
                        @Query("content") content: String): Call<GlueLineSearchResultDTO>
 }
+
+interface ExecutionEndpointClient {
+
+    @GET(value = "gareth/validator/v1/execution/baselines/{id}")
+    fun getBaselinesToExecute(@Path("id") id: String): List<ExecutionRequest>
+
+    @GET(value = "gareth/validator/v1/execution/assumes/{id}")
+    fun getAssumesToExecute(@Path("id") id: String): List<ExecutionRequest>
+
+    @PUT(value = "gareth/validator/v1/execution/assumestatus/")
+    fun updateAssumeStatus(result: AssumeExecutionResult)
+
+    @PUT(value = "gareth/validator/v1/execution/baselinestatus/")
+    fun updateBaselineStatus(result: BaselineExecutionResult)
+
+}

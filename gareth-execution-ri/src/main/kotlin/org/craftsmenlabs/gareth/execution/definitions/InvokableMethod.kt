@@ -2,7 +2,7 @@ package org.craftsmenlabs.gareth.execution.definitions
 
 import org.craftsmenlabs.gareth.validator.GarethIllegalDefinitionException
 import org.craftsmenlabs.gareth.validator.GarethInvocationException
-import org.craftsmenlabs.gareth.validator.model.ExecutionRunContext
+import org.craftsmenlabs.gareth.validator.model.RunContext
 import java.lang.reflect.InvocationTargetException
 import java.lang.reflect.Method
 import java.lang.reflect.Type
@@ -46,10 +46,11 @@ class InvokableMethod {
         return method.declaringClass.name
     }
 
-    fun invokeWith(glueLineInExperiment: String, declaringClassInstance: Any, runContext: ExecutionRunContext): Any? {
+    fun invokeWith(glueLineInExperiment: String, declaringClassInstance: Any, runContext: RunContext? = null): Any? {
         val arguments = ArrayList<Any>()
-        if (hasRunContext())
-            arguments.add(runContext)
+        if (hasRunContext()) {
+            arguments.add(runContext!!)
+        }
         val argumentValuesFromInputString = getArgumentValuesFromInputString(glueLineInExperiment)
         arguments.addAll(argumentValuesFromInputString)
         try {
@@ -134,6 +135,6 @@ class InvokableMethod {
     }
 
     companion object {
-        fun isContextParameter(parameterClass: Class<*>) = ExecutionRunContext::class.java.isAssignableFrom(parameterClass)
+        fun isContextParameter(parameterClass: Class<*>) = RunContext::class.java.isAssignableFrom(parameterClass)
     }
 }

@@ -1,7 +1,7 @@
 package org.craftsmenlabs.gareth.execution.definitions
 
 import org.craftsmenlabs.gareth.validator.*
-import org.craftsmenlabs.gareth.validator.model.ExecutionRunContext
+import org.craftsmenlabs.gareth.validator.model.RunContext
 import org.springframework.stereotype.Service
 import java.time.Duration
 import java.time.temporal.ChronoUnit
@@ -15,7 +15,7 @@ class SaleOfFruit : ExperimentDefinition {
     }
 
     @Baseline(glueLine = "^sale of (.*?)$", humanReadable = "sale of fruit", description = "Sale of many things")
-    fun getSaleOfItem(context: ExecutionRunContext, item: String) {
+    fun getSaleOfItem(context: RunContext, item: String) {
         context.storeString("getting value for ", item)
         if (item == "fruit") {
             context.storeLong("fruit", 42)
@@ -42,21 +42,21 @@ class SaleOfFruit : ExperimentDefinition {
     @Success(glueLine = "^send email to (.*?)$",
             humanReadable = "send email to Moos",
             description = "Send email that the experiment succeeded.")
-    fun sendText(runContext: ExecutionRunContext, recipient: String) {
+    fun sendText(runContext: RunContext, recipient: String) {
         runContext.storeString("result", "sending success mail to " + recipient)
     }
 
     @Failure(glueLine = "^send email to (.*?)$",
             humanReadable = "send email to Sam",
             description = "Send email that the experiment failed.")
-    fun sendFailureEmail(runContext: ExecutionRunContext, recipient: String) {
+    fun sendFailureEmail(runContext: RunContext, recipient: String) {
         runContext.storeString("result", "sending failure mail to " + recipient)
     }
 
     @Failure(glueLine = "^send text to (.*?)$",
             humanReadable = "send text to Sam",
             description = "Send text that the experiment failed")
-    fun sendFailureText(runContext: ExecutionRunContext, recipient: String) {
+    fun sendFailureText(runContext: RunContext, recipient: String) {
         runContext.storeString("result", "sending failure text to " + recipient)
     }
 

@@ -174,7 +174,7 @@ class OverviewServiceTest {
         exp.timeline = template.timeline!!
         exp.name = template.name
         exp.dateCreated = threeDaysAgo
-        exp.dateDue = due
+        exp.baselineDue = due
         exp.dateCompleted = completed
         exp.result = status
         exp.archived = false
