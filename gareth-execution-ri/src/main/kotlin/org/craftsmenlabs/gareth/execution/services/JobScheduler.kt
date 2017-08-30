@@ -1,6 +1,5 @@
 package org.craftsmenlabs.gareth.execution.services
 
-import org.craftsmenlabs.gareth.execution.services.definitions.GarethHubClient
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
@@ -8,7 +7,7 @@ import org.springframework.scheduling.annotation.Scheduled
 import org.springframework.stereotype.Service
 
 @Service
-open class JobScheduler @Autowired constructor(private val hubClient: GarethHubClient) {
+open class JobScheduler @Autowired constructor(private val hubClient: ExperimentExecutionManager) {
 
     val logger: Logger = LoggerFactory.getLogger(JobScheduler::class.java)
 

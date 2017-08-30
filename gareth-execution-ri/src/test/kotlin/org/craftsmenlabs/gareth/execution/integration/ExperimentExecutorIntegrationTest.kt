@@ -1,10 +1,11 @@
 package org.craftsmenlabs.gareth.execution.integration
 
-import org.assertj.core.api.Assertions
+import org.assertj.core.api.Assertions.assertThat
 import org.craftsmenlabs.gareth.execution.GarethExecutionApplication
 import org.craftsmenlabs.gareth.execution.definitions.SaleOfFruit
 import org.craftsmenlabs.gareth.execution.services.ExecutionService
 import org.craftsmenlabs.gareth.validator.model.ExecutionRequest
+import org.craftsmenlabs.gareth.validator.model.ExecutionStatus
 import org.craftsmenlabs.gareth.validator.model.RunContext
 import org.craftsmenlabs.gareth.validator.model.ValidatedGluelines
 import org.craftsmenlabs.gareth.validator.time.TimeService
@@ -41,16 +42,42 @@ class ExperimentExecutorIntegrationTest {
         val request = ExecutionRequest("42", RunContext(), fullGluelineSet)
         val result = executionService.executeBaseline(request)
         val inTenDays = timeService.now().plusDays(10)
-        Assertions.assertThat(result.assumptionDue).isEqualToIgnoringSeconds(inTenDays)
+        assertThat(result.assumptionDue).isEqualToIgnoringSeconds(inTenDays)
+        assertThat(result.runContext.getLong("fruit")).isEqualTo(42)
+
     }
 
+    @Test
+    fun executeBaselineWithInvalidItemTypeWillAbort() {
+        val request = ExecutionRequest("42", RunContext(), fullGluelineSet.copy(baseline = "sale of iPhones"))
+        val result = executionService.executeBaseline(request)
+        assertThat(result.assumptionDue).isNull()
+        assertThat(result.success).isFalse()
+        assertThat(result.runContext.getString("ERROR_DURING_BASELINE")).isEqualTo("Not a valid sale iPhones")
+    }
 
     @Test
     fun executeBaselineWithOneWeek() {
         val request = ExecutionRequest("42", RunContext(), fullGluelineSet.copy(time="1 weeks"))
         val result = executionService.executeBaseline(request)
         val inOneWeek = timeService.now().plusDays(7)
-        Assertions.assertThat(result.assumptionDue).isEqualToIgnoringSeconds(inOneWeek)
+        assertThat(result.assumptionDue).isEqualToIgnoringSeconds(inOneWeek)
+    }
+
+    @Test
+    fun executeAssumptionWithSuccess() {
+        val request = ExecutionRequest("42", RunContext(), fullGluelineSet)
+        val result = executionService.executeAssumption(request)
+        assertThat(result.status).isEqualTo(ExecutionStatus.SUCCESS)
+        assertThat(result.runContext.getString("result")).isEqualToIgnoringCase("sending success mail to John")
+    }
+
+    @Test
+    fun executeAssumptionWithFailure() {
+        val request = ExecutionRequest("42", RunContext(), fullGluelineSet.copy(assume = "sale of fruit has risen by 79 per cent"))
+        val result = executionService.executeAssumption(request)
+        assertThat(result.status).isEqualTo(ExecutionStatus.FAILURE)
+        assertThat(result.runContext.getString("result")).isEqualToIgnoringCase("sending failure mail to Bob")
     }
 
 }

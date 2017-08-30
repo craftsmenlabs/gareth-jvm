@@ -1,12 +1,11 @@
 package org.craftsmenlabs.gareth.execution.definitions
 
-import org.craftsmenlabs.gareth.execution.services.definitions.DefinitionFactory
 import org.craftsmenlabs.gareth.validator.*
 import org.slf4j.LoggerFactory
 import java.lang.reflect.Method
 import java.time.Duration
 
-class ParsedDefinitionFactory(val definitionFactory: DefinitionFactory) {
+class ParsedDefinitionFactory {
 
     private val log = LoggerFactory.getLogger(ParsedDefinitionFactory::class.java)
 

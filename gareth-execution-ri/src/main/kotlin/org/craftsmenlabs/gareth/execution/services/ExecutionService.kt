@@ -1,20 +1,17 @@
 package org.craftsmenlabs.gareth.execution.services
 
-import org.craftsmenlabs.gareth.execution.services.definitions.DefinitionRegistryService
 import org.craftsmenlabs.gareth.validator.GarethInvocationException
-import org.craftsmenlabs.gareth.validator.beans.DurationExpressionParser
 import org.craftsmenlabs.gareth.validator.model.*
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
 
 @Service
-open class ExecutionService @Autowired constructor(private val definitionRegistry: DefinitionRegistryService,
-                                                   private val durationParser: DurationExpressionParser) {
+open class ExecutionService @Autowired constructor(private val definitionFactory: DefinitionFactory) {
 
     fun executeBaseline(request: ExecutionRequest): BaselineExecutionResult {
         val invocationResult = invokeVoidMethodByType(request.glueLines.baseline, GlueLineType.BASELINE, request)
         val success = invocationResult.exception == null
-        val executeAssumptionDate = if (!success) null else definitionRegistry.getTimeToExecuteAssumption(request.glueLines.time)
+        val executeAssumptionDate = if (!success) null else definitionFactory.getTimeToExecuteAssumption(request.glueLines.time)
         return BaselineExecutionResult(
                 experimentId = request.experimentId,
                 runContext = invocationResult.context,
@@ -68,7 +65,7 @@ open class ExecutionService @Autowired constructor(private val definitionRegistr
 
     private fun invokeMethodByType(glueLine: String, type: GlueLineType, context: RunContext): GluelineInvocationResult {
         try {
-            val invocationResult = definitionRegistry.invokeGlueline(glueLine, type, context)
+            val invocationResult = definitionFactory.invokeGlueline(glueLine, type, context)
             return GluelineInvocationResult(result = invocationResult, context = context)
         } catch (e: Exception) {
             context.storeString("ERROR_DURING_" + type.name, e.message ?: "")

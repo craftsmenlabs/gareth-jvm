@@ -5,7 +5,6 @@ import mockit.Injectable
 import mockit.Tested
 import mockit.Verifications
 import org.assertj.core.api.Assertions.assertThat
-import org.craftsmenlabs.gareth.execution.services.definitions.DefinitionRegistryService
 import org.craftsmenlabs.gareth.validator.beans.DurationExpressionParser
 import org.craftsmenlabs.gareth.validator.model.*
 import org.junit.Before
@@ -16,7 +15,7 @@ import java.time.LocalDateTime
 class ExecutionServiceTest {
 
     @Injectable
-    lateinit var definitionRegistry: DefinitionRegistryService
+    lateinit var definitionFactory: DefinitionFactory
     @Injectable
     lateinit var durationParser: DurationExpressionParser
     var context = RunContext()
@@ -37,7 +36,7 @@ class ExecutionServiceTest {
                 durationParser.calculateTimeDifferenceFromNow(inTenDays)
                 result = later
                 minTimes = 0
-                definitionRegistry.getTimeToExecuteAssumption("1 month")
+                definitionFactory.getTimeToExecuteAssumption("1 month")
                 result = Pair("1 month", inTenDays)
                 minTimes=0
             }
@@ -106,7 +105,7 @@ class ExecutionServiceTest {
     private fun expectInvocation(glueline: String, type: GlueLineType, returnValue: Boolean? = null) {
         object : Expectations() {
             init {
-                definitionRegistry.invokeGlueline(glueline, type, context)
+                definitionFactory.invokeGlueline(glueline, type, context)
                 result = returnValue
             }
         }
@@ -115,7 +114,7 @@ class ExecutionServiceTest {
     private fun expectInvocationWithError(glueline: String, type: GlueLineType, exception: Exception) {
         object : Expectations() {
             init {
-                definitionRegistry.invokeGlueline(glueline, type, context)
+                definitionFactory.invokeGlueline(glueline, type, context)
                 result = exception
             }
         }
@@ -124,7 +123,7 @@ class ExecutionServiceTest {
     private fun verifyInvocation(glueline: String, type: GlueLineType) {
         object : Verifications() {
             init {
-                definitionRegistry.invokeGlueline(glueline, type, context)
+                definitionFactory.invokeGlueline(glueline, type, context)
             }
         }
     }

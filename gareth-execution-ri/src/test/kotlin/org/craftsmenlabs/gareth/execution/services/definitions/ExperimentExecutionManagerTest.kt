@@ -2,17 +2,18 @@ package org.craftsmenlabs.gareth.execution.services.definitions
 
 import mockit.*
 import org.craftsmenlabs.gareth.execution.services.ExecutionService
+import org.craftsmenlabs.gareth.execution.services.ExperimentExecutionManager
 import org.craftsmenlabs.gareth.execution.services.RunningExecutionJobsCache
 import org.craftsmenlabs.gareth.validator.model.AssumeExecutionResult
 import org.craftsmenlabs.gareth.validator.model.BaselineExecutionResult
 import org.craftsmenlabs.gareth.validator.model.ExecutionRequest
-import org.craftsmenlabs.gareth.validator.rest.ExecutionEndpointClient
+import org.craftsmenlabs.gareth.validator.rest.GarethHubClient
 import org.junit.Before
 import org.junit.Test
 import org.springframework.core.task.SyncTaskExecutor
 import org.springframework.core.task.TaskExecutor
 
-class GarethHubClientTest {
+class ExperimentExecutionManagerTest {
 
     //use a plain single-thread implementation for this test
     @Injectable
@@ -20,7 +21,7 @@ class GarethHubClientTest {
     @Injectable
     lateinit var executionService: ExecutionService
     @Injectable
-    lateinit var endpointClient: ExecutionEndpointClient
+    lateinit var endpointClient: GarethHubClient
     @Injectable
     lateinit var cache: RunningExecutionJobsCache
 
@@ -30,7 +31,7 @@ class GarethHubClientTest {
     }
 
     @Tested(availableDuringSetup = true)
-    lateinit var client: GarethHubClient
+    lateinit var client: ExperimentExecutionManager
 
     @Test
     fun testRunAssumeTasks(@Injectable request: ExecutionRequest, @Injectable executionResult: AssumeExecutionResult) {

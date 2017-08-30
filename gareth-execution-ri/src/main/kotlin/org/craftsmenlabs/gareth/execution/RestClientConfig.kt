@@ -5,7 +5,7 @@ import com.fasterxml.jackson.databind.DeserializationFeature
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.databind.SerializationFeature
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
-import org.craftsmenlabs.gareth.validator.rest.ExecutionEndpointClient
+import org.craftsmenlabs.gareth.validator.rest.GarethHubClient
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
@@ -42,8 +42,8 @@ open class RestClientConfig {
     }
 
     @Bean
-    open fun executionEndpointClient(retrofitBuilder: Retrofit.Builder): ExecutionEndpointClient {
-        return retrofitBuilder.baseUrl(url).build().create(ExecutionEndpointClient::class.java!!)
+    open fun executionEndpointClient(retrofitBuilder: Retrofit.Builder): GarethHubClient {
+        return retrofitBuilder.baseUrl(url).build().create(GarethHubClient::class.java!!)
     }
 
 

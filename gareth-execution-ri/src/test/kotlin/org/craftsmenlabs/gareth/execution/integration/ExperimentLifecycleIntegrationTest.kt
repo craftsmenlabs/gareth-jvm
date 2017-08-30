@@ -3,6 +3,7 @@ package org.craftsmenlabs.gareth.execution.integration
 import com.jayway.awaitility.Awaitility
 import org.craftsmenlabs.gareth.execution.GarethExecutionApplication
 import org.craftsmenlabs.gareth.execution.definitions.SaleOfFruit
+import org.craftsmenlabs.gareth.validator.model.ExecutionStatus
 import org.craftsmenlabs.gareth.validator.model.ValidatedGluelines
 import org.junit.FixMethodOrder
 import org.junit.Test
@@ -15,13 +16,13 @@ import org.springframework.test.context.junit4.SpringRunner
 import java.util.concurrent.TimeUnit
 
 @RunWith(SpringRunner::class)
-@SpringBootTest(classes = arrayOf(GarethExecutionApplication::class, SaleOfFruit::class, MockExecutionEndpoint::class), webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
+@SpringBootTest(classes = arrayOf(GarethExecutionApplication::class, SaleOfFruit::class, MockGarethHub::class), webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 @ActiveProfiles("test")
 class ExperimentLifecycleIntegrationTest {
 
     @Autowired
-    lateinit var mockExecutionClient: MockExecutionEndpoint
+    lateinit var mockExecutionClient: MockGarethHub
 
     private val fullGluelineSet = ValidatedGluelines(
             baseline = "sale of fruit",
@@ -41,10 +42,33 @@ class ExperimentLifecycleIntegrationTest {
             time = "2 days")
 
     @Test
-    fun doRun() {
-        mockExecutionClient.addExperimentToExecute("42", fullGluelineSet)
-        Awaitility.waitAtMost(5, TimeUnit.SECONDS).until<Boolean> {
-            mockExecutionClient.assumptionCache["42"] != null
+    fun runSuccessful() {
+       runExperimentWithResult(fullGluelineSet, ExecutionStatus.SUCCESS)
+    }
+
+    @Test
+    fun runFailure() {
+        runExperimentWithResult(fullGluelineSet.copy(assume = "sale of fruit has risen by 79 per cent"), ExecutionStatus.FAILURE)
+    }
+
+    @Test
+    fun runSuccessfulWithoutFinalization() {
+        runExperimentWithResult(noFinalizationGluelineSet, ExecutionStatus.SUCCESS)
+    }
+
+    @Test
+    fun runWithAbortingBaseline() {
+        mockExecutionClient.addExperimentToExecute("42", failingBaselineGluelineSet)
+        Awaitility.waitAtMost(10, TimeUnit.SECONDS).until<Boolean> {
+           mockExecutionClient.baselineExecutionResults["42"]?.success == false
+        }
+    }
+
+    fun runExperimentWithResult(gluelineSet: ValidatedGluelines, status: ExecutionStatus) {
+        mockExecutionClient.addExperimentToExecute("42", gluelineSet)
+        Awaitility.waitAtMost(10, TimeUnit.SECONDS).until<Boolean> {
+            mockExecutionClient.registry != null &&
+                    mockExecutionClient.assumptionExecutionResults["42"]?.status == status
         }
     }
 

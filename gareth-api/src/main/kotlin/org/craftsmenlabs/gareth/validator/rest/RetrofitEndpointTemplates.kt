@@ -46,7 +46,7 @@ interface GluelineLookupEndpointClient {
                        @Query("content") content: String): Call<GlueLineSearchResultDTO>
 }
 
-interface ExecutionEndpointClient {
+interface GarethHubClient {
 
     @GET(value = "gareth/validator/v1/execution/baselines/{id}")
     fun getBaselinesToExecute(@Path("id") id: String): List<ExecutionRequest>
@@ -59,5 +59,8 @@ interface ExecutionEndpointClient {
 
     @PUT(value = "gareth/validator/v1/execution/baselinestatus/")
     fun updateBaselineStatus(result: BaselineExecutionResult)
+
+    @PUT(value = "gareth/validator/v1/execution/registry/")
+    fun updateRegistryForClient(@Body registry: DefinitionRegistryDTO)
 
 }

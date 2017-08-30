@@ -19,11 +19,11 @@ class SaleOfFruit : ExperimentDefinition {
         context.storeString("getting value for ", item)
         if (item == "fruit") {
             context.storeLong("fruit", 42)
-        }
-
-        if (item == "widgets") {
-
+        } else if (item == "widgets") {
             context.storeLong("peaches", 50)
+        } else {
+            throw IllegalArgumentException("Not a valid sale $item")
+
         }
     }
 
